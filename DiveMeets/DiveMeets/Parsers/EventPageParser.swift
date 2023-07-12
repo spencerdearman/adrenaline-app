@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftSoup
 
 final class EventPageHTMLParser: ObservableObject {
-    //                             Place  Name   NameLink  Team  TeamLink Score ScoreLink Score Diff.
+    //  Place  Name   NameLink  Team  TeamLink Score ScoreLink Score Diff. SynchoName SynchroLink
     @Published var eventPageData = [[String]]()
     @Published var parsingPageData = [[String]]()
     
@@ -28,6 +28,7 @@ final class EventPageHTMLParser: ObservableObject {
             if 5 <= i && i < overall.count - 1 {
                 let line = try t.getElementsByTag("td")
                 
+                // TODO: add synchro data values after testing in live results
                 let place = String(i - 4)
                 let name = try line[0].text()
                 let nameLink = try leadingLink + line[0].getElementsByTag("a").attr("href")
