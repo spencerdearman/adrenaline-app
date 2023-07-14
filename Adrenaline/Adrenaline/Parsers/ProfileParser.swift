@@ -274,7 +274,7 @@ struct ProfileParserView: View {
     var body: some View {
         
         Button("Button") {
-            let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=20617"
+            let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=13605"
             var diving: DivingDict?
             var coaching: CoachingDict?
             var judging: JudgingDict?

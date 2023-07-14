@@ -84,7 +84,7 @@ struct ProfileView: View {
             
             if comps == nil {
                 // Case where no labels are provided (shell profile)
-                comps = diverData[0][0].slice(from: "Name: ", to: " DiveMeets ID:")
+                comps = diverData[0][0].slice(from: "Name: ", to: " DiveMeets #:")
             }
         }
         

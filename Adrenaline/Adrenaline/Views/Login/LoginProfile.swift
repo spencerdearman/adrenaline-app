@@ -15,6 +15,16 @@ extension String {
         guard let rangeTo = self[rangeFrom...].range(of: to)?.lowerBound else { return nil }
         return String(self[rangeFrom..<rangeTo])
     }
+    
+    func slice(from: String) -> String? {
+        guard let rangeFrom = range(of: from)?.upperBound else { return nil }
+        return String(self[rangeFrom...])
+    }
+    
+    func slice(to: String) -> String? {
+        guard let rangeTo = self.range(of: to)?.lowerBound else { return nil }
+        return String(self[..<rangeTo])
+    }
 }
 
 func fixPlacement(data: [[String]] ) -> [[String]] {
