@@ -188,13 +188,10 @@ final class NewProfileParser: ObservableObject {
             for elem in elems {
                 let text = try elem.text()
                 if text == "Diving:" { continue }
-                print("\(elem.tag().toString()): \(try elem.text())")
                 if elem.tagName() == "strong" {
                     key = String(text.dropLast())
-                } else if elem.tagName() == "div" {
-                    if !text.contains("Coach:") {
-                        teamName = text
-                    }
+                } else if elem.tagName() == "div" && !text.contains("Coach:") {
+                    teamName = text
                 } else if elem.tagName() == "a" {
                     let coachNameText = try elem.text()
                     let comps = coachNameText.components(separatedBy: " ")
