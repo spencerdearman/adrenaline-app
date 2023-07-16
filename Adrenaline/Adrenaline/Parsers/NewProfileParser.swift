@@ -82,6 +82,7 @@ struct DiverInfo {
 final class NewProfileParser: ObservableObject {
     @Published var profileData: ProfileData = ProfileData()
     private let getTextModel = GetTextAsyncModel()
+    private let leadingLink: String = "https://secure.meetcontrol.com/divemeets/system/"
     
     private func getNameComponents(_ text: String) -> [String]? {
         // Case where only State label is provided
@@ -101,8 +102,43 @@ final class NewProfileParser: ObservableObject {
         return comps.components(separatedBy: " ")
     }
     
-    private func trimProfileText(_ text: String) -> String {
-        return text
+    private func wrapLooseText(text: String) -> String {
+        do {
+            var result: String = text
+            let minStringLen = "<br>".count
+            let pattern = "<br>[a-zA-z0-9\\s&;:]+"
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            let nsrange = NSRange(text.startIndex..<text.endIndex,
+                                  in: text)
+            var seen: Set<Substring> = Set<Substring>()
+            regex.enumerateMatches(in: text, range: nsrange) {
+                (match, _, _) in
+                guard let match = match else { return }
+                
+                for i in 0..<match.numberOfRanges {
+                    if let range = Range(match.range(at: i), in: text) {
+                        let m = text[range]
+                        let trimmedM = m.trimmingCharacters(in: .whitespacesAndNewlines)
+                            .replacingOccurrences(of: "&nbsp;", with: "")
+                            .replacingOccurrences(of: "<br>", with: "")
+                        
+                        if trimmedM.count > minStringLen {
+                            if seen.contains(m) {
+                                continue
+                            }
+                            result = result.replacingOccurrences(of: m,
+                                                                 with: "<br><div>\(trimmedM)</div>")
+                            seen.insert(m)
+                        }
+                    }
+                }
+            }
+            return result
+        } catch {
+            print("Failed to parse text input")
+        }
+        
+        return ""
     }
     
     private func parseInfo(_ data: Element) -> ProfileInfoData? {
@@ -141,6 +177,40 @@ final class NewProfileParser: ObservableObject {
     }
     
     private func parseDivingData(_ data: Element) -> ProfileDivingData? {
+        var result: ProfileDivingData = [:]
+        do {
+            let doc = try SwiftSoup.parseBodyFragment(wrapLooseText(text: data.html()))
+            guard let body = doc.body() else { return nil }
+            let elems = body.children().filter { a in a.hasText() }
+            
+            var key: String = ""
+            var teamName: String = ""
+            for elem in elems {
+                let text = try elem.text()
+                if text == "Diving:" { continue }
+                print("\(elem.tag().toString()): \(try elem.text())")
+                if elem.tagName() == "strong" {
+                    key = String(text.dropLast())
+                } else if elem.tagName() == "div" {
+                    if !text.contains("Coach:") {
+                        teamName = text
+                    }
+                } else if elem.tagName() == "a" {
+                    let coachNameText = try elem.text()
+                    let comps = coachNameText.components(separatedBy: " ")
+                    guard let first = comps.last else { return nil }
+                    let last = comps.dropLast().joined(separator: " ")
+                    result[key] = Team(name: teamName,
+                                       coachName: first + " " + last,
+                                       coachLink: try leadingLink + elem.attr("href"))
+                }
+            }
+            
+            return result
+        } catch {
+            print("Failed to parse diving data")
+        }
+        
         return nil
     }
     
@@ -193,7 +263,8 @@ final class NewProfileParser: ObservableObject {
                 }
                 
                 if topSplit.count > 1 {
-                    for elem in topSplit.dropFirst() {
+                    let bottomSplit = String(topSplit[1]).split(separator: "<br><br>")
+                    for elem in bottomSplit {
                         guard let body = try SwiftSoup.parseBodyFragment(String(elem)).body() else {
                             return false
                         }
@@ -207,10 +278,10 @@ final class NewProfileParser: ObservableObject {
                 }
             }
             
-            for elem in htmlSplit {
-                print(elem)
-                print("----------------------------")
-            }
+//            for elem in htmlSplit {
+//                print(elem)
+//                print("----------------------------")
+//            }
             print(profileData)
             return true
         } catch {
