@@ -212,6 +212,33 @@ final class NewProfileParser: ObservableObject {
     }
     
     private func parseCoachingData(_ data: Element) -> ProfileCoachingData? {
+        var result: ProfileCoachingData = [:]
+        do {
+            let doc = try SwiftSoup.parseBodyFragment(wrapLooseText(text: data.html()))
+            guard let body = doc.body() else { return nil }
+            let elems = body.children().filter { a in a.hasText() }
+            
+            var key: String = ""
+            var teamName: String = ""
+            for elem in elems {
+                let text = try elem.text()
+                if text == "Coaching:" { continue }
+                if elem.tagName() == "strong" {
+                    key = String(text.dropLast())
+                } else if elem.tagName() == "div" {
+                    teamName = text
+                } else if elem.tagName() == "a" {
+                    result[key] = Team(name: teamName,
+                                       coachName: "",
+                                       coachLink: try leadingLink + elem.attr("href"))
+                }
+            }
+            
+            return result
+        } catch {
+            print("Failed to parse coaching data")
+        }
+        
         return nil
     }
     
@@ -269,7 +296,7 @@ final class NewProfileParser: ObservableObject {
                         if elem.contains("<strong>Diving:</strong>") {
                             profileData.diving = parseDivingData(body)
                         } else if elem.contains("<strong>Coaching:</strong>") {
-                            profileData.coaching = parseCoachingData(data)
+                            profileData.coaching = parseCoachingData(body)
                         }
                     }
                 }
