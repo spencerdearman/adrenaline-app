@@ -276,7 +276,8 @@ final class NewProfileParser: ObservableObject {
             var lastMeet: ProfileMeet?
             for row in rows {
                 let subRow = try row.getElementsByTag("td")
-                if subRow.count < 1 { return nil }
+                if subRow.count == 0 { return nil }
+                else if try subRow.count == 1 && subRow[0].text() == "Judging History" { continue }
                 else if subRow.count == 1 {
                     if let meet = lastMeet { result.append(meet) }
                     lastMeet = nil
@@ -493,17 +494,12 @@ final class NewProfileParser: ObservableObject {
                 
                 if htmlSplit.count > 1 {
                     let tableSplit = String(htmlSplit[1]).split(separator: "</table><br><br>")
-//                    print(tableSplit)
                     
                     // There is a <br><br> inside of meet results table, so this gets around that
-//                    var foundMeetResults: Bool = false
                     for elem in tableSplit {
-//                        print(elem)
-//                        print("-------------")
                         guard let body = try SwiftSoup.parseBodyFragment(String(elem)).body() else {
                             return false
                         }
-//                        print(body)
                         
                         if elem.contains("Upcoming Meets") {
                             profileData.upcomingMeets = parseUpcomingMeetsData(body)
@@ -520,8 +516,6 @@ final class NewProfileParser: ObservableObject {
                     guard let body = try SwiftSoup.parseBodyFragment(String(htmlSplit[2])).body() else {
                         return false
                     }
-//                    print("Coaches Divers")
-//                    print(body)
                     profileData.coachDivers = parseCoachDiversData(body)
                 }
                 
