@@ -37,13 +37,9 @@ struct FloatingMenuBar: View {
     @Environment(\.colorScheme) var currentMode
     
     @Binding var selectedTab: Tab
-    @State var hideTabBar: Bool = false
-    @State var visibleTabs: [Tab] = Tab.allCases
-    @State var relaxImage: Bool = false
+    private let tabs: [Tab] = Tab.allCases
     private let cornerRadius: CGFloat = 50
     @ScaledMetric private var frameHeightScaled: CGFloat = 60
-    private let menuBarHideDelay: CGFloat = 0.75
-    private let menuBarShowDelay: CGFloat = 0.55
 
     private var frameHeight: CGFloat {
         min(frameHeightScaled, 100)
@@ -69,16 +65,9 @@ struct FloatingMenuBar: View {
            : selectedTab.rawValue + ".fill")
     }
     
-    // Computes the image path for the selected image when it is relaxed
-    private var selectedImageInverse: String {
-        selectedTab.rawValue == "wrench"
-        ? selectedTab.rawValue + ".and.screwdriver.circle"
-        : selectedTab.rawValue + ".circle"
-    }
-    
     // Computes the image path for the selected image when the state is relaxed vs not
     private var selectedTabImage: String {
-        relaxImage ? selectedImageInverse : fillImage
+        fillImage
     }
     
     // Computes the color to use for the selected image
@@ -96,16 +85,7 @@ struct FloatingMenuBar: View {
     
     // Computes the color of the icon based on the selected color and relaxed vs not
     private var selectedTabColor: Color {
-        if relaxImage {
-            return selectedBubbleColor == .black ? .black : .white
-        } else {
-            return selectedBubbleColor == .black ? .white : .black
-        }
-    }
-    
-    // Computes the opacity of the icon when relaxed vs not
-    private var selectedTabOpacity: CGFloat {
-        relaxImage ? 0.5 : 1
+        selectedBubbleColor == .black ? .white : .black
     }
     
     // Computes the x offset of the icon based on the width of tabs
@@ -131,86 +111,50 @@ struct FloatingMenuBar: View {
         ZStack {
             GeometryReader { geometry in
                 // Width of menu bar
-                let geoWidth: CGFloat =
-                visibleTabs.count > 1
-                ? geometry.size.width
-                : frameHeight
+                let geoWidth: CGFloat = geometry.size.width
                 
                 // Width of bubble for one tab
-                let tabWidth: CGFloat =
-                visibleTabs.count > 1
-                ? ((geoWidth - 0) /
-                   CGFloat(Tab.allCases.count))
-                : geoWidth
+                let tabWidth: CGFloat = (geoWidth - 0) / CGFloat(Tab.allCases.count)
                 
                 // x offset from center of tab bar to selected tab
-                let xOffset: CGFloat =
-                visibleTabs.count > 1
-                ? selectedXOffset(from: tabWidth)
-                : 0
+                let xOffset: CGFloat = selectedXOffset(from: tabWidth)
                 
                 ZStack {
                     // Clear background of menu bar
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .fill(.thinMaterial)
                         .frame(width: geoWidth, height: frameHeight)
-                        .animation(.spring(), value: visibleTabs)
                     
                     // Moving bubble on menu bar
                     RoundedRectangle(cornerRadius: cornerRadius)
-                        .fill(relaxImage ? .clear : selectedBubbleColor)
+                        .fill(selectedBubbleColor)
                         .frame(width: tabWidth, height: frameHeight)
                         .offset(x: xOffset)
-                        .animation(.spring(), value: visibleTabs)
-                        .animation(.spring(), value: selectedTab)
-                        .animation(.easeOut, value: relaxImage)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.9), value: selectedTab)
                     
                     // Line of buttons for each tab
                     HStack(spacing: 0) {
-                        ForEach(visibleTabs, id: \.rawValue) { tab in
+                        ForEach(tabs, id: \.rawValue) { tab in
                             Spacer()
-                            Group {
-                                if tab == .wrench && relaxImage {
-                                    Image(selectedTab == tab ? selectedTabImage : (tab == .wrench ? tab.rawValue + ".and.screwdriver.circle" : tab.rawValue))
-                                } else {
-                                    Image(systemName: selectedTab == tab ? selectedTabImage : (tab == .wrench ? tab.rawValue + ".and.screwdriver" : tab.rawValue))
-                                }
-                            }
+                            Image(systemName: selectedTab == tab
+                                  ? selectedTabImage
+                                  : (tab == .wrench
+                                     ? tab.rawValue + ".and.screwdriver"
+                                     : tab.rawValue))
                             .scaleEffect(tab == selectedTab
                                          ? sizeMults[selectedTabImage] ?? 1.25
                                          : 1.0)
                             .foregroundColor(selectedTab == tab
                                              ? selectedTabColor
                                              : deselectedColor)
-                            .opacity(selectedTab == tab ? selectedTabOpacity : 1.0)
                             .font(.title2)
                             .dynamicTypeSize(.medium ... .xxxLarge)
                             // Adds tab change and visible tabs change on button press
                             .onTapGesture() {
-                                if !hideTabBar {
-                                        simpleSuccess()
-                                        selectedTab = tab
-                                        visibleTabs = [tab]
-                                        hideTabBar = true
-                                        
-                                        DispatchQueue.main.asyncAfter(
-                                            deadline: (DispatchTime.now() +
-                                                       menuBarHideDelay)) {
-                                                           relaxImage = true
-                                                       }
-                                } else {
-                                        simpleSuccess()
-                                        relaxImage = false
-                                        
-                                        DispatchQueue.main.asyncAfter(
-                                            deadline: (DispatchTime.now() +
-                                                       menuBarShowDelay)) {
-                                                           visibleTabs = Tab.allCases
-                                                           hideTabBar = false
-                                                       }
-                                    }
+                                simpleSuccess()
+                                selectedTab = tab
                             }
-                            .animation(.spring(), value: visibleTabs)
+                            .animation(.spring(), value: selectedTab)
                             Spacer()
                         }
                     }
@@ -219,15 +163,6 @@ struct FloatingMenuBar: View {
             .frame(height: frameHeight)
             .cornerRadius(cornerRadius)
             .padding()
-        }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                visibleTabs = [selectedTab]
-                hideTabBar = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + menuBarHideDelay) {
-                    relaxImage = true
-                }
-            }
         }
     }
 }

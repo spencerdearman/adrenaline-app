@@ -143,7 +143,7 @@ final class MeetParser: ObservableObject {
         
         storedPastMeetYears = Set<Int>(entries.map {
             if let startDate = $0.startDate,
-                let year = Calendar.current.dateComponents([.year], from: startDate).year {
+               let year = Calendar.current.dateComponents([.year], from: startDate).year {
                 return year
             }
             
@@ -356,7 +356,7 @@ final class MeetParser: ObservableObject {
                     let eventLink = try event.getElementsByTag("a")[0].attr("href")
                     
                     if let results = await parsePastMeetEventResults(eventName: eventName,
-                                                               link: leadingLink + eventLink) {
+                                                                     link: leadingLink + eventLink) {
                         events.append(results)
                     }
                 }
@@ -491,10 +491,10 @@ final class MeetParser: ObservableObject {
                         
                         // Skip years that are earlier than current year and already in the database
                         if let past = Int(pastYear),
-                            let current = Int(currentYear),
-                            past < current,
-                            let storedPastMeetYears = storedPastMeetYears,
-                            storedPastMeetYears.contains(past) {
+                           let current = Int(currentYear),
+                           past < current,
+                           let storedPastMeetYears = storedPastMeetYears,
+                           storedPastMeetYears.contains(past) {
                             continue
                         }
                         
@@ -588,8 +588,10 @@ final class MeetParser: ObservableObject {
                         try await MainActor.run {
                             // Parses subpage and gets meet names and links
                             if let text = linkText,
-                               let result = getMeetInfo(text: text) {
-                                try upcomingMeets![currentYear]![tabElem.text()] = result
+                               let result = getMeetInfo(text: text),
+                               let meets = upcomingMeets,
+                               var currentYear = meets[currentYear] {
+                                try currentYear[tabElem.text()] = result
                             }
                         }
                     }
