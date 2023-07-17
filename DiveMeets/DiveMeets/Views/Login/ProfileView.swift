@@ -27,7 +27,7 @@ struct ProfileView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     private let shadowRadius: CGFloat = 5
-
+    
     private var bgColor: Color {
         currentMode == .light ? .white : .black
     }
@@ -57,7 +57,6 @@ struct ProfileView: View {
         
         return ""
     }
-
     
     var body: some View {
         
@@ -155,7 +154,7 @@ struct ProfileView: View {
                                                 }), id: \.self) { event in
                                                     let html = getEntriesHtml(link: event.link)
                                                     if let name = name,
-                                                        let entry = ep.parseNamedEntry(
+                                                       let entry = ep.parseNamedEntry(
                                                         html: html,
                                                         searchName: name) {
                                                         EntryView(entry: entry) {
@@ -180,7 +179,7 @@ struct ProfileView: View {
                                         .foregroundColor(Color.primary)
                                 }
                                 .padding([.leading, .trailing])
-                            .padding(.bottom, 5)
+                                .padding(.bottom, 5)
                             }
                             .padding([.leading, .trailing])
                             
@@ -330,7 +329,7 @@ struct DiversList: View {
     var divers: [DiverInfo]
     
     var body: some View {
-        VStack (spacing: 1){
+        VStack (spacing: 1) {
             TabView {
                 ForEach(divers, id: \.self) { elem in
                     DiverBubbleView(element: elem)
@@ -446,17 +445,20 @@ struct BackgroundSpheres: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack{}
-                .onAppear{
+                .onAppear {
                     width = geometry.size.width
                     height = geometry.size.height
                 }
             VStack {
-                ZStack{
+                ZStack {
                     Circle()
-                        .fill(Custom.darkBlue) // Circle color
-                        .frame(width: geometry.size.width
-                               * 2.5, height: geometry.size.width * 2.5) // Adjust the size of the circle as desired
-                        .position(x: geometry.size.width, y: -geometry.size.width * 0.55) // Center the circle
+                    // Circle color
+                        .fill(Custom.darkBlue)
+                    // Adjust the size of the circle as desired
+                        .frame(width: geometry.size.width * 2.5,
+                               height: geometry.size.width * 2.5)
+                    // Center the circle
+                        .position(x: geometry.size.width, y: -geometry.size.width * 0.55)
                         .shadow(radius: 15)
                         .clipped().ignoresSafeArea()
                     Circle()
