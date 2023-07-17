@@ -75,9 +75,16 @@ struct ProfileMeetEvent {
 }
 
 struct DiverInfo {
-    let name: String
+    let first: String
+    let last: String
     let link: String
     
+    var name: String {
+        first + " " + last
+    }
+    var nameLastFirst: String {
+        last + ", " + first
+    }
     var diverId: String {
         link.components(separatedBy: "=").last ?? ""
     }
@@ -348,8 +355,14 @@ final class NewProfileParser: ObservableObject {
     
     private func parseCoachDiversData(_ data: Element) -> ProfileCoachDiversData? {
         do {
-            print("Coach Divers")
-            print(try data.text())
+            let links = try data.getElementsByTag("a")
+            
+            return try links.map {
+                let comps = try $0.text().split(separator: ", ", maxSplits: 1)
+                let first = String(comps.last ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                let last = String(comps.first ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                return DiverInfo(first: first, last: last, link: try leadingLink + $0.attr("href"))
+            }
         } catch {
             print("Failed to parse coach divers")
         }
@@ -488,7 +501,7 @@ final class NewProfileParser: ObservableObject {
                 }
             }
             
-            print(profileData.diveStatistics)
+            print(profileData.coachDivers)
             return true
         } catch {
             print("Failed to parse profile")
