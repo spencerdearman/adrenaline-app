@@ -132,8 +132,5 @@ struct PersonBubbleView: View {
             }
             .padding()
         }
-        .onTapGesture {
-            print(elements[3])
-        }
     }
 }
