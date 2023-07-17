@@ -16,12 +16,15 @@ typealias ProfileDivingData = [String: Team]
 typealias ProfileCoachingData = [String: Team]
 // List of profile meets and their corresponding events, not using the place and score fields
 typealias ProfileJudgingData = [ProfileMeet]
-//                                   [meet  : [event : entryLink]]
-typealias ProfileUpcomingMeetsData = [String: [String: String]]
+// List of profile meets and their corresponding events, where the link is the sheet and score
+// and place fields are unused
+typealias ProfileUpcomingMeetsData = [ProfileMeet]
 // DiverInfo contains a diver name and link
 typealias ProfileCoachDiversData = [DiverInfo]
 // List of profile meets and their corresponding events, also using the place and score fields
 typealias ProfileMeetResultsData = [ProfileMeet]
+// List of DiveStatistic objects from DiveStatistics table
+typealias ProfileDiveStatisticsData = [DiveStatistic]
 
 struct ProfileData {
     var info: ProfileInfoData?
@@ -29,6 +32,7 @@ struct ProfileData {
     var coaching: ProfileCoachingData?
     var judging: ProfileJudgingData?
     var upcomingMeets: ProfileUpcomingMeetsData?
+    var diveStatistics: ProfileDiveStatisticsData?
     var coachDivers: ProfileCoachDiversData?
     var meetResults: ProfileMeetResultsData?
 }
@@ -39,10 +43,10 @@ struct ProfileInfoData {
     let cityState: String?
     let country: String?
     let gender: String?
-    let age: String?
-    let finaAge: String?
+    let age: Int?
+    let finaAge: Int?
     let diverId: String
-    let hsGradYear: String?
+    let hsGradYear: Int?
     
     var name: String {
         first + " " + last
@@ -66,8 +70,8 @@ struct ProfileMeet {
 struct ProfileMeetEvent {
     let name: String
     let link: String
-    let place: String?
-    let score: String?
+    var place: Int?
+    var score: Double?
 }
 
 struct DiverInfo {
@@ -77,6 +81,17 @@ struct DiverInfo {
     var diverId: String {
         link.components(separatedBy: "=").last ?? ""
     }
+}
+
+struct DiveStatistic {
+    let number: String
+    let name: String
+    let height: String
+    let highScore: Double
+    let highScoreLink: String
+    let avgScore: Double
+    let avgScoreLink: String
+    let numberOfTimes: Int
 }
 
 final class NewProfileParser: ObservableObject {
@@ -168,8 +183,8 @@ final class NewProfileParser: ObservableObject {
             guard let diverId = text.slice(from: "DiveMeets #: ") else { return nil }
             
             return ProfileInfoData(first: first, last: last, cityState: cityState, country: country,
-                                   gender: gender, age: age, finaAge: fina, diverId: diverId,
-                                   hsGradYear: hsGrad)
+                                   gender: gender, age: Int(age ?? ""), finaAge: Int(fina),
+                                   diverId: diverId, hsGradYear: Int(hsGrad ?? ""))
         } catch {
             print("Failed to parse info")
         }
@@ -255,14 +270,17 @@ final class NewProfileParser: ObservableObject {
     
     private func parseUpcomingMeetsData(_ data: Element) -> ProfileUpcomingMeetsData? {
         do {
-            var result: ProfileUpcomingMeetsData = [:]
+            var result: ProfileUpcomingMeetsData = []
             let rows = try data.getElementsByTag("tr")
             
             var lastMeetName: String = ""
+            var lastMeet: ProfileMeet?
             for row in rows {
                 let subRow = try row.getElementsByTag("td")
                 if try subRow.count == 1 && subRow[0].text() == "Upcoming Meets" { continue }
                 else if subRow.count == 1 {
+                    if let meet = lastMeet { result.append(meet) }
+                    lastMeet = nil
                     lastMeetName = try subRow[0].text()
                     continue
                 }
@@ -274,10 +292,14 @@ final class NewProfileParser: ObservableObject {
                 guard let anchor = try subRow[2].getElementsByTag("a").first() else { return nil }
                 let link = try anchor.attr("href")
                 
-                if result[lastMeetName] == nil {
-                    result[lastMeetName] = [:]
+                if lastMeet == nil {
+                    lastMeet = ProfileMeet(name: lastMeetName, events: [])
                 }
-                result[lastMeetName]![name] = leadingLink + link
+                lastMeet?.events.append(ProfileMeetEvent(name: name, link: leadingLink + link))
+            }
+            
+            if let meet = lastMeet {
+                result.append(meet)
             }
             
             return result
@@ -285,6 +307,10 @@ final class NewProfileParser: ObservableObject {
         } catch {
             print("Failed to parse upcoming meets")
         }
+        return nil
+    }
+    
+    private func parseDiveStatistics(_ data: Element) -> ProfileDiveStatisticsData? {
         return nil
     }
     
@@ -300,8 +326,44 @@ final class NewProfileParser: ObservableObject {
     
     private func parseMeetResultsData(_ data: Element) -> ProfileMeetResultsData? {
         do {
-            print("Meet Results")
-            print(try data.text())
+            var result: ProfileMeetResultsData = []
+            guard let cleaned = try SwiftSoup.parseBodyFragment(data.html()
+                .replacingOccurrences(of: "&nbsp;", with: "")).body() else { return nil }
+            let rows = try cleaned.getElementsByTag("tr")
+            
+            var lastMeetName: String = ""
+            var lastMeet: ProfileMeet?
+            for row in rows {
+                let subRow = try row.getElementsByTag("td")
+                if subRow.count < 1 { return nil }
+                else if subRow.count == 1 {
+                    if let meet = lastMeet { result.append(meet) }
+                    lastMeet = nil
+                    lastMeetName = try subRow[0].text()
+                    continue
+                }
+                
+                if subRow.count < 3 { return nil }
+                
+                let eventName = try subRow[0].html().trimmingCharacters(in: .whitespacesAndNewlines)
+                let place = try Int(subRow[1].text())
+                let score = try Double(subRow[2].text())
+                guard let scoreFirst = try subRow[2].getElementsByTag("a").first() else { return nil }
+                let scoreLink = try leadingLink + scoreFirst.attr("href")
+                
+                if lastMeet == nil {
+                    lastMeet = ProfileMeet(name: lastMeetName, events: [])
+                }
+                lastMeet?.events.append(ProfileMeetEvent(name: eventName, link: scoreLink,
+                                                         place: place, score: score))
+                
+            }
+            
+            if let meet = lastMeet {
+                result.append(meet)
+            }
+            
+            return result
         } catch {
             print("Failed to parse meet results")
         }
@@ -356,7 +418,7 @@ final class NewProfileParser: ObservableObject {
 //                    print(tableSplit)
                     
                     // There is a <br><br> inside of meet results table, so this gets around that
-                    var foundMeetResults: Bool = false
+//                    var foundMeetResults: Bool = false
                     for elem in tableSplit {
 //                        print(elem)
 //                        print("-------------")
@@ -368,10 +430,9 @@ final class NewProfileParser: ObservableObject {
                         if elem.contains("Upcoming Meets") {
                             profileData.upcomingMeets = parseUpcomingMeetsData(body)
                         } else if elem.contains("<span style=\"color: blue\">DIVE</span>") {
-                            foundMeetResults = true
-                        } else if foundMeetResults {
                             profileData.meetResults = parseMeetResultsData(body)
-                            foundMeetResults = false
+                        } else if elem.contains("Dive Statistics") {
+                            profileData.diveStatistics = parseDiveStatistics(body)
                         }
                             
                     }
@@ -381,7 +442,8 @@ final class NewProfileParser: ObservableObject {
                     guard let body = try SwiftSoup.parseBodyFragment(String(htmlSplit[2])).body() else {
                         return false
                     }
-                    
+//                    print("Coaches Divers")
+//                    print(body)
                     profileData.coachDivers = parseCoachDiversData(body)
                 }
                 
@@ -394,7 +456,7 @@ final class NewProfileParser: ObservableObject {
                 }
             }
             
-            print(profileData)
+            print(profileData.upcomingMeets)
             return true
         } catch {
             print("Failed to parse profile")
@@ -411,7 +473,8 @@ struct NewProfileParserView: View {
     
     var body: some View {
         
-        Button("Button") {
+        ZStack {}
+            .onAppear {
             Task {
                 await p.parseProfile(link: profileLink)
             }
