@@ -327,9 +327,11 @@ struct ProfileView: View {
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
+            if !isLoginProfile {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        NavigationViewBackButton()
+                    }
                 }
             }
         }
