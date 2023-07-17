@@ -528,6 +528,20 @@ final class NewProfileParser: ObservableObject {
         return nil
     }
     
+    private func breakDownHtml(_ html: String) -> [String] {
+        if html.contains("DiveMeets #") {
+            return html.split(separator: "<br><br>").map { String($0) }
+        } else if html.contains("Dive Statistics") &&
+                    html.components(separatedBy: "</table>").count > 1 {
+            let comps = html.components(separatedBy: "</table>")
+                .filter { $0.count > 0 }
+                .map { String($0 + "</table>") }
+            return comps
+        } else {
+            return [html]
+        }
+    }
+    
     func parseProfile(link: String) async -> Bool {
         do {
             guard let url = URL(string: link) else { return false }
@@ -545,99 +559,69 @@ final class NewProfileParser: ObservableObject {
             let data = content[0]
             // Remove unnecessary spacing that sometimes appears and breaks split
             let dataHtml = try data.html().replacingOccurrences(of: "> <", with: "><")
-            let htmlSplit = dataHtml.split(separator: "<br><br><br><br>")
-
-            if htmlSplit.count > 0 {
-                let topHtml = String(htmlSplit[0])
-                let topSplit = topHtml.split(separator: "<br><br><br>")
-                if topSplit.count > 0 {
-                    let infoHtml = String(topSplit[0])
-                    guard let body = try SwiftSoup.parseBodyFragment(infoHtml).body() else {
-                        return false
-                    }
-                    
+            let bigHtmlBlocks = dataHtml.split(separator: "<br><br><br><br>")
+            
+            // Separates big html blocks into smaller chunks separated by components of ProfileData
+            var htmlComponents: [String] = []
+            for elem in bigHtmlBlocks {
+                htmlComponents += breakDownHtml(String(elem))
+            }
+            
+            for elem in htmlComponents.filter({ !$0.contains("img src=") }) {
+                guard let body = try SwiftSoup.parseBodyFragment(elem).body() else {
+                    return false
+                }
+                
+                if elem.contains("DiveMeets #") {
                     await MainActor.run {
                         profileData.info = parseInfo(body)
                     }
-                }
-                
-                if topSplit.count > 1 {
-                    let bottomSplit = String(topSplit[1]).split(separator: "<br><br>")
-                    for elem in bottomSplit {
-                        guard let body = try SwiftSoup.parseBodyFragment(String(elem)).body() else {
-                            return false
-                        }
-                        
-                        if elem.contains("<strong>Diving:</strong>") {
-                            await MainActor.run {
-                                profileData.diving = parseDivingData(body)
-                            }
-                        } else if elem.contains("<strong>Coaching:</strong>") {
-                            await MainActor.run {
-                                profileData.coaching = parseCoachingData(body)
-                            }
-                        }
+                } else if elem.contains("<strong>Diving:</strong>") {
+                    await MainActor.run {
+                        profileData.diving = parseDivingData(body)
                     }
-                }
-                
-                if htmlSplit.count > 1 {
-                    let tableSplit = String(htmlSplit[1]).split(separator: "</table>")
-                    // There is a <br><br> inside of meet results table, so this gets around that
-                    for elem in tableSplit {
-                        guard let body = try SwiftSoup.parseBodyFragment(String(elem)).body() else {
-                            return false
-                        }
-                        
-                        if elem.contains("Upcoming Meets") {
-                            await MainActor.run {
-                                profileData.upcomingMeets = parseUpcomingMeetsData(body)
-                            }
-                        } else if elem.contains("<span style=\"color: blue\">DIVE</span>") {
-                            await MainActor.run {
-                                profileData.meetResults = parseMeetResultsData(body)
-                            }
-                        } else if elem.contains("Dive Statistics") {
-                            await MainActor.run {
-                                profileData.diveStatistics = parseDiveStatistics(body)
-                            }
-                        }
-                            
+                } else if elem.contains("<strong>Coaching:</strong>") {
+                    await MainActor.run {
+                        profileData.coaching = parseCoachingData(body)
                     }
-                }
-                
-                if htmlSplit.count > 2 {
-                    guard let body = try SwiftSoup.parseBodyFragment(String(htmlSplit[2])).body() else {
-                        return false
+                } else if elem.contains("Upcoming Meets") {
+                    await MainActor.run {
+                        profileData.upcomingMeets = parseUpcomingMeetsData(body)
                     }
-                    
+                } else if elem.contains("<span style=\"color: blue\">DIVE</span>") {
+                    await MainActor.run {
+                        profileData.meetResults = parseMeetResultsData(body)
+                    }
+                } else if elem.contains("Dive Statistics") {
+                    await MainActor.run {
+                        profileData.diveStatistics = parseDiveStatistics(body)
+                    }
+                } else if elem.contains("<center>") {
                     await MainActor.run {
                         profileData.coachDivers = parseCoachDiversData(body)
                     }
-                }
-                
-                if htmlSplit.count > 3 {
-                    guard let body = try SwiftSoup.parseBodyFragment(String(htmlSplit[3])).body() else {
-                        return false
-                    }
-                    
+                } else if elem.contains("Judging History") {
                     await MainActor.run {
                         profileData.judging = parseJudgingData(body)
                     }
                 }
             }
             
-            print(profileData.info)
-            print("-----------------------------")
-            print(profileData.coaching)
-            print("-----------------------------")
-            print(profileData.upcomingMeets)
-            print("-----------------------------")
-            print(profileData.meetResults)
-            print("-----------------------------")
-            print(profileData.coachDivers)
-            print("-----------------------------")
-            print(profileData.judging)
-            print("-----------------------------")
+//            print("------------INFO-----------------")
+//            print(profileData.info)
+//            print("------------DIVING-----------------")
+//            print(profileData.diving)
+//            print("------------COACHING-----------------")
+//            print(profileData.coaching)
+//            print("------------UPCOMING-----------------")
+//            print(profileData.upcomingMeets)
+//            print("------------RESULTS-----------------")
+//            print(profileData.meetResults)
+//            print("------------DIVERS-----------------")
+//            print(profileData.coachDivers)
+//            print("------------JUDGING-----------------")
+//            print(profileData.judging)
+            
             return true
         } catch {
             print("Failed to parse profile")
@@ -651,7 +635,8 @@ struct NewProfileParserView: View {
     let p: NewProfileParser = NewProfileParser()
 //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
 //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
-    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=13605"
+//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=13605"
+    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=44388"
     
     var body: some View {
         NavigationView {
