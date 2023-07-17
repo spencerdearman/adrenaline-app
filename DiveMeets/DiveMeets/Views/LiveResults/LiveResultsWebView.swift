@@ -32,7 +32,6 @@ struct LiveResultsWebView: View {
 // Use this struct for the WebView functionality and having bindings to request
 // and html available on init
 struct LRWebView: UIViewRepresentable {
-    let htmlParser: HTMLParser = HTMLParser()
     var request: String
     @Binding var html: String
     static private var delay: UInt32 = 1_000_000
@@ -73,7 +72,6 @@ struct LRWebView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, WKNavigationDelegate {
-        let htmlParser: HTMLParser = HTMLParser()
         @Binding var html: String
         
         init(html: Binding<String>) {

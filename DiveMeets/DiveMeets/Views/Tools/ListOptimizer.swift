@@ -125,7 +125,7 @@ struct sixDiveView: View {
         VStack {
             Text(getDiveName(data: tableData ?? [:], forKey: "109C") ?? "No information found")
                 .padding()
-            let v = findTopSixDives(data: data)
+            let _ = findTopSixDives(data: data)
         }
         .onAppear {
             tableData = getDiveTableData()

@@ -48,7 +48,6 @@ final class EventHTMLParser: ObservableObject {
             let tester = try t.getElementsByTag("td")
             if try tester.count >= 3 && tester[2].text().contains("Dive Sheet") {
                 hasUpcomingMeets = true
-                print("Has Upcoming Meets")
             }
         }
         if hasUpcomingMeets {

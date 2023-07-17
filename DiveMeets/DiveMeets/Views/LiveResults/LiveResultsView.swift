@@ -91,7 +91,7 @@ struct ParseLoaderView: View {
                 lastDiverName.insert(" ", at: idx)
             }
             
-            var tempLink = try table.getElementsByTag("a").attr("href")
+            let tempLink = try table.getElementsByTag("a").attr("href")
             lastDiverProfileLink = linkHead + tempLink
             
             lastRoundPlace = Int(lastDiverStr.slice(from: "Last Round Place: ",
@@ -127,8 +127,6 @@ struct ParseLoaderView: View {
     
     private func parseNextDiverData(table: Element) -> Bool {
         do {
-            var lastDiverName = ""
-            var lastDiverProfileLink = ""
             var lastRoundPlace = 0
             var lastRoundTotalScore = 0.0
             var nextDiverName = ""
@@ -153,7 +151,7 @@ struct ParseLoaderView: View {
                 nextDiverName.insert(" ", at: idx)
             }
             
-            var tempLink = try table.getElementsByTag("a").attr("href")
+            let tempLink = try table.getElementsByTag("a").attr("href")
             nextDiverProfileLink = linkHead + tempLink
             
             lastRoundPlace = Int(upcomingDiverStr.slice(from: "Last Round Place: ",

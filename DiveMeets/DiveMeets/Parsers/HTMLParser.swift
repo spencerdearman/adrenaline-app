@@ -87,27 +87,27 @@ final class HTMLParser: ObservableObject {
     }
     
     
-    func getRecords(_ html: String) -> DiverProfileRecords {
-        let leadingLink: String = "https://secure.meetcontrol.com/divemeets/system/"
-        var result: DiverProfileRecords = [:]
-        do {
-            let document: Document = try SwiftSoup.parse(html)
-            guard let body = document.body() else {
-                return [:]
-            }
-            let content = try body.getElementById("dm_content")
-            let links = try content?.getElementsByClass("showresults").select("a")
-            try links?.forEach({ l in
-                // Adds an empty list value to a new key
-                if !result.keys.contains(try l.text()) {
-                    result[try l.text()] = []
-                }
-                result[try l.text()]!.append(try leadingLink + l.attr("href"))
-            })
-        }
-        catch {
-            print("Parsing records failed")
-        }
-        return result
-    }
+//    func getRecords(_ html: String) -> DiverProfileRecords {
+//        let leadingLink: String = "https://secure.meetcontrol.com/divemeets/system/"
+//        var result: DiverProfileRecords = [:]
+//        do {
+//            let document: Document = try SwiftSoup.parse(html)
+//            guard let body = document.body() else {
+//                return [:]
+//            }
+//            let content = try body.getElementById("dm_content")
+//            let links = try content?.getElementsByClass("showresults").select("a")
+//            try links?.forEach({ l in
+//                // Adds an empty list value to a new key
+//                if !result.keys.contains(try l.text()) {
+//                    result[try l.text()] = []
+//                }
+//                result[try l.text()]!.append(try leadingLink + l.attr("href"))
+//            })
+//        }
+//        catch {
+//            print("Parsing records failed")
+//        }
+//        return result
+//    }
 }
