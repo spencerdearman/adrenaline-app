@@ -202,7 +202,7 @@ final class ProfileParser: ObservableObject {
                     first = nameComps.dropLast().joined(separator: " ")
                     if let lastSubstring = nameComps.last { last = String(lastSubstring) }
                     break
-                case "City/State:":
+                case "City/State:", "State:":
                     cityState = value
                     break
                 case "Country:":

@@ -363,25 +363,25 @@ struct DiverBubbleView: View {
     var element: DiverInfo
     
     var body: some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(Custom.accentThinMaterial)
-                .cornerRadius(30)
-                .frame(width: 300, height: 100)
-                .shadow(radius: 5)
-            HStack{
-                NavigationLink {
-                    ProfileView(profileLink: element.link)
-                } label: {
+        NavigationLink {
+            ProfileView(profileLink: element.link)
+        } label: {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(Custom.accentThinMaterial)
+                    .cornerRadius(30)
+                    .frame(width: 300, height: 100)
+                    .shadow(radius: 5)
+                HStack {
                     Text(element.name)
                         .foregroundColor(.primary)
                         .fontWeight(.semibold)
+                    
+                    MiniProfileImage(diverID: element.diverId, width: 80, height: 100)
+                        .padding(.leading)
+                        .scaledToFit()
                 }
-                MiniProfileImage(diverID: element.diverId, width: 80, height: 100)
-                    .padding(.leading)
-                    .scaledToFit()
             }
-            
         }
     }
 }
