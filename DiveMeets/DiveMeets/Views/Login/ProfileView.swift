@@ -14,13 +14,14 @@ struct ProfileView: View {
     @Environment(\.colorScheme) var currentMode
     
     var profileLink: String
+    var isLoginProfile: Bool = false
     @Namespace var profilespace
     @State var diverTab: Bool = false
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
-    @StateObject private var parser = NewProfileParser()
+    @StateObject private var parser = ProfileParser()
     @State private var isExpanded: Bool = false
     private let getTextModel = GetTextAsyncModel()
     private let ep = EntriesParser()
@@ -73,8 +74,8 @@ struct ProfileView: View {
             bgColor.ignoresSafeArea()
             
             if profileType == "Diver" {
-                ZStack{
-                    GeometryReader{ geometry in
+                ZStack {
+                    GeometryReader { geometry in
                         BackgroundSpheres()
                     }
                     VStack {
