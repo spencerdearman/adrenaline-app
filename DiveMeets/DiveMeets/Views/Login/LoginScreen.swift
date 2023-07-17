@@ -149,7 +149,7 @@ struct LoginSearchInputView: View {
                             searchSubmitted: $searchSubmitted, loginSuccessful: $loginSuccessful,
                             loginSearchSubmitted: $loginSearchSubmitted)
                         .zIndex(1)
-                        .offset(y: 90)
+//                        .offset(y: 90)
                     } else {
                         LoginPageSearchView(showError: $showError, divemeetsID: $divemeetsID,
                                             password: $password, searchSubmitted: $searchSubmitted,
