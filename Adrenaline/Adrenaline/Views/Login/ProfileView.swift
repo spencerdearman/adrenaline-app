@@ -28,7 +28,7 @@ struct ProfileView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     private let shadowRadius: CGFloat = 5
-
+    
     private var bgColor: Color {
         currentMode == .light ? .white : .black
     }
@@ -58,7 +58,6 @@ struct ProfileView: View {
         
         return ""
     }
-
     
     var body: some View {
         
@@ -156,7 +155,7 @@ struct ProfileView: View {
                                                 }), id: \.self) { event in
                                                     let html = getEntriesHtml(link: event.link)
                                                     if let name = name,
-                                                        let entry = ep.parseNamedEntry(
+                                                       let entry = ep.parseNamedEntry(
                                                         html: html,
                                                         searchName: name) {
                                                         EntryView(entry: entry) {
@@ -350,7 +349,7 @@ struct DiversList: View {
     var divers: [DiverInfo]
     
     var body: some View {
-        VStack (spacing: 1){
+        VStack (spacing: 1) {
             TabView {
                 ForEach(divers, id: \.self) { elem in
                     DiverBubbleView(element: elem)
@@ -466,12 +465,12 @@ struct BackgroundSpheres: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack{}
-                .onAppear{
+                .onAppear {
                     width = geometry.size.width
                     height = geometry.size.height
                 }
             VStack {
-                ZStack{
+                ZStack {
                     Circle()
                     // Circle color
                         .fill(Custom.darkBlue)

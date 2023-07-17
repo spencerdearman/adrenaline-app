@@ -106,24 +106,6 @@ final class NewProfileParser: ObservableObject {
     private let getTextModel = GetTextAsyncModel()
     private let leadingLink: String = "https://secure.meetcontrol.com/divemeets/system/"
     
-//    private func getNameComponents(_ text: String) -> [String]? {
-//        // Case where only State label is provided
-//        var comps = text.slice(from: "Name: ", to: " State:")
-//        if comps == nil {
-//            // Case where City/State label is provided
-//            comps = text.slice(from: "Name: ", to: " City/State:")
-//
-//            if comps == nil {
-//                // Case where no labels are provided (shell profile)
-//                comps = text.slice(from: "Name: ", to: " DiveMeets ID:")
-//            }
-//        }
-//
-//        guard let comps = comps else { return nil }
-//
-//        return comps.components(separatedBy: " ")
-//    }
-    
     private func wrapLooseText(text: String) -> String {
         do {
             var result: String = text
@@ -247,8 +229,8 @@ final class NewProfileParser: ObservableObject {
         }
         
         return ProfileInfoData(first: first, last: last, cityState: cityState, country: country,
-                        gender: gender, age: age, finaAge: finaAge,
-                        diverId: diverId, hsGradYear: hsGradYear)
+                               gender: gender, age: age, finaAge: finaAge,
+                               diverId: diverId, hsGradYear: hsGradYear)
     }
     
     private func parseInfo(_ data: Element) -> ProfileInfoData? {
@@ -404,7 +386,7 @@ final class NewProfileParser: ObservableObject {
                     lastMeetName = try subRow[0].text()
                     continue
                 }
-
+                
                 if subRow.count < 3 { return nil }
                 let name = try subRow[0].text()
                     .replacingOccurrences(of: "&nbsp;", with: "")
@@ -607,20 +589,20 @@ final class NewProfileParser: ObservableObject {
                 }
             }
             
-//            print("------------INFO-----------------")
-//            print(profileData.info)
-//            print("------------DIVING-----------------")
-//            print(profileData.diving)
-//            print("------------COACHING-----------------")
-//            print(profileData.coaching)
-//            print("------------UPCOMING-----------------")
-//            print(profileData.upcomingMeets)
-//            print("------------RESULTS-----------------")
-//            print(profileData.meetResults)
-//            print("------------DIVERS-----------------")
-//            print(profileData.coachDivers)
-//            print("------------JUDGING-----------------")
-//            print(profileData.judging)
+            //            print("------------INFO-----------------")
+            //            print(profileData.info)
+            //            print("------------DIVING-----------------")
+            //            print(profileData.diving)
+            //            print("------------COACHING-----------------")
+            //            print(profileData.coaching)
+            //            print("------------UPCOMING-----------------")
+            //            print(profileData.upcomingMeets)
+            //            print("------------RESULTS-----------------")
+            //            print(profileData.meetResults)
+            //            print("------------DIVERS-----------------")
+            //            print(profileData.coachDivers)
+            //            print("------------JUDGING-----------------")
+            //            print(profileData.judging)
             
             return true
         } catch {
@@ -633,9 +615,9 @@ final class NewProfileParser: ObservableObject {
 
 struct NewProfileParserView: View {
     let p: NewProfileParser = NewProfileParser()
-//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
-//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
-//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=13605"
+    //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
+    //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
+    //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=13605"
     let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=44388"
     
     var body: some View {
