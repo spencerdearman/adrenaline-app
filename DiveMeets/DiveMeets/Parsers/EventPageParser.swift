@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftSoup
 
 final class EventPageHTMLParser: ObservableObject {
-    //  Place  Name   NameLink  Team  TeamLink Score ScoreLink Score Diff. SynchoName SynchroLink
+    //  Place  Name   NameLink  Team  TeamLink Score ScoreLink Score Diff. SynchroName SynchroNameLink SynchroTeam SynchroTeamLink
     @Published var eventPageData = [[String]]()
     @Published var parsingPageData = [[String]]()
     
@@ -30,17 +30,38 @@ final class EventPageHTMLParser: ObservableObject {
                 
                 // TODO: add synchro data values after testing in live results
                 let place = String(i - 4)
-                let name = try line[0].text()
-                let nameLink = try leadingLink + line[0].getElementsByTag("a").attr("href")
-                let team = try line[1].text()
-                let teamLink = try leadingLink + line[1].getElementsByTag("a").attr("href")
+                let nameSplit = try line[0].text().split(separator: " / ", maxSplits: 1)
+                if nameSplit.count == 0 { return [[]] }
+                let name = String(nameSplit[0])
+                let linkSplit = try line[0].getElementsByTag("a").map { try $0.attr("href") }
+                if linkSplit.count == 0 { return [[]] }
+                let nameLink = String(leadingLink + linkSplit[0])
+                let teamSplit = try line[1].text().split(separator: " / ", maxSplits: 1)
+                if teamSplit.count == 0 { return [[]] }
+                let team = String(teamSplit[0])
+                let teamLinkSplit = try line[1].getElementsByTag("a").map { try $0.attr("href") }
+                if teamLinkSplit.count == 0 { return [[]] }
+                let teamLink = String(leadingLink + teamLinkSplit[0])
                 let score = try line[3].text()
                 let scoreLink = try leadingLink + line[3].getElementsByTag("a").attr("href")
                 let scoreDiff = try line[4].text()
+                
+                var synchroName: String = ""
+                var synchroLink: String = ""
+                var synchroTeam: String = ""
+                var synchroTeamLink: String = ""
+                if nameSplit.count > 1, linkSplit.count > 1, teamSplit.count > 1,
+                   teamLinkSplit.count > 1 {
+                    synchroName = String(nameSplit[1])
+                    synchroLink = String(linkSplit[1])
+                    synchroTeam = String(teamSplit[1])
+                    synchroTeamLink = String(teamLinkSplit[1])
+                }
                 let eventName = try overall[2].text()
                 
-                let items = [place, name, nameLink, team, teamLink, score, scoreLink, scoreDiff, eventName]
-                
+                let items = [place, name, nameLink, team, teamLink, score, scoreLink, scoreDiff,
+                             eventName, synchroName, synchroLink, synchroTeam, synchroTeamLink]
+                print(items)
                 await MainActor.run { [items] in
                     parsingPageData.append(items)
                 }
