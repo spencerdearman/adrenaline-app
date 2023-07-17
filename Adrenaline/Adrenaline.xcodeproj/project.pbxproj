@@ -52,7 +52,7 @@
 		4D50E7962A293DEC009BFBFA /* DiveStatisticsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D50E7952A293DEC009BFBFA /* DiveStatisticsParser.swift */; };
 		4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5220852A49D6EB00D59408 /* ExpandingBubbleView.swift */; };
 		4D60E8F92A1737A90011A295 /* ScoringParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D60E8F82A1737A90011A295 /* ScoringParser.swift */; };
-		4D74FE9729AE7B9800401178 /* DiveMeetsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74FE9629AE7B9800401178 /* DiveMeetsApp.swift */; };
+		4D74FE9729AE7B9800401178 /* AdrenalineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */; };
 		4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74FE9829AE7B9800401178 /* ProfileView.swift */; };
 		4D74FE9B29AE7B9800401178 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D74FE9A29AE7B9800401178 /* Assets.xcassets */; };
 		4D74FE9E29AE7B9800401178 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D74FE9D29AE7B9800401178 /* Preview Assets.xcassets */; };
@@ -80,8 +80,8 @@
 		002A1B7D29DB93FC00A26FED /* MeetsDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetsDataController.swift; sourceTree = "<group>"; };
 		002A1B7F29DB94A400A26FED /* MeetDBTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetDBTestView.swift; sourceTree = "<group>"; };
 		002A1BB529DCF2F900A26FED /* GetTextAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTextAsync.swift; sourceTree = "<group>"; };
-		0037877729D4F40900D3CD59 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Cache.swift; path = DiveMeets/Model/Cache.swift; sourceTree = SOURCE_ROOT; };
-		0037877829D4F40900D3CD59 /* ProfileMeetCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileMeetCache.swift; path = DiveMeets/Model/ProfileMeetCache.swift; sourceTree = SOURCE_ROOT; };
+		0037877729D4F40900D3CD59 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Cache.swift; path = Adrenaline/Model/Cache.swift; sourceTree = SOURCE_ROOT; };
+		0037877829D4F40900D3CD59 /* ProfileMeetCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileMeetCache.swift; path = Adrenaline/Model/ProfileMeetCache.swift; sourceTree = SOURCE_ROOT; };
 		0037877B29D4F41800D3CD59 /* MeetParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetParser.swift; sourceTree = "<group>"; };
 		0037877F29D501F600D3CD59 /* ProfileParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileParser.swift; sourceTree = "<group>"; };
 		0040A6B62A550C8E004C84BF /* NoStickPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoStickPicker.swift; sourceTree = "<group>"; };
@@ -118,8 +118,8 @@
 		4D50E7952A293DEC009BFBFA /* DiveStatisticsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiveStatisticsParser.swift; sourceTree = "<group>"; };
 		4D5220852A49D6EB00D59408 /* ExpandingBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandingBubbleView.swift; sourceTree = "<group>"; };
 		4D60E8F82A1737A90011A295 /* ScoringParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringParser.swift; sourceTree = "<group>"; };
-		4D74FE9329AE7B9800401178 /* DiveMeets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DiveMeets.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4D74FE9629AE7B9800401178 /* DiveMeetsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiveMeetsApp.swift; sourceTree = "<group>"; };
+		4D74FE9329AE7B9800401178 /* Adrenaline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Adrenaline.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineApp.swift; sourceTree = "<group>"; };
 		4D74FE9829AE7B9800401178 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4D74FE9A29AE7B9800401178 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D74FE9D29AE7B9800401178 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -133,7 +133,7 @@
 		4D8B9C1C29FB4EBD002B53AD /* LoginProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProfile.swift; sourceTree = "<group>"; };
 		4D9DD0992A058EF700F6D31C /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
-		4DC7ACEC29F38828008BBB62 /* DiveMeets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DiveMeets.entitlements; sourceTree = "<group>"; };
+		4DC7ACEC29F38828008BBB62 /* Adrenaline.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adrenaline.entitlements; sourceTree = "<group>"; };
 		4DD868EC29F0E69C00FF988D /* keychain-swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "keychain-swift.swift"; sourceTree = "<group>"; };
 		4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -190,7 +190,7 @@
 		4D74FE8A29AE7B9800401178 = {
 			isa = PBXGroup;
 			children = (
-				4D74FE9529AE7B9800401178 /* DiveMeets */,
+				4D74FE9529AE7B9800401178 /* Adrenaline */,
 				4D74FE9429AE7B9800401178 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -198,17 +198,17 @@
 		4D74FE9429AE7B9800401178 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4D74FE9329AE7B9800401178 /* DiveMeets.app */,
+				4D74FE9329AE7B9800401178 /* Adrenaline.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4D74FE9529AE7B9800401178 /* DiveMeets */ = {
+		4D74FE9529AE7B9800401178 /* Adrenaline */ = {
 			isa = PBXGroup;
 			children = (
 				4D1177C729F88B7000850D18 /* Info.plist */,
-				4DC7ACEC29F38828008BBB62 /* DiveMeets.entitlements */,
-				4D74FE9629AE7B9800401178 /* DiveMeetsApp.swift */,
+				4DC7ACEC29F38828008BBB62 /* Adrenaline.entitlements */,
+				4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */,
 				4D74FEB229AEB47000401178 /* Views */,
 				4D50E7722A24050E009BFBFA /* Parsers */,
 				4D74FEB329AEB4B200401178 /* Model */,
@@ -218,7 +218,7 @@
 				002A1B7A29DB937C00A26FED /* Meets.xcdatamodeld */,
 				002A1B7D29DB93FC00A26FED /* MeetsDataController.swift */,
 			);
-			path = DiveMeets;
+			path = Adrenaline;
 			sourceTree = "<group>";
 		};
 		4D74FE9C29AE7B9800401178 /* Preview Content */ = {
@@ -343,9 +343,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4D74FE9229AE7B9800401178 /* DiveMeets */ = {
+		4D74FE9229AE7B9800401178 /* Adrenaline */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4D74FEA129AE7B9800401178 /* Build configuration list for PBXNativeTarget "DiveMeets" */;
+			buildConfigurationList = 4D74FEA129AE7B9800401178 /* Build configuration list for PBXNativeTarget "Adrenaline" */;
 			buildPhases = (
 				4D74FE8F29AE7B9800401178 /* Sources */,
 				4D74FE9029AE7B9800401178 /* Frameworks */,
@@ -355,12 +355,12 @@
 			);
 			dependencies = (
 			);
-			name = DiveMeets;
+			name = Adrenaline;
 			packageProductDependencies = (
 				4DEF7D3529BEE796003EAD70 /* SwiftSoup */,
 			);
 			productName = DiveMeets;
-			productReference = 4D74FE9329AE7B9800401178 /* DiveMeets.app */;
+			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -378,7 +378,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 4D74FE8E29AE7B9800401178 /* Build configuration list for PBXProject "DiveMeets" */;
+			buildConfigurationList = 4D74FE8E29AE7B9800401178 /* Build configuration list for PBXProject "Adrenaline" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -394,7 +394,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4D74FE9229AE7B9800401178 /* DiveMeets */,
+				4D74FE9229AE7B9800401178 /* Adrenaline */,
 			);
 		};
 /* End PBXProject section */
@@ -472,7 +472,7 @@
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
 				00F9665F29AEEF0900F3720B /* FloatingMenuBar.swift in Sources */,
-				4D74FE9729AE7B9800401178 /* DiveMeetsApp.swift in Sources */,
+				4D74FE9729AE7B9800401178 /* AdrenalineApp.swift in Sources */,
 				4DE6CFC329E25A0D00831D1D /* LoginWebView.swift in Sources */,
 				00E0D49A2A042A8D00B01D98 /* LoginTextFieldClearButton.swift in Sources */,
 			);
@@ -600,15 +600,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DiveMeets/DiveMeets.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Adrenaline/Adrenaline.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"DiveMeets/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Adrenaline/Preview Content\"";
 				DEVELOPMENT_TEAM = UCV4CFXWW3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = DiveMeets/Info.plist;
+				INFOPLIST_FILE = Adrenaline/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We are using Face ID to authenticate users when logging into their account, allowing for a more secure and efficient login process.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -619,7 +619,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LoganSherwin-SpencerDearman.DiveMeets";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.LoganSherwin-SpencerDearman.Adrenaline";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -633,15 +633,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = DiveMeets/DiveMeets.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Adrenaline/Adrenaline.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"DiveMeets/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Adrenaline/Preview Content\"";
 				DEVELOPMENT_TEAM = UCV4CFXWW3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = DiveMeets/Info.plist;
+				INFOPLIST_FILE = Adrenaline/Info.plist;
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We are using Face ID to authenticate users when logging into their account, allowing for a more secure and efficient login process.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -652,7 +652,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LoganSherwin-SpencerDearman.DiveMeets";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.LoganSherwin-SpencerDearman.Adrenaline";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -664,7 +664,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4D74FE8E29AE7B9800401178 /* Build configuration list for PBXProject "DiveMeets" */ = {
+		4D74FE8E29AE7B9800401178 /* Build configuration list for PBXProject "Adrenaline" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4D74FE9F29AE7B9800401178 /* Debug */,
@@ -673,7 +673,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4D74FEA129AE7B9800401178 /* Build configuration list for PBXNativeTarget "DiveMeets" */ = {
+		4D74FEA129AE7B9800401178 /* Build configuration list for PBXNativeTarget "Adrenaline" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				4D74FEA229AE7B9800401178 /* Debug */,

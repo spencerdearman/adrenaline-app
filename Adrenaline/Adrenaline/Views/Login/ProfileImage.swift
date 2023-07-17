@@ -1,6 +1,6 @@
 //
 //  ProfileImage.swift
-//  DiveMeets
+//  Adrenaline
 //
 //  Created by Spencer Dearman on 2/28/23.
 //
@@ -13,7 +13,7 @@ struct ProfileImage: View {
     
     var body: some View {
         let imageUrlString =
-        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+        "https://secure.meetcontrol.com/Adrenaline/system/profilephotos/\(diverID).jpg"
         if let imageUrl = URL(string: imageUrlString) {
             AsyncImage(url: imageUrl) { phase in
                 if let image = phase.image {
@@ -53,7 +53,7 @@ struct MiniProfileImage: View {
     
     var body: some View {
         let imageUrlString =
-        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+        "https://secure.meetcontrol.com/Adrenaline/system/profilephotos/\(diverID).jpg"
         let imageUrl = URL(string: imageUrlString)
         AsyncImage(url: imageUrl!) { phase in
             if let image = phase.image {

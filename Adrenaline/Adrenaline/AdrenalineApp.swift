@@ -1,6 +1,6 @@
 //
-//  DiveMeetsApp.swift
-//  DiveMeets
+//  AdrenalineApp.swift
+//  Adrenaline
 //
 //  Created by Spencer Dearman on 2/28/23.
 //
@@ -29,7 +29,7 @@ extension View {
 }
 
 @main
-struct DiveMeetsApp: App {
+struct AdrenalineApp: App {
     // Only one of these should exist, add @Environment to use variable in views
     // instead of creating a new instance of MeetsDataController()
     @StateObject var meetsDataController = MeetsDataController()
