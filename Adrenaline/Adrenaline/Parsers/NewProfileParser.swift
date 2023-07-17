@@ -16,8 +16,8 @@ typealias ProfileDivingData = [String: Team]
 typealias ProfileCoachingData = [String: Team]
 // List of profile meets and their corresponding events, not using the place and score fields
 typealias ProfileJudgingData = [ProfileMeet]
-//                                   [meet  : [event : entry]]
-typealias ProfileUpcomingMeetsData = [String: [String: EventEntry]]
+//                                   [meet  : [event : entryLink]]
+typealias ProfileUpcomingMeetsData = [String: [String: String]]
 // DiverInfo contains a diver name and link
 typealias ProfileCoachDiversData = [DiverInfo]
 // List of profile meets and their corresponding events, also using the place and score fields
@@ -161,7 +161,8 @@ final class NewProfileParser: ObservableObject {
             let fina = String((text.slice(from: " FINA Age: ", to: lastSliceText) ?? "").prefix(2))
             var hsGrad: String? = nil
             if lastSliceText == "High School Graduation" {
-                hsGrad = text.slice(from: " High School Graduation: ", to: "DiveMeets")
+                hsGrad = text.slice(from: " High School Graduation: ", to: "DiveMeets")?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
             }
             
             guard let diverId = text.slice(from: "DiveMeets #: ") else { return nil }
@@ -243,18 +244,67 @@ final class NewProfileParser: ObservableObject {
     }
     
     private func parseJudgingData(_ data: Element) -> ProfileJudgingData? {
+        do {
+            print("Judging")
+            print(try data.text())
+        } catch {
+            print("Failed to parse judging data")
+        }
         return nil
     }
     
     private func parseUpcomingMeetsData(_ data: Element) -> ProfileUpcomingMeetsData? {
+        do {
+            var result: ProfileUpcomingMeetsData = [:]
+            let rows = try data.getElementsByTag("tr")
+            
+            var lastMeetName: String = ""
+            for row in rows {
+                let subRow = try row.getElementsByTag("td")
+                if try subRow.count == 1 && subRow[0].text() == "Upcoming Meets" { continue }
+                else if subRow.count == 1 {
+                    lastMeetName = try subRow[0].text()
+                    continue
+                }
+
+                if subRow.count < 3 { return nil }
+                let name = try subRow[0].text()
+                    .replacingOccurrences(of: "&nbsp;", with: "")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                guard let anchor = try subRow[2].getElementsByTag("a").first() else { return nil }
+                let link = try anchor.attr("href")
+                
+                if result[lastMeetName] == nil {
+                    result[lastMeetName] = [:]
+                }
+                result[lastMeetName]![name] = leadingLink + link
+            }
+            
+            return result
+            
+        } catch {
+            print("Failed to parse upcoming meets")
+        }
         return nil
     }
     
     private func parseCoachDiversData(_ data: Element) -> ProfileCoachDiversData? {
+        do {
+            print("Coach Divers")
+            print(try data.text())
+        } catch {
+            print("Failed to parse coach divers")
+        }
         return nil
     }
     
     private func parseMeetResultsData(_ data: Element) -> ProfileMeetResultsData? {
+        do {
+            print("Meet Results")
+            print(try data.text())
+        } catch {
+            print("Failed to parse meet results")
+        }
         return nil
     }
     
@@ -300,12 +350,50 @@ final class NewProfileParser: ObservableObject {
                         }
                     }
                 }
+                
+                if htmlSplit.count > 1 {
+                    let tableSplit = String(htmlSplit[1]).split(separator: "</table><br><br>")
+//                    print(tableSplit)
+                    
+                    // There is a <br><br> inside of meet results table, so this gets around that
+                    var foundMeetResults: Bool = false
+                    for elem in tableSplit {
+//                        print(elem)
+//                        print("-------------")
+                        guard let body = try SwiftSoup.parseBodyFragment(String(elem)).body() else {
+                            return false
+                        }
+//                        print(body)
+                        
+                        if elem.contains("Upcoming Meets") {
+                            profileData.upcomingMeets = parseUpcomingMeetsData(body)
+                        } else if elem.contains("<span style=\"color: blue\">DIVE</span>") {
+                            foundMeetResults = true
+                        } else if foundMeetResults {
+                            profileData.meetResults = parseMeetResultsData(body)
+                            foundMeetResults = false
+                        }
+                            
+                    }
+                }
+                
+                if htmlSplit.count > 2 {
+                    guard let body = try SwiftSoup.parseBodyFragment(String(htmlSplit[2])).body() else {
+                        return false
+                    }
+                    
+                    profileData.coachDivers = parseCoachDiversData(body)
+                }
+                
+                if htmlSplit.count > 3 {
+                    guard let body = try SwiftSoup.parseBodyFragment(String(htmlSplit[3])).body() else {
+                        return false
+                    }
+                    
+                    profileData.judging = parseJudgingData(body)
+                }
             }
             
-//            for elem in htmlSplit {
-//                print(elem)
-//                print("----------------------------")
-//            }
             print(profileData)
             return true
         } catch {
@@ -318,7 +406,8 @@ final class NewProfileParser: ObservableObject {
 
 struct NewProfileParserView: View {
     let p: NewProfileParser = NewProfileParser()
-    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
+//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
+    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
     
     var body: some View {
         
