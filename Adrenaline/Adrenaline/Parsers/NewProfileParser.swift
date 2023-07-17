@@ -267,8 +267,41 @@ final class NewProfileParser: ObservableObject {
     
     private func parseJudgingData(_ data: Element) -> ProfileJudgingData? {
         do {
-            print("Judging")
-            print(try data.text())
+            var result: ProfileJudgingData = []
+            guard let cleaned = try SwiftSoup.parseBodyFragment(data.html()
+                .replacingOccurrences(of: "&nbsp;", with: "")).body() else { return nil }
+            let rows = try cleaned.getElementsByTag("tr")
+            
+            var lastMeetName: String = ""
+            var lastMeet: ProfileMeet?
+            for row in rows {
+                let subRow = try row.getElementsByTag("td")
+                if subRow.count < 1 { return nil }
+                else if subRow.count == 1 {
+                    if let meet = lastMeet { result.append(meet) }
+                    lastMeet = nil
+                    lastMeetName = try subRow[0].text()
+                    continue
+                }
+                
+                if subRow.count < 2 { return nil }
+                
+                let eventName = try subRow[0].text().trimmingCharacters(in: .whitespacesAndNewlines)
+                guard let linkFirst = try subRow[1].getElementsByTag("a").first() else { return nil }
+                let link = try leadingLink + linkFirst.attr("href")
+                
+                if lastMeet == nil {
+                    lastMeet = ProfileMeet(name: lastMeetName, events: [])
+                }
+                lastMeet?.events.append(ProfileMeetEvent(name: eventName, link: link))
+                
+            }
+            
+            if let meet = lastMeet {
+                result.append(meet)
+            }
+            
+            return result
         } catch {
             print("Failed to parse judging data")
         }
@@ -390,7 +423,7 @@ final class NewProfileParser: ObservableObject {
                 
                 if subRow.count < 3 { return nil }
                 
-                let eventName = try subRow[0].html().trimmingCharacters(in: .whitespacesAndNewlines)
+                let eventName = try subRow[0].text().trimmingCharacters(in: .whitespacesAndNewlines)
                 let place = try Int(subRow[1].text())
                 let score = try Double(subRow[2].text())
                 guard let scoreFirst = try subRow[2].getElementsByTag("a").first() else { return nil }
@@ -501,7 +534,7 @@ final class NewProfileParser: ObservableObject {
                 }
             }
             
-            print(profileData.coachDivers)
+            print(profileData.meetResults)
             return true
         } catch {
             print("Failed to parse profile")
