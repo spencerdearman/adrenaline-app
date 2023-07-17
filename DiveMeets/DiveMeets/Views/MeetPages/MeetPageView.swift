@@ -386,7 +386,18 @@ struct MeetResultsPageView: View {
             result.append([row.0, row.1, String(row.2), row.3])
         }
         
-        return result.sorted(by: { $0[0] < $1[0] })
+        let df = DateFormatter()
+        df.dateFormat = "EEEE, MMM d, yyyy"
+        return result.sorted(by: { (lhs, rhs) in
+            guard let d1 = df.date(from: lhs[3]) else { return false }
+            guard let d2 = df.date(from: rhs[3]) else { return true }
+            
+            if d1 == d2 {
+                return lhs[0] < rhs[0]
+            }
+            
+            return d1 < d2
+        })
     }
     
     private func liveResultsToRecords(_ results: MeetLiveResultsData) -> [[String]] {
