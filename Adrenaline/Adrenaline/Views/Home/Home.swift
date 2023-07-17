@@ -274,7 +274,7 @@ struct UpcomingMeetsView: View {
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
-
+    
     private var isPhone: Bool {
         UIDevice.current.userInterfaceIdiom != .pad
     }
@@ -284,8 +284,8 @@ struct UpcomingMeetsView: View {
             if !meets.isEmpty && !timedOut {
                 let upcoming = tupleToList(tuples: db.dictToTuple(dict: meets))
                 if isPhone {
-                    ScalingScrollView(records: upcoming, bgColor: .clear, rowSpacing: 15, shadowRadius: 10)
-                    { (elem) in
+                    ScalingScrollView(records: upcoming, bgColor: .clear, rowSpacing: 15,
+                                      shadowRadius: 10) { (elem) in
                         MeetBubbleView(elements: elem)
                     }
                 } else {
@@ -359,7 +359,8 @@ struct CurrentMeetsView: View {
         if meetParser.currentMeets != nil && !meetParser.currentMeets!.isEmpty {
             let current = tupleToList(tuples: dictToCurrentTuple(dict: meetParser.currentMeets ?? []))
             if isPhone {
-                ScalingScrollView(records: current, bgColor: .clear, rowSpacing: 15, shadowRadius: 10) {
+                ScalingScrollView(records: current, bgColor: .clear, rowSpacing: 15,
+                                  shadowRadius: 10) {
                     (elem) in
                     MeetBubbleView(elements: elem)
                 }
@@ -530,7 +531,8 @@ struct MeetBubbleView: View {
     var body: some View {
         NavigationLink(destination:
                         elements.count == 10
-                       ? AnyView(CurrentMeetsPageView(infoLink: elements[3], resultsLink: elements[9]))
+                       ? AnyView(CurrentMeetsPageView(infoLink: elements[3],
+                                                      resultsLink: elements[9]))
                        : AnyView(MeetPageView(meetLink: elements[3]))) {
             ZStack {
                 Rectangle()
@@ -566,7 +568,9 @@ struct MeetBubbleView: View {
                         ZStack{
                             Rectangle()
                                 .fill(Custom.accentThinMaterial)
-                                .frame(width: isPhone ? getPhoneTextSizeForAccessibility() : getPadTextSizeForAccessibility())
+                                .frame(width: isPhone
+                                       ? getPhoneTextSizeForAccessibility()
+                                       : getPadTextSizeForAccessibility())
                                 .mask(RoundedRectangle(cornerRadius: 30))
                                 .shadow(radius: 3)
                             Text(elements[4] + " - " + elements[5]) // startDate - endDate
@@ -587,44 +591,44 @@ struct MeetBubbleView: View {
     func getPhoneTextSizeForAccessibility() -> CGFloat {
         let sizeCategory = UIApplication.shared.preferredContentSizeCategory
         switch sizeCategory {
-        case .extraSmall:
-            return 170
-        case .small:
-            return 180
-        case .medium:
-            return 190
-        case .large:
-            return 200
-        case .extraLarge:
-            return 215
-        case .extraExtraLarge:
-            return 225
-        case .extraExtraExtraLarge:
-            return 235
-        default:
-            return 190
+            case .extraSmall:
+                return 170
+            case .small:
+                return 180
+            case .medium:
+                return 190
+            case .large:
+                return 200
+            case .extraLarge:
+                return 215
+            case .extraExtraLarge:
+                return 225
+            case .extraExtraExtraLarge:
+                return 235
+            default:
+                return 190
         }
     }
     
     func getPadTextSizeForAccessibility() -> CGFloat {
         let sizeCategory = UIApplication.shared.preferredContentSizeCategory
         switch sizeCategory {
-        case .extraSmall:
-            return 180
-        case .small:
-            return 190
-        case .medium:
-            return 200
-        case .large:
-            return 210
-        case .extraLarge:
-            return 220
-        case .extraExtraLarge:
-            return 240
-        case .extraExtraExtraLarge:
-            return 265
-        default:
-            return 190
+            case .extraSmall:
+                return 180
+            case .small:
+                return 190
+            case .medium:
+                return 200
+            case .large:
+                return 210
+            case .extraLarge:
+                return 220
+            case .extraExtraLarge:
+                return 240
+            case .extraExtraExtraLarge:
+                return 265
+            default:
+                return 190
         }
     }
 }
@@ -666,7 +670,12 @@ struct HomeColorfulView: View{
                         .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
                     
                 }
-                .offset(x: screenWidth / 1.4, y: isPhone ? screenHeight / 15 : !isLandscape ? -screenHeight / 5 : -screenHeight )
+                .offset(x: screenWidth / 1.4,
+                        y: isPhone
+                        ? screenHeight / 15
+                        : (!isLandscape
+                           ? -screenHeight / 5
+                           : -screenHeight))
                 
                 ZStack{
                     Circle()
