@@ -577,21 +577,24 @@ struct BackgroundSpheres: View {
                     // Center the circle
                         .position(x: geometry.size.width, y: -geometry.size.width * 0.55)
                         .shadow(radius: 15)
-                        .clipped()
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
                         .ignoresSafeArea()
                     Circle()
                         .fill(Custom.coolBlue) // Circle color
                         .frame(width:geometry.size.width * 1.3, height:geometry.size.width * 1.3)
                         .position(x: geometry.size.width * 0.8, y: geometry.size.width * 0.6)
                         .shadow(radius: 15)
-                        .clipped()
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
                         .ignoresSafeArea()
                     Circle()
                         .fill(Custom.medBlue) // Circle color
                         .frame(width: geometry.size.width * 1.1, height: geometry.size.width * 1.1)
                         .position(x: 0, y: geometry.size.width * 0.65)
                         .shadow(radius: 15)
-                        .clipped()
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
                         .ignoresSafeArea()
                 }
             }

@@ -631,8 +631,17 @@ struct MeetBubbleView: View {
 
 struct HomeColorfulView: View{
     @Environment(\.colorScheme) var currentMode
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
+    }
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
+    private var isLandscape: Bool {
+        let deviceOrientation = UIDevice.current.orientation
+        return deviceOrientation.isLandscape
     }
     
     var body: some View{
@@ -641,62 +650,62 @@ struct HomeColorfulView: View{
             GeometryReader { geometry in
                 ZStack{
                     Circle()
-                        .stroke(Custom.darkBlue, lineWidth: 10)
-                        .frame(width: 475, height: 475)
+                        .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
                     
                     Circle()
-                        .stroke(Custom.coolBlue, lineWidth: 10)
-                        .frame(width: 435, height: 435)
+                        .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth, height: screenWidth)
                     
                     Circle()
-                        .stroke(Custom.medBlue, lineWidth: 10)
-                        .frame(width: 395, height: 395)
+                        .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
                     
                     Circle()
-                        .stroke(Custom.lightBlue, lineWidth: 10)
-                        .frame(width: 355, height: 355)
+                        .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
                     
                 }
-                .offset(x: geometry.size.width / 1.4, y: geometry.size.height / 15)
+                .offset(x: screenWidth / 1.4, y: isPhone ? screenHeight / 15 : !isLandscape ? -screenHeight / 5 : -screenHeight )
                 
                 ZStack{
                     Circle()
-                        .stroke(Custom.darkBlue, lineWidth: 10)
-                        .frame(width: 475, height: 475)
+                        .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
                     
                     Circle()
-                        .stroke(Custom.coolBlue, lineWidth: 10)
-                        .frame(width: 435, height: 435)
+                        .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth, height: screenWidth)
                     
                     Circle()
-                        .stroke(Custom.medBlue, lineWidth: 10)
-                        .frame(width: 395, height: 395)
+                        .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
                     
                     Circle()
-                        .stroke(Custom.lightBlue, lineWidth: 10)
-                        .frame(width: 355, height: 355)
+                        .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
                     
                 }
-                .offset(x: -geometry.size.width/2, y: geometry.size.height / 5)
+                .offset(x: -screenWidth / 2, y: isPhone ? screenHeight / 5 : !isLandscape ? screenHeight / 20 : -screenHeight / 1.5)
                 ZStack{
                     Circle()
-                        .stroke(Custom.darkBlue, lineWidth: 10)
-                        .frame(width: 475, height: 475)
+                        .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
                     
                     Circle()
-                        .stroke(Custom.coolBlue, lineWidth: 10)
-                        .frame(width: 435, height: 435)
+                        .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth, height: screenWidth)
                     
                     Circle()
-                        .stroke(Custom.medBlue, lineWidth: 10)
-                        .frame(width: 395, height: 395)
+                        .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
                     
                     Circle()
-                        .stroke(Custom.lightBlue, lineWidth: 10)
-                        .frame(width: 355, height: 355)
+                        .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
+                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
                     
                 }
-                .offset(x: geometry.size.width/3, y: geometry.size.height / 1.5)
+                .offset(x: screenWidth / 3, y: screenHeight / 1.5)
             }
         }
     }

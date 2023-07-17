@@ -77,8 +77,10 @@ struct LoginProfile: View {
                                         searchSubmitted = false
                                     }
                                 })
+                                .foregroundColor(.white)
                                 .buttonStyle(.bordered)
                                 .cornerRadius(30)
+                                //.position(x: -screenWidth * 0.33, y: -screenHeight * 0.23)
                                 .offset(x: -screenWidth * 0.33, y: -screenHeight * 0.23)
                                 ProfileImage(diverID: diverID)
                                     .offset(y:-100)

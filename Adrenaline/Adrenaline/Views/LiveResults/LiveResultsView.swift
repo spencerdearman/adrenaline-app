@@ -363,6 +363,9 @@ struct LoadedView: View {
     private var bgColor: Color {
         currentMode == .light ? .white : .black
     }
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
     
     var colors: [Color] = [.blue, .green, .red, .orange]
     
@@ -396,15 +399,29 @@ struct LoadedView: View {
                                     Text(roundString)
                                 }
                             }
-                            TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
-                                         bottomView: NextDiverView(nextInfo: $nextDiverInformation),
-                                         width: screenWidth * 0.95,
-                                         height: screenHeight * 0.28)
-                            .dynamicTypeSize(.xSmall ... .xxxLarge)
+                            if isPhone {
+                                TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
+                                             bottomView: NextDiverView(nextInfo: $nextDiverInformation),
+                                             width: screenWidth * 0.95,
+                                             height: screenHeight * 0.28)
+                                .dynamicTypeSize(.xSmall ... .xxxLarge)
+                            } else {
+                                HStack {
+                                    Spacer()
+                                    LastDiverView(lastInfo: $lastDiverInformation)
+                                        .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
+                                    Spacer()
+                                    NextDiverView(nextInfo: $nextDiverInformation)
+                                        .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
+                                    Spacer()
+                                }
+                                .offset(y: screenWidth * 0.05)
+                            }
                         }
                     }
+                    Spacer()
                     HomeBubbleView(diveTable: $diveTable, starSelected: $starSelected)
-                        .offset(y: 30)
+                        .offset(y: screenWidth * 0.1)
                 }
                 .padding(.bottom, maxHeightOffset)
                 .padding(.top)
@@ -488,6 +505,7 @@ struct LastDiverView: View
                 ZStack {
                     Rectangle()
                         .foregroundColor(Custom.darkGray)
+                        .frame(height: screenHeight * 0.1)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
                         VStack {
@@ -518,6 +536,7 @@ struct LastDiverView: View
                                 .font(.headline)
                         }
                     }
+                    .scaledToFit()
                     .padding()
                 }
                 .fixedSize(horizontal: false, vertical: true)
@@ -572,7 +591,7 @@ struct NextDiverView: View
                 //Lower Part
                 ZStack {
                     Rectangle()
-                        .frame(height: screenHeight * 0.105)
+                        .frame(height: screenHeight * 0.1)
                         .foregroundColor(Custom.darkGray)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
@@ -603,6 +622,7 @@ struct NextDiverView: View
                             .lineLimit(1)
                         }
                     }
+                    .scaledToFit()
                     .padding()
                 }
                 .fixedSize(horizontal: false, vertical: true)
@@ -625,15 +645,15 @@ struct DebugDataset {
     //nextDiverName, nextDiverProfileLink, lastRoundPlace, lastRoundTotalScore, order, nextDive,
     //height, dd, avgScore, maxScore, forFirstPlace
     static let nextDiverInfo: NextDiverInfo =
-    ("Diver 2", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961", 3,
+    ("Diver 2", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197", 3,
      155.75, 2, "307C", "3M", 3.5, 55.0, 105.0, 69.25)
     
     //                    [[Left to dive, order, last round place, last round score, current place,
     //                      current score, name, link, last dive average, event average score, avg round score]]
-    static let diver1: [String] = ["true", "1", "1", "175.00", "1", "225.00", "Logan Sherwin",
-                                   "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961",
+    static let diver1: [String] = ["true", "1", "1", "175.00", "1", "225.00", "Spencer Dearman",
+                                   "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197",
                                    "7.0", "6.5", "55.5"]
-    static let diver2: [String] = ["false", "2", "3", "155.75", "3", "155.75", "Spencer Dearman",
+    static let diver2: [String] = ["false", "2", "3", "155.75", "3", "155.75", "Diver 2",
                                    "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961",
                                    "6.0", "5.7", "41.7"]
     static let diver3: [String] = ["false", "3", "2", "158.20", "2", "158.20", "Diver 3",
@@ -653,67 +673,53 @@ struct DebugDataset {
 
 struct ColorfulView: View{
     @Environment(\.colorScheme) var currentMode
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     private var bgColor: Color {
         currentMode == .light ? .white : .black
     }
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
+    private var isLandscape: Bool {
+        let deviceOrientation = UIDevice.current.orientation
+        return deviceOrientation.isLandscape
+    }
+    
     
     var body: some View{
         GeometryReader { geometry in
             ZStack{
                 Circle()
-                    .foregroundColor(Custom.darkBlue)
-                    .frame(width: 475, height: 475)
+                    .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
                 Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 455, height: 455)
+                    .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth, height: screenWidth)
                 Circle()
-                    .foregroundColor(Custom.coolBlue)
-                    .frame(width: 435, height: 435)
+                    .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
                 Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 415, height: 415)
-                Circle()
-                    .foregroundColor(Custom.medBlue)
-                    .frame(width: 395, height: 395)
-                Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 375, height: 375)
-                Circle()
-                    .foregroundColor(Custom.lightBlue)
-                    .frame(width: 355, height: 355)
-                Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 335, height: 335)
+                    .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
             }
-            .offset(x: geometry.size.width/2, y: -geometry.size.height / 10)
+            .offset(x: isPhone ? screenWidth / 1.9 : !isLandscape ? screenWidth / 1.9 : screenWidth * 0.5, y: isPhone ? -screenHeight / 10 : !isLandscape ? screenHeight * 0.4 : screenHeight * 0.3)
             
             ZStack{
                 Circle()
-                    .foregroundColor(Custom.darkBlue)
-                    .frame(width: 475, height: 475)
+                    .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
                 Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 455, height: 455)
+                    .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth, height: screenWidth)
                 Circle()
-                    .foregroundColor(Custom.coolBlue)
-                    .frame(width: 435, height: 435)
+                    .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
                 Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 415, height: 415)
-                Circle()
-                    .foregroundColor(Custom.medBlue)
-                    .frame(width: 395, height: 395)
-                Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 375, height: 375)
-                Circle()
-                    .foregroundColor(Custom.lightBlue)
-                    .frame(width: 355, height: 355)
-                Circle()
-                    .foregroundColor(bgColor)
-                    .frame(width: 335, height: 335)
+                    .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
+                    .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
             }
-            .offset(x: -geometry.size.width/2, y: -geometry.size.height / 2.5)
+            .offset(x: isPhone ? -screenWidth / 2 : !isLandscape ? -screenWidth / 2 : -screenWidth / 2, y: isPhone ? -screenHeight / 2.5 : !isLandscape ? -screenHeight * 0.3 : -screenHeight * 0.8 )
         }
     }
 }

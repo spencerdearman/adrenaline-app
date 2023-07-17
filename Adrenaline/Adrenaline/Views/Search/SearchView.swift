@@ -257,7 +257,7 @@ struct SearchInputView: View {
     @ScaledMetric private var resultsIconSizeScaled = 30.0
     
     var resultsOffset: CGFloat {
-        screenHeight * 0.45
+        min(max(resultsOffsetScaled, 410.0), UIScreen.main.bounds.height - 410)
     }
     
     var resultsIconSize: CGFloat {
@@ -680,6 +680,9 @@ struct MeetSearchView: View {
     private func meetIndexToString(_ index: Int) -> String {
         return index == 0 ? "" : String(currentYear - index + 1)
     }
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
     
     fileprivate init(meetName: Binding<String>, orgName: Binding<String>,
                      meetYear: Binding<String>, isIndexingMeet: Binding<Bool>, focusedField: FocusState<SearchField?>.Binding) {
@@ -697,8 +700,9 @@ struct MeetSearchView: View {
                 .foregroundColor(Custom.grayThinMaterial)
                 .shadow(radius: 10)
                 .frame(width: screenWidth * 0.9, height: isIndexingMeet ? screenHeight * 0.6 : screenHeight * 0.31)
-                .offset(y: isIndexingMeet ? screenWidth * 0.33 : screenWidth * 0.015)
+                .offset(y: isPhone ? (isIndexingMeet ? screenWidth * 0.33 : screenWidth * 0.015) : isIndexingMeet ? screenHeight * 0.15 : screenWidth * 0.015)
             VStack {
+                Spacer()
                 HStack {
                     Text("Meet Name:")
                         .padding(.leading)
@@ -742,7 +746,8 @@ struct MeetSearchView: View {
                                       meetYear = meetIndexToString(newValue)
                                   }
                 }
-                .offset(y: -10)
+                .offset(y: -20)
+                Spacer()
             }
             .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
             .offset(y: -screenHeight * 0.02)

@@ -18,7 +18,7 @@ struct HomeBubbleView: View{
         if starSelected{
             ZStack{
                 Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
+                    .foregroundColor(Custom.darkGray)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .frame(width: 200, height: 50)
                     .shadow(radius: 6)
@@ -107,7 +107,7 @@ struct ClosedTileView: View {
         .frame(maxWidth: .infinity)
         .foregroundStyle(.white)
         .background(
-            Custom.specialGray.matchedGeometryEffect(id: "background", in: namespace)
+            Custom.darkGray.matchedGeometryEffect(id: "background", in: namespace)
         )
         .mask(
             RoundedRectangle(cornerRadius: 30, style: .continuous)
@@ -171,7 +171,7 @@ struct OpenTileView: View {
     @Binding var bubbleData: [String]
     
     private var bgColor: Color {
-        currentMode == .light ? Custom.tileColor : Custom.tileColor
+        currentMode == .light ? Custom.darkGray : Custom.darkGray
     }
     
     private var txtColor: Color {
@@ -253,7 +253,7 @@ struct OpenTileView: View {
         }
         .foregroundStyle(.black)
         .background(
-            Custom.specialGray.matchedGeometryEffect(id: "background", in: namespace)
+            Custom.darkGray.matchedGeometryEffect(id: "background", in: namespace)
         )
         .mask(
             RoundedRectangle(cornerRadius: 40, style: .continuous)
