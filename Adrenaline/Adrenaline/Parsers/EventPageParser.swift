@@ -52,9 +52,9 @@ final class EventPageHTMLParser: ObservableObject {
                 if nameSplit.count > 1, linkSplit.count > 1, teamSplit.count > 1,
                    teamLinkSplit.count > 1 {
                     synchroName = String(nameSplit[1])
-                    synchroLink = String(linkSplit[1])
+                    synchroLink = leadingLink + String(linkSplit[1])
                     synchroTeam = String(teamSplit[1])
-                    synchroTeamLink = String(teamLinkSplit[1])
+                    synchroTeamLink = leadingLink + String(teamLinkSplit[1])
                 }
                 let eventName = try overall[2].text()
                 
