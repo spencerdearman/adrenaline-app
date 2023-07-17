@@ -33,7 +33,6 @@ struct LoginUIWebView: View {
 }
 
 struct LoginWebView: UIViewRepresentable {
-    let htmlParser: HTMLParser = HTMLParser()
     @State var firstLoad: Bool = true
     @Binding var request: String
     @Binding var parsedUserHTML: String
@@ -100,7 +99,6 @@ struct LoginWebView: UIViewRepresentable {
     }
     
     class Coordinator: NSObject, WKNavigationDelegate {
-        let htmlParser: HTMLParser = HTMLParser()
         @Binding var parsedUserHTML: String
         @Binding var divemeetsID: String
         @Binding var password: String

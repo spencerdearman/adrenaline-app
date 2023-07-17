@@ -1,5 +1,5 @@
 //
-//  ProfileParser.swift
+//  NewProfileParser.swift
 //  DiveMeets
 //
 //  Created by Logan Sherwin on 7/14/23.
@@ -101,7 +101,7 @@ struct DiveStatistic {
     let numberOfTimes: Int
 }
 
-final class ProfileParser: ObservableObject {
+final class NewProfileParser: ObservableObject {
     @Published var profileData: ProfileData = ProfileData()
     private let getTextModel = GetTextAsyncModel()
     private let leadingLink: String = "https://secure.meetcontrol.com/divemeets/system/"
@@ -614,7 +614,7 @@ final class ProfileParser: ObservableObject {
 }
 
 struct NewProfileParserView: View {
-    let p: ProfileParser = ProfileParser()
+    let p: NewProfileParser = NewProfileParser()
     //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
     //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
     //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=13605"

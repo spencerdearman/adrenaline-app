@@ -101,13 +101,13 @@ class EntriesParser: ObservableObject {
         return nil
     }
     
-    func parseNamedEntry(html: String, searchName: String) throws -> EventEntry? {
-        let document: Document = try SwiftSoup.parse(html)
-        guard let body = document.body() else { return nil }
-        let content = try body.getElementById("dm_content")
-        let tables = try content?.getElementsByTag("table")
-        
+    func parseNamedEntry(html: String, searchName: String) -> EventEntry? {
         do {
+            let document: Document = try SwiftSoup.parse(html)
+            guard let body = document.body() else { return nil }
+            let content = try body.getElementById("dm_content")
+            let tables = try content?.getElementsByTag("table")
+            
             if tables?.count ?? 0 < 2 { return nil }
             if let rows = try tables?[1].getElementsByTag("tr") {
                 var entry: EventEntry = EventEntry()
@@ -162,6 +162,8 @@ class EntriesParser: ObservableObject {
                         }
                     }
                 }
+                
+                return entry
             }
         } catch {
             print("Entries page by name parse failed")
