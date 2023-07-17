@@ -86,7 +86,7 @@ struct DiverInfo {
 struct DiveStatistic {
     let number: String
     let name: String
-    let height: String
+    let height: Double
     let highScore: Double
     let highScoreLink: String
     let avgScore: Double
@@ -311,6 +311,38 @@ final class NewProfileParser: ObservableObject {
     }
     
     private func parseDiveStatistics(_ data: Element) -> ProfileDiveStatisticsData? {
+        do {
+            var result: ProfileDiveStatisticsData = []
+            let rows = try data.getElementsByAttribute("bgcolor")
+            
+            for row in rows {
+                let subRow = try row.getElementsByTag("td")
+                if subRow.count != 6 { return nil }
+                
+                let number = try subRow[0].text()
+                guard let height = try Double(subRow[1].text().dropLast()) else { return nil }
+                let name = try subRow[2].text()
+                guard let highScore = try Double(subRow[3].text()) else { return nil }
+                guard let highScoreLink = try subRow[3].getElementsByTag("a").first()?.attr("href")
+                else { return nil }
+                guard let avgScore = try Double(subRow[4].text()) else { return nil }
+                guard let avgScoreLink = try subRow[4].getElementsByTag("a").first()?.attr("href")
+                else { return nil }
+                guard let numberOfTimes = try Int(subRow[5].text()) else { return nil }
+                
+                result.append(DiveStatistic(number: number, name: name, height: height,
+                                            highScore: highScore,
+                                            highScoreLink: leadingLink + highScoreLink,
+                                            avgScore: avgScore,
+                                            avgScoreLink: leadingLink + avgScoreLink,
+                                            numberOfTimes: numberOfTimes))
+            }
+            
+            return result
+        } catch {
+            print("Failed to parse dive statistics")
+        }
+        
         return nil
     }
     
@@ -456,7 +488,7 @@ final class NewProfileParser: ObservableObject {
                 }
             }
             
-            print(profileData.upcomingMeets)
+            print(profileData.diveStatistics)
             return true
         } catch {
             print("Failed to parse profile")
@@ -468,8 +500,8 @@ final class NewProfileParser: ObservableObject {
 
 struct NewProfileParserView: View {
     let p: NewProfileParser = NewProfileParser()
-//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
-    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
+    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
+//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
     
     var body: some View {
         
