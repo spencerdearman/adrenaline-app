@@ -88,10 +88,10 @@ struct PersonBubbleView: View {
                             if elemCount > 12 {
                                 HStack(spacing: 0) {
                                     Text(" / ")
-                                        //                                        .minimumScaleFactor(0.5)
-                                        //                                        .fixedSize(horizontal: false, vertical: true)
-                                        //                                        .lineLimit(1)
->>>>>>> ffd58d7 (Separate synchro partner link from first name link in event results):DiveMeets/DiveMeets/Views/Login/EventResultPage.swift
+                                    NavigationLink {
+                                        ProfileView(profileLink: elements[10])
+                                    } label: {
+                                        Text(elements[9])
                                     }
                                 }
                             }

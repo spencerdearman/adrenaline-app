@@ -28,7 +28,6 @@ final class EventPageHTMLParser: ObservableObject {
             if 5 <= i && i < overall.count - 1 {
                 let line = try t.getElementsByTag("td")
                 
-                // TODO: add synchro data values after testing in live results
                 let place = String(i - 4)
                 let nameSplit = try line[0].text().split(separator: " / ", maxSplits: 1)
                 if nameSplit.count == 0 { return [[]] }
@@ -46,10 +45,10 @@ final class EventPageHTMLParser: ObservableObject {
                 let scoreLink = try leadingLink + line[3].getElementsByTag("a").attr("href")
                 let scoreDiff = try line[4].text()
                 
-                var synchroName: String = ""
-                var synchroLink: String = ""
-                var synchroTeam: String = ""
-                var synchroTeamLink: String = ""
+                var synchroName: String?
+                var synchroLink: String?
+                var synchroTeam: String?
+                var synchroTeamLink: String?
                 if nameSplit.count > 1, linkSplit.count > 1, teamSplit.count > 1,
                    teamLinkSplit.count > 1 {
                     synchroName = String(nameSplit[1])
@@ -59,8 +58,12 @@ final class EventPageHTMLParser: ObservableObject {
                 }
                 let eventName = try overall[2].text()
                 
-                let items = [place, name, nameLink, team, teamLink, score, scoreLink, scoreDiff,
-                             eventName, synchroName, synchroLink, synchroTeam, synchroTeamLink]
+                var items = [place, name, nameLink, team, teamLink, score, scoreLink, scoreDiff,
+                             eventName]
+                if let name = synchroName, let link = synchroLink, let team = synchroTeam,
+                   let teamLink = synchroTeamLink {
+                    items += [name, link, team, teamLink]
+                }
                 print(items)
                 await MainActor.run { [items] in
                     parsingPageData.append(items)
