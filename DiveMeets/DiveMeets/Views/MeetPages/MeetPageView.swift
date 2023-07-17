@@ -13,7 +13,9 @@ import SwiftUI
 var cachedMeetData: [String: (MeetInfoJointData?, MeetResultsData?)] = [:]
 
 struct MeetPageView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var currentMode
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var meetData: MeetPageData?
     // Only meetEventData OR meetResultsEventData should be nil at a time (event is nil when passed
     //     a results link, and resultsEvent is nil when passed an info link)
@@ -23,17 +25,26 @@ struct MeetPageView: View {
     @State private var meetCoachData: MeetCoachData?
     @State private var meetInfoData: MeetInfoJointData?
     @State private var meetResultsData: MeetResultsData?
+    @State private var timedOut: Bool = false
     @ObservedObject private var mpp: MeetPageParser = MeetPageParser()
     private let getTextModel = GetTextAsyncModel()
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    @ScaledMetric private var buttonHeightScaled: CGFloat = 37
     
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
     
+    private var buttonHeight: CGFloat {
+        min(buttonHeightScaled, 55)
+    }
+    
+    private var bgColor: Color {
+        currentMode == .light ? Color.white : Color.black
+    }
+    
     var meetLink: String
-    var showBackButton: Bool = false
     
     private func tupleToList(data: MeetEventData) -> [[String]] {
         var result: [[String]] = []
@@ -129,44 +140,48 @@ struct MeetPageView: View {
         return result
     }
     
-    private func getBackButton() -> HStack<TupleView<(Button<some View>, Spacer)>> {
-        return HStack {
-            Button(action: {
-                presentationMode.wrappedValue.dismiss()
-            }) {
-                Image(systemName: "chevron.left")
-                    .font(.title)
-                    .foregroundColor(.blue)
-            }
-            Spacer()
-        }
-    }
-    
     private func getMeetData(info: MeetInfoJointData?, results: MeetResultsData?) async throws {
-        // Checks first for cached info and results data before parsing
-        if let (info, results) = cachedMeetData[meetLink] {
-            meetInfoData = info
-            meetResultsData = results
-        } else {
-            // Initialize meet parse from index page
-            let url = URL(string: meetLink)
-            
-            if let url = url {
-                // This sets getTextModel's text field equal to the HTML from url
-                await getTextModel.fetchText(url: url)
+        let loadTask = Task {
+            // Checks first for cached info and results data before parsing
+            if let (info, results) = cachedMeetData[meetLink] {
+                meetInfoData = info
+                meetResultsData = results
+            } else {
+                // Initialize meet parse from index page
+                let url = URL(string: meetLink)
                 
-                if let html = getTextModel.text {
-                    meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
-                    if let meetData = meetData {
-                        meetInfoData = await mpp.getMeetInfoData(data: meetData)
-                        meetResultsData = await mpp.getMeetResultsData(data: meetData)
-                        
-                        cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
-                    } else {
-                        print("Meet page failed to parse")
+                if let url = url {
+                    // This sets getTextModel's text field equal to the HTML from url
+                    await getTextModel.fetchText(url: url)
+                    
+                    if let html = getTextModel.text {
+                        meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
+                        if let meetData = meetData {
+                            meetInfoData = await mpp.getMeetInfoData(data: meetData)
+                            meetResultsData = await mpp.getMeetResultsData(data: meetData)
+                            
+                            cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
+                        } else {
+                            print("Meet page failed to parse")
+                        }
                     }
                 }
             }
+            
+            try Task.checkCancellation()
+        }
+        
+        let timeoutTask = Task {
+            try await Task.sleep(nanoseconds: UInt64(timeoutInterval) * NSEC_PER_SEC)
+            loadTask.cancel()
+            timedOut = true
+        }
+        
+        do {
+            try await loadTask.value
+            timeoutTask.cancel()
+        } catch {
+            print("Unable to get meet data, network timed out")
         }
     }
     
@@ -176,13 +191,9 @@ struct MeetPageView: View {
         cachedMeetData.removeValue(forKey: meetLink)
     }
     
-    // Gets back button (if applicable) and refresh button HStack
-    private func getPageHeader() -> HStack<TupleView<((some View)?, Spacer, some View)>> {
+    // Gets refresh button HStack
+    private func getRefreshButton() -> HStack<TupleView<(Spacer, some View)>> {
         HStack {
-            if showBackButton {
-                getBackButton()
-                    .padding(.horizontal)
-            }
             Spacer()
             Button(action: {
                 clearMeetDataCache()
@@ -190,35 +201,44 @@ struct MeetPageView: View {
                     try await getMeetData(info: meetInfoData, results: meetResultsData)
                 }
             }, label: {
-                Image(systemName: "arrow.clockwise")
-                    .font(.title2)
+                ZStack {
+                    Circle()
+                        .foregroundColor(Custom.grayThinMaterial)
+                        .shadow(radius: 6)
+                        .frame(width: buttonHeight, height: buttonHeight)
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundColor(.primary)
+                        .font(.title2)
+                }
             })
         }
     }
     
     var body: some View {
-        ZStack{
-            Custom.background.ignoresSafeArea()
+        ZStack {
+            bgColor.ignoresSafeArea()
             VStack {
                 if let meetInfoData = meetInfoData {
-                    getPageHeader()
-                        .padding([.leading, .trailing])
+//                    getRefreshButton()
+//                        .padding([.leading, .trailing])
                     
                     MeetInfoPageView(meetInfoData: meetInfoData)
                     
                     Spacer()
                 } else if let meetResultsData = meetResultsData {
-                    getPageHeader()
-                        .padding([.leading, .trailing])
+//                    getRefreshButton()
+//                        .padding([.leading, .trailing])
                     
                     MeetResultsPageView(meetResultsData: meetResultsData)
                     
                     Spacer()
-                } else if meetLink != "" {
+                } else if meetLink != "" && !timedOut {
                     VStack {
                         Text("Getting meet information...")
                         ProgressView()
                     }
+                } else if timedOut {
+                    Text("Unable to get meet page, network timed out")
                 } else {
                     VStack {
                         Text("There is not a results page available yet")
@@ -233,6 +253,35 @@ struct MeetPageView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+            
+            if meetInfoData != nil || meetResultsData != nil {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ZStack {
+                        Circle()
+                            .foregroundColor(Custom.grayThinMaterial)
+                            .shadow(radius: 4)
+                            .frame(width: buttonHeight, height: buttonHeight)
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundColor(.primary)
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .onTapGesture {
+                        clearMeetDataCache()
+                        Task {
+                            try await getMeetData(info: meetInfoData, results: meetResultsData)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -242,6 +291,8 @@ struct MeetInfoPageView: View {
     @State private var warmupDetailsExpanded: Bool = false
     @State private var showingAlert: Bool = false
     @State private var alertText: String = ""
+    
+    private let screenHeight = UIScreen.main.bounds.height
     
     private func keyToHStack(data: [String: String],
                              key: String) -> HStack<TupleView<(Text, Text)>>? {
@@ -295,25 +346,29 @@ struct MeetInfoPageView: View {
             DisclosureGroup(
                 isExpanded: $meetDetailsExpanded,
                 content: {
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack(alignment: .top) {
-                            Text("Signup Deadline: ")
-                                .bold()
-                            Text(info["Online Signup Closes at"]!)
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack(alignment: .top) {
+                                Text("Signup Deadline: ")
+                                    .bold()
+                                Text(info["Online Signup Closes at"]!)
+                                    .multilineTextAlignment(.trailing)
+                            }
+                            keyToHStack(data: info, key: "Time Left Before Late Fee")
+                            keyToHStack(data: info, key: "Type")
+                            keyToHStack(data: info, key: "Rules")
+                            keyToHStack(data: info, key: "Pool")
+                            
+                            keyToHStack(data: info, key: "Fee per event")
+                            keyToHStack(data: info,
+                                        key: "USA Diving Per Event Insurance Surcharge Fee")
+                            keyToHStack(data: info, key: "Late Fee")
+                            keyToHStack(data: info, key: "Fee must be paid by")
                                 .multilineTextAlignment(.trailing)
+                            keyToHStack(data: info, key: "Warm up time prior to event")
                         }
-                        keyToHStack(data: info, key: "Time Left Before Late Fee")
-                        keyToHStack(data: info, key: "Type")
-                        keyToHStack(data: info, key: "Rules")
-                        keyToHStack(data: info, key: "Pool")
-                        
-                        keyToHStack(data: info, key: "Fee per event")
-                        keyToHStack(data: info, key: "USA Diving Per Event Insurance Surcharge Fee")
-                        keyToHStack(data: info, key: "Late Fee")
-                        keyToHStack(data: info, key: "Fee must be paid by")
-                            .multilineTextAlignment(.trailing)
-                        keyToHStack(data: info, key: "Warm up time prior to event")
                     }
+                    .frame(maxHeight: screenHeight * 0.5)
                 },
                 label: {
                     Text("Meet Details")
@@ -328,18 +383,21 @@ struct MeetInfoPageView: View {
             DisclosureGroup(
                 isExpanded: $warmupDetailsExpanded,
                 content: {
-                    VStack(alignment: .leading, spacing: 10) {
-                        ForEach(dateSorted(time), id: \.key) { key, value in
-                            Text(key)
-                                .bold()
-                            VStack(alignment: .leading) {
-                                keyToHStack(data: value, key: "Warmup Starts")
-                                keyToHStack(data: value, key: "Warmup Ends")
-                                keyToHStack(data: value, key: "Events Start")
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(dateSorted(time), id: \.key) { key, value in
+                                Text(key)
+                                    .bold()
+                                VStack(alignment: .leading) {
+                                    keyToHStack(data: value, key: "Warmup Starts")
+                                    keyToHStack(data: value, key: "Warmup Ends")
+                                    keyToHStack(data: value, key: "Events Start")
+                                }
+                                .padding(.leading, 30)
                             }
-                            .padding(.leading, 30)
                         }
                     }
+                    .frame(maxHeight: screenHeight * 0.5)
                 },
                 label: {
                     Text("Warmup Details")
@@ -626,8 +684,10 @@ struct DiverListView: View {
 
 struct MeetEventListView: View {
     @Environment(\.colorScheme) var currentMode
+    @State var cachedEventRules: [String: String] = [:]
     @Binding var showingAlert: Bool
     @Binding var alertText: String
+    @ObservedObject private var mpp: MeetPageParser = MeetPageParser()
     var meetEventData: MeetEventData
     
     private func dateSorted(
@@ -671,31 +731,43 @@ struct MeetEventListView: View {
                         ForEach(value.indices, id: \.self) { index in
                             GeometryReader { geometry in
                                 SwipeView {
-                                    NavigationLink(destination: EntryPageView(entriesLink: value[index].4)) {
-                                        ZStack {
-                                            RoundedRectangle(cornerRadius: 30)
-                                                .fill(Custom.tileColor)
-                                                .shadow(radius: 5)
-                                                .frame(width: geometry.size.width, height: geometry.size.height)
-                                            Text(value[index].2)
-                                                .foregroundColor(value[index].4 == "" &&
-                                                                 currentMode == .light
-                                                                 ? .gray
-                                                                 : .primary)
+                                    NavigationLink(
+                                        destination: EntryPageView(entriesLink: value[index].4)) {
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: 30)
+                                                    .fill(Custom.darkGray)
+                                                    .shadow(radius: 5)
+                                                    .frame(width: geometry.size.width,
+                                                           height: geometry.size.height)
+                                                Text(value[index].2)
+                                                    .foregroundColor(value[index].4 == "" &&
+                                                                     currentMode == .light
+                                                                     ? .gray
+                                                                     : .primary)
+                                                    .padding()
+                                            }
+                                            .foregroundColor(.primary)
+                                            .saturation(value[index].4 == "" ? 0.5 : 1.0)
                                         }
-                                        .foregroundColor(.primary)
-                                        .saturation(value[index].4 == "" ? 0.5 : 1.0)
-                                    }
-                                    .disabled(value[index].4 == "")
+                                        .disabled(value[index].4 == "")
                                 } trailingActions: { context in
                                     SwipeAction("Rule") {
-                                        showingAlert = true
-                                        alertText = value[index].3
-                                        context.state.wrappedValue = .closed
+                                        Task {
+                                            if cachedEventRules.keys.contains(value[index].3) {
+                                                alertText = cachedEventRules[value[index].3]!
+                                            } else if let text =
+                                                        await mpp.getEventRule(link: value[index].3) {
+                                                alertText = text
+                                                cachedEventRules[value[index].3] = text
+                                            }
+                                            
+                                            showingAlert = true
+                                            context.state.wrappedValue = .closed
+                                        }
                                     }
                                     .background(currentMode == .light
                                                 ? Custom.lightBlue
-                                                : Custom.medBlue)
+                                                : Custom.darkBlue)
                                 }
                             }
                             .padding([.leading, .trailing])

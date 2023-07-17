@@ -37,68 +37,55 @@ class MeetsDataController: ObservableObject {
         }
     }
     
-    // Adds a single record to the CoreData database if not already present
+    // Updates an existing database's start/end dates with startOfDay times
+    func fixDates(_ meet: DivingMeet) {
+        let moc = container.viewContext
+        let cal = Calendar(identifier: .gregorian)
+        if let startDate = meet.startDate {
+            meet.startDate = cal.startOfDay(for: startDate)
+        }
+        if let endDate = meet.endDate {
+            meet.endDate = cal.startOfDay(for: endDate)
+        }
+        
+        try? moc.save()
+    }
+    
+    // Adds a single record to the CoreData database if meet id is not already present
     func addRecord(_ meetId: Int?, _ name: String?, _ org: String?, _ link: String?,
                    _ startDate: String?, _ endDate: String?, _ city: String?, _ state: String?,
                    _ country: String?, _ type: RecordType?) {
         let moc = container.viewContext
+        let cal = Calendar(identifier: .gregorian)
         let df = DateFormatter()
         df.dateFormat = "MMM d, yyyy"
-        var startDateN: NSDate?
-        var endDateN: NSDate?
-        if let startDate = startDate {
-            startDateN = df.date(from: startDate) as? NSDate
-        } else {
-            startDateN = nil
-        }
-        if let endDate = endDate {
-            endDateN = df.date(from: endDate) as? NSDate
-        } else {
-            endDateN = nil
-        }
         
         // Check if the entry is already in the database before adding
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "DivingMeet")
-        
-        // Add formatting here so we can properly format nil if meetId or year is nil
-        let formatPredicate =
-        "meetId == \(meetId == nil ? "%@" : "%d") AND name == %@ AND "
-        + "link == %@ AND startDate == %@ AND endDate == %@ AND city == %@ AND state == %@ AND "
-        + "country == %@"
-        // Formatting for post-typechecking refetch
-        let postTypeCheckFormatPredicate =
-        "meetId == \(meetId == nil ? "%@" : "%d") AND name == %@ AND organization == %@ AND "
-        + "link == %@ AND startDate == %@ AND endDate == %@ AND city == %@ AND state == %@ AND "
-        + "country == %@"
-        // Cannot match on organization because meet status changes organization
-        let predicate = NSPredicate(
-            format: formatPredicate, meetId ?? NSNull(), name ?? NSNull(),
-            link ?? NSNull(), startDateN ?? NSNull(), endDateN ?? NSNull(), city ?? NSNull(),
-            state ?? NSNull(), country ?? NSNull())
-        let postTypeCheckPredicate = NSPredicate(
-            format: postTypeCheckFormatPredicate, meetId ?? NSNull(), name ?? NSNull(), org ?? NSNull(),
-            link ?? NSNull(), startDateN ?? NSNull(), endDateN ?? NSNull(), city ?? NSNull(),
-            state ?? NSNull(), country ?? NSNull())
+
+        let predicate = NSPredicate(format: "meetId == \(meetId == nil ? "%@" : "%d")",
+                                    meetId ?? NSNull())
         fetchRequest.predicate = predicate
         
         var result = try? moc.fetch(fetchRequest)
         
-        // Deletes all meets that match in every field but organization and type and deletes all
-        // meets that have a lower type value (upcoming < current < past)
+        // Deletes all meets that match meetId and have a lower or equal type value
+        // (upcoming < current < past)
         if let result = result, result.count > 0 {
             let resultData = result as! [DivingMeet]
             for meet in resultData {
-                if let type = type, Int(meet.meetType) < type.rawValue {
-                    moc.delete(meet)
+                // Drop if less than or equal in case the meet has been updated since last stored
+                // (i.e. change name, dates, etc. but not meet type status)
+                if let type = type, Int(meet.meetType) <= type.rawValue {
+                    dropDuplicateRecords(meetId)
                 }
             }
         }
         
-        // Refetch results after removing above, including organization
-        fetchRequest.predicate = postTypeCheckPredicate
+        // Refetch results after removing above
         result = try? moc.fetch(fetchRequest)
         
-        // Only adds to the database if it couldn't be found already (exact duplicates)
+        // Only adds to the database if the meet id doesn't already exist
         if let result = result, result.count == 0 {
             let meet = DivingMeet(context: moc)
             
@@ -112,11 +99,11 @@ class MeetsDataController: ObservableObject {
             if let type = type {
                 meet.meetType = Int16(type.rawValue)
             }
-            if let startDate = startDate {
-                meet.startDate = df.date(from: startDate)
+            if let startDate = startDate, let date = df.date(from: startDate) {
+                meet.startDate = cal.startOfDay(for: date)
             }
-            if let endDate = endDate {
-                meet.endDate = df.date(from: endDate)
+            if let endDate = endDate, let date = df.date(from: endDate) {
+                meet.endDate = cal.startOfDay(for: date)
             }
             meet.city = city
             meet.state = state
@@ -140,15 +127,16 @@ class MeetsDataController: ObservableObject {
                     _ country: String?) {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "DivingMeet")
+        let cal = Calendar(identifier: .gregorian)
         let df = DateFormatter()
         df.dateFormat = "MMM d, yyyy"
         var startDateN: NSDate? = nil
         var endDateN: NSDate? = nil
-        if let startDate = startDate {
-            startDateN = df.date(from: startDate) as? NSDate
+        if let startDate = startDate, let date = df.date(from: startDate) {
+            startDateN = cal.startOfDay(for: date) as NSDate
         }
-        if let endDate = endDate {
-            endDateN = df.date(from: endDate) as? NSDate
+        if let endDate = endDate, let date = df.date(from: endDate) {
+            endDateN = cal.startOfDay(for: date) as NSDate
         }
         
         // Add formatting here so we can properly format nil if meetId or year is nil
@@ -192,6 +180,39 @@ class MeetsDataController: ObservableObject {
         let resultData = result as! [DivingMeet]
         
         for object in resultData {
+            moc.delete(object)
+        }
+        
+        try? moc.save()
+    }
+    
+    // Drops records with matching meet ids
+    // keepLatest will drop duplicates and keep the latest version (false when adding records)
+    func dropDuplicateRecords(_ meetId: Int?, keepLatest: Bool = false) {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "DivingMeet")
+
+        let predicate = NSPredicate(format: "meetId == \(meetId == nil ? "%@" : "%d")",
+                                    meetId ?? NSNull())
+        fetchRequest.predicate = predicate
+        
+        let result = try? moc.fetch(fetchRequest)
+        let resultData = result as! [DivingMeet]
+        
+        var latestTypeIdx: Int = -1
+        var latestType: Int16 = -1
+        if keepLatest {
+            // Finds highest meet type value of the duplicates and saves its index to keep
+            for (i, object) in resultData.enumerated() {
+                if latestType < object.meetType {
+                    latestType = object.meetType
+                    latestTypeIdx = i
+                }
+            }
+        }
+        
+        for (i, object) in resultData.enumerated() {
+            if keepLatest && i == latestTypeIdx { continue }
             moc.delete(object)
         }
         

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EntryPageView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dismiss) private var dismiss
     var entriesLink: String
     @State var entries: [EventEntry]?
     @ObservedObject var ep: EntriesParser = EntriesParser()
@@ -25,18 +26,22 @@ struct EntryPageView: View {
         min(maxHeightOffsetScaled, 90)
     }
     
+    private var bgColor: Color {
+        currentMode == .light ? .white : .black
+    }
+    
     var body: some View {
         ZStack {
             if let entries = entries {
-                grayColor
-                
+                bgColor.ignoresSafeArea()
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 10) {
                         ForEach(entries, id: \.self) { entry in
                             ZStack {
                                 Rectangle()
-                                    .fill(currentMode == .light ? .white : .black)
-                                    .cornerRadius(15)
+                                    .fill(Custom.darkGray)
+                                    .cornerRadius(30)
+                                    .shadow(radius: 10)
                                 EntryView(entry: entry) {
                                     if let partner = entry.synchroPartner {
                                         return HStack {
@@ -122,6 +127,14 @@ struct EntryPageView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
 }
 
@@ -177,9 +190,10 @@ struct EntryView: View {
                     let diveNums = (entry.dives ?? []).map { $0.number }
                     NavigationLink(destination: MeetScoreCalculator(dives: diveNums)) {
                         Text("See in Meet Score Calculator")
+                            .foregroundColor(.primary)
                             .padding([.leading, .trailing])
                             .padding([.top, .bottom], 5)
-                            .background(RoundedRectangle(cornerRadius: 30).fill(.thinMaterial))
+                            .background(RoundedRectangle(cornerRadius: 30).fill(Custom.specialGray))
                     }
                 }
             },

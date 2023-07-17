@@ -23,18 +23,27 @@ typealias NextDiverInfo = (String, String, Int, Double, Int, String, String, Dou
 typealias DiveTable = [[String]]
 
 struct LiveResultsView: View {
+    @Environment(\.dismiss) private var dismiss
     var request: String
     @State var shiftingBool: Bool = false
     let screenFrame = Color(.systemBackground)
     
     var body: some View {
         ZStack {
-            parseBody(request: request, shiftingBool: $shiftingBool)
+            ParseLoaderView(request: request, shiftingBool: $shiftingBool)
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
         }
     }
 }
 
-struct parseBody: View {
+struct ParseLoaderView: View {
     var request: String
     @State var html: String = ""
     @State var rows: [[String: String]] = []
@@ -59,75 +68,13 @@ struct parseBody: View {
     
     // Shows debug dataset, sets to true if "debug" is request string
     @State private var debugMode: Bool = false
+    @State private var timedOut: Bool = false
     
     let screenFrame = Color(.systemBackground)
+    private let linkHead = "https://secure.meetcontrol.com/divemeets/system/"
     
-    var body: some View {
-        ZStack {
-            // Only loads WebView if not in debug mode
-            if !debugMode {
-                if shiftingBool {
-                    LRWebView(request: request, html: $html)
-                        .onChange(of: html) { newValue in
-                            loaded = parseHelper(newValue: newValue)
-                        }
-                } else {
-                    LRWebView(request: request, html: $html)
-                        .onChange(of: html) { newValue in
-                            loaded = parseHelper(newValue: newValue)
-                        }
-                }
-            }
-            
-            if loaded {
-                mainView(lastDiverInformation: $lastDiverInformation, nextDiverInformation:
-                            $nextDiverInformation, diveTable: $diveTable, focusViewList: $focusViewList,
-                         starSelected: $starSelected, shiftingBool: $shiftingBool, title: $title,
-                         roundString: $roundString)
-            } else {
-                errorView()
-            }
-        }
-        .onAppear {
-            if request == "debug" {
-                debugMode = true
-            }
-            if debugMode {
-                lastDiverInformation = DebugDataset.lastDiverInfo
-                nextDiverInformation = DebugDataset.nextDiverInfo
-                diveTable = DebugDataset.diveTable
-                focusViewList = DebugDataset.focusViewDict
-                title = DebugDataset.title
-                roundString = DebugDataset.roundString
-            }
-        }
-    }
-    
-    private func parseHelper(newValue: String) -> Bool{
+    private func parseLastDiverData(table: Element) -> Bool {
         do {
-            diveTable = []
-            var upperTables: Elements = Elements()
-            var individualTables: Elements = Elements()
-            let document: Document = try SwiftSoup.parse(newValue)
-            guard let body = document.body() else {
-                return false
-            }
-            let table = try body.getElementById("Results")
-            guard let rows = try table?.getElementsByTag("tr") else { return false }
-            if rows.count < 9 { return false}
-            upperTables = try rows[1].getElementsByTag("tbody")
-            
-            if upperTables.isEmpty() { return false}
-            individualTables = try upperTables[0].getElementsByTag("table")
-            
-            let linkHead = "https://secure.meetcontrol.com/divemeets/system/"
-            
-            //Title
-            title = try rows[0].getElementsByTag("td")[0].text()
-                .replacingOccurrences(of: "Unofficial Statistics ", with: "")
-            
-            //Last Diver
-            
             var lastDiverName = ""
             var lastDiverProfileLink = ""
             var lastRoundPlace = 0
@@ -141,9 +88,8 @@ struct parseBody: View {
             var score = 0.0
             var judgesScores = ""
             
-            if individualTables.count < 3 { return false }
-            let lastDiverStr = try individualTables[0].text()
-            let lastDiver = try individualTables[0].getElementsByTag("a")
+            let lastDiverStr = try table.text()
+            let lastDiver = try table.getElementsByTag("a")
             
             if lastDiver.isEmpty() { return false }
             lastDiverName = try lastDiver[0].text()
@@ -154,7 +100,7 @@ struct parseBody: View {
                 lastDiverName.insert(" ", at: idx)
             }
             
-            var tempLink = try individualTables[0].getElementsByTag("a").attr("href")
+            var tempLink = try table.getElementsByTag("a").attr("href")
             lastDiverProfileLink = linkHead + tempLink
             
             lastRoundPlace = Int(lastDiverStr.slice(from: "Last Round Place: ",
@@ -180,17 +126,32 @@ struct parseBody: View {
                                     lastRoundTotalScore, order, currentPlace, currentTotal,
                                     currentDive, height, dd, score, judgesScores)
             
-            //Upcoming Diver
-            
+            return true
+        } catch {
+            print("Failed to parse last diver data")
+        }
+        
+        return false
+    }
+    
+    private func parseNextDiverData(table: Element) -> Bool {
+        do {
+            var lastDiverName = ""
+            var lastDiverProfileLink = ""
+            var lastRoundPlace = 0
+            var lastRoundTotalScore = 0.0
             var nextDiverName = ""
             var nextDiverProfileLink = ""
             var nextDive = ""
             var avgScore = 0.0
             var maxScore = 0.0
             var forFirstPlace = 0.0
+            var order = 0
+            var height = ""
+            var dd = 0.0
             
-            let upcomingDiverStr = try individualTables[2].text()
-            let nextDiver = try individualTables[2].getElementsByTag("a")
+            let upcomingDiverStr = try table.text()
+            let nextDiver = try table.getElementsByTag("a")
             
             if nextDiver.isEmpty() { return false }
             nextDiverName = try nextDiver[0].text()
@@ -201,7 +162,7 @@ struct parseBody: View {
                 nextDiverName.insert(" ", at: idx)
             }
             
-            tempLink = try individualTables[2].getElementsByTag("a").attr("href")
+            var tempLink = try table.getElementsByTag("a").attr("href")
             nextDiverProfileLink = linkHead + tempLink
             
             lastRoundPlace = Int(upcomingDiverStr.slice(from: "Last Round Place: ",
@@ -228,6 +189,16 @@ struct parseBody: View {
                                     lastRoundTotalScore, order, nextDive, height, dd,
                                     avgScore, maxScore, forFirstPlace)
             
+            return true
+        } catch {
+            print("Failed to parse next diver data")
+        }
+        
+        return false
+    }
+    
+    private func parseCurrentRound(rows: Elements) -> Bool {
+        do {
             //Current Round
             
             let currentRound = try rows[8].getElementsByTag("td")
@@ -261,15 +232,116 @@ struct parseBody: View {
                 }
             }
             
-        } catch  {
-            print("Parsing finished live event failed")
-            return false
+            return true
+        } catch {
+            print("Failed to parse current round")
         }
-        return true
+        
+        return false
+    }
+    
+    private func parseLiveResultsData(newValue: String) async -> Bool {
+        let error = ParseError("Failed to parse")
+        let parseTask = Task {
+            do {
+                diveTable = []
+                var upperTables: Elements = Elements()
+                var individualTables: Elements = Elements()
+                let document: Document = try SwiftSoup.parse(newValue)
+                guard let body = document.body() else { throw error }
+                let table = try body.getElementById("Results")
+                guard let rows = try table?.getElementsByTag("tr") else { throw error }
+                if rows.count < 9 { throw error }
+                upperTables = try rows[1].getElementsByTag("tbody")
+                
+                if upperTables.isEmpty() { throw error }
+                individualTables = try upperTables[0].getElementsByTag("table")
+                
+                //Title
+                title = try rows[0].getElementsByTag("td")[0].text()
+                    .replacingOccurrences(of: "Unofficial Statistics ", with: "")
+                
+                // If not enough tables or last, next, or round parsing fails, throw error
+                if individualTables.count < 3 ||
+                    !parseLastDiverData(table: individualTables[0]) ||
+                    !parseNextDiverData(table: individualTables[2]) ||
+                    !parseCurrentRound(rows: rows) { throw error }
+                
+            } catch {
+                print("Parsing live event failed")
+                try Task.checkCancellation()
+                return false
+            }
+            
+            try Task.checkCancellation()
+            return true
+        }
+        let timeoutTask = Task {
+            try await Task.sleep(nanoseconds: UInt64(timeoutInterval) * NSEC_PER_SEC)
+            parseTask.cancel()
+            timedOut = true
+        }
+        
+        do {
+            let result = try await parseTask.value
+            timeoutTask.cancel()
+            return result
+        } catch {
+            print("Unable to parse live results page, network timed out")
+        }
+        
+        return false
+    }
+    
+    var body: some View {
+        ZStack {
+            // Only loads WebView if not in debug mode
+            if !debugMode {
+                if shiftingBool {
+                    LRWebView(request: request, html: $html)
+                        .onChange(of: html) { newValue in
+                            Task {
+                                loaded = await parseLiveResultsData(newValue: newValue)
+                            }
+                        }
+                } else {
+                    LRWebView(request: request, html: $html)
+                        .onChange(of: html) { newValue in
+                            Task {
+                                loaded = await parseLiveResultsData(newValue: newValue)
+                            }
+                        }
+                }
+            }
+            
+            if loaded {
+                LoadedView(lastDiverInformation: $lastDiverInformation, nextDiverInformation:
+                            $nextDiverInformation, diveTable: $diveTable, focusViewList: $focusViewList,
+                           starSelected: $starSelected, shiftingBool: $shiftingBool, title: $title,
+                           roundString: $roundString)
+            } else if timedOut {
+                TimedOutView()
+            } else {
+                ErrorView()
+            }
+        }
+        .onAppear {
+            if request == "debug" {
+                debugMode = true
+            }
+            if debugMode {
+                lastDiverInformation = DebugDataset.lastDiverInfo
+                nextDiverInformation = DebugDataset.nextDiverInfo
+                diveTable = DebugDataset.diveTable
+                focusViewList = DebugDataset.focusViewDict
+                title = DebugDataset.title
+                roundString = DebugDataset.roundString
+            }
+        }
     }
 }
 
-struct mainView: View {
+struct LoadedView: View {
     @Environment(\.colorScheme) var currentMode
     var screenWidth = UIScreen.main.bounds.width
     var screenHeight = UIScreen.main.bounds.height
@@ -288,6 +360,10 @@ struct mainView: View {
         min(maxHeightOffsetScaled, 90)
     }
     
+    private var bgColor: Color {
+        currentMode == .light ? .white : .black
+    }
+    
     var colors: [Color] = [.blue, .green, .red, .orange]
     
     func startTimer() {
@@ -298,7 +374,7 @@ struct mainView: View {
     }
     
     var body: some View {
-        Custom.background.ignoresSafeArea()
+        bgColor.ignoresSafeArea()
         ZStack {
             ColorfulView()
             GeometryReader { geometry in
@@ -307,7 +383,7 @@ struct mainView: View {
                         VStack {
                             ZStack {
                                 Rectangle()
-                                    .foregroundColor(Custom.thinMaterialColor)
+                                    .foregroundColor(Custom.grayThinMaterial)
                                     .mask(RoundedRectangle(cornerRadius: 40))
                                     .frame(width: 300, height: 70)
                                     .shadow(radius: 6)
@@ -341,7 +417,19 @@ struct mainView: View {
     }
 }
 
-struct errorView: View {
+struct TimedOutView: View {
+    @Environment(\.colorScheme) var currentMode
+    private var bgColor: Color {
+        currentMode == .light ? .white : .black
+    }
+    
+    var body: some View {
+        bgColor.ignoresSafeArea()
+        Text("Unable to load live results, network timed out")
+    }
+}
+
+struct ErrorView: View {
     @Environment(\.colorScheme) var currentMode
     private var bgColor: Color {
         currentMode == .light ? .white : .black
@@ -356,24 +444,17 @@ struct errorView: View {
 struct LastDiverView: View
 {
     @Environment(\.colorScheme) var currentMode
-    @State var tableData: [String: DiveData]?
     @Binding var lastInfo:
     //  name, link, last round place, last round total, order, place, total, dive, height, dd,
     //score total, [judges scores]
     (String, String, Int, Double, Int, Int, Double, String, String, Double, Double, String)
-    var diveName = ""
-    @State var diveNum: String = ""
-    var screenWidth = UIScreen.main.bounds.width
-    var screenHeight = UIScreen.main.bounds.height
-    private var bgColor: Color {
-        currentMode == .light ? Custom.carouselColor : Custom.carouselColor
-    }
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
-        var diveNum = ""
         ZStack {
             Rectangle()
-                .fill(bgColor)
+                .foregroundColor(Custom.specialGray)
                 .cornerRadius(50)
                 .shadow(radius: 20)
             
@@ -397,7 +478,7 @@ struct LastDiverView: View
                     NavigationLink {
                         ProfileView(profileLink: lastInfo.1)
                     } label: {
-                        MiniProfileImage(diverID: String(lastInfo.1.utf16.dropFirst(67)) ?? "")
+                        MiniProfileImage(diverID: String(lastInfo.1.components(separatedBy: "=").last ?? ""))
                             .scaledToFit()
                     }
                 }
@@ -406,7 +487,7 @@ struct LastDiverView: View
                 
                 ZStack {
                     Rectangle()
-                        .foregroundColor(Custom.thinMaterialColor)
+                        .foregroundColor(Custom.darkGray)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
                         VStack {
@@ -449,17 +530,14 @@ struct NextDiverView: View
 {
     @Environment(\.colorScheme) var currentMode
     @State var tableData: [String: DiveData]?
-    var screenWidth = UIScreen.main.bounds.width
-    var screenHeight = UIScreen.main.bounds.height
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     @Binding var nextInfo: NextDiverInfo
-    private var bgColor: Color {
-        currentMode == .light ? Custom.carouselColor : Custom.carouselColor
-    }
     
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(bgColor)
+                .fill(Custom.specialGray)
                 .cornerRadius(50)
                 .shadow(radius: 20)
             
@@ -484,7 +562,7 @@ struct NextDiverView: View
                     NavigationLink {
                         ProfileView(profileLink: nextInfo.1)
                     } label: {
-                        MiniProfileImage(diverID: String(nextInfo.1.utf16.dropFirst(67)) ?? "")
+                        MiniProfileImage(diverID: String(nextInfo.1.components(separatedBy: "=").last ?? ""))
                             .scaledToFit()
                     }
                 }
@@ -494,8 +572,8 @@ struct NextDiverView: View
                 //Lower Part
                 ZStack {
                     Rectangle()
-                        .frame(height: screenHeight * 0.1)
-                        .foregroundColor(Custom.thinMaterialColor)
+                        .frame(height: screenHeight * 0.105)
+                        .foregroundColor(Custom.darkGray)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
                         Text(nextInfo.5)
@@ -505,6 +583,12 @@ struct NextDiverView: View
                             .minimumScaleFactor(0.5)
                             .lineLimit(1)
                         VStack {
+                            Text(getDiveName(data: tableData ?? [:], forKey: nextInfo.5) ?? "")
+                                .font(.title3)
+                                .bold()
+                                .scaledToFill()
+                                .minimumScaleFactor(0.4)
+                                .lineLimit(1)
                             HStack {
                                 Text("Height: " + nextInfo.6)
                                 Text("DD: " + String(nextInfo.7))
@@ -523,6 +607,9 @@ struct NextDiverView: View
                 }
                 .fixedSize(horizontal: false, vertical: true)
             }
+        }
+        .onAppear {
+            tableData = getDiveTableData()
         }
     }
 }
@@ -567,7 +654,7 @@ struct DebugDataset {
 struct ColorfulView: View{
     @Environment(\.colorScheme) var currentMode
     private var bgColor: Color {
-        currentMode == .light ? Custom.background : Custom.background
+        currentMode == .light ? .white : .black
     }
     
     var body: some View{

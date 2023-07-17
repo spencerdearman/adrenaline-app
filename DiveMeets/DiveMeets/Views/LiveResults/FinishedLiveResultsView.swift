@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftSoup
 
 struct FinishedLiveResultsView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var html: String = ""
     @State private var elements: [[String]]?
     @State private var eventTitle: String?
@@ -53,6 +54,14 @@ struct FinishedLiveResultsView: View {
                 eventTitle = parser.eventTitle
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
 }
 
@@ -86,18 +95,17 @@ struct LivePersonBubbleView: View {
                     .font(.title2)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    NavigationLink(destination: AnyView(_fromValue: Text(elements[6]))) {
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(Custom.thinMaterialColor)
-                                .mask(RoundedRectangle(cornerRadius: 60, style: .continuous))
-                                .shadow(radius: 2)
-                                .frame(width: 200, height: 40)
-                            // Score Link is elements[6]
-                            Text("Score: " + elements[5])
-                                .fontWeight(.semibold)
-                                .scaledToFit()
-                        }
+                    // If we link to the results sheet in the future, elements[6] is the link
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(Custom.thinMaterialColor)
+                            .mask(RoundedRectangle(cornerRadius: 60, style: .continuous))
+                            .shadow(radius: 2)
+                            .frame(width: 200, height: 40)
+                        // Score Link is elements[6]
+                        Text("Score: " + elements[5])
+                            .fontWeight(.semibold)
+                            .scaledToFit()
                     }
                 }
                 

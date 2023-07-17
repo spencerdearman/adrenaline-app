@@ -231,8 +231,9 @@ final class ProfileParser: ObservableObject {
     // Wraps caching functionality into getting profile HTML to avoid network access if not necessary
     func getProfileHTML(profileLink: String) -> String {
         let session = URLSession.shared
-        let diverID: String = String(
-            profileLink[profileLink.index(profileLink.endIndex, offsetBy: -5)...])
+        let diverID: String = profileLink.components(separatedBy: "=").last ?? ""
+//        String(
+//            profileLink[(profileLink.components(separatedBy: "=").last ?? "")])
         if let url = URL(string: profileLink) {
         
             var resultText: String?

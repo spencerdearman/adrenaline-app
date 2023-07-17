@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct EventResultPage: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var parser = EventPageHTMLParser()
     @State var eventTitle: String = ""
     @State var meetLink: String
@@ -19,28 +20,35 @@ struct EventResultPage: View {
     }
     
     var body: some View {
-        ZStack{}
-            .onAppear {
-                if !alreadyParsed {
-                    Task {
-                        await parser.parse(urlString: meetLink)
-                        resultData = parser.eventPageData
-                        eventTitle = resultData[0][8]
-                        alreadyParsed = true
-                    }
-                }
-            }
-        VStack{
+        VStack {
             Text(eventTitle)
                 .font(.title)
                 .bold()
                 .padding()
                 .multilineTextAlignment(.center)
             Divider()
-            ScalingScrollView(records: resultData) { (elem) in
+            ScalingScrollView(records: resultData, bgColor: .clear, rowSpacing: 10, shadowRadius: 8) { (elem) in
                 PersonBubbleView(elements: elem, eventTitle: eventTitle)
             }
             .padding(.bottom, maxHeightOffset)
+        }
+        .onAppear {
+            if !alreadyParsed {
+                Task {
+                    await parser.parse(urlString: meetLink)
+                    resultData = parser.eventPageData
+                    eventTitle = resultData[0][8]
+                    alreadyParsed = true
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
         }
     }
 }
@@ -65,7 +73,8 @@ struct PersonBubbleView: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .foregroundColor(bubbleColor)
+                .foregroundColor(Custom.darkGray)
+                .cornerRadius(35)
             VStack {
                 VStack {
                     HStack(alignment: .lastTextBaseline) {
@@ -109,7 +118,7 @@ struct PersonBubbleView: View {
                         NavigationLink {
                             Event(isFirstNav: navStatus,
                                   meet: MeetEvent(name: eventTitle, link: elements[6],
-                                                            firstNavigation: false))
+                                                  firstNavigation: false))
                         } label: {
                             Text(elements[5])
                         }

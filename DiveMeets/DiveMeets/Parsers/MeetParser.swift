@@ -251,13 +251,11 @@ final class MeetParser: ObservableObject {
                     do {
                         let resultsLinks = try meetResults.getElementsByAttribute("href")
                         
-                        if (resultsLinks.count == 0) {
-                            throw ParseError("No results page found in row")
+                        if resultsLinks.count > 0 {
+                            resultsLink = try leadingLink + resultsLinks[0].attr("href")
                         }
-                        
-                        resultsLink = try leadingLink + resultsLinks[0].attr("href")
                     } catch {
-                        print("No results page found")
+                        print("Failed to get link from meet results")
                     }
                 }
                 

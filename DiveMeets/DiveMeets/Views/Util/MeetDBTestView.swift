@@ -51,12 +51,19 @@ struct MeetDBTestView: View {
                         db.dropAllRecords()
                     }
                     Spacer()
-                    Button("Add Past Type") {
-                        for meet in filteredMeets {
-                            meet.meetType = 2
+                    Button("Fix Dates") {
+                        for meet in meets {
+                            db.fixDates(meet)
                         }
+                        print("Fixed dates")
                     }
                     Spacer()
+                    Button("Drop Duplicates") {
+                        for meet in meets {
+                            db.dropDuplicateRecords(Int(exactly: meet.meetId)!, keepLatest: true)
+                        }
+                        print("Dropped all duplicates")
+                    }
                 }
                 .padding()
                 HStack {

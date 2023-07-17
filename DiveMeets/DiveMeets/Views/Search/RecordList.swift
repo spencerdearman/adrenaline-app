@@ -15,7 +15,7 @@ struct RecordList: View {
     
     // Style adjustments for elements of list
     private let cornerRadius: CGFloat = 30
-    private let rowSpacing: CGFloat = 3
+    private let rowSpacing: CGFloat = 8
     private let textColor: Color = Color.primary
     @ScaledMetric private var viewPadding: CGFloat = 58
     
@@ -43,7 +43,7 @@ struct RecordList: View {
     var body: some View {
         ZStack {
             // Background color for View
-            customGray.ignoresSafeArea()
+            Custom.specialGray
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: rowSpacing) {
                     Text("Results")
@@ -65,7 +65,7 @@ struct RecordList: View {
                                     .foregroundColor(Color.gray)
                                     .padding()
                             }
-                            .background(rowColor)
+                            .background(Custom.darkGray)
                             .cornerRadius(cornerRadius)
                             .onDisappear {
                                 resultSelected = true
@@ -74,6 +74,7 @@ struct RecordList: View {
                                 resultSelected = false
                             }
                         }
+                        .shadow(radius: 5)
                         .padding([.leading, .trailing])
                     }
                 }

@@ -91,12 +91,15 @@ struct Home: View {
     @Environment(\.meetsDB) var db
     @StateObject var meetParser: MeetParser = MeetParser()
     @State private var meetsParsed: Bool = false
+    @State private var timedOut: Bool = false
     @State private var selection: ViewType = .upcoming
     
     private let cornerRadius: CGFloat = 30
     private let textColor: Color = Color.primary
     private let grayValue: CGFloat = 0.90
     private let grayValueDark: CGFloat = 0.10
+    private var screenWidth = UIScreen.main.bounds.width
+    private var screenHeight = UIScreen.main.bounds.height
     @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
     @ScaledMetric private var typeBGWidthScaled: CGFloat = 40
@@ -121,17 +124,30 @@ struct Home: View {
     }
     
     // Gets present meets from meet parser if false, else clears the fields and runs again
-    private func getPresentMeets() {
+    private func getPresentMeets() async {
         if !meetsParsed {
-            Task {
+            let parseTask = Task {
                 try await meetParser.parsePresentMeets()
+                try Task.checkCancellation()
                 meetsParsed = true
+            }
+            let timeoutTask = Task {
+                try await Task.sleep(nanoseconds: UInt64(timeoutInterval) * NSEC_PER_SEC)
+                parseTask.cancel()
+                timedOut = true
+            }
+            
+            do {
+                try await parseTask.value
+                timeoutTask.cancel()
+            } catch {
+                print("Failed to get present meets, network timed out")
             }
         } else {
             meetParser.upcomingMeets = nil
             meetParser.currentMeets = nil
             meetsParsed = false
-            getPresentMeets()
+            await getPresentMeets()
         }
     }
     
@@ -148,7 +164,7 @@ struct Home: View {
                     VStack {
                         ZStack{
                             Rectangle()
-                                .foregroundColor(Custom.thinMaterialColor)
+                                .foregroundColor(Custom.grayThinMaterial)
                                 .mask(RoundedRectangle(cornerRadius: 40))
                                 .frame(width: 120, height: 40)
                                 .shadow(radius: 6)
@@ -160,12 +176,12 @@ struct Home: View {
                                 RoundedRectangle(cornerRadius: cornerRadius)
                                     .frame(width: typeBubbleWidth * 2 + 5,
                                            height: typeBGWidth)
-                                    .foregroundColor(Custom.selectionColorsDark)
+                                    .foregroundColor(Custom.grayThinMaterial)
                                     .shadow(radius: 5)
                                 RoundedRectangle(cornerRadius: cornerRadius)
                                     .frame(width: typeBubbleWidth,
                                            height: typeBubbleHeight)
-                                    .foregroundColor(Custom.selection)
+                                    .foregroundColor(Custom.darkGray)
                                     .offset(x: selection == .upcoming
                                             ? -typeBubbleWidth / 2
                                             : typeBubbleWidth / 2)
@@ -197,14 +213,22 @@ struct Home: View {
                                     .cornerRadius(cornerRadius)
                                 }
                             }
-                            
                             HStack {
                                 Spacer()
                                 Button(action: {
-                                    getPresentMeets()
+                                    Task {
+                                        await getPresentMeets()
+                                    }
                                 }, label: {
-                                    Image(systemName: "arrow.clockwise")
-                                        .font(.title2)
+                                    ZStack {
+                                        Circle()
+                                            .foregroundColor(Custom.grayThinMaterial)
+                                            .shadow(radius: 6)
+                                            .frame(width: typeBGWidth, height: typeBGWidth)
+                                        Image(systemName: "arrow.clockwise")
+                                            .foregroundColor(.primary)
+                                            .font(.title2)
+                                    }
                                 })
                             }
                             .padding(.trailing)
@@ -214,9 +238,9 @@ struct Home: View {
                     }
                     Spacer()
                     if selection == .upcoming {
-                        UpcomingMeetsView(meetParser: meetParser)
+                        UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut)
                     } else {
-                        CurrentMeetsView(meetParser: meetParser)
+                        CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut)
                     }
                     Spacer()
                 }
@@ -232,7 +256,9 @@ struct Home: View {
             }
         }
         .onAppear {
-            getPresentMeets()
+            Task {
+                await getPresentMeets()
+            }
         }
     }
 }
@@ -240,44 +266,75 @@ struct Home: View {
 struct UpcomingMeetsView: View {
     @Environment(\.meetsDB) var db
     @ObservedObject var meetParser: MeetParser
+    @Binding var timedOut: Bool
+    let gridItems = [GridItem(.adaptive(minimum: 300))]
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
+
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
     
     var body: some View {
         if let meets = meetParser.upcomingMeets {
-            if !meets.isEmpty {
+            if !meets.isEmpty && !timedOut {
                 let upcoming = tupleToList(tuples: db.dictToTuple(dict: meets))
-                ScalingScrollView(records: upcoming, bgColor: .clear, rowSpacing: 15,
-                                  shadowRadius: 10) { (elem) in
-                    MeetBubbleView(elements: elem)
+                if isPhone {
+                    ScalingScrollView(records: upcoming, bgColor: .clear, rowSpacing: 15, shadowRadius: 10)
+                    { (elem) in
+                        MeetBubbleView(elements: elem)
+                    }
+                } else {
+                    ScrollView {
+                        LazyVGrid(columns: gridItems, spacing: 10) {
+                            ForEach(upcoming, id: \.self) { elem in
+                                MeetBubbleView(elements: elem)
+                            }
+                        }
+                        .padding(20)
+                    }
                 }
             } else {
                 ZStack {
                     Rectangle()
-                        .foregroundColor(Custom.thinMaterialColor)
+                        .foregroundColor(Custom.grayThinMaterial)
                         .frame(width: 275, height: 75)
                         .mask(RoundedRectangle(cornerRadius: 40))
                         .shadow(radius: 6)
                     Text("No upcoming meets found")
                 }
-                
+                .frame(width: 275, height: 75)
             }
-        } else {
-            ZStack{
+        } else if !timedOut {
+            ZStack {
                 Rectangle()
-                    .foregroundColor(Custom.thinMaterialColor)
+                    .foregroundColor(Custom.grayThinMaterial)
                     .frame(width: 275, height: 100)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 6)
-                VStack{
+                VStack {
                     Text("Getting upcoming meets")
                     ProgressView()
                 }
             }
+            .frame(width: 275, height: 100)
+        } else {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(Custom.grayThinMaterial)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 6)
+                VStack(alignment: .center) {
+                    Text("Unable to get upcoming meets, network timed out")
+                        .padding()
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .frame(width: 275, height: 100)
         }
     }
 }
@@ -286,47 +343,80 @@ struct UpcomingMeetsView: View {
 struct CurrentMeetsView: View {
     @Environment(\.meetsDB) var db
     @ObservedObject var meetParser: MeetParser
+    let gridItems = [GridItem(.adaptive(minimum: 300))]
+    @Binding var timedOut: Bool
+    
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
     
     var body: some View {
         if meetParser.currentMeets != nil && !meetParser.currentMeets!.isEmpty {
             let current = tupleToList(tuples: dictToCurrentTuple(dict: meetParser.currentMeets ?? []))
-            ScalingScrollView(records: current, bgColor: .clear, rowSpacing: 15, shadowRadius: 10) {
-                (elem) in
-                MeetBubbleView(elements: elem)
+            if isPhone {
+                ScalingScrollView(records: current, bgColor: .clear, rowSpacing: 15, shadowRadius: 10) {
+                    (elem) in
+                    MeetBubbleView(elements: elem)
+                }
+                .padding(.bottom, maxHeightOffset)
+            } else {
+                ScrollView {
+                    LazyVGrid(columns: gridItems, spacing: 10) {
+                        ForEach(current, id: \.self) { elem in
+                            MeetBubbleView(elements: elem)
+                        }
+                    }
+                    .padding(20)
+                }
             }
-            .padding(.bottom, maxHeightOffset)
-        } else if meetParser.currentMeets != nil {
+        } else if meetParser.currentMeets != nil && !timedOut {
             ZStack{
                 Rectangle()
-                    .foregroundColor(Custom.thinMaterialColor)
+                    .foregroundColor(Custom.grayThinMaterial)
                     .frame(width: 275, height: 75)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 6)
                 Text("No current meets found")
             }
-        } else {
-            ZStack{
+            .frame(width: 275, height: 75)
+        } else if !timedOut {
+            ZStack {
                 Rectangle()
-                    .foregroundColor(Custom.thinMaterialColor)
+                    .foregroundColor(Custom.grayThinMaterial)
                     .frame(width: 275, height: 100)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 6)
-                VStack{
+                VStack {
                     Text("Getting current meets")
                     ProgressView()
                 }
             }
+            .frame(width: 275, height: 100)
+        } else {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(Custom.thinMaterialColor)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 6)
+                VStack(alignment: .center) {
+                    Text("Unable to get current meets, network timed out")
+                        .padding()
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .frame(width: 275, height: 100)
         }
     }
 }
 
 struct CurrentMeetsPageView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dismiss) private var dismiss
     var infoLink: String
     var resultsLink: String
     
@@ -346,24 +436,24 @@ struct CurrentMeetsPageView: View {
         currentMode == .light ? Color.white : Color.black
     }
     private var bgColor: Color {
-        currentMode == .light ? Custom.background : Custom.background
+        currentMode == .light ? .white : .black
     }
     
     @ViewBuilder
     var body: some View {
-        ZStack{
-            Custom.background.ignoresSafeArea()
+        ZStack {
+            bgColor.ignoresSafeArea()
             VStack {
                 if resultsLink != "" {
                     ZStack {
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .frame(width: typeBubbleWidth * 2 + 5,
                                    height: typeBGWidth)
-                            .foregroundColor(Custom.selectionColorsDark)
+                            .foregroundColor(Custom.grayThinMaterial)
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .frame(width: typeBubbleWidth,
                                    height: typeBubbleHeight)
-                            .foregroundColor(Custom.selection)
+                            .foregroundColor(Custom.darkGray)
                             .offset(x: selection == .info
                                     ? -typeBubbleWidth / 2
                                     : typeBubbleWidth / 2)
@@ -398,27 +488,24 @@ struct CurrentMeetsPageView: View {
                     .zIndex(2)
                     Spacer()
                 }
-               
+                
                 if selection == .info {
-                    MeetPageView(meetLink: infoLink, showBackButton: false)
-                        .offset(y: -40)
+                    MeetPageView(meetLink: infoLink)
                 } else {
-                    MeetPageView(meetLink: resultsLink, showBackButton: false)
-                        .offset(y: -40)
+                    MeetPageView(meetLink: resultsLink)
                 }
                 Spacer()
             }
         }
         .zIndex(1)
-        
         .onSwipeGesture(trigger: .onEnded) { direction in
             if direction == .left && selection == .info {
                 selection = .results
             } else if direction == .right && selection == .results {
                 selection = .info
             }
-            
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -427,6 +514,9 @@ struct MeetBubbleView: View {
     
     private var bubbleColor: Color {
         currentMode == .light ? .white : .black
+    }
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad ? false : true
     }
     
     //  (id, name, org, link, startDate, endDate, city, state, country, resultsLink?)
@@ -441,11 +531,12 @@ struct MeetBubbleView: View {
         NavigationLink(destination:
                         elements.count == 10
                        ? AnyView(CurrentMeetsPageView(infoLink: elements[3], resultsLink: elements[9]))
-                       : AnyView(MeetPageView(meetLink: elements[3], showBackButton: false))) {
+                       : AnyView(MeetPageView(meetLink: elements[3]))) {
             ZStack {
                 Rectangle()
-                    .foregroundColor(Custom.homeTileColor)
+                    .foregroundColor(Custom.darkGray)
                     .cornerRadius(40)
+                    .shadow(radius: isPhone ? 0 : 10)
                 VStack {
                     VStack {
                         Text(elements[1]) // name
@@ -474,11 +565,12 @@ struct MeetBubbleView: View {
                         
                         ZStack{
                             Rectangle()
-                                .fill(Custom.thinMaterialColor)
-                                .frame(width: 190)
+                                .fill(Custom.accentThinMaterial)
+                                .frame(width: isPhone ? getPhoneTextSizeForAccessibility() : getPadTextSizeForAccessibility())
                                 .mask(RoundedRectangle(cornerRadius: 30))
                                 .shadow(radius: 3)
                             Text(elements[4] + " - " + elements[5]) // startDate - endDate
+                                .padding([.leading, .trailing], 5)
                         }
                         .padding(.trailing)
                     }
@@ -491,12 +583,56 @@ struct MeetBubbleView: View {
             }
         }
     }
+    
+    func getPhoneTextSizeForAccessibility() -> CGFloat {
+        let sizeCategory = UIApplication.shared.preferredContentSizeCategory
+        switch sizeCategory {
+        case .extraSmall:
+            return 170
+        case .small:
+            return 180
+        case .medium:
+            return 190
+        case .large:
+            return 200
+        case .extraLarge:
+            return 215
+        case .extraExtraLarge:
+            return 225
+        case .extraExtraExtraLarge:
+            return 235
+        default:
+            return 190
+        }
+    }
+    
+    func getPadTextSizeForAccessibility() -> CGFloat {
+        let sizeCategory = UIApplication.shared.preferredContentSizeCategory
+        switch sizeCategory {
+        case .extraSmall:
+            return 180
+        case .small:
+            return 190
+        case .medium:
+            return 200
+        case .large:
+            return 210
+        case .extraLarge:
+            return 220
+        case .extraExtraLarge:
+            return 240
+        case .extraExtraExtraLarge:
+            return 265
+        default:
+            return 190
+        }
+    }
 }
 
 struct HomeColorfulView: View{
     @Environment(\.colorScheme) var currentMode
     private var bgColor: Color {
-        currentMode == .light ? Custom.background : Custom.background
+        currentMode == .light ? Color.white : Color.black
     }
     
     var body: some View{

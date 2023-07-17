@@ -24,6 +24,7 @@ enum DiveHeight: String, CaseIterable {
 // If providing dives list, also need to provide numDives so it doesn't clear dives list on appear
 struct MeetScoreCalculator: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dismiss) private var dismiss
     @State var tableData: [String: DiveData]?
     @State var numDives: Int = 2
     @State var meetType: MeetType = .one
@@ -33,6 +34,15 @@ struct MeetScoreCalculator: View {
     @FocusState var focusedField: Bool?
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 57
+    @ScaledMetric private var navButtonHeightScaled: CGFloat = 35
+    
+    private var navButtonHeight: CGFloat {
+        min(navButtonHeightScaled, 55)
+    }
+    
+    private var navButtonWidth: CGFloat {
+        navButtonHeight * 1.75
+    }
     
     private let cornerRadius: CGFloat = 30
     
@@ -53,6 +63,8 @@ struct MeetScoreCalculator: View {
             diveNetScores.append(0.0)
             diveTotalScores.append(0.0)
         }
+        
+        focusedField = nil
     }
     
     private func setDivesList() {
@@ -92,73 +104,96 @@ struct MeetScoreCalculator: View {
                     focusedField = nil
                 }
             
-        VStack {
-            HStack {
-                Spacer()
-                Button("Clear") {
-                    clearDivesList()
-                }
-                .buttonStyle(.bordered)
-                .cornerRadius(cornerRadius)
-                .padding([.trailing])
-            }
-            
-            Text("Meet Score Calculator")
-                .font(.title)
-                .bold()
-            
-            CalculatorTopView(tableData: $tableData, numDives: $numDives, meetType: $meetType,
-                              dives: $dives)
-            .onChange(of: numDives) { _ in
-                refreshDives()
-            }
-            .onChange(of: meetType) { _ in
-                refreshDives()
-            }
-            .onAppear {
-                if dives.count > 0 {
-                    numDives = dives.count
-                }
-                setDivesList()
-                if dives.count > 0 {
+            VStack {
+//                HStack {
+//                    Spacer()
+//                    Button("Clear") {
+//                        clearDivesList()
+//                    }
+//                    .buttonStyle(.bordered)
+//                    .cornerRadius(cornerRadius)
+//                    .padding([.trailing])
+//                }
+                
+                Text("Meet Score Calculator")
+                    .font(.title)
+                    .bold()
+                
+                CalculatorTopView(tableData: $tableData, numDives: $numDives, meetType: $meetType,
+                                  dives: $dives)
+                .onChange(of: numDives) { _ in
                     refreshDives()
                 }
-            }
-            
-            let total = diveTotalScores.reduce(into: 0.0, { $0 += $1 })
-            if total > 0.0 {
-                HStack(spacing: 0) {
-                    Text("Meet Total: ")
-                        .bold()
-                    Text(String(format: "%.2f", total))
-                        .fontWeight(.semibold)
-                    
+                .onChange(of: meetType) { _ in
+                    refreshDives()
                 }
-                .font(.title2)
-                .padding()
-                .background(RoundedRectangle(cornerRadius: cornerRadius).fill(.thinMaterial))
-            }
-            
-            Divider()
-            
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 10) {
-                    ForEach(0..<numDives, id: \.self) { i in
-                        CalculatorRowView(tableData: $tableData, dives: $dives, meetType: $meetType,
-                                          diveNetScores: $diveNetScores,
-                                          diveTotalScores: $diveTotalScores,
-                                          focusedField: $focusedField, idx: i)
-                        .padding(.top, i == 0 ? 10 : 0)
-                        .padding(.bottom, i == numDives - 1 ? 10 : 0)
+                .onAppear {
+                    if dives.count > 0 {
+                        numDives = dives.count
+                    }
+                    setDivesList()
+                    if dives.count > 0 {
+                        refreshDives()
                     }
                 }
+                
+                let total = diveTotalScores.reduce(into: 0.0, { $0 += $1 })
+                if total > 0.0 {
+                    HStack(spacing: 0) {
+                        Text("Meet Total: ")
+                            .bold()
+                        Text(String(format: "%.2f", total))
+                            .fontWeight(.semibold)
+                        
+                    }
+                    .font(.title2)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: cornerRadius).fill(.thinMaterial))
+                }
+                
+                Divider()
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 10) {
+                        ForEach(0..<numDives, id: \.self) { i in
+                            CalculatorRowView(tableData: $tableData, dives: $dives, meetType: $meetType,
+                                              diveNetScores: $diveNetScores,
+                                              diveTotalScores: $diveTotalScores,
+                                              focusedField: $focusedField, idx: i)
+                            .padding(.top, i == 0 ? 10 : 0)
+                            .padding(.bottom, i == numDives - 1 ? 10 : 0)
+                        }
+                    }
+                }
+                .background(.clear)
             }
-            .background(.clear)
+            .padding(.bottom, maxHeightOffset)
         }
-        .padding(.bottom, maxHeightOffset)
-    }
         .onAppear {
             tableData = getDiveTableData()
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 40)
+                            .foregroundColor(Custom.grayThinMaterial)
+                            .shadow(radius: 4)
+                            .frame(width: navButtonWidth, height: navButtonHeight)
+                        Text("Clear")
+                            .foregroundColor(.primary)
+//                        .frame(width: navButtonHeight * 1.75, height: navButtonHeight)
+                    }
+                    .onTapGesture {
+                        clearDivesList()
+                    }
+            }
         }
     }
 }
@@ -282,7 +317,7 @@ struct CalculatorRowView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 30)
-                .fill(bubbleColor)
+                .fill(Custom.darkGray)
                 .shadow(radius: 5)
             
             VStack {

@@ -84,12 +84,3 @@ struct MiniProfileImage: View {
 
     }
 }
-
-
-struct ProfileImage_Previews: PreviewProvider {
-    static var previews: some View {
-        ForEach(ColorScheme.allCases, id: \.self) {
-            ProfileImage(diverID: "16241").preferredColorScheme($0)
-        }
-    }
-}

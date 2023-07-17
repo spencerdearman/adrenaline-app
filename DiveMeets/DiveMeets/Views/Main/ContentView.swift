@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+// Global timeoutInterval to use for online loading pages
+let timeoutInterval: TimeInterval = 30
+
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
@@ -66,12 +69,13 @@ struct ContentView: View {
                                     case .house:
                                         Home()
                                     case .wrench:
-                                        NavigationView {
-//                                            LiveResultsView(request: "debug")
-                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
-                                        }
-                                        .navigationViewStyle(StackNavigationViewStyle())
-//                                        ToolsMenu()
+                                        //NavigationView {
+                                            //LiveResultsView(request: "debug")
+//                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                                        //}
+                                        //.navigationViewStyle(StackNavigationViewStyle())
+                                        ToolsMenu()
+                                         //SearchColorfulView()
                                     case .magnifyingglass:
                                         SearchView(isIndexingMeets: $isIndexingMeets)
                                     case .person:

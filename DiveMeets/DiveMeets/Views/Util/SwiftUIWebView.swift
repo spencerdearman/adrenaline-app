@@ -17,12 +17,13 @@ struct SwiftUIWebView: View {
     @Binding var parsedLinks: DiverProfileRecords
     @Binding var dmSearchSubmitted: Bool
     @Binding var linksParsed: Bool
+    @Binding var timedOut: Bool
     
     var body: some View {
         VStack {
             WebView(request: $request, parsedHTML: $parsedHTML,
                     parsedLinks: $parsedLinks, firstName: $firstName, lastName: $lastName,
-                    dmSearchSubmitted: $dmSearchSubmitted, linksParsed: $linksParsed)
+                    dmSearchSubmitted: $dmSearchSubmitted, linksParsed: $linksParsed, timedOut: $timedOut)
         }
     }
 }
@@ -36,6 +37,7 @@ struct WebView: UIViewRepresentable {
     @Binding var lastName: String
     @Binding var dmSearchSubmitted: Bool
     @Binding var linksParsed: Bool
+    @Binding var timedOut: Bool
     
     func makeUIView(context: Context) -> WKWebView {
         let webView: WKWebView = {
@@ -57,13 +59,18 @@ struct WebView: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {
         guard let url = URL(string: request) else { return }
         uiView.load(URLRequest(url: url))
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeoutInterval) {
+            if !linksParsed {
+                timedOut = true
+            }
+        }
     }
     
     // From UIKit to SwiftUI
     func makeCoordinator() -> Coordinator {
         return Coordinator(html: $parsedHTML, links: $parsedLinks, firstName: $firstName,
                            lastName: $lastName, dmSearchSubmitted: $dmSearchSubmitted,
-                           linksParsed: $linksParsed)
+                           linksParsed: $linksParsed, timedOut: $timedOut)
     }
     
     class Coordinator: NSObject, WKNavigationDelegate {
@@ -74,16 +81,18 @@ struct WebView: UIViewRepresentable {
         @Binding var lastName: String
         @Binding var dmSearchSubmitted: Bool
         @Binding var linksParsed: Bool
+        @Binding var timedOut: Bool
         
         init(html: Binding<String>, links: Binding<DiverProfileRecords>, firstName: Binding<String>,
              lastName: Binding<String>, dmSearchSubmitted: Binding<Bool>,
-             linksParsed: Binding<Bool>) {
+             linksParsed: Binding<Bool>, timedOut: Binding<Bool>) {
             self._parsedHTML = html
             self._parsedLinks = links
             self._firstName = firstName
             self._lastName = lastName
             self._dmSearchSubmitted = dmSearchSubmitted
             self._linksParsed = linksParsed
+            self._timedOut = timedOut
         }
         
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

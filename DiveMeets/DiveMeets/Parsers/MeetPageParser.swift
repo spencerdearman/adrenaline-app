@@ -61,12 +61,12 @@ func correctDateFormatting(_ str: String) throws -> String {
         }
     }
     
-    if date == nil {
-        throw CustomError.FormatError
+    if let date = date {
+        df.dateFormat = "EEEE, MMM d, yyyy"
+        return df.string(from: date)
     }
     
-    df.dateFormat = "EEEE, MMM d, yyyy"
-    return df.string(from: date!)
+    throw CustomError.FormatError
 }
 
 class MeetPageParser: ObservableObject {
@@ -108,51 +108,56 @@ class MeetPageParser: ObservableObject {
             }
         }
         
-        if date == nil {
-            print("Date \(str) failed to format")
-            throw CustomError.FormatError
+        if let date = date {
+            df.dateFormat = "EEEE, MMM d, yyyy h:mm a"
+            return df.string(from: date)
         }
         
-        df.dateFormat = "EEEE, MMM d, yyyy h:mm a"
-        return df.string(from: date!)
+        print("Date \(str) failed to format")
+        throw CustomError.FormatError
     }
     
     private func correctTimeFormatting(_ str: String) throws -> String {
         let df = DateFormatter()
         df.dateFormat = "hh:mm a"
-        let date = df.date(from: str)!
+        guard let date = df.date(from: str) else { throw CustomError.FormatError }
         
         df.dateFormat = "h:mm a"
         return df.string(from: date)
         
     }
     
-    private func getEventRule(link: String) async -> String? {
-        let textModel: GetTextAsyncModel = GetTextAsyncModel()
-        let url: URL = URL(string: link)!
+    func getEventRule(link: String) async -> String? {
+        let textLoader = GetTextAsyncLoader()
         
-        await textModel.fetchText(url: url)
-        
-        if let text = textModel.text {
-            return text
+        do {
+            guard let url = URL(string: link) else { return nil }
+            guard let ruleHtml = try await textLoader.getText(url: url) else { return nil }
+            guard let tds = try SwiftSoup.parse(ruleHtml).body()?.getElementsByTag("td")
+            else { return nil }
+            if tds.count > 1 {
+                return try tds[tds.count - 2].text()
+            }
+        } catch {
+            print("Failed to get event rule")
         }
         
         return nil
     }
     
     func getEventData(data: MeetPageData) async -> MeetEventData? {
-        let textLoader: GetTextAsyncLoader = GetTextAsyncLoader()
         var result: MeetEventData = []
         var date: String = ""
         var number: Int = 0
         var text: String = ""
-        
         do {
             if let events = data["events"] {
                 for e in events {
                     text = try e.text()
                     // This line catches cases where results events are passed into this function
-                    if e == events.first! && !containsDayOfWeek(text) { return nil }
+                    if let first = events.first,
+                       e == first,
+                       !containsDayOfWeek(text) { return nil }
                     
                     if date == "" || containsDayOfWeek(text) {
                         date = text
@@ -166,27 +171,26 @@ class MeetPageParser: ObservableObject {
                     let html = try e.html()
                         .replacingOccurrences(of: "&nbsp;", with: "***")
                         .replacingOccurrences(of: " - ", with: "")
-                    let body = try SwiftSoup.parseBodyFragment(html).body()!
+                    guard let body = try SwiftSoup.parseBodyFragment(html).body() else { return nil }
                     
                     let comps = try body.text().components(separatedBy: "***")
                     let name = comps[0].trimmingCharacters(in: .whitespacesAndNewlines)
                     
-                    let ruleLink = try body.getElementsByTag("a").first()?.attr("href")
-                    let ruleHtml = try await textLoader.getText(url: URL(
-                        string: leadingLink + ruleLink!)!)!
-                    let tds = try SwiftSoup.parse(ruleHtml).body()!.getElementsByTag("td")
-                    let rule = try tds[tds.count - 2].text()
+                    guard let ruleLinkTail = try body.getElementsByTag("a").first()?.attr("href")
+                    else { return nil }
                     
                     // Assigns entries to empty string if there are no entries
                     let entries: String
-                    if try body.getElementsByTag("a").last()?.text() == "Rule" {
+                    guard let lastLink = try body.getElementsByTag("a").last() else { return nil }
+                    let lastLinkText = try lastLink.text()
+                    
+                    if !lastLinkText.contains("Entries") {
                         entries = ""
                     } else {
-                        entries = try leadingLink +
-                        (body.getElementsByTag("a").last()?.attr("href") ?? "")
+                        entries = try leadingLink + lastLink.attr("href")
                     }
                     
-                    result.append((date, number, name, rule, entries))
+                    result.append((date, number, name, leadingLink + ruleLinkTail, entries))
                 }
                 
                 return result
@@ -207,7 +211,9 @@ class MeetPageParser: ObservableObject {
                     let text = try event.text()
                     
                     // This line catches cases where info events are passed into this function
-                    if event == events.first! && containsDayOfWeek(text) { return nil }
+                    if let first = events.first,
+                       event == first,
+                       containsDayOfWeek(text) { return nil }
                     
                     guard let lastParen = text.lastIndex(of: ")") else { continue }
                     let rest = String(text[text.index(lastParen, offsetBy: 2)...])
@@ -217,10 +223,12 @@ class MeetPageParser: ObservableObject {
                     let link = try leadingLink + event.getElementsByTag("a").attr("href")
                     
                     let secSplit = rest.components(separatedBy: " ")
-                    let entries = Int(secSplit.first!)!
+                    guard let secFirst = secSplit.first else { return nil }
+                    guard let entries = Int(secFirst) else { return nil }
                     
                     // Converts date to proper format, then turns back into string
-                    let date = try correctDateFormatting(secSplit.last!)
+                    guard let secLast = secSplit.last else { return nil }
+                    let date = try correctDateFormatting(secLast)
                     
                     result.append((name, link, entries, date))
                 }
@@ -275,19 +283,24 @@ class MeetPageParser: ObservableObject {
             do {
                 for diver in divers {
                     let text = try diver.text()
-                    let noPlace = text.split(separator: ". ", maxSplits: 1).last!
+                    guard let noPlace = text.split(separator: ". ", maxSplits: 1).last
+                    else { return nil }
                     let nameSplit = noPlace.components(separatedBy: " - ")
+                    guard let nameFirst = nameSplit.first else { return nil }
+                    guard let nameLast = nameSplit.last else { return nil }
                     // Switches name order from Last, First to First Last
-                    let name = nameSplit.first!.components(separatedBy: ", ")
+                    let name = nameFirst.components(separatedBy: ", ")
                         .reversed()
                         .joined(separator: " ")
                     
-                    let teamSplit = nameSplit.last!.split(separator: " ( ")
-                    let team = String(teamSplit.first!)
+                    let teamSplit = nameLast.split(separator: " ( ")
+                    guard let teamFirst = teamSplit.first else { return nil }
+                    guard let teamLast = teamSplit.last else { return nil }
+                    let team = String(teamFirst)
                     
                     let link = try leadingLink + diver.getElementsByTag("a").attr("href")
                     
-                    let eventsStr = teamSplit.last!
+                    let eventsStr = teamLast
                     var events = eventsStr.components(separatedBy: " | ")
                     events[events.count - 1].removeLast(2)
                     
@@ -310,10 +323,11 @@ class MeetPageParser: ObservableObject {
             do {
                 for coach in coaches {
                     let text = try coach.text()
-                    let noPlace = text.split(separator: ". ", maxSplits: 1).last!
+                    guard let noPlace = text.split(separator: ". ", maxSplits: 1).last
+                    else { return nil }
                     let nameSplit = noPlace.components(separatedBy: " - ")
-                    let name = nameSplit.last!
-                    let team = nameSplit.first!
+                    guard let name = nameSplit.last else { return nil }
+                    guard let team = nameSplit.first else { return nil }
                     let link = try leadingLink + coach.getElementsByTag("a").attr("href")
                     
                     result.append((name, team, link))
@@ -326,6 +340,14 @@ class MeetPageParser: ObservableObject {
         }
         
         return nil
+    }
+    
+    private func isFullDate(_ string: String) -> Bool {
+        let df = DateFormatter()
+        df.dateFormat = "EEEE, MMM dd, yyyy"
+        if df.date(from: string) == nil { return false }
+        
+        return true
     }
     
     func getMeetInfoData(data: MeetPageData) async -> MeetInfoJointData? {
@@ -347,8 +369,11 @@ class MeetPageParser: ObservableObject {
                         try $0.attr("align") == "center"
                     }
                     
-                    if elems.count > 0 {
-                        curDay = try elems.first!.text()
+                    // Checks that first element is a full date to avoid other center aligned items
+                    if elems.count > 0,
+                       let first = elems.first,
+                       try isFullDate(first.text()) {
+                        curDay = try first.text()
                         addToTime = true
                         continue
                     }
@@ -357,9 +382,9 @@ class MeetPageParser: ObservableObject {
                     }
                     if text.contains("Pool") {
                         let poolHtml = try res.html().replacingOccurrences(of: "<br>", with: "$")
-                        text = try SwiftSoup.parseBodyFragment(poolHtml)
-                            .body()!.text()
-                            .replacingOccurrences(of: "$", with: "\n")
+                        guard let bodyText = try SwiftSoup.parseBodyFragment(poolHtml).body()?.text()
+                        else { return nil }
+                        text = bodyText.replacingOccurrences(of: "$", with: "\n")
                     }
                     if !addToTime && text.components(separatedBy: ": ").count < 2 {
                         print("Text split failed for: ", text)
@@ -386,14 +411,17 @@ class MeetPageParser: ObservableObject {
                         time[curDay]![label] = try correctTimeFormatting(value)
                     } else if label.contains("Online Signup Closes at") {
                         let dateSplit = value.split(separator: "(", maxSplits: 1)
+                        guard let dateFirst = dateSplit.first else { return nil }
+                        guard let dateLast = dateSplit.last else { return nil }
                         
-                        let date = try correctDateTimeFormatting(String(dateSplit.first!)
+                        let date = try correctDateTimeFormatting(String(dateFirst)
                             .trimmingCharacters(in: .whitespacesAndNewlines))
-                        infoResult[label] = date + " (" + dateSplit.last!
+                        infoResult[label] = date + " (" + dateLast
                     } else if label.contains("Date") {
                         let dateSplit = value.components(separatedBy: " ")
+                        guard let dateFirst = dateSplit.first else { return nil }
                         
-                        let date = try correctDateFormatting(dateSplit.first!)
+                        let date = try correctDateFormatting(dateFirst)
                         infoResult[label] = date
                     } else if label.contains("Fee must be paid by") {
                         let dateSplit = value.components(separatedBy: " ")
@@ -424,12 +452,14 @@ class MeetPageParser: ObservableObject {
         
         do {
             if let nameElem = data["name"] {
-                name = try nameElem.first!.getElementsByTag("strong").text()
+                guard let nameFirst = nameElem.first else { return nil }
+                name = try nameFirst.getElementsByTag("strong").text()
             } else {
                 return nil
             }
             if let dateElem = data["date"] {
-                date = try dateElem.first!.getElementsByTag("strong").text()
+                guard let dateFirst = dateElem.first else { return nil }
+                date = try dateFirst.getElementsByTag("strong").text()
             } else {
                 return nil
             }
