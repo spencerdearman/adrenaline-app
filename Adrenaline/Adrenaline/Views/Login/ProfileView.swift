@@ -246,16 +246,6 @@ struct ProfileView: View {
                                     }
                                     .font(.subheadline)
                                     .foregroundColor(.white)
-                                    HStack (alignment: .firstTextBaseline) {
-                                        Image(systemName: "person.circle")
-                                        diverDataInBounds
-                                        ? Text("Gender: " + (diverData[0][0]
-                                            .slice(from: " Gender: ",
-                                                   to: " DiveMeets") ?? ""))
-                                        : Text("")
-                                    }
-                                    .font(.subheadline)
-                                    .foregroundColor(.white)
                                     .padding([.leading], 2)
                                 }
                             }
