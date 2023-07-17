@@ -75,32 +75,14 @@ struct PersonBubbleView: View {
                                 ProfileView(profileLink: elements[2])
                             } label: {
                                 Text(elements[1])
-                                //                                .font(.title3)
-                                //                                .bold()
-                                //                                .scaledToFit()
-                                //                                .minimumScaleFactor(0.5)
-                                //                                .fixedSize(horizontal: false, vertical: true)
-                                //                                .lineLimit(1)
                             }
                             if elemCount > 12 {
                                 HStack(spacing: 0) {
                                     Text(" / ")
-                                    //                                    .font(.title3)
-                                    //                                    .bold()
-                                    //                                    .scaledToFit()
-                                    //                                    .minimumScaleFactor(0.5)
-                                    //                                    .fixedSize(horizontal: false, vertical: true)
-                                    //                                    .lineLimit(1)
                                     NavigationLink {
                                         ProfileView(profileLink: elements[10])
                                     } label: {
                                         Text(elements[9])
-                                        //                                        .font(.title3)
-                                        //                                        .bold()
-                                        //                                        .scaledToFit()
-                                        //                                        .minimumScaleFactor(0.5)
-                                        //                                        .fixedSize(horizontal: false, vertical: true)
-                                        //                                        .lineLimit(1)
                                     }
                                 }
                             }
