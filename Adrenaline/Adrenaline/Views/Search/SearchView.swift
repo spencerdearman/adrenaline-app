@@ -800,11 +800,12 @@ struct MeetResultsView : View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if !records.isEmpty {
                     ScalingScrollView(records: records, bgColor: Custom.specialGray,
-                                      rowSpacing: rowSpacing) { (e) in
+                                      rowSpacing: rowSpacing, shadowRadius: 5) { (e) in
                         NavigationLink(destination: MeetPageView(meetLink: e.link ?? "")) {
                             ZStack {
                                 Rectangle()
                                     .foregroundColor(Custom.darkGray)
+                                    .cornerRadius(40)
                                 VStack {
                                     if let name = e.name, let city = e.city, let state = e.state,
                                        let startDate = e.startDate, let endDate = e.endDate {

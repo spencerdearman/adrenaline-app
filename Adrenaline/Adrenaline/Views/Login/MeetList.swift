@@ -91,7 +91,7 @@ struct MeetList: View {
                                 ForEach($meets, id: \.id) { $meet in
                                     ZStack {
                                         RoundedRectangle(cornerRadius: cornerRadius)
-                                            .fill(Custom.specialGray)
+                                            .fill(Custom.darkGray)
                                             .shadow(radius: 5)
                                         DisclosureGroup(
                                             isExpanded: $meet.isExpanded,
@@ -108,7 +108,7 @@ struct MeetList: View {
                                                             destination: MeetPageView(
                                                                 meetLink: meet.link ?? "")) {
                                                                     ZStack {
-                                                                        shape.fill(Custom.darkGray)
+                                                                        shape.fill(Custom.grayThinMaterial)
                                                                         Text("Full Meet")
                                                                             .foregroundColor(.primary)
                                                                     }
@@ -210,7 +210,7 @@ struct ChildrenView: View {
             ForEach(children ?? [], id: \.id) { event in
                 let shape = RoundedRectangle(cornerRadius: 30)
                 ZStack {
-                    shape.fill(Custom.darkGray)
+                    shape.fill(Custom.grayThinMaterial)
                     ChildView(meet: event, navStatus: event.firstNavigation)
                 }
                 .contentShape(shape)
