@@ -43,23 +43,61 @@ struct EntryPageView: View {
                                     .cornerRadius(30)
                                     .shadow(radius: 10)
                                 EntryView(entry: entry) {
-                                    HStack {
-                                        NavigationLink(destination: ProfileView(profileLink: entry.link ?? ""),
-                                                       label: {
-                                            Text((entry.lastName ?? "") + ", " + (entry.firstName ?? ""))
+                                    if let partner = entry.synchroPartner {
+                                        return HStack {
+                                            VStack {
+                                                NavigationLink(
+                                                    destination: ProfileView(
+                                                        profileLink: entry.link ?? ""),
+                                                    label: {
+                                                        Text((entry.lastName ?? "") + ", " +
+                                                             (entry.firstName ?? ""))
+                                                    })
                                                 .font(.headline)
                                                 .scaledToFit()
+                                                
+                                                Divider()
+                                                
+                                                NavigationLink(
+                                                    destination: ProfileView(profileLink: partner.link),
+                                                    label: {
+                                                        Text(partner.lastName + ", " +
+                                                             partner.firstName)
+                                                    })
+                                                .font(.headline)
+                                                .scaledToFit()
+                                            }
+                                            .fixedSize(horizontal: true, vertical: false)
+                                            
+                                            Text(entry.team ?? "")
+                                                .font(.subheadline)
+                                                .foregroundColor(Color.secondary)
+                                                .scaledToFit()
                                                 .lineLimit(1)
-                                        })
-                                        Text(entry.team ?? "")
-                                            .font(.subheadline)
-                                            .foregroundColor(Color.secondary)
+                                            
+                                            Spacer()
+                                        }
+                                    } else {
+                                        return HStack {
+                                            NavigationLink(
+                                                destination: ProfileView(profileLink: entry.link ?? ""),
+                                                label: {
+                                                    Text((entry.lastName ?? "") + ", " +
+                                                         (entry.firstName ?? ""))
+                                                })
+                                            .font(.headline)
                                             .scaledToFit()
-                                            .lineLimit(1)
-                                        Spacer()
+                                            
+                                            Text(entry.team ?? "")
+                                                .font(.subheadline)
+                                                .foregroundColor(Color.secondary)
+                                                .scaledToFit()
+                                            
+                                            Spacer()
+                                        }
                                     }
                                 }
-                                    .padding()
+                                .padding()
                             }
                         }
                     }

@@ -60,7 +60,7 @@ struct PersonBubbleView: View {
     private var bubbleColor: Color {
         currentMode == .light ? .white : .black
     }
-    //  (Place  Name   NameLink  Team  TeamLink Score ScoreLink Score Diff. MeetName)
+    //  (Place, Name, NameLink, Team, TeamLink, Score, ScoreLink, Score Diff., MeetName, SynchroName, SynchroLink, SynchroTeam, SynchroTeamLink)
     private var elements: [String]
     private var eventTitle: String
     @State var navStatus: Bool = false
@@ -78,20 +78,34 @@ struct PersonBubbleView: View {
             VStack {
                 VStack {
                     HStack(alignment: .lastTextBaseline) {
-                        let link = elements[2]
-                        NavigationLink {
-                            ProfileView(profileLink: link)
-                        } label: {
-                            Text(elements[1])
-                                .font(.title3)
-                                .foregroundColor(.primary)
-                                .bold()
-                                .scaledToFit()
-                                .minimumScaleFactor(0.5)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .lineLimit(1)
+                        let elemCount = elements.count
+                        HStack(spacing: 0) {
+                            NavigationLink {
+                                ProfileView(profileLink: elements[2])
+                            } label: {
+                                Text(elements[1])
+                            }
+                            if elemCount > 12 {
+                                HStack(spacing: 0) {
+                                    Text(" / ")
+                                    NavigationLink {
+                                        ProfileView(profileLink: elements[10])
+                                    } label: {
+                                        Text(elements[9])
+                                    }
+                                }
+                            }
                         }
-                        Text(elements[3])
+                        .font(.title3)
+                        .bold()
+                        .scaledToFit()
+                        .minimumScaleFactor(0.5)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(1)
+                        
+                        (elemCount > 12
+                         ? Text(elements[3] + " / " + elements[11])
+                         : Text(elements[3]))
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         Spacer()
@@ -117,9 +131,6 @@ struct PersonBubbleView: View {
                 }
             }
             .padding()
-        }
-        .onTapGesture {
-            print(elements[3])
         }
     }
 }

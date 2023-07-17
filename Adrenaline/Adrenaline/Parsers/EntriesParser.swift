@@ -37,12 +37,23 @@ class EntriesParser: ObservableObject {
                         // Row with diver name and potentially board label
                         if sublinks.count > 0 && sublinks[0].hasAttr("href") {
                             let links = try bolds[0].getElementsByTag("a")
+                            
                             if links.count > 1 {
-                                let name = try links[0].text().components(separatedBy: ", ")
-                                entry.firstName = name[1]
-                                entry.lastName = name[0]
+                                let diverAName = try links[0].text().components(separatedBy: ", ")
+                                entry.firstName = diverAName[1]
+                                entry.lastName = diverAName[0]
                                 entry.link = try leadingLink + links[0].attr("href")
                                 entry.team = try links[1].text()
+                                
+                                if links.count > 2 {
+                                    let name = try links[2].text().components(separatedBy: ", ")
+                                    let first = name[1]
+                                    let last = name[0]
+                                    let link = try leadingLink + links[2].attr("href")
+                                    entry.synchroPartner = SynchroPartner(firstName: first,
+                                                                          lastName: last,
+                                                                          link: link)
+                                }
                             }
                             
                             if bolds.count > 1 {
@@ -229,4 +240,11 @@ struct EventEntry: Hashable {
     var dives: [EntryDive]?
     var totalDD: Double?
     var board: String?
+    var synchroPartner: SynchroPartner?
+}
+
+struct SynchroPartner: Hashable {
+    var firstName: String
+    var lastName: String
+    var link: String
 }
