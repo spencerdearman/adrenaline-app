@@ -20,7 +20,7 @@ struct ContentView: View {
     @State var showSplash: Bool = false
     @FetchRequest(sortDescriptors: []) private var meets: FetchedResults<DivingMeet>
     
-    private let splashDuration: CGFloat = 0.5
+    private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
     
