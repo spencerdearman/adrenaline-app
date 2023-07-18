@@ -7,12 +7,28 @@
 
 import SwiftUI
 
-struct SignupData {
+struct SignupData: Hashable {
     var accountType: AccountType?
     var firstName: String?
     var lastName: String?
     var email: String?
     var phone: String?
+    var recruiting: RecruitingData?
+}
+
+struct RecruitingData: Hashable {
+    var height: Height?
+    var weight: Int?
+    var gender: String?
+    var age: Int?
+    var gradYear: Int?
+    var highSchool: String?
+    var hometown: String?
+}
+
+struct Height: Hashable {
+    var feet: Int
+    var inches: Int
 }
 
 struct FirstOpenView: View {
