@@ -33,17 +33,19 @@ struct Height: Hashable {
 
 struct FirstOpenView: View {
     @State var signupData = SignupData()
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
         NavigationView {
             ZStack {
                 Rectangle()
                     .foregroundColor(Custom.grayThinMaterial)
-                    .frame(width: 250, height: 125)
+                    .frame(width: screenWidth * 0.9, height: 125)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 6)
                 VStack {
-                    Text("Welcome")
+                    Text("Welcome to Adrenaline")
                         .font(.title)
                     .bold()
                     HStack {
