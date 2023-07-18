@@ -72,6 +72,7 @@ struct BasicInfoView: View {
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
                             .textContentType(.givenName)
+                            .multilineTextAlignment(.center)
                             .focused($focusedField, equals: .first)
                             .onChange(of: firstName) { _ in
                                 signupData.firstName = firstName
@@ -80,6 +81,7 @@ struct BasicInfoView: View {
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
                             .textContentType(.familyName)
+                            .multilineTextAlignment(.center)
                             .focused($focusedField, equals: .last)
                             .onChange(of: lastName) { _ in
                                 signupData.lastName = lastName
@@ -89,15 +91,17 @@ struct BasicInfoView: View {
                             .frame(width: textFieldWidth)
                             .textContentType(.emailAddress)
                             .keyboardType(.emailAddress)
+                            .multilineTextAlignment(.center)
                             .focused($focusedField, equals: .email)
                             .onChange(of: email) { _ in
                                 signupData.email = email
                             }
                         TextField("Phone (optional)", text: $phone)
                             .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
                             .textContentType(.telephoneNumber)
                             .keyboardType(.numberPad)
-                            .frame(width: textFieldWidth)
+                            .multilineTextAlignment(.center)
                             .focused($focusedField, equals: .phone)
                             .onChange(of: phone) { _ in
                                 signupData.phone = phone
@@ -105,7 +109,9 @@ struct BasicInfoView: View {
                         
                         Spacer()
                         
-                        NavigationLink(destination: AdrenalineProfileView(signupData: $signupData, selectedOption: $selectedOption)) {
+                        NavigationLink(destination: signupData.accountType == .athlete
+                                       ? AnyView(AthleteRecruitingView(signupData: $signupData))
+                                       : AnyView(ProfileView(profileLink: ""))) {
                             Text("Next")
                                 .bold()
                         }
@@ -118,20 +124,25 @@ struct BasicInfoView: View {
                     .padding()
                 }
                 .frame(width: screenWidth * 0.9, height: 300)
+                .onAppear {
+                    // Clears recruiting data on appear and if user comes back from recruiting
+                    // section into basic info
+                    signupData.recruiting = nil
+                }
                 .onDisappear {
                     print(signupData)
                 }
                 
                 Spacer()
             }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        NavigationViewBackButton()
-                    }
-                }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
         }
     }
 }

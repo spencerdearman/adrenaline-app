@@ -43,6 +43,7 @@
 		00F9667B29AFDA1500F3720B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F9667A29AFDA1500F3720B /* ContentView.swift */; };
 		00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FEF7B82A2A972800AAFC7C /* EntriesParser.swift */; };
 		00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FEF7BA2A2A990900AAFC7C /* EntryPageView.swift */; };
+		00FFDAE82A66FBE10090727B /* AthleteRecruitingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */; };
 		4D09308529D3A1B7003AAA90 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D09308429D3A1B7003AAA90 /* LoginScreen.swift */; };
 		4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */; };
 		4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */; };
@@ -113,6 +114,7 @@
 		00F9667A29AFDA1500F3720B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		00FEF7B82A2A972800AAFC7C /* EntriesParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntriesParser.swift; sourceTree = "<group>"; };
 		00FEF7BA2A2A990900AAFC7C /* EntryPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryPageView.swift; sourceTree = "<group>"; };
+		00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteRecruitingView.swift; sourceTree = "<group>"; };
 		4D09308429D3A1B7003AAA90 /* LoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
 		4D1177C729F88B7000850D18 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUIWebView.swift; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 				00B6A5D32A66504C00C4DFDA /* FirstOpenView.swift */,
 				00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */,
 				00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */,
+				00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */,
 			);
 			path = SignupSequence;
 			sourceTree = "<group>";
@@ -454,6 +457,7 @@
 				4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */,
 				00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */,
 				00F9667B29AFDA1500F3720B /* ContentView.swift in Sources */,
+				00FFDAE82A66FBE10090727B /* AthleteRecruitingView.swift in Sources */,
 				4D60E8F92A1737A90011A295 /* ScoringParser.swift in Sources */,
 				00F2C3142A25B1B800B1CD01 /* EventParser.swift in Sources */,
 				00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */,
