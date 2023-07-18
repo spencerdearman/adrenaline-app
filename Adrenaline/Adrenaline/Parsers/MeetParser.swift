@@ -588,10 +588,10 @@ final class MeetParser: ObservableObject {
                         try await MainActor.run {
                             // Parses subpage and gets meet names and links
                             if let text = linkText,
-                               let result = getMeetInfo(text: text),
-                               let meets = upcomingMeets,
-                               var currentYear = meets[currentYear] {
-                                try currentYear[tabElem.text()] = result
+                               let result = getMeetInfo(text: text) {
+                                if upcomingMeets != nil && upcomingMeets![currentYear] != nil {
+                                    try upcomingMeets![currentYear]![tabElem.text()] = result
+                                }
                             }
                         }
                     }
