@@ -24,25 +24,6 @@ struct AdrenalineProfileView: View {
     }
 }
 
-struct BackgroundBubble<Content: View>: View {
-    var content: Content
-    var color: Color = Custom.darkGray
-    var cornerRadius: CGFloat = 40
-    var shadow: CGFloat = 10
-    var width: CGFloat = 100
-    var height: CGFloat = 50
-    
-    var body: some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(color)
-                .cornerRadius(cornerRadius)
-                .shadow(radius: shadow)
-            content
-        }
-    }
-}
-
 //struct RecruitingData: Hashable {
 //    var height: Height?
 //    var weight: Int?
