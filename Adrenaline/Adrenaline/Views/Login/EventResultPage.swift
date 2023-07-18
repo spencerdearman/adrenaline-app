@@ -84,6 +84,7 @@ struct PersonBubbleView: View {
                                 ProfileView(profileLink: elements[2])
                             } label: {
                                 Text(elements[1])
+                                    .foregroundColor(.primary)
                             }
                             if elemCount > 12 {
                                 HStack(spacing: 0) {

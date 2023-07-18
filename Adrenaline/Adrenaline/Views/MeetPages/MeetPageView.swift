@@ -508,7 +508,7 @@ struct MeetResultsPageView: View {
                 
                 if let liveResults = liveResults {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: liveResultsToRecords(liveResults)) { (elems) in
+                        ScalingScrollView(records: liveResultsToRecords(liveResults), bgColor: .clear, shadowRadius: 10) { (elems) in
                             LiveResultsListView(elements: elems)
                         }
                         .frame(height: 300)
@@ -525,7 +525,7 @@ struct MeetResultsPageView: View {
                 
                 if let events = events {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: eventsToRecords(events)) { (elems) in
+                        ScalingScrollView(records: eventsToRecords(events), bgColor: .clear, shadowRadius: 10) { (elems) in
                             EventResultsView(elements: elems)
                         }
                         .frame(height: 500)
@@ -542,7 +542,7 @@ struct MeetResultsPageView: View {
                 
                 if let divers = divers {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: diversToRecords(divers)) { (elems) in
+                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, shadowRadius: 10) { (elems) in
                             DiverListView(elements: elems)
                         }
                         .frame(height: 500)
@@ -575,7 +575,8 @@ struct EventResultsView: View {
         NavigationLink(destination: EventResultPage(meetLink: elements[1])) {
             ZStack {
                 Rectangle()
-                    .foregroundColor(bubbleColor)
+                    .foregroundColor(Custom.darkGray)
+                    .cornerRadius(40)
                 VStack {
                     Text(elements[0]) // name
                         .font(.title3)
@@ -587,11 +588,13 @@ struct EventResultsView: View {
                     Spacer()
                     HStack {
                         Text(elements[2] + " Entries") // entries
+                            .padding(.leading, 14)
                             .font(.subheadline)
                             .foregroundColor(.primary)
                         Spacer()
                         Text(elements[3]) // date
                             .font(.subheadline)
+                            .padding(.trailing, 14)
                             .scaledToFit()
                             .minimumScaleFactor(0.5)
                             .foregroundColor(.primary)
@@ -622,7 +625,8 @@ struct LiveResultsListView: View {
                        : AnyView(LiveResultsView(request: elements[1]))) {
             ZStack {
                 Rectangle()
-                    .foregroundColor(bubbleColor)
+                    .foregroundColor(Custom.darkGray)
+                    .cornerRadius(40)
                 VStack {
                     Text(elements[0]) // name
                         .font(.title3)
@@ -651,13 +655,15 @@ struct DiverListView: View {
         NavigationLink(destination: ProfileView(profileLink: elements[2])) {
             ZStack {
                 Rectangle()
-                    .foregroundColor(bubbleColor)
+                    .foregroundColor(Custom.darkGray)
+                    .cornerRadius(40)
                 VStack(alignment: .leading) {
                     HStack() {
                         Text(elements[0]) // name
                             .font(.title3)
                             .bold()
                             .lineLimit(2)
+                            .foregroundColor(.primary)
                             .multilineTextAlignment(.leading)
                         
                         Text(elements[1]) // org
