@@ -13,15 +13,17 @@ struct AdrenalineProfileView: View {
     @Binding var selectedOption: AccountType?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    @State var offSet: CGFloat = 0
     
     var body: some View {
         NavigationView{
             ZStack{
-                GeometryReader{ geometry in
-                    BackgroundSpheres()
-                        .ignoresSafeArea()
-                        .frame(height: geometry.size.height * 0.7)
-                }
+                // Universal Base View
+                BackgroundSpheres()
+                    .ignoresSafeArea()
+                    .onAppear {
+                        offSet = screenHeight * 0.48
+                    }
                 
                 VStack {
                     if firstSignIn {
@@ -30,10 +32,11 @@ struct AdrenalineProfileView: View {
                             .foregroundColor(.primary))
                     }
                     ProfileImage(diverID: "51197")
+                        .position(x: screenWidth / 2, y: screenHeight * 0.5)
                     BackgroundBubble(content:
                                         Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? "")) .font(.title).fontWeight(.semibold)
                                      , padding: 20)
-                    .offset(y: -30)
+                    .offset(y: -screenHeight * 0.4)
                 }
                 .overlay{
                     BackgroundBubble(content:
@@ -43,10 +46,32 @@ struct AdrenalineProfileView: View {
                         Image(systemName: "gear")
                             .foregroundColor(.primary)
                     })
-                    .position(x: screenWidth * 0.55, y: screenHeight * 0.07)
+                    .offset(x: screenWidth * 0.26, y: -screenHeight * 0.15)
                     .scaleEffect(1.4)
                 }
                 .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
+                
+                ZStack{
+                    Rectangle()
+                        .foregroundColor(Custom.darkGray)
+                        .cornerRadius(50)
+                        .shadow(radius: 10)
+                        .frame(height: screenHeight * 1.1)
+                        .offset(y: offSet)
+                        .animation(.easeInOut(duration: 0.25))
+                        .onSwipeGesture(trigger: .onEnded) { direction in
+                            if direction == .up {
+                                offSet = screenHeight * 0.13
+                            } else if direction == .down {
+                                offSet = screenHeight * 0.48
+                            }
+                        }
+                }
+                
+                // For Athletes Specifically
+                
+                
+                
             }
         }
     }
