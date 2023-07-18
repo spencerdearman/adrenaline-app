@@ -7,13 +7,22 @@
 
 import SwiftUI
 
+enum BasicInfoField: Int, Hashable, CaseIterable {
+    case first
+    case last
+    case email
+    case phone
+}
+
 struct BasicInfoView: View {
+    @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @State var firstName: String = ""
-    @State var lastName: String = ""
-    @State var email: String = ""
-    @State var phone: String = ""
+    @State private var firstName: String = ""
+    @State private var lastName: String = ""
+    @State private var email: String = ""
+    @State private var phone: String = ""
     @Binding var selectedOption: AccountType?
+    @FocusState private var focusedField: BasicInfoField?
     
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
@@ -24,65 +33,83 @@ struct BasicInfoView: View {
         firstName != "" && lastName != "" && email != ""
     }
     
+    private var bgColor: Color {
+        currentMode == .light ? .white : .black
+    }
+    
     var body: some View {
-        VStack {
-            Text("Signup")
-                .font(.title)
-                .bold()
+        ZStack {
+            bgColor.ignoresSafeArea()
+                .onTapGesture {
+                    focusedField = nil
+                }
             
-            Spacer()
-            
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
+            VStack {
+                Text("Signup")
+                    .font(.title)
+                    .bold()
                 
-                VStack(spacing: 5) {
-                    Text("Basic Information")
-                        .font(.title2)
-                        .bold()
-                        .padding()
-                    Spacer()
+                Spacer()
+                
+                ZStack {
+                    Rectangle()
+                        .foregroundColor(Custom.grayThinMaterial)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 6)
                     
-                    TextField("First Name", text: $firstName)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: textFieldWidth)
-                    TextField("Last Name", text: $lastName)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: textFieldWidth)
-                    TextField("Email", text: $email)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: textFieldWidth)
-                    TextField("Phone (optional)", text: $phone)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: textFieldWidth)
-                    
-                    Spacer()
-                    
-                    NavigationLink(destination: ProfileView(profileLink: "")) {
-                        Text("Next")
+                    VStack(spacing: 5) {
+                        Text("Basic Information")
+                            .font(.title2)
                             .bold()
+                            .padding()
+                        Spacer()
+                        
+                        TextField("First Name", text: $firstName)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
+                            .focused($focusedField, equals: .first)
+                        TextField("Last Name", text: $lastName)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
+                            .focused($focusedField, equals: .last)
+                        TextField("Email", text: $email)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
+                            .focused($focusedField, equals: .email)
+                        TextField("Phone (optional)", text: $phone)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
+                            .focused($focusedField, equals: .phone)
+                        
+                        Spacer()
+                        
+                        NavigationLink(destination: ProfileView(profileLink: "")) {
+                            Text("Next")
+                                .bold()
+                        }
+                        .buttonStyle(.bordered)
+                        .cornerRadius(40)
+                        .foregroundColor(.primary)
+                        .opacity(!fieldsFilledIn ? 0.5 : 1.0)
+                        .disabled(!fieldsFilledIn)
                     }
-                    .buttonStyle(.bordered)
-                    .cornerRadius(40)
-                    .foregroundColor(.primary)
-                    .opacity(!fieldsFilledIn ? 0.5 : 1.0)
-                    .disabled(!fieldsFilledIn)
+                    .padding()
                 }
-                .padding()
+                .frame(width: screenWidth * 0.9, height: 300)
+                .onTapGesture {
+                    focusedField = nil
+                }
+                
+                Spacer()
             }
-            .frame(width: screenWidth * 0.9, height: 300)
-            
-            Spacer()
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        NavigationViewBackButton()
+                    }
+                }
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
-                }
-            }
         }
     }
 }
