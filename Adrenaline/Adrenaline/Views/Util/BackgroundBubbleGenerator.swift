@@ -12,11 +12,12 @@ struct BackgroundBubble<Content: View>: View {
     var color: Color = Custom.darkGray
     var cornerRadius: CGFloat = 40
     var shadow: CGFloat = 10
+    var padding: CGFloat = 14
     var width: CGFloat {
-        contentSize.width + 14
+        contentSize.width + padding
     }
     var height: CGFloat {
-        contentSize.height + 14
+        contentSize.height + padding
     }
     @State private var contentSize: CGSize = .zero
     

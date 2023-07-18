@@ -16,14 +16,39 @@ struct AdrenalineProfileView: View {
             ZStack{
                 BackgroundSpheres()
                     .frame(height: geometry.size.height * 0.7)
-                BackgroundBubble(content: Text("Welcome " + (signupData.firstName ?? ""))
-                    .font(.title2).fontWeight(.semibold)
-                    .foregroundColor(.primary))
+                VStack{
+                    ProfileImage(diverID: "51197")
+                    BackgroundBubble(content: Text("Welcome " + (signupData.firstName ?? ""))
+                        .font(.title2).fontWeight(.semibold)
+                        .foregroundColor(.primary))
+                    BackgroundBubble(content:
+                        VStack {
+                            BackgroundBubble(content: Text("My Profile")
+                                .font(.title3).fontWeight(.semibold)
+                                .foregroundColor(.primary))
+                            HStack {
+                                Text(signupData.firstName ?? "")
+                                Text(signupData.lastName ?? "")
+                            }
+                            Text(signupData.email ?? "")
+                            Text(signupData.phone ?? "")
+
+                    }, padding: 20)
+                }
+                
             }
         }
     }
 }
 
+//struct SignupData: Hashable {
+//    var accountType: AccountType?
+//    var firstName: String?
+//    var lastName: String?
+//    var email: String?
+//    var phone: String?
+//    var recruiting: RecruitingData?
+//}
 //struct RecruitingData: Hashable {
 //    var height: Height?
 //    var weight: Int?
