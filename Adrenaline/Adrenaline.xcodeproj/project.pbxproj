@@ -68,6 +68,8 @@
 		4D8B9C1929F8D395002B53AD /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B9C1829F8D395002B53AD /* Home.swift */; };
 		4D8B9C1D29FB4EBD002B53AD /* LoginProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B9C1C29FB4EBD002B53AD /* LoginProfile.swift */; };
 		4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9DD0992A058EF700F6D31C /* Event.swift */; };
+		4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */; };
+		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
 		4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD868EC29F0E69C00FF988D /* keychain-swift.swift */; };
 		4DE6CFC329E25A0D00831D1D /* LoginWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */; };
@@ -138,6 +140,8 @@
 		4D8B9C1829F8D395002B53AD /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		4D8B9C1C29FB4EBD002B53AD /* LoginProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProfile.swift; sourceTree = "<group>"; };
 		4D9DD0992A058EF700F6D31C /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineProfileView.swift; sourceTree = "<group>"; };
+		4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBubbleGenerator.swift; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		4DC7ACEC29F38828008BBB62 /* Adrenaline.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adrenaline.entitlements; sourceTree = "<group>"; };
 		4DD868EC29F0E69C00FF988D /* keychain-swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "keychain-swift.swift"; sourceTree = "<group>"; };
@@ -248,6 +252,7 @@
 		4D74FEB229AEB47000401178 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4DB1DC782A67112B0016EE14 /* Adrenaline Profile */,
 				00B6A5D22A66500F00C4DFDA /* SignupSequence */,
 				4D8B9C1229F898DD002B53AD /* Home */,
 				4D50E78B2A27148B009BFBFA /* Tools */,
@@ -353,8 +358,17 @@
 				0040A6B82A58E024004C84BF /* SwipeActions.swift */,
 				0065C5AB2A4377920040600E /* SwipeModifier.swift */,
 				0065C5A92A426D9E0040600E /* TileSwapView.swift */,
+				4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */,
 			);
 			path = Util;
+			sourceTree = "<group>";
+		};
+		4DB1DC782A67112B0016EE14 /* Adrenaline Profile */ = {
+			isa = PBXGroup;
+			children = (
+				4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */,
+			);
+			path = "Adrenaline Profile";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -463,6 +477,7 @@
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
 				4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,
+				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
 				002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */,
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,
 				002A1B7C29DB937C00A26FED /* Meets.xcdatamodeld in Sources */,
@@ -484,6 +499,7 @@
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
 				4D753DE02A214F640029138B /* EventResultPage.swift in Sources */,
 				0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */,
+				4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */,
 				0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */,
 				00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */,
 				0037877A29D4F40900D3CD59 /* ProfileMeetCache.swift in Sources */,
