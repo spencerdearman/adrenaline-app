@@ -8,36 +8,53 @@
 import SwiftUI
 
 struct AdrenalineProfileView: View {
+    var firstSignIn: Bool = false
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
-        GeometryReader{ geometry in
+        NavigationView{
             ZStack{
-                BackgroundSpheres()
-                    .frame(height: geometry.size.height * 0.7)
-                VStack{
-                    ProfileImage(diverID: "51197")
-                    BackgroundBubble(content: Text("Welcome " + (signupData.firstName ?? ""))
-                        .font(.title2).fontWeight(.semibold)
-                        .foregroundColor(.primary))
-                    BackgroundBubble(content:
-                        VStack {
-                            BackgroundBubble(content: Text("My Profile")
-                                .font(.title3).fontWeight(.semibold)
-                                .foregroundColor(.primary))
-                            HStack {
-                                Text(signupData.firstName ?? "")
-                                Text(signupData.lastName ?? "")
-                            }
-                            Text(signupData.email ?? "")
-                            Text(signupData.phone ?? "")
-
-                    }, padding: 20)
+                GeometryReader{ geometry in
+                    BackgroundSpheres()
+                        .ignoresSafeArea()
+                        .frame(height: geometry.size.height * 0.7)
                 }
                 
+                VStack {
+                    if firstSignIn {
+                        BackgroundBubble(content: Text("Welcome " + (signupData.firstName ?? ""))
+                            .font(.title2).fontWeight(.semibold)
+                            .foregroundColor(.primary))
+                    }
+                    ProfileImage(diverID: "51197")
+                    BackgroundBubble(content:
+                                        Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? "")) .font(.title).fontWeight(.semibold)
+                                     , padding: 20)
+                    .offset(y: -30)
+                }
+                .overlay{
+                    BackgroundBubble(content:
+                                        NavigationLink {
+                        SettingsPage()
+                    } label: {
+                        Image(systemName: "gear")
+                            .foregroundColor(.primary)
+                    })
+                    .position(x: screenWidth * 0.55, y: screenHeight * 0.07)
+                    .scaleEffect(1.4)
+                }
+                .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
             }
         }
+    }
+}
+
+struct SettingsPage: View {
+    var body: some View {
+        Text("Welcome to the settings page")
     }
 }
 
