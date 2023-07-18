@@ -7,7 +7,17 @@
 
 import SwiftUI
 
+struct SignupData {
+    var accountType: AccountType?
+    var firstName: String?
+    var lastName: String?
+    var email: String?
+    var phone: String?
+}
+
 struct FirstOpenView: View {
+    @State var signupData = SignupData()
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -27,7 +37,7 @@ struct FirstOpenView: View {
                         .buttonStyle(.bordered)
                         .cornerRadius(40)
                         .foregroundColor(.primary)
-                        NavigationLink(destination: AccountTypeSelectView()) {
+                        NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
                             Text("Sign Up")
                         }
                         .buttonStyle(.bordered)

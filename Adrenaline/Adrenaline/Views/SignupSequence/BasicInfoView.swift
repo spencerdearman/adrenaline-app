@@ -21,6 +21,7 @@ struct BasicInfoView: View {
     @State private var lastName: String = ""
     @State private var email: String = ""
     @State private var phone: String = ""
+    @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
     @FocusState private var focusedField: BasicInfoField?
     
@@ -29,7 +30,7 @@ struct BasicInfoView: View {
         screenWidth * 0.5
     }
     
-    private var fieldsFilledIn: Bool {
+    private var requiredFieldsFilledIn: Bool {
         firstName != "" && lastName != "" && email != ""
     }
     
@@ -56,6 +57,9 @@ struct BasicInfoView: View {
                         .foregroundColor(Custom.grayThinMaterial)
                         .mask(RoundedRectangle(cornerRadius: 40))
                         .shadow(radius: 6)
+                        .onTapGesture {
+                            focusedField = nil
+                        }
                     
                     VStack(spacing: 5) {
                         Text("Basic Information")
@@ -67,19 +71,37 @@ struct BasicInfoView: View {
                         TextField("First Name", text: $firstName)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
+                            .textContentType(.givenName)
                             .focused($focusedField, equals: .first)
+                            .onChange(of: firstName) { _ in
+                                signupData.firstName = firstName
+                            }
                         TextField("Last Name", text: $lastName)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
+                            .textContentType(.familyName)
                             .focused($focusedField, equals: .last)
+                            .onChange(of: lastName) { _ in
+                                signupData.lastName = lastName
+                            }
                         TextField("Email", text: $email)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
+                            .textContentType(.emailAddress)
+                            .keyboardType(.emailAddress)
                             .focused($focusedField, equals: .email)
+                            .onChange(of: email) { _ in
+                                signupData.email = email
+                            }
                         TextField("Phone (optional)", text: $phone)
                             .textFieldStyle(.roundedBorder)
+                            .textContentType(.telephoneNumber)
+                            .keyboardType(.numberPad)
                             .frame(width: textFieldWidth)
                             .focused($focusedField, equals: .phone)
+                            .onChange(of: phone) { _ in
+                                signupData.phone = phone
+                            }
                         
                         Spacer()
                         
@@ -90,14 +112,14 @@ struct BasicInfoView: View {
                         .buttonStyle(.bordered)
                         .cornerRadius(40)
                         .foregroundColor(.primary)
-                        .opacity(!fieldsFilledIn ? 0.5 : 1.0)
-                        .disabled(!fieldsFilledIn)
+                        .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                        .disabled(!requiredFieldsFilledIn)
                     }
                     .padding()
                 }
                 .frame(width: screenWidth * 0.9, height: 300)
-                .onTapGesture {
-                    focusedField = nil
+                .onDisappear {
+                    print(signupData)
                 }
                 
                 Spacer()
@@ -116,6 +138,7 @@ struct BasicInfoView: View {
 
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        BasicInfoView(selectedOption: .constant(nil))
+        BasicInfoView(signupData: .constant(SignupData()),
+                                            selectedOption: .constant(nil))
     }
 }
