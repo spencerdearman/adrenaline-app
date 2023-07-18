@@ -513,12 +513,6 @@ struct SearchInputView: View {
                 }
             }
             .ignoresSafeArea(.keyboard)
-//            .overlay {
-//                if selection == .meet && isIndexingMeets {
-//                    IndexingCounterView()
-//                        .offset(y: screenHeight * 0.5)
-//                }
-//            }
             .onSwipeGesture(trigger: .onEnded) { direction in
                 if direction == .left && selection == .person {
                     selection = .meet
