@@ -105,7 +105,7 @@ struct BasicInfoView: View {
                         
                         Spacer()
                         
-                        NavigationLink(destination: ProfileView(profileLink: "")) {
+                        NavigationLink(destination: AdrenalineProfileView(signupData: $signupData, selectedOption: $selectedOption)) {
                             Text("Next")
                                 .bold()
                         }
