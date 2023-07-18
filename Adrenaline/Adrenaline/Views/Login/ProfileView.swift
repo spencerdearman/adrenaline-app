@@ -298,7 +298,7 @@ struct ProfileView: View {
                                     .padding(.top, 8)
                                 }
                                 .background(
-                                    Custom.specialGray.matchedGeometryEffect(id: "background",
+                                    Custom.darkGray.matchedGeometryEffect(id: "background",
                                                                              in: profilespace)
                                 )
                                 .mask(
@@ -368,7 +368,7 @@ struct DiverBubbleView: View {
         } label: {
             ZStack {
                 Rectangle()
-                    .foregroundColor(Custom.accentThinMaterial)
+                    .foregroundColor(Custom.grayThinMaterial)
                     .cornerRadius(30)
                     .frame(width: 300, height: 100)
                     .shadow(radius: 5)
@@ -403,27 +403,28 @@ struct JudgedList: View {
                     ForEach(data, id: \.self) { meet in
                         ZStack {
                             RoundedRectangle(cornerRadius: 30)
-                                .fill(Custom.specialGray)
+                                .fill(Custom.darkGray)
                                 .shadow(radius: 5)
                             DisclosureGroup(
                                 content: {
                                     VStack(spacing: 5) {
                                         ForEach(meet.events, id: \.self) { event in
-                                            let shape = RoundedRectangle(cornerRadius: 30)
+                                            let shape = RoundedRectangle(cornerRadius: 50)
                                             NavigationLink(destination:
                                                             EventResultPage(meetLink: event.link))
                                             {
                                                 ZStack {
-                                                    shape.fill(Custom.accentThinMaterial)
+                                                    shape.fill(Custom.grayThinMaterial)
                                                     
                                                     HStack {
                                                         Text(event.name)
+                                                            .lineLimit(1)
                                                         Spacer()
                                                         Image(systemName: "chevron.right")
                                                             .foregroundColor(.blue)
                                                     }
-                                                    .frame(height: 80)
-                                                    .padding()
+                                                    .frame(height: 35)
+                                                    .padding(14)
                                                     
                                                 }
                                                 .foregroundColor(.primary)

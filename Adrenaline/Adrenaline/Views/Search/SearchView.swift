@@ -513,12 +513,6 @@ struct SearchInputView: View {
                 }
             }
             .ignoresSafeArea(.keyboard)
-            .overlay {
-                if selection == .meet && isIndexingMeets {
-                    IndexingCounterView()
-                        .offset(y: screenHeight * 0.5)
-                }
-            }
             .onSwipeGesture(trigger: .onEnded) { direction in
                 if direction == .left && selection == .person {
                     selection = .meet
@@ -747,10 +741,14 @@ struct MeetSearchView: View {
                                   }
                 }
                 .offset(y: -20)
+                if isIndexingMeet {
+                    IndexingCounterView()
+                        .offset(y: screenHeight * 0.1)
+                }
                 Spacer()
             }
             .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
-            .offset(y: -screenHeight * 0.02)
+            .offset(y: isIndexingMeet ? screenHeight * 0.04: -screenHeight * 0.02)
             .padding([.top, .leading, .trailing])
             .onAppear {
                 meetName = ""
