@@ -17,6 +17,11 @@ enum RecruitingInfoField: Int, Hashable, CaseIterable {
     case hometown
 }
 
+enum WeightUnit: String, CaseIterable {
+    case lb = "lb"
+    case kg = "kg"
+}
+
 enum Gender: String, CaseIterable {
     case male = "Male"
     case female = "Female"
@@ -29,6 +34,7 @@ struct AthleteRecruitingView: View {
     @State private var heightInches: String = ""
     @State private var height: String = "4-0"
     @State private var weight: String = ""
+    @State private var weightUnit: WeightUnit = .lb
     @State private var gender: Gender = .male
     @State private var age: String = ""
     @State private var gradYear: String = ""
@@ -133,19 +139,36 @@ struct AthleteRecruitingView: View {
                         .frame(width: textFieldWidth, height: screenHeight * 0.1)
                         .padding(.bottom, 5)
                         
-                        TextField("Weight", text: $weight)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth / 2)
-                            .textContentType(.givenName)
-                            .multilineTextAlignment(.center)
-                            .focused($focusedField, equals: .weight)
-                            .onChange(of: weight) { _ in
-                                if signupData.recruiting == nil {
-                                    signupData.recruiting = RecruitingData()
-                                }
-                                signupData.recruiting!.weight = Int(weight)
+                        HStack {
+                            TextField("Weight", text: $weight)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth / 2)
+                                .textContentType(.givenName)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .weight)
+                                .onChange(of: weight) { _ in
+                                    if signupData.recruiting == nil {
+                                        signupData.recruiting = RecruitingData()
+                                    }
+                                    if let weight = Double(weight) {
+                                        signupData.recruiting!.weight = Weight(weight: weight,
+                                                                               unit: weightUnit)
+                                    }
                             }
-                        GenderSelectView(gender: $gender)
+                            BubbleSelectView(selection: $weightUnit)
+                                .frame(width: textFieldWidth / 2)
+                                .onChange(of: weightUnit) { _ in
+                                    if signupData.recruiting == nil {
+                                        signupData.recruiting = RecruitingData()
+                                    }
+                                    if let weight = Double(weight) {
+                                        signupData.recruiting!.weight = Weight(weight: weight,
+                                                                               unit: weightUnit)
+                                    }
+                                    print(signupData.recruiting!)
+                                }
+                        }
+                        BubbleSelectView(selection: $gender)
                             .frame(width: textFieldWidth)
                             .onChange(of: gender) { _ in
                                 if signupData.recruiting == nil {
@@ -188,8 +211,10 @@ struct AthleteRecruitingView: View {
     }
 }
 
-struct GenderSelectView: View {
-    @Binding var gender: Gender
+struct BubbleSelectView<E: CaseIterable & Hashable & RawRepresentable>: View
+where E.RawValue == String, E.AllCases: RandomAccessCollection {
+    @Binding var selection: E
+    
     
     private let cornerRadius: CGFloat = 30
     private let selectedGray = Color(red: 0.85, green: 0.85, blue: 0.85, opacity: 0.4)
@@ -199,26 +224,26 @@ struct GenderSelectView: View {
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(.thinMaterial)
             HStack(spacing: 0) {
-                ForEach(Gender.allCases, id: \.self) { g in
+                ForEach(E.allCases, id: \.self) { e in
                     ZStack {
                         // Weird padding stuff to have end options rounded on the outside edge only
                         // when selected
                         // https://stackoverflow.com/a/72435691/22068672
                         Rectangle()
-                            .fill(gender == g ? selectedGray : .clear)
-                            .padding(.trailing, g == Gender.allCases.first ? cornerRadius : 0)
-                            .padding(.leading, g == Gender.allCases.last ? cornerRadius : 0)
-                            .cornerRadius(g == Gender.allCases.first || g == Gender.allCases.last
+                            .fill(selection == e ? selectedGray : .clear)
+                            .padding(.trailing, e == E.allCases.first ? cornerRadius : 0)
+                            .padding(.leading, e == E.allCases.last ? cornerRadius : 0)
+                            .cornerRadius(e == E.allCases.first || e == E.allCases.last
                                           ? cornerRadius : 0)
-                            .padding(.trailing, g == Gender.allCases.first ? -cornerRadius : 0)
-                            .padding(.leading, g == Gender.allCases.last ? -cornerRadius : 0)
-                        Text(g.rawValue)
+                            .padding(.trailing, e == E.allCases.first ? -cornerRadius : 0)
+                            .padding(.leading, e == E.allCases.last ? -cornerRadius : 0)
+                        Text(e.rawValue)
                     }
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
                     .onTapGesture {
-                        gender = g
+                        selection = e
                     }
-                    if g != Gender.allCases.last {
+                    if e != E.allCases.last {
                         Divider()
                     }
                 }

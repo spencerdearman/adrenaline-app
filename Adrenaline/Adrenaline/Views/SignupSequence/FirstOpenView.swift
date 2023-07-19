@@ -18,7 +18,7 @@ struct SignupData: Hashable {
 
 struct RecruitingData: Hashable {
     var height: Height?
-    var weight: Int?
+    var weight: Weight?
     var gender: String?
     var age: Int?
     var gradYear: Int?
@@ -29,6 +29,11 @@ struct RecruitingData: Hashable {
 struct Height: Hashable {
     var feet: Int
     var inches: Int
+}
+
+struct Weight: Hashable {
+    var weight: Double
+    var unit: WeightUnit
 }
 
 struct FirstOpenView: View {

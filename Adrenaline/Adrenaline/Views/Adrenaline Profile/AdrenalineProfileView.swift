@@ -42,7 +42,15 @@ struct AdrenalineProfileView: View {
 
 struct AdrenalineProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
+        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer",
+                            lastName: "Dearman", email: "dearmanspencer@gmail.com",
+                            phone: "571-758-8292",
+                            recruiting: RecruitingData(height: Height(feet: 6, inches: 0),
+                                                       weight: Weight(weight: 168, unit: .lb),
+                                                       gender: "Male", age: 19,
+                                                       gradYear: 2022,
+                                                       highSchool: "Oakton High School",
+                                                       hometown: "Oakton"))
         AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
     }
 }

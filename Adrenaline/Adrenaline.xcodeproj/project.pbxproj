@@ -352,6 +352,7 @@
 		4D8B9C1529F89A81002B53AD /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */,
 				002A1B7F29DB94A400A26FED /* MeetDBTestView.swift */,
 				008CB5642A61000400935537 /* NavigationViewBackButton.swift */,
 				0040A6B62A550C8E004C84BF /* NoStickPicker.swift */,
@@ -361,7 +362,6 @@
 				0040A6B82A58E024004C84BF /* SwipeActions.swift */,
 				0065C5AB2A4377920040600E /* SwipeModifier.swift */,
 				0065C5A92A426D9E0040600E /* TileSwapView.swift */,
-				4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
