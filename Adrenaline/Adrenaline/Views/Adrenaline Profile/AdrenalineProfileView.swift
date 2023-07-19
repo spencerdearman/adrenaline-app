@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DiverAccounts: Hashable {
+struct DiverCoachAccounts: Hashable {
     var DiveMeetsID: String?
     var USADivingID: String?
     var AAUDivingID: String?
@@ -16,7 +16,8 @@ struct DiverAccounts: Hashable {
 
 struct AdrenalineProfileView: View {
     var firstSignIn: Bool = false
-    @State var diverAccount: DiverAccounts? = nil
+    @State var personalAccount: DiverCoachAccounts? = nil
+    @State var diveMeetsID: String = ""
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
     private let screenWidth = UIScreen.main.bounds.width
@@ -33,17 +34,34 @@ struct AdrenalineProfileView: View {
                 }
             
             VStack {
-                if firstSignIn {
-                    BackgroundBubble(content: Text("Welcome " + (signupData.firstName ?? ""))
-                        .font(.title2).fontWeight(.semibold)
-                        .foregroundColor(.primary))
+                HStack{
+                    Spacer()
+                    ProfileImage(diverID: diveMeetsID)
+                        .scaleEffect(0.9)
+                    Spacer()
+                    VStack {
+                        BackgroundBubble(content:
+                                            VStack {
+                            Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? "")) .font(.title3).fontWeight(.semibold)
+                            Text(selectedOption?.rawValue ?? "")
+                                .foregroundColor(.secondary)
+                        }
+                                         , padding: 20)
+                        BackgroundBubble(content:
+                            HStack {
+                                HStack{
+                                    Image(systemName: "mappin.and.ellipse")
+                                    Text("Oakton, VA")
+                                }
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                    Text("19")
+                                }
+                            }
+                        )
+                    }
+                    Spacer()
                 }
-                ProfileImage(diverID: "51197")
-                    .position(x: screenWidth / 2, y: screenHeight * 0.5)
-                BackgroundBubble(content:
-                                    Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? "")) .font(.title).fontWeight(.semibold)
-                                 , padding: 20)
-                .offset(y: -screenHeight * 0.4)
             }
             .overlay{
                 BackgroundBubble(content:
@@ -57,7 +75,6 @@ struct AdrenalineProfileView: View {
                 .scaleEffect(1.4)
             }
             .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
-            
             ZStack{
                 Rectangle()
                     .foregroundColor(Custom.darkGray)
@@ -65,13 +82,13 @@ struct AdrenalineProfileView: View {
                     .shadow(radius: 10)
                     .frame(height: screenHeight * 1.1)
                 VStack {
-                    
+
                     if let type = selectedOption {
                         if type.rawValue == AccountType.athlete.rawValue {
-                            Text("This is an athlete profile")
-                                .foregroundColor(.primary)
+                            DiverView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
                         } else if type.rawValue == AccountType.coach.rawValue {
                             Text("This is a coaching profile")
+                            CoachView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
                         } else if type.rawValue == AccountType.spectator.rawValue {
                             Text("This is a spectator profile")
                         } else {
@@ -80,11 +97,6 @@ struct AdrenalineProfileView: View {
                     } else {
                         Text("Account type not selected")
                     }
-                    
-                    BackgroundBubble(content:
-                                        NavigationLink(destination: {
-                        DiveMeetsLink(diverAccount: $diverAccount)
-                    }, label: { Text("Link to your DiveMeets Account") }))
                 }
             }
             .offset(y: offSet)
@@ -96,11 +108,6 @@ struct AdrenalineProfileView: View {
                     offSet = screenHeight * 0.48
                 }
             }
-            
-            // For Athletes Specifically
-            
-            
-            
         }
     }
 }
@@ -111,10 +118,36 @@ struct SettingsPage: View {
     }
 }
 
+struct DiverView: View {
+    @Binding var diveMeetsID: String
+    @Binding var personalAccount: DiverCoachAccounts?
+    var body: some View {
+        VStack {
+            Spacer()
+            BackgroundBubble(content:
+                                NavigationLink(destination: {
+                DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
+            }, label: { Text("Link to your DiveMeets Account") }))
+            Spacer()
+        }
+    }
+}
+
+struct CoachView: View {
+    @Binding var diveMeetsID: String
+    @Binding var personalAccount: DiverCoachAccounts?
+    var body: some View {
+        BackgroundBubble(content:
+                            NavigationLink(destination: {
+            DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
+        }, label: { Text("Link to your DiveMeets Account") }))
+    }
+}
+
 struct DiveMeetsLink: View{
     @Environment(\.presentationMode) var presentationMode
-    @State private var diveMeetsID: String = ""
-    @Binding var diverAccount: DiverAccounts?
+    @Binding var diveMeetsID: String
+    @Binding var personalAccount: DiverCoachAccounts?
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
@@ -131,13 +164,12 @@ struct DiveMeetsLink: View{
                     .textContentType(.telephoneNumber)
                     .keyboardType(.numberPad)
                     .onChange(of: diveMeetsID) { _ in
-                        diverAccount?.DiveMeetsID = diveMeetsID
+                        personalAccount?.DiveMeetsID = diveMeetsID
                     }
                 .frame(width: textFieldWidth) }, padding: 40)
             BackgroundBubble(content:
                                 Button(action: {
-                // Perform any necessary actions when the "Done" button is pressed
-                presentationMode.wrappedValue.dismiss() // Navigate back to the previous view
+                presentationMode.wrappedValue.dismiss()
             }) {
                 BackgroundBubble(content:
                                     Text("Done")
@@ -174,9 +206,9 @@ struct DiveMeetsLink: View{
 //}
 //
 //
-//struct AdrenalineProfileView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
-//        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
-//    }
-//}
+struct AdrenalineProfileView_Previews: PreviewProvider {
+    static var previews: some View {
+        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
+        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
+    }
+}
