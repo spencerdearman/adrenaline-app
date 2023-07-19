@@ -41,37 +41,38 @@ struct AdrenalineProfileView: View {
                         .scaleEffect(0.9)
                     Spacer()
                     VStack {
-                        BackgroundBubble(content:
-                                            VStack {
-                            Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? "")) .font(.title3).fontWeight(.semibold)
-                            Text(selectedOption?.rawValue ?? "")
-                                .foregroundColor(.secondary)
-                        }
-                                         , padding: 20)
-                        BackgroundBubble(content:
-                                            HStack {
-                            HStack{
-                                Image(systemName: "mappin.and.ellipse")
-                                Text("Oakton, VA")
+                        BackgroundBubble(vPadding: 20, hPadding: 20) {
+                            VStack {
+                                Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? "")) .font(.title3).fontWeight(.semibold)
+                                Text(selectedOption?.rawValue ?? "")
+                                    .foregroundColor(.secondary)
                             }
+                        }
+                        BackgroundBubble() {
                             HStack {
-                                Image(systemName: "person.fill")
-                                Text("19")
+                                HStack{
+                                    Image(systemName: "mappin.and.ellipse")
+                                    Text("Oakton, VA")
+                                }
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                    Text("19")
+                                }
                             }
                         }
-                        )
                     }
                     Spacer()
                 }
             }
             .overlay{
-                BackgroundBubble(content:
-                                    NavigationLink {
-                    SettingsPage(signupData: $signupData, diveMeetsID: $diveMeetsID)
-                } label: {
-                    Image(systemName: "gear")
-                        .foregroundColor(.primary)
-                })
+                BackgroundBubble() {
+                    NavigationLink {
+                        SettingsPage(signupData: $signupData, diveMeetsID: $diveMeetsID)
+                    } label: {
+                        Image(systemName: "gear")
+                            .foregroundColor(.primary)
+                    }
+                }
                 .offset(x: screenWidth * 0.26, y: -screenHeight * 0.11)
                 .scaleEffect(1.4)
             }
@@ -127,7 +128,9 @@ struct SettingsPage: View {
         ScrollView {
             VStack {
                 Group {
-                    BackgroundBubble(content: Text("Settings").font(.title2).fontWeight(.semibold), padding: 20)
+                    BackgroundBubble(vPadding: 20, hPadding: 20) {
+                        Text("Settings").font(.title2).fontWeight(.semibold)
+                    }
                     ProfileImage(diverID: diveMeetsID)
                         .scaleEffect(0.75)
                         .frame(width: 150, height: 160)
@@ -145,10 +148,12 @@ struct SettingsPage: View {
                         EditProfile()
                     } label: {
                         HStack {
-                            BackgroundBubble(content: HStack {
-                                Text("Edit Profile").foregroundColor(.white).fontWeight(.semibold)
-                                Image(systemName: "chevron.right").foregroundColor(.white)
-                            }, color: Custom.coolBlue, padding: 20)
+                            BackgroundBubble(color: Custom.coolBlue, vPadding: 20, hPadding: 20) {
+                                HStack {
+                                    Text("Edit Profile").foregroundColor(.white).fontWeight(.semibold)
+                                    Image(systemName: "chevron.right").foregroundColor(.white)
+                                }
+                            }
                         }
                     }
                 }
@@ -211,14 +216,15 @@ struct DiverView: View {
             Spacer()
             // Showing DiveMeets Linking Screen
             if diveMeetsID == "" {
-                BackgroundBubble(content:
-                                    NavigationLink(destination: {
-                    DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                }, label: {
-                    Text("Link DiveMeets Account")
-                        .foregroundColor(.primary)
-                        .font(.title2).fontWeight(.semibold)
-                }), padding: 20)
+                BackgroundBubble(vPadding: 20, hPadding: 20) {
+                    NavigationLink(destination: {
+                        DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
+                    }, label: {
+                        Text("Link DiveMeets Account")
+                            .foregroundColor(.primary)
+                            .font(.title2).fontWeight(.semibold)
+                    })
+                }
             } else {
                 MeetList(profileLink: linkHead + diveMeetsID)
                     .frame(height: screenHeight * 0.8)
@@ -238,10 +244,11 @@ struct CoachView: View {
     @Binding var personalAccount: DiverCoachAccounts?
     private let linkHead: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     var body: some View {
-        BackgroundBubble(content:
-                            NavigationLink(destination: {
-            DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-        }, label: { Text("Link to your DiveMeets Account") }))
+        BackgroundBubble() {
+            NavigationLink(destination: {
+                DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
+            }, label: { Text("Link to your DiveMeets Account") })
+        }
     }
 }
 
@@ -255,30 +262,31 @@ struct DiveMeetsLink: View {
     }
     var body: some View {
         VStack {
-            BackgroundBubble(content:
-                                VStack {
-                Text("Please Enter DiveMeets ID")
-                    .foregroundColor(.primary)
-                    .font(.title2).fontWeight(.semibold)
-                TextField("DiveMeets ID", text: $diveMeetsID)
-                    .textFieldStyle(.roundedBorder)
-                    .textContentType(.telephoneNumber)
-                    .keyboardType(.numberPad)
-                    .onChange(of: diveMeetsID) { _ in
-                        personalAccount?.DiveMeetsID = diveMeetsID
-                    }
-                .frame(width: textFieldWidth) }, padding: 40)
-            BackgroundBubble(content:
-                                Button(action: {
-                presentationMode.wrappedValue.dismiss()
-            }) {
-                BackgroundBubble(content:
-                                    Text("Done")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-                )
+            BackgroundBubble(vPadding: 40, hPadding: 40) {
+                VStack {
+                    Text("Please Enter DiveMeets ID")
+                        .foregroundColor(.primary)
+                        .font(.title2).fontWeight(.semibold)
+                    TextField("DiveMeets ID", text: $diveMeetsID)
+                        .textFieldStyle(.roundedBorder)
+                        .textContentType(.telephoneNumber)
+                        .keyboardType(.numberPad)
+                        .onChange(of: diveMeetsID) { _ in
+                            personalAccount?.DiveMeetsID = diveMeetsID
+                        }
+                    .frame(width: textFieldWidth) }
             }
-            )
+            BackgroundBubble() {
+                Button {
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    BackgroundBubble() {
+                        Text("Done")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                    }
+                }
+            }
         }
     }
 }

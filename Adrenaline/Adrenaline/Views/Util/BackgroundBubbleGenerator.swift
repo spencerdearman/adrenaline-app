@@ -8,16 +8,17 @@
 import SwiftUI
 
 struct BackgroundBubble<Content: View>: View {
-    var content: () -> Content
     var color: Color = Custom.darkGray
     var cornerRadius: CGFloat = 40
     var shadow: CGFloat = 10
-    var padding: CGFloat = 14
+    var vPadding: CGFloat = 14
+    var hPadding: CGFloat = 14
+    var content: () -> Content
     var width: CGFloat {
-        contentSize.width + padding
+        contentSize.width + hPadding
     }
     var height: CGFloat {
-        contentSize.height + padding
+        contentSize.height + vPadding
     }
     @State private var contentSize: CGSize = .zero
     
