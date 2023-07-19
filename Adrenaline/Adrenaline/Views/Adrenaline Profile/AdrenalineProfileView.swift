@@ -15,6 +15,7 @@ struct DiverCoachAccounts: Hashable {
 }
 
 struct AdrenalineProfileView: View {
+    @Environment(\.dismiss) private var dismiss
     var firstSignIn: Bool = false
     @State var personalAccount: DiverCoachAccounts? = nil
     @State var diveMeetsID: String = ""
@@ -108,11 +109,11 @@ struct AdrenalineProfileView: View {
                 }
             }
         }
-        .navigationBarHidden(true)
     }
 }
 
 struct SettingsPage: View {
+    @Environment(\.dismiss) private var dismiss
     @State var email: String = ""
     @State var password: String = ""
     @State var phoneNumber: String = ""
@@ -178,6 +179,14 @@ struct SettingsPage: View {
                     Divider()
                     Text("Preferences")
                     Divider()
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
                 }
             }
         }
