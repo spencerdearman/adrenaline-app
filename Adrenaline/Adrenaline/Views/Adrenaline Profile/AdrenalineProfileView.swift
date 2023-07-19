@@ -16,7 +16,6 @@ struct AdrenalineProfileView: View {
     @State var offSet: CGFloat = 0
     
     var body: some View {
-        NavigationView{
             ZStack{
                 // Universal Base View
                 BackgroundSpheres()
@@ -46,7 +45,7 @@ struct AdrenalineProfileView: View {
                         Image(systemName: "gear")
                             .foregroundColor(.primary)
                     })
-                    .offset(x: screenWidth * 0.26, y: -screenHeight * 0.15)
+                    .offset(x: screenWidth * 0.26, y: -screenHeight * 0.11)
                     .scaleEffect(1.4)
                 }
                 .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
@@ -57,15 +56,34 @@ struct AdrenalineProfileView: View {
                         .cornerRadius(50)
                         .shadow(radius: 10)
                         .frame(height: screenHeight * 1.1)
-                        .offset(y: offSet)
-                        .animation(.easeInOut(duration: 0.25))
-                        .onSwipeGesture(trigger: .onEnded) { direction in
-                            if direction == .up {
-                                offSet = screenHeight * 0.13
-                            } else if direction == .down {
-                                offSet = screenHeight * 0.48
-                            }
+                    
+                    if let type = signupData.accountType {
+                        if type.rawValue == AccountType.athlete.rawValue {
+                            Text("This is an athlete profile")
+                                .foregroundColor(.primary)
+                        } else if type.rawValue == AccountType.coach.rawValue {
+                            Text("This is a coaching profile")
+                        } else if type.rawValue == AccountType.spectator.rawValue {
+                            Text("This is a spectator profile")
+                        } else {
+                            Text("The account type has not been specified")
                         }
+                    } else {
+                        Text("Account type not selected")
+                    }
+//                    BackgroundBubble(content:
+//                                        NavigationLink(destination: {
+//                        DiveMeetsLink()
+//                    }, label: { Text("Link to your DiveMeets Account") }))
+                }
+                .offset(y: offSet)
+                .animation(.easeInOut(duration: 0.25))
+                .onSwipeGesture(trigger: .onEnded) { direction in
+                    if direction == .up {
+                        offSet = screenHeight * 0.13
+                    } else if direction == .down {
+                        offSet = screenHeight * 0.48
+                    }
                 }
                 
                 // For Athletes Specifically
@@ -73,13 +91,18 @@ struct AdrenalineProfileView: View {
                 
                 
             }
-        }
     }
 }
 
 struct SettingsPage: View {
     var body: some View {
         Text("Welcome to the settings page")
+    }
+}
+
+struct DiveMeetsLink: View{
+    var body: some View {
+        Text("Link to your divemeets account here")
     }
 }
 
