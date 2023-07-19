@@ -51,80 +51,71 @@ struct BasicInfoView: View {
                     .bold()
                 
                 Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(Custom.grayThinMaterial)
-                        .mask(RoundedRectangle(cornerRadius: 40))
-                        .shadow(radius: 6)
-                        .onTapGesture {
-                            focusedField = nil
-                        }
-                    
-                    VStack(spacing: 5) {
-                        Text("Basic Information")
-                            .font(.title2)
-                            .bold()
-                            .padding()
-                        Spacer()
-                        
-                        TextField("First Name", text: $firstName)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.givenName)
-                            .multilineTextAlignment(.center)
-                            .focused($focusedField, equals: .first)
-                            .onChange(of: firstName) { _ in
-                                signupData.firstName = firstName
-                            }
-                        TextField("Last Name", text: $lastName)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.familyName)
-                            .multilineTextAlignment(.center)
-                            .focused($focusedField, equals: .last)
-                            .onChange(of: lastName) { _ in
-                                signupData.lastName = lastName
-                            }
-                        TextField("Email", text: $email)
-                            .autocapitalization(.none)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.emailAddress)
-                            .keyboardType(.emailAddress)
-                            .multilineTextAlignment(.center)
-                            .focused($focusedField, equals: .email)
-                            .onChange(of: email) { _ in
-                                signupData.email = email
-                            }
-                        TextField("Phone (optional)", text: $phone)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.telephoneNumber)
-                            .keyboardType(.numberPad)
-                            .multilineTextAlignment(.center)
-                            .focused($focusedField, equals: .phone)
-                            .onChange(of: phone) { _ in
-                                signupData.phone = phone
-                            }
-                        
-                        Spacer()
-                        
-                        NavigationLink(destination: signupData.accountType == .athlete
-                                       ? AnyView(AthleteRecruitingView(signupData: $signupData))
-                                       : AnyView(ProfileView(profileLink: ""))) {
-                            Text("Next")
+           
+                BackgroundBubble(onTapGesture: { focusedField = nil }) {
+                        VStack(spacing: 5) {
+                            Text("Basic Information")
+                                .font(.title2)
                                 .bold()
+                                .padding()
+                            Spacer()
+                            
+                            TextField("First Name", text: $firstName)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.givenName)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .first)
+                                .onChange(of: firstName) { _ in
+                                    signupData.firstName = firstName
+                                }
+                            TextField("Last Name", text: $lastName)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.familyName)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .last)
+                                .onChange(of: lastName) { _ in
+                                    signupData.lastName = lastName
+                                }
+                            TextField("Email", text: $email)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.emailAddress)
+                                .keyboardType(.emailAddress)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .email)
+                                .onChange(of: email) { _ in
+                                    signupData.email = email
+                                }
+                            TextField("Phone (optional)", text: $phone)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.telephoneNumber)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .phone)
+                                .onChange(of: phone) { _ in
+                                    signupData.phone = phone
+                                }
+                            
+                            Spacer()
+                            
+                            NavigationLink(destination: signupData.accountType == .athlete
+                                           ? AnyView(AthleteRecruitingView(signupData: $signupData))
+                                           : AnyView(ProfileView(profileLink: ""))) {
+                                Text("Next")
+                                    .bold()
+                            }
+                                           .buttonStyle(.bordered)
+                                           .cornerRadius(40)
+                                           .foregroundColor(.primary)
+                                           .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                                           .disabled(!requiredFieldsFilledIn)
                         }
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
-                        .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                        .disabled(!requiredFieldsFilledIn)
+                        .padding()
                     }
-                    .padding()
-                }
-                .frame(width: screenWidth * 0.9, height: 300)
+                .frame(height: 300)
                 .onAppear {
                     // Clears recruiting data on appear and if user comes back from recruiting
                     // section into basic info

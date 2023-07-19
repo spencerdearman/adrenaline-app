@@ -255,7 +255,7 @@
 		4D74FEB229AEB47000401178 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4DB1DC782A67112B0016EE14 /* Adrenaline Profile */,
+				4DB1DC782A67112B0016EE14 /* AdrenalineProfile */,
 				00B6A5D22A66500F00C4DFDA /* SignupSequence */,
 				4D8B9C1229F898DD002B53AD /* Home */,
 				4D50E78B2A27148B009BFBFA /* Tools */,
@@ -366,12 +366,12 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
-		4DB1DC782A67112B0016EE14 /* Adrenaline Profile */ = {
+		4DB1DC782A67112B0016EE14 /* AdrenalineProfile */ = {
 			isa = PBXGroup;
 			children = (
 				4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */,
 			);
-			path = "Adrenaline Profile";
+			path = AdrenalineProfile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

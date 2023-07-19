@@ -13,6 +13,7 @@ struct BackgroundBubble<Content: View>: View {
     var shadow: CGFloat = 10
     var vPadding: CGFloat = 14
     var hPadding: CGFloat = 14
+    var onTapGesture: () -> Void = {}
     var content: () -> Content
     var width: CGFloat {
         contentSize.width + hPadding
@@ -29,6 +30,7 @@ struct BackgroundBubble<Content: View>: View {
                 .cornerRadius(cornerRadius)
                 .shadow(radius: shadow)
                 .frame(width: width, height: height)
+                .onTapGesture(perform: onTapGesture)
             content()
                 .background {
                     GeometryReader { geometry in

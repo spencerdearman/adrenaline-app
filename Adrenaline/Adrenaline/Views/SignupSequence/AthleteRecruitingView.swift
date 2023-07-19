@@ -86,111 +86,128 @@ struct AthleteRecruitingView: View {
                 Spacer()
                 
                 ZStack {
-                    Rectangle()
-                        .foregroundColor(Custom.grayThinMaterial)
-                        .mask(RoundedRectangle(cornerRadius: 40))
-                        .shadow(radius: 6)
-                        .onTapGesture {
-                            focusedField = nil
-                        }
-                    
-                    VStack(spacing: 10) {
-                        Text("Recruiting Information")
-                            .font(.title2)
-                            .bold()
-                            .padding()
-                        Spacer()
-                        
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(Custom.grayThinMaterial)
-                                .mask(RoundedRectangle(cornerRadius: 40))
-                                .shadow(radius: 6)
-                                .onTapGesture {
-                                    focusedField = nil
-                                }
+                    BackgroundBubble() {
+                        VStack(spacing: 10) {
+                            Text("Recruiting Information")
+                                .font(.title2)
+                                .bold()
+                                .padding()
+                            Spacer()
                             
-                            HStack {
-                                Text("Height:")
-                                Picker("", selection: $height) {
-                                    ForEach(getHeightStrings(), id: \.0) { (tag, ft, inches) in
-                                        Text("\(ft)\' \(inches)\"")
-                                            .tag(tag)
+                            BackgroundBubble(shadow: 6, onTapGesture(perform: { focusedField = nil })) {
+                                HStack {
+                                    Text("Height:")
+                                    Picker("", selection: $height) {
+                                        ForEach(getHeightStrings(), id: \.0) { (tag, ft, inches) in
+                                            Text("\(ft)\' \(inches)\"")
+                                                .tag(tag)
+                                        }
+                                    }
+                                    .pickerStyle(.wheel)
+                                    .frame(width: textFieldWidth / 2)
+                                    .onChange(of: height) { _ in
+                                        let heightSplit = height.components(separatedBy: "-")
+                                        
+                                        if let ft = heightSplit.first,
+                                           let inches = heightSplit.last,
+                                           let ft = Int(ft),
+                                           let inches = Int(inches) {
+                                            if signupData.recruiting == nil {
+                                                signupData.recruiting = RecruitingData()
+                                            }
+                                            signupData.recruiting!.height = Height(feet: ft,
+                                                                                   inches: inches)
+                                        }
                                     }
                                 }
-                                .pickerStyle(.wheel)
-                                .frame(width: textFieldWidth / 2)
-                                .onChange(of: height) { _ in
-                                    let heightSplit = height.components(separatedBy: "-")
-                                    
-                                    if let ft = heightSplit.first,
-                                       let inches = heightSplit.last,
-                                       let ftInt = Int(ft),
-                                       let inchInt = Int(inches) {
+                                .padding([.leading, .trailing])
+                            }
+                            .frame(height: screenHeight * 0.1)
+                            .padding(.bottom, 5)
+                            
+                            HStack {
+                                TextField("Weight", text: $weight)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: textFieldWidth / 2)
+                                    .textContentType(.givenName)
+                                    .multilineTextAlignment(.center)
+                                    .focused($focusedField, equals: .weight)
+                                    .onChange(of: weight) { _ in
                                         if signupData.recruiting == nil {
                                             signupData.recruiting = RecruitingData()
                                         }
-                                        signupData.recruiting!.height = Height(feet: ftInt,
-                                                                               inches: inchInt)
+                                        if let weight = Double(weight) {
+                                            signupData.recruiting!.weight = Weight(weight: weight,
+                                                                                   unit: weightUnit)
+                                        }
                                     }
-                                }
+                                BubbleSelectView(selection: $weightUnit)
+                                    .frame(width: textFieldWidth / 2)
+                                    .onChange(of: weightUnit) { _ in
+                                        if signupData.recruiting == nil {
+                                            signupData.recruiting = RecruitingData()
+                                        }
+                                        if let weight = Double(weight) {
+                                            signupData.recruiting!.weight = Weight(weight: weight,
+                                                                                   unit: weightUnit)
+                                        }
+                                        print(signupData.recruiting!)
+                                    }
                             }
-                        }
-                        .frame(width: textFieldWidth, height: screenHeight * 0.1)
-                        .padding(.bottom, 5)
-                        
-                        HStack {
-                            TextField("Weight", text: $weight)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: textFieldWidth / 2)
-                                .textContentType(.givenName)
-                                .multilineTextAlignment(.center)
-                                .focused($focusedField, equals: .weight)
-                                .onChange(of: weight) { _ in
+                            BubbleSelectView(selection: $gender)
+                                .frame(width: textFieldWidth)
+                                .onChange(of: gender) { _ in
                                     if signupData.recruiting == nil {
                                         signupData.recruiting = RecruitingData()
                                     }
-                                    if let weight = Double(weight) {
-                                        signupData.recruiting!.weight = Weight(weight: weight,
-                                                                               unit: weightUnit)
-                                    }
-                            }
-                            BubbleSelectView(selection: $weightUnit)
-                                .frame(width: textFieldWidth / 2)
-                                .onChange(of: weightUnit) { _ in
-                                    if signupData.recruiting == nil {
-                                        signupData.recruiting = RecruitingData()
-                                    }
-                                    if let weight = Double(weight) {
-                                        signupData.recruiting!.weight = Weight(weight: weight,
-                                                                               unit: weightUnit)
-                                    }
+                                    signupData.recruiting!.gender = gender.rawValue
                                     print(signupData.recruiting!)
                                 }
-                        }
-                        BubbleSelectView(selection: $gender)
-                            .frame(width: textFieldWidth)
-                            .onChange(of: gender) { _ in
-                                if signupData.recruiting == nil {
-                                    signupData.recruiting = RecruitingData()
+                                .padding(.bottom, 5)
+                            
+                            BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
+                                HStack {
+                                    Text("Age:")
+                                    Picker("", selection: $age) {
+                                        ForEach(13..<26, id: \.self) { age in
+                                            Text("\(age)")
+                                                .tag(String(age))
+                                        }
+                                    }
+                                    .pickerStyle(.wheel)
+                                    .frame(width: textFieldWidth / 2)
+                                    .onChange(of: age) { _ in
+                                            if signupData.recruiting == nil {
+                                                signupData.recruiting = RecruitingData()
+                                            }
+                                        if let age = Int(age) {
+                                            signupData.recruiting!.age = age
+                                            print(signupData.recruiting!)
+                                        }
+                                    }
                                 }
-                                signupData.recruiting!.gender = gender.rawValue
-                                print(signupData.recruiting!)
+                                .padding([.leading, .trailing])
                             }
-                        
-                        Spacer()
-                        
-                        NavigationLink(destination: ProfileView(profileLink: "")) {
-                            Text("Next")
-                                .bold()
+                            .frame(height: screenHeight * 0.1)
+                            .padding(.bottom, 5)
+                            
+                            Spacer()
+                            
+                            NavigationLink(destination: ProfileView(profileLink: "")) {
+                                Text("Next")
+                                    .bold()
+                            }
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
+                            .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                            .disabled(!requiredFieldsFilledIn)
                         }
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
-                        .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                        .disabled(!requiredFieldsFilledIn)
+                        .padding()
                     }
-                    .padding()
+                    .onTapGesture {
+                        focusedField = nil
+                    }
                 }
                 .frame(width: screenWidth * 0.9, height: 300)
                 .onDisappear {

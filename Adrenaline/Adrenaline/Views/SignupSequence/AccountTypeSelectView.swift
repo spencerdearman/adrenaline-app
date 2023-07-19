@@ -35,11 +35,14 @@ struct AccountTypeSelectView: View {
                     .font(.title2)
                     .bold()
                     .multilineTextAlignment(.center)
-                OptionView(signupData: $signupData, selectedOption: $selectedOption, optionType: .athlete, optionDescription: athleteDesc)
+                OptionView(signupData: $signupData, selectedOption: $selectedOption,
+                           optionType: .athlete, optionDescription: athleteDesc)
                 OptionView(signupData: $signupData,
-                           selectedOption: $selectedOption, optionType: .coach, optionDescription: coachDesc)
+                           selectedOption: $selectedOption, optionType: .coach,
+                           optionDescription: coachDesc)
                 OptionView(signupData: $signupData,
-                           selectedOption: $selectedOption, optionType: .spectator, optionDescription: spectatorDesc)
+                           selectedOption: $selectedOption, optionType: .spectator,
+                           optionDescription: spectatorDesc)
                 
                 NavigationLink(destination: BasicInfoView(signupData: $signupData,
                                                           selectedOption: $selectedOption)) {
@@ -80,24 +83,21 @@ struct OptionView: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-            .foregroundColor(Custom.grayThinMaterial)
-            .mask(RoundedRectangle(cornerRadius: 40))
-            .shadow(radius: 6)
+            BackgroundBubble() {
+                VStack(spacing: 10) {
+                    Text(optionType.rawValue)
+                        .font(.title3)
+                        .bold()
+                    Text(optionDescription)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                }
+                .padding()
+            }
             .overlay(
                 RoundedRectangle(cornerRadius: 40)
                     .stroke(selectedColor, lineWidth: showBorder ? 2 : 0)
             )
-            
-            VStack(spacing: 10) {
-                Text(optionType.rawValue)
-                    .font(.title3)
-                    .bold()
-                Text(optionDescription)
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
-            }
-            .padding()
         }
         .frame(width: screenWidth * 0.95, height: 125)
         .onTapGesture {

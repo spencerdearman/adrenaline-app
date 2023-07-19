@@ -44,29 +44,27 @@ struct FirstOpenView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .frame(width: screenWidth * 0.9, height: 125)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
-                VStack {
-                    Text("Welcome to Adrenaline")
-                        .font(.title)
-                    .bold()
-                    HStack {
-                        NavigationLink(destination: ProfileView(profileLink: "")) {
-                            Text("Login")
+                BackgroundBubble() {
+                    VStack {
+                        Text("Welcome to Adrenaline")
+                            .font(.title)
+                            .bold()
+                        HStack {
+                            NavigationLink(destination: ProfileView(profileLink: "")) {
+                                Text("Login")
+                            }
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
+                            NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
+                                Text("Sign Up")
+                            }
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
                         }
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
-                        NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
-                            Text("Sign Up")
-                        }
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
                     }
+                    .padding()
                 }
             }
         }
