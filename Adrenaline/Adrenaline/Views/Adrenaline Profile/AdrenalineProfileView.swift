@@ -48,16 +48,16 @@ struct AdrenalineProfileView: View {
                         }
                                          , padding: 20)
                         BackgroundBubble(content:
-                            HStack {
-                                HStack{
-                                    Image(systemName: "mappin.and.ellipse")
-                                    Text("Oakton, VA")
-                                }
-                                HStack {
-                                    Image(systemName: "person.fill")
-                                    Text("19")
-                                }
+                                            HStack {
+                            HStack{
+                                Image(systemName: "mappin.and.ellipse")
+                                Text("Oakton, VA")
                             }
+                            HStack {
+                                Image(systemName: "person.fill")
+                                Text("19")
+                            }
+                        }
                         )
                     }
                     Spacer()
@@ -113,25 +113,73 @@ struct AdrenalineProfileView: View {
 }
 
 struct SettingsPage: View {
+    @State var email: String = ""
+    @State var password: String = ""
+    @State var phoneNumber: String = ""
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
+    private let screenWidth = UIScreen.main.bounds.width
+    private var textFieldWidth: CGFloat {
+        screenWidth * 0.5
+    }
     var body: some View {
-        VStack {
-            Text("Settings")
-            ProfileImage(diverID: diveMeetsID)
-            Text(signupData.email ?? "")
-                .fontWeight(.semibold)
-            NavigationLink {
-                EditProfile()
-            } label: {
-                BackgroundBubble(content:Text("Edit Profile"))
+        ScrollView {
+            VStack {
+                Group {
+                    BackgroundBubble(content: Text("Settings").font(.title2).fontWeight(.semibold), padding: 20)
+                    ProfileImage(diverID: diveMeetsID)
+                        .scaleEffect(0.75)
+                        .frame(width: 150, height: 160)
+                    Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? ""))
+                        .font(.title3).fontWeight(.semibold)
+                    Text(signupData.email ?? "")
+                        .foregroundColor(.secondary)
+                    if let phoneNum = signupData.phone {
+                        Text(phoneNum)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                Group {
+                    NavigationLink {
+                        EditProfile()
+                    } label: {
+                        HStack {
+                            BackgroundBubble(content: HStack {
+                                Text("Edit Profile").foregroundColor(.white).fontWeight(.semibold)
+                                Image(systemName: "chevron.right").foregroundColor(.white)
+                            }, color: Custom.coolBlue, padding: 20)
+                        }
+                    }
+                }
+                Group {
+                    Text("Profile Information")
+                    Divider()
+                    Text("Update Email")
+                    TextField("Email", text: $email)
+                        .autocapitalization(.none)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: textFieldWidth)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                        .onChange(of: email) { _ in
+                            signupData.email = email
+                        }
+                    Text("Update Password")
+                    //NEED PASSWORD FIELD
+                    Text("Update Phone Number")
+                    TextField("Phone", text: $phoneNumber)
+                        .textFieldStyle(.roundedBorder)
+                        .textContentType(.telephoneNumber)
+                        .keyboardType(.numberPad)
+                        .frame(width: textFieldWidth)
+                        .onChange(of: phoneNumber) { _ in
+                            signupData.phone = phoneNumber
+                        }
+                    Divider()
+                    Text("Preferences")
+                    Divider()
+                }
             }
-
-            Divider()
-            Text("Preferences")
-            Divider()
-            
-            Divider()
         }
     }
 }
