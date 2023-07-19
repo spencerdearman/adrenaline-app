@@ -103,7 +103,7 @@ struct BasicInfoView: View {
                             
                             Spacer()
     
-                            NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName)) {
+                            NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName, signupData: $signupData, selectedOption: $selectedOption)) {
                                 Text("Next")
                                     .bold()
                             }

@@ -18,7 +18,7 @@ struct AdrenalineProfileView: View {
     @Environment(\.dismiss) private var dismiss
     var firstSignIn: Bool = false
     @State var personalAccount: DiverCoachAccounts? = nil
-    @State var diveMeetsID: String = ""
+    @Binding var diveMeetsID: String
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
     private let screenWidth = UIScreen.main.bounds.width
@@ -110,6 +110,7 @@ struct AdrenalineProfileView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -226,7 +227,7 @@ struct DiverView: View {
                     })
                 }
             } else {
-                ProfileContent()
+                ProfileContent(diveMeetsID: $diveMeetsID)
                     .padding(.top, screenHeight * 0.05)
                 //                MeetList(profileLink: linkHead + diveMeetsID)
                 //                    .frame(height: screenHeight * 0.8)
@@ -257,6 +258,7 @@ struct CoachView: View {
 struct ProfileContent: View {
     @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Videos"]
     @State var selectedPage: Int = 1
+    @Binding var diveMeetsID: String
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -279,7 +281,7 @@ struct ProfileContent: View {
         
         switch selectedPage {
         case 0:
-            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197", nameShowing: false)
+            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID, nameShowing: false)
                 .offset(y: -screenHeight * 0.05)
         case 1:
             MetricsView()
@@ -288,7 +290,7 @@ struct ProfileContent: View {
         case 3:
             VideosView()
         default:
-            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197", nameShowing: false)
+            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID, nameShowing: false)
         }
     }
 }
