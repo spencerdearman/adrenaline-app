@@ -46,10 +46,6 @@ struct BasicInfoView: View {
                 }
             
             VStack {
-                Text("Signup")
-                    .font(.title)
-                    .bold()
-                
                 Spacer()
            
                 BackgroundBubble(onTapGesture: { focusedField = nil }) {
@@ -82,6 +78,7 @@ struct BasicInfoView: View {
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: textFieldWidth)
                                 .textContentType(.emailAddress)
+                                .autocapitalization(.none)
                                 .keyboardType(.emailAddress)
                                 .multilineTextAlignment(.center)
                                 .focused($focusedField, equals: .email)
@@ -134,6 +131,12 @@ struct BasicInfoView: View {
                 Button(action: { dismiss() }) {
                     NavigationViewBackButton()
                 }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Signup")
+                    .font(.title)
+                    .bold()
             }
         }
     }

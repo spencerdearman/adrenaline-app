@@ -30,13 +30,11 @@ enum Gender: String, CaseIterable {
 struct AthleteRecruitingView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @State private var heightFeet: String = ""
-    @State private var heightInches: String = ""
-    @State private var height: String = "4-0"
+    @State private var height: String = "6-0"
     @State private var weight: String = ""
     @State private var weightUnit: WeightUnit = .lb
     @State private var gender: Gender = .male
-    @State private var age: String = ""
+    @State private var age: String = "18"
     @State private var gradYear: String = ""
     @State private var highSchool: String = ""
     @State private var hometown: String = ""
@@ -51,8 +49,7 @@ struct AthleteRecruitingView: View {
     }
     
     private var requiredFieldsFilledIn: Bool {
-        heightFeet != "" && heightInches != "" && weight != "" && age != "" && gradYear != "" &&
-        highSchool != "" && hometown != ""
+        weight != "" && gradYear != "" && highSchool != "" && hometown != ""
     }
     
     private var bgColor: Color {
@@ -71,6 +68,37 @@ struct AthleteRecruitingView: View {
         return result
     }
     
+    private func setHeight() {
+        let heightSplit = height.components(separatedBy: "-")
+        
+        if let ft = heightSplit.first,
+           let inches = heightSplit.last,
+           let ft = Int(ft),
+           let inches = Int(inches) {
+            if signupData.recruiting == nil {
+                signupData.recruiting = RecruitingData()
+            }
+            signupData.recruiting!.height = Height(feet: ft,
+                                                   inches: inches)
+        }
+    }
+    
+    private func setGender() {
+        if signupData.recruiting == nil {
+            signupData.recruiting = RecruitingData()
+        }
+        signupData.recruiting!.gender = gender.rawValue
+    }
+    
+    private func setAge() {
+        if signupData.recruiting == nil {
+            signupData.recruiting = RecruitingData()
+        }
+        if let age = Int(age) {
+            signupData.recruiting!.age = age
+        }
+    }
+    
     var body: some View {
         ZStack {
             bgColor.ignoresSafeArea()
@@ -79,21 +107,18 @@ struct AthleteRecruitingView: View {
                 }
             
             VStack {
-                Text("Signup")
-                    .font(.title)
-                    .bold()
-                
+                Spacer()
                 Spacer()
                 
-                ZStack {
-                    BackgroundBubble(onTapGesture: { focusedField = nil }) {
-                        VStack(spacing: 10) {
-                            Text("Recruiting Information")
-                                .font(.title2)
-                                .bold()
-                                .padding()
-                            Spacer()
-                            
+                BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
+                    VStack(spacing: 10) {
+                        Text("Recruiting Information")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                        Spacer()
+                        
+                        VStack(spacing: 5) {
                             BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
                                 HStack {
                                     Text("Height:")
@@ -106,33 +131,28 @@ struct AthleteRecruitingView: View {
                                     .pickerStyle(.wheel)
                                     .frame(width: textFieldWidth / 2)
                                     .onChange(of: height) { _ in
-                                        let heightSplit = height.components(separatedBy: "-")
-                                        
-                                        if let ft = heightSplit.first,
-                                           let inches = heightSplit.last,
-                                           let ft = Int(ft),
-                                           let inches = Int(inches) {
-                                            if signupData.recruiting == nil {
-                                                signupData.recruiting = RecruitingData()
-                                            }
-                                            signupData.recruiting!.height = Height(feet: ft,
-                                                                                   inches: inches)
-                                        }
+                                        setHeight()
+                                    }
+                                    .onAppear {
+                                        setHeight()
                                     }
                                 }
                                 .padding([.leading, .trailing])
                             }
                             .frame(height: screenHeight * 0.1)
-                            .padding(.bottom, 5)
+                            
+                            Spacer()
                             
                             HStack {
                                 TextField("Weight", text: $weight)
                                     .textFieldStyle(.roundedBorder)
                                     .frame(width: textFieldWidth / 2)
-                                    .textContentType(.givenName)
+                                    .keyboardType(.decimalPad)
                                     .multilineTextAlignment(.center)
                                     .focused($focusedField, equals: .weight)
                                     .onChange(of: weight) { _ in
+                                        weight = String(weight.prefix(6))
+                                        
                                         if signupData.recruiting == nil {
                                             signupData.recruiting = RecruitingData()
                                         }
@@ -151,19 +171,19 @@ struct AthleteRecruitingView: View {
                                             signupData.recruiting!.weight = Weight(weight: weight,
                                                                                    unit: weightUnit)
                                         }
-                                        print(signupData.recruiting!)
                                     }
                             }
+                            
                             BubbleSelectView(selection: $gender)
                                 .frame(width: textFieldWidth)
                                 .onChange(of: gender) { _ in
-                                    if signupData.recruiting == nil {
-                                        signupData.recruiting = RecruitingData()
-                                    }
-                                    signupData.recruiting!.gender = gender.rawValue
-                                    print(signupData.recruiting!)
+                                    setGender()
                                 }
-                                .padding(.bottom, 5)
+                                .onAppear {
+                                    setGender()
+                                }
+                            
+                            Spacer()
                             
                             BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
                                 HStack {
@@ -177,21 +197,71 @@ struct AthleteRecruitingView: View {
                                     .pickerStyle(.wheel)
                                     .frame(width: textFieldWidth / 2)
                                     .onChange(of: age) { _ in
-                                            if signupData.recruiting == nil {
-                                                signupData.recruiting = RecruitingData()
-                                            }
-                                        if let age = Int(age) {
-                                            signupData.recruiting!.age = age
-                                            print(signupData.recruiting!)
-                                        }
+                                        setAge()
+                                    }
+                                    .onAppear {
+                                        setAge()
                                     }
                                 }
                                 .padding([.leading, .trailing])
                             }
                             .frame(height: screenHeight * 0.1)
-                            .padding(.bottom, 5)
                             
                             Spacer()
+                            
+                            VStack(spacing: 10) {
+                                TextField("Graduation Year", text: $gradYear)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: textFieldWidth * 0.75)
+                                    .multilineTextAlignment(.center)
+                                    .focused($focusedField, equals: .gradYear)
+                                    .onChange(of: gradYear) { _ in
+                                        gradYear = String(gradYear.prefix(4))
+                                        
+                                        if signupData.recruiting == nil {
+                                            signupData.recruiting = RecruitingData()
+                                        }
+                                        if let gradYear = Int(gradYear) {
+                                            signupData.recruiting!.gradYear = gradYear
+                                        }
+                                    }
+                                
+                                TextField("High School", text: $highSchool)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: textFieldWidth)
+                                    .multilineTextAlignment(.center)
+                                    .focused($focusedField, equals: .highSchool)
+                                    .onChange(of: highSchool) { _ in
+                                        if signupData.recruiting == nil {
+                                            signupData.recruiting = RecruitingData()
+                                        }
+                                        signupData.recruiting!.highSchool = highSchool
+                                    }
+                                
+                                TextField("Hometown", text: $hometown)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: textFieldWidth)
+                                    .multilineTextAlignment(.center)
+                                    .focused($focusedField, equals: .hometown)
+                                    .onChange(of: hometown) { _ in
+                                        if signupData.recruiting == nil {
+                                            signupData.recruiting = RecruitingData()
+                                        }
+                                        signupData.recruiting!.hometown = hometown
+                                    }
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        HStack {
+                            NavigationLink(destination: ProfileView(profileLink: "")) {
+                                Text("Skip")
+                                    .bold()
+                            }
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.secondary)
                             
                             NavigationLink(destination: ProfileView(profileLink: "")) {
                                 Text("Next")
@@ -200,17 +270,19 @@ struct AthleteRecruitingView: View {
                             .buttonStyle(.bordered)
                             .cornerRadius(40)
                             .foregroundColor(.primary)
-                            .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                            .opacity(!requiredFieldsFilledIn ? 0.3 : 1.0)
                             .disabled(!requiredFieldsFilledIn)
                         }
-                        .padding()
                     }
+                    .padding()
                 }
-                .frame(width: screenWidth * 0.9, height: 300)
+                .frame(height: 300)
                 .onDisappear {
                     print(signupData)
                 }
                 
+                Spacer()
+                Spacer()
                 Spacer()
             }
         }
@@ -220,6 +292,12 @@ struct AthleteRecruitingView: View {
                 Button(action: { dismiss() }) {
                     NavigationViewBackButton()
                 }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Signup")
+                    .font(.title)
+                    .bold()
             }
         }
     }
@@ -265,11 +343,5 @@ where E.RawValue == String, E.AllCases: RandomAccessCollection {
         }
         .frame(height: 30)
         .padding([.leading, .top, .bottom], 5)
-    }
-}
-
-struct AthleteRecruitingView_Previews: PreviewProvider {
-    static var previews: some View {
-        AthleteRecruitingView(signupData: .constant(SignupData()))
     }
 }
