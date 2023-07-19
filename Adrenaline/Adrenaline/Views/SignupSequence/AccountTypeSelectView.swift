@@ -24,10 +24,6 @@ struct AccountTypeSelectView: View {
     
     var body: some View {
         VStack {
-            Text("Signup")
-                .font(.title)
-                .bold()
-            
             Spacer()
             
             VStack(spacing: 20) {
@@ -64,6 +60,12 @@ struct AccountTypeSelectView: View {
                 Button(action: { dismiss() }) {
                     NavigationViewBackButton()
                 }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Signup")
+                    .font(.title)
+                    .bold()
             }
         }
     }
