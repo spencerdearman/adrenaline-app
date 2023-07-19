@@ -21,6 +21,7 @@ struct BasicInfoView: View {
     @State private var lastName: String = ""
     @State private var email: String = ""
     @State private var phone: String = ""
+    @State var searchSubmitted: Bool = false
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
     @FocusState private var focusedField: BasicInfoField?
@@ -79,6 +80,7 @@ struct BasicInfoView: View {
                                     signupData.lastName = lastName
                                 }
                             TextField("Email", text: $email)
+                                .autocapitalization(.none)
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: textFieldWidth)
                                 .textContentType(.emailAddress)
@@ -100,18 +102,21 @@ struct BasicInfoView: View {
                                 }
                             
                             Spacer()
-                            
-                            NavigationLink(destination: signupData.accountType == .athlete
-                                           ? AnyView(AthleteRecruitingView(signupData: $signupData))
-                                           : AnyView(ProfileView(profileLink: ""))) {
+    
+                            NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName)) {
                                 Text("Next")
                                     .bold()
                             }
-                                           .buttonStyle(.bordered)
-                                           .cornerRadius(40)
-                                           .foregroundColor(.primary)
-                                           .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                                           .disabled(!requiredFieldsFilledIn)
+                            .simultaneousGesture(TapGesture().onEnded{
+                                print("Coming in here")
+                                focusedField = nil
+                                searchSubmitted = true
+                            })
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
+                            .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                            .disabled(!requiredFieldsFilledIn)
                         }
                         .padding()
                     }

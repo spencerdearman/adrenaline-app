@@ -226,9 +226,11 @@ struct DiverView: View {
                     })
                 }
             } else {
-                MeetList(profileLink: linkHead + diveMeetsID)
-                    .frame(height: screenHeight * 0.8)
-                    .offset(y: -screenHeight * 0.08)
+                ProfileContent()
+                    .padding(.top, screenHeight * 0.05)
+                //                MeetList(profileLink: linkHead + diveMeetsID)
+                //                    .frame(height: screenHeight * 0.8)
+                //                    .offset(y: -screenHeight * 0.08)
             }
             Spacer()
             Spacer()
@@ -248,6 +250,45 @@ struct CoachView: View {
             NavigationLink(destination: {
                 DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
             }, label: { Text("Link to your DiveMeets Account") })
+        }
+    }
+}
+
+struct ProfileContent: View {
+    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Videos"]
+    @State var selectedPage: Int = 1
+    @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
+    private let screenHeight = UIScreen.main.bounds.height
+    
+    var body: some View {
+        SwiftUIWheelPicker($selectedPage, items: scoreValues) { value in
+            GeometryReader { g in
+                Text(value)
+                    .font(.title2).fontWeight(.semibold)
+                    .frame(width: g.size.width, height: g.size.height,
+                           alignment: .center)
+                    .onAppear{
+                        print(selectedPage)
+                    }
+            }
+        }
+        .scrollAlpha(0.3)
+        .width(.Fixed(115))
+        .scrollScale(0.7)
+        .frame(height: 40)
+        
+        switch selectedPage {
+        case 0:
+            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197", nameShowing: false)
+                .offset(y: -screenHeight * 0.05)
+        case 1:
+            MetricsView()
+        case 2:
+            RecruitingView()
+        case 3:
+            VideosView()
+        default:
+            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197", nameShowing: false)
         }
     }
 }
@@ -276,20 +317,33 @@ struct DiveMeetsLink: View {
                         }
                     .frame(width: textFieldWidth) }
             }
-            BackgroundBubble() {
-                Button {
-                    presentationMode.wrappedValue.dismiss()
-                } label: {
-                    BackgroundBubble() {
-                        Text("Done")
-                            .fontWeight(.semibold)
-                            .foregroundColor(.primary)
-                    }
-                }
+            BackgroundBubble(onTapGesture: { presentationMode.wrappedValue.dismiss() }) {
+                Text("Done")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
             }
         }
     }
 }
+
+struct MetricsView: View {
+    var body: some View {
+        Text("Welcome to the Metrics View")
+    }
+}
+
+struct RecruitingView: View {
+    var body: some View {
+        Text("Welcome to the Recruiting View")
+    }
+}
+
+struct VideosView: View {
+    var body: some View {
+        Text("Welcome to the Videos View")
+    }
+}
+
 
 //struct SignupData: Hashable {
 //    var accountType: AccountType?

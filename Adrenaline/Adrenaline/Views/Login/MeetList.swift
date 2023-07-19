@@ -23,6 +23,7 @@ struct MeetList: View {
     @State var meets: [MeetEvent] = []
     @State private var createdMeets: Bool = false
     @State var navStatus: Bool = true
+    var nameShowing: Bool = true
     @StateObject private var parser = EventHTMLParser()
     
     // Style adjustments for elements of list
@@ -82,9 +83,11 @@ struct MeetList: View {
                         .fill(bgColor)
                         .mask(RoundedRectangle(cornerRadius: 40))
                     VStack {
-                        Text("Meets")
-                            .font(.title2).fontWeight(.semibold)
-                            .padding(.top, 30)
+                        if nameShowing {
+                            Text("Meets")
+                                .font(.title2).fontWeight(.semibold)
+                                .padding(.top, 30)
+                        }
                         
                         ScrollView(showsIndicators: false) {
                             VStack(spacing: rowSpacing) {
