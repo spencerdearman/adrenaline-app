@@ -66,7 +66,7 @@ struct AdrenalineProfileView: View {
             .overlay{
                 BackgroundBubble(content:
                                     NavigationLink {
-                    SettingsPage()
+                    SettingsPage(signupData: $signupData, diveMeetsID: $diveMeetsID)
                 } label: {
                     Image(systemName: "gear")
                         .foregroundColor(.primary)
@@ -82,7 +82,6 @@ struct AdrenalineProfileView: View {
                     .shadow(radius: 10)
                     .frame(height: screenHeight * 1.1)
                 VStack {
-
                     if let type = selectedOption {
                         if type.rawValue == AccountType.athlete.rawValue {
                             DiverView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
@@ -109,25 +108,69 @@ struct AdrenalineProfileView: View {
                 }
             }
         }
+        .navigationBarHidden(true)
     }
 }
 
 struct SettingsPage: View {
+    @Binding var signupData: SignupData
+    @Binding var diveMeetsID: String
     var body: some View {
-        Text("Welcome to the settings page")
+        VStack {
+            Text("Settings")
+            ProfileImage(diverID: diveMeetsID)
+            Text(signupData.email ?? "")
+                .fontWeight(.semibold)
+            NavigationLink {
+                EditProfile()
+            } label: {
+                BackgroundBubble(content:Text("Edit Profile"))
+            }
+
+            Divider()
+            Text("Preferences")
+            Divider()
+            
+            Divider()
+        }
+    }
+}
+
+struct EditProfile: View {
+    var body: some View {
+        Text("This is where you will edit your account")
     }
 }
 
 struct DiverView: View {
     @Binding var diveMeetsID: String
     @Binding var personalAccount: DiverCoachAccounts?
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    private let linkHead: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     var body: some View {
         VStack {
             Spacer()
-            BackgroundBubble(content:
-                                NavigationLink(destination: {
-                DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-            }, label: { Text("Link to your DiveMeets Account") }))
+            // Showing DiveMeets Linking Screen
+            if diveMeetsID == "" {
+                BackgroundBubble(content:
+                                    NavigationLink(destination: {
+                    DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
+                }, label: {
+                    Text("Link DiveMeets Account")
+                        .foregroundColor(.primary)
+                        .font(.title2).fontWeight(.semibold)
+                }), padding: 20)
+            } else {
+                MeetList(profileLink: linkHead + diveMeetsID)
+                    .frame(height: screenHeight * 0.8)
+                    .offset(y: -screenHeight * 0.08)
+            }
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
             Spacer()
         }
     }
@@ -136,6 +179,7 @@ struct DiverView: View {
 struct CoachView: View {
     @Binding var diveMeetsID: String
     @Binding var personalAccount: DiverCoachAccounts?
+    private let linkHead: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     var body: some View {
         BackgroundBubble(content:
                             NavigationLink(destination: {
@@ -144,7 +188,7 @@ struct CoachView: View {
     }
 }
 
-struct DiveMeetsLink: View{
+struct DiveMeetsLink: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var diveMeetsID: String
     @Binding var personalAccount: DiverCoachAccounts?
@@ -206,9 +250,9 @@ struct DiveMeetsLink: View{
 //}
 //
 //
-struct AdrenalineProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
-        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
-    }
-}
+//struct AdrenalineProfileView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
+//        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
+//    }
+//}

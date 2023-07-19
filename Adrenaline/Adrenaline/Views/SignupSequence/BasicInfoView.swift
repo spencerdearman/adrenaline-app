@@ -87,6 +87,7 @@ struct BasicInfoView: View {
                                 signupData.lastName = lastName
                             }
                         TextField("Email", text: $email)
+                            .autocapitalization(.none)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
                             .textContentType(.emailAddress)
