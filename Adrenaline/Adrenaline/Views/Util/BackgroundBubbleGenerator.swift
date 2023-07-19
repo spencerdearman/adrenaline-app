@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BackgroundBubble<Content: View>: View {
-    var content: Content
+    var content: () -> Content
     var color: Color = Custom.darkGray
     var cornerRadius: CGFloat = 40
     var shadow: CGFloat = 10
@@ -27,7 +27,7 @@ struct BackgroundBubble<Content: View>: View {
                 .cornerRadius(cornerRadius)
                 .shadow(radius: shadow)
                 .frame(width: width, height: height)
-            content
+            content()
                 .background {
                     GeometryReader { geometry in
                         Color.clear
