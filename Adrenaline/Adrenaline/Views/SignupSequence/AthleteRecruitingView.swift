@@ -86,7 +86,7 @@ struct AthleteRecruitingView: View {
                 Spacer()
                 
                 ZStack {
-                    BackgroundBubble() {
+                    BackgroundBubble(onTapGesture: { focusedField = nil }) {
                         VStack(spacing: 10) {
                             Text("Recruiting Information")
                                 .font(.title2)
@@ -204,9 +204,6 @@ struct AthleteRecruitingView: View {
                             .disabled(!requiredFieldsFilledIn)
                         }
                         .padding()
-                    }
-                    .onTapGesture {
-                        focusedField = nil
                     }
                 }
                 .frame(width: screenWidth * 0.9, height: 300)

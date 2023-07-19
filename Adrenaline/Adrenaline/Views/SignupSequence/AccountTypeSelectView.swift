@@ -49,11 +49,11 @@ struct AccountTypeSelectView: View {
                     Text("Next")
                         .bold()
                 }
-                .buttonStyle(.bordered)
-                .cornerRadius(40)
-                .foregroundColor(.primary)
-                .opacity(selectedOption == nil ? 0.5 : 1.0)
-                .disabled(selectedOption == nil)
+                                                          .buttonStyle(.bordered)
+                                                          .cornerRadius(40)
+                                                          .foregroundColor(.primary)
+                                                          .opacity(selectedOption == nil ? 0.5 : 1.0)
+                                                          .disabled(selectedOption == nil)
             }
             
             Spacer()
@@ -82,28 +82,25 @@ struct OptionView: View {
     }
     
     var body: some View {
-        ZStack {
-            BackgroundBubble() {
-                VStack(spacing: 10) {
-                    Text(optionType.rawValue)
-                        .font(.title3)
-                        .bold()
-                    Text(optionDescription)
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                }
-                .padding()
-            }
-            .overlay(
-                RoundedRectangle(cornerRadius: 40)
-                    .stroke(selectedColor, lineWidth: showBorder ? 2 : 0)
-            )
-        }
-        .frame(width: screenWidth * 0.95, height: 125)
-        .onTapGesture {
+        BackgroundBubble(onTapGesture: {
             selectedOption = optionType
             signupData.accountType = optionType
+        }) {
+            VStack(spacing: 10) {
+                Text(optionType.rawValue)
+                    .font(.title3)
+                    .bold()
+                Text(optionDescription)
+                    .font(.subheadline)
+                    .multilineTextAlignment(.center)
+            }
+            .padding()
         }
+        .overlay(
+            RoundedRectangle(cornerRadius: 40)
+                .stroke(selectedColor, lineWidth: showBorder ? 2 : 0)
+        )
+        .frame(width: screenWidth * 0.95, height: 125)
     }
 }
 
