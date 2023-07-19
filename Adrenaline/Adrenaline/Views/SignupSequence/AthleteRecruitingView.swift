@@ -94,7 +94,7 @@ struct AthleteRecruitingView: View {
                                 .padding()
                             Spacer()
                             
-                            BackgroundBubble(shadow: 6, onTapGesture(perform: { focusedField = nil })) {
+                            BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
                                 HStack {
                                     Text("Height:")
                                     Picker("", selection: $height) {
