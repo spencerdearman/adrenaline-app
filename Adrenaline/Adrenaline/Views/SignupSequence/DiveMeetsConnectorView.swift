@@ -14,11 +14,11 @@ struct DiveMeetsConnectorView: View {
     @Binding var lastName: String
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
-    @State var parsedLinks: DiverProfileRecords = [:]
-    @State var dmSearchSubmitted: Bool = false
-    @State var linksParsed: Bool = false
-    @State var personTimedOut: Bool = false
-    @State var diveMeetsID: String = ""
+    @State private var parsedLinks: DiverProfileRecords = [:]
+    @State private var dmSearchSubmitted: Bool = false
+    @State private var linksParsed: Bool = false
+    @State private var personTimedOut: Bool = false
+    @State private var diveMeetsID: String = ""
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
