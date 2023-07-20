@@ -30,16 +30,21 @@ enum Gender: String, CaseIterable {
 struct AthleteRecruitingView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @State private var height: String = "6-0"
+    // Starts the picker at height 6' 0"
+    @State private var heightIndex: Int = 24
+    @State private var height: String = ""
     @State private var weight: String = ""
     @State private var weightUnit: WeightUnit = .lb
     @State private var gender: Gender = .male
-    @State private var age: String = "18"
+    // Starts the picker at age 18
+    @State private var ageIndex: Int = 5
+    @State private var age: String = ""
     @State private var gradYear: String = ""
     @State private var highSchool: String = ""
     @State private var hometown: String = ""
     @Binding var signupData: SignupData
     @FocusState private var focusedField: RecruitingInfoField?
+    @ScaledMetric var pickerFontSize: CGFloat = 18
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -59,7 +64,7 @@ struct AthleteRecruitingView: View {
         currentMode == .light ? .white : .black
     }
     
-    private func getHeightStrings() -> [(String, String, String)] {
+    private var heightStrings: [(String, String, String)] {
         var result: [(String, String, String)] = []
         
         for ft in 4..<8 {
@@ -71,7 +76,10 @@ struct AthleteRecruitingView: View {
         return result
     }
     
+    private let ageRange: [Int] = Array(13..<26)
+    
     private func setHeight() {
+        height = heightStrings[heightIndex].0
         let heightSplit = height.components(separatedBy: "-")
         
         if let ft = heightSplit.first,
@@ -94,12 +102,11 @@ struct AthleteRecruitingView: View {
     }
     
     private func setAge() {
+        age = String(ageRange[ageIndex])
         if signupData.recruiting == nil {
             signupData.recruiting = RecruitingData()
         }
-        if let age = Int(age) {
-            signupData.recruiting!.age = age
-        }
+        signupData.recruiting!.age = ageRange[ageIndex]
     }
     
     var body: some View {
@@ -125,20 +132,26 @@ struct AthleteRecruitingView: View {
                             BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
                                 HStack {
                                     Text("Height:")
-                                    Picker("", selection: $height) {
-                                        ForEach(getHeightStrings(), id: \.0) { (tag, ft, inches) in
-                                            Text("\(ft)\' \(inches)\"")
-                                                .tag(tag)
-                                        }
+                                    NoStickPicker(selection: $heightIndex,
+                                                  rowCount: heightStrings.count) { i in
+                                        let label = UILabel()
+                                        let (_, ft, inches) = heightStrings[i]
+                                        let string = "\(ft)\' \(inches)\""
+                                        label.attributedText = NSMutableAttributedString(string: string)
+                                        label.font = UIFont.systemFont(ofSize: pickerFontSize)
+                                        label.sizeToFit()
+                                        label.layer.masksToBounds = true
+                                        return label
                                     }
-                                    .pickerStyle(.wheel)
-                                    .frame(width: textFieldWidth / 2)
-                                    .onChange(of: height) { _ in
-                                        setHeight()
-                                    }
-                                    .onAppear {
-                                        setHeight()
-                                    }
+                                                  .pickerStyle(.wheel)
+                                                  .frame(width: textFieldWidth / 2)
+                                                  .padding(.trailing)
+                                                  .onChange(of: heightIndex) { _ in
+                                                      setHeight()
+                                                  }
+                                                  .onAppear {
+                                                      setHeight()
+                                                  }
                                 }
                                 .padding([.leading, .trailing])
                             }
@@ -191,20 +204,25 @@ struct AthleteRecruitingView: View {
                             BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
                                 HStack {
                                     Text("Age:")
-                                    Picker("", selection: $age) {
-                                        ForEach(13..<26, id: \.self) { age in
-                                            Text("\(age)")
-                                                .tag(String(age))
-                                        }
+                                    NoStickPicker(selection: $ageIndex,
+                                                  rowCount: ageRange.count) { i in
+                                        let label = UILabel()
+                                        let age = ageRange[i]
+                                        label.attributedText = NSMutableAttributedString(string: String(age))
+                                        label.font = UIFont.systemFont(ofSize: pickerFontSize)
+                                        label.sizeToFit()
+                                        label.layer.masksToBounds = true
+                                        return label
                                     }
-                                    .pickerStyle(.wheel)
-                                    .frame(width: textFieldWidth / 2)
-                                    .onChange(of: age) { _ in
-                                        setAge()
-                                    }
-                                    .onAppear {
-                                        setAge()
-                                    }
+                                                  .pickerStyle(.wheel)
+                                                  .frame(width: textFieldWidth / 2)
+                                                  .padding(.trailing)
+                                                  .onChange(of: ageIndex) { _ in
+                                                      setAge()
+                                                  }
+                                                  .onAppear {
+                                                      setAge()
+                                                  }
                                 }
                                 .padding([.leading, .trailing])
                             }
