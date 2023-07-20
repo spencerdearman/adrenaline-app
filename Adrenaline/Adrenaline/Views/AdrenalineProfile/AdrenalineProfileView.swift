@@ -17,13 +17,13 @@ struct DiverCoachAccounts: Hashable {
 struct AdrenalineProfileView: View {
     @Environment(\.dismiss) private var dismiss
     var firstSignIn: Bool = false
-    @State var personalAccount: DiverCoachAccounts? = nil
+    @State private var personalAccount: DiverCoachAccounts? = nil
+    @State private var offSet: CGFloat = 0
     @Binding var diveMeetsID: String
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    @State private var offSet: CGFloat = 0
     
     var body: some View {
         ZStack{
@@ -323,7 +323,7 @@ struct DiveMeetsLink: View {
                         .textContentType(.telephoneNumber)
                         .keyboardType(.numberPad)
                         .onChange(of: diveMeetsID) { _ in
-                            personalAccount?.DiveMeetsID = diveMeetsID
+                            personalAccount?.diveMeetsID = diveMeetsID
                         }
                     .frame(width: textFieldWidth) }
             }
