@@ -23,7 +23,7 @@ struct AdrenalineProfileView: View {
     @Binding var selectedOption: AccountType?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    @State var offSet: CGFloat = 0
+    @State private var offSet: CGFloat = 0
     
     var body: some View {
         ZStack{
