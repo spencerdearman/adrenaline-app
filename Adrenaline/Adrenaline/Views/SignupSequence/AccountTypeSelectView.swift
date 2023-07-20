@@ -31,6 +31,7 @@ struct AccountTypeSelectView: View {
                     .font(.title2)
                     .bold()
                     .multilineTextAlignment(.center)
+                    .padding()
                 OptionView(signupData: $signupData, selectedOption: $selectedOption,
                            optionType: .athlete, optionDescription: athleteDesc)
                 OptionView(signupData: $signupData,
@@ -54,6 +55,7 @@ struct AccountTypeSelectView: View {
             
             Spacer()
         }
+        .dynamicTypeSize(.xSmall ... .accessibility1)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
