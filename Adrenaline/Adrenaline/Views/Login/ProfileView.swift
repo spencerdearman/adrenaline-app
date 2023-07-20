@@ -72,13 +72,18 @@ struct ProfileView: View {
             let gender = info?.gender
             let age = info?.age
             let finaAge = info?.finaAge
-            bgColor.ignoresSafeArea()
+            
+            if !isLoginProfile {
+                bgColor.ignoresSafeArea()
+                GeometryReader { geometry in
+                    BackgroundSpheres()
+                }
+            } else {
+                Color.clear.ignoresSafeArea()
+            }
             
             if profileType == "Diver" {
                 ZStack {
-                    GeometryReader { geometry in
-                        BackgroundSpheres()
-                    }
                     VStack {
                         ProfileImage(diverID: diverId)
                             .frame(width: 200, height: 150)

@@ -18,7 +18,7 @@ struct SignupData: Hashable {
 
 struct RecruitingData: Hashable {
     var height: Height?
-    var weight: Int?
+    var weight: Weight?
     var gender: String?
     var age: Int?
     var gradYear: Int?
@@ -31,6 +31,11 @@ struct Height: Hashable {
     var inches: Int
 }
 
+struct Weight: Hashable {
+    var weight: Double
+    var unit: WeightUnit
+}
+
 struct FirstOpenView: View {
     @State var signupData = SignupData()
     private let screenWidth = UIScreen.main.bounds.width
@@ -39,29 +44,27 @@ struct FirstOpenView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .frame(width: screenWidth * 0.9, height: 125)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
-                VStack {
-                    Text("Welcome to Adrenaline")
-                        .font(.title)
-                    .bold()
-                    HStack {
-                        NavigationLink(destination: ProfileView(profileLink: "")) {
-                            Text("Login")
+                BackgroundBubble() {
+                    VStack {
+                        Text("Welcome to Adrenaline")
+                            .font(.title)
+                            .bold()
+                        HStack {
+                            NavigationLink(destination: ProfileView(profileLink: "")) {
+                                Text("Login")
+                            }
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
+                            NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
+                                Text("Sign Up")
+                            }
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
                         }
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
-                        NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
-                            Text("Sign Up")
-                        }
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
                     }
+                    .padding()
                 }
             }
         }

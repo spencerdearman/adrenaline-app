@@ -21,6 +21,7 @@ struct BasicInfoView: View {
     @State private var lastName: String = ""
     @State private var email: String = ""
     @State private var phone: String = ""
+    @State var searchSubmitted: Bool = false
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
     @FocusState private var focusedField: BasicInfoField?
@@ -51,87 +52,94 @@ struct BasicInfoView: View {
                     .bold()
                 
                 Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(Custom.grayThinMaterial)
-                        .mask(RoundedRectangle(cornerRadius: 40))
-                        .shadow(radius: 6)
-                        .onTapGesture {
-                            focusedField = nil
-                        }
-                    
-                    VStack(spacing: 5) {
-                        Text("Basic Information")
-                            .font(.title2)
-                            .bold()
-                            .padding()
-                        Spacer()
-                        
-                        TextField("First Name", text: $firstName)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.givenName)
-                            .focused($focusedField, equals: .first)
-                            .onChange(of: firstName) { _ in
-                                signupData.firstName = firstName
-                            }
-                        TextField("Last Name", text: $lastName)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.familyName)
-                            .focused($focusedField, equals: .last)
-                            .onChange(of: lastName) { _ in
-                                signupData.lastName = lastName
-                            }
-                        TextField("Email", text: $email)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.emailAddress)
-                            .keyboardType(.emailAddress)
-                            .focused($focusedField, equals: .email)
-                            .onChange(of: email) { _ in
-                                signupData.email = email
-                            }
-                        TextField("Phone (optional)", text: $phone)
-                            .textFieldStyle(.roundedBorder)
-                            .textContentType(.telephoneNumber)
-                            .keyboardType(.numberPad)
-                            .frame(width: textFieldWidth)
-                            .focused($focusedField, equals: .phone)
-                            .onChange(of: phone) { _ in
-                                signupData.phone = phone
-                            }
-                        
-                        Spacer()
-                        
-                        NavigationLink(destination: AdrenalineProfileView(signupData: $signupData, selectedOption: $selectedOption)) {
-                            Text("Next")
+           
+                BackgroundBubble(onTapGesture: { focusedField = nil }) {
+                        VStack(spacing: 5) {
+                            Text("Basic Information")
+                                .font(.title2)
                                 .bold()
+                                .padding()
+                            Spacer()
+                            
+                            TextField("First Name", text: $firstName)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.givenName)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .first)
+                                .onChange(of: firstName) { _ in
+                                    signupData.firstName = firstName
+                                }
+                            TextField("Last Name", text: $lastName)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.familyName)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .last)
+                                .onChange(of: lastName) { _ in
+                                    signupData.lastName = lastName
+                                }
+                            TextField("Email", text: $email)
+                                .autocapitalization(.none)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.emailAddress)
+                                .keyboardType(.emailAddress)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .email)
+                                .onChange(of: email) { _ in
+                                    signupData.email = email
+                                }
+                            TextField("Phone (optional)", text: $phone)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.telephoneNumber)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .phone)
+                                .onChange(of: phone) { _ in
+                                    signupData.phone = phone
+                                }
+                            
+                            Spacer()
+    
+                            NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName, signupData: $signupData, selectedOption: $selectedOption)) {
+                                Text("Next")
+                                    .bold()
+                            }
+                            .simultaneousGesture(TapGesture().onEnded{
+                                print("Coming in here")
+                                focusedField = nil
+                                searchSubmitted = true
+                            })
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
+                            .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                            .disabled(!requiredFieldsFilledIn)
                         }
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
-                        .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                        .disabled(!requiredFieldsFilledIn)
+                        .padding()
                     }
-                    .padding()
+                .frame(height: 300)
+                .onAppear {
+                    // Clears recruiting data on appear and if user comes back from recruiting
+                    // section into basic info
+                    signupData.recruiting = nil
                 }
-                .frame(width: screenWidth * 0.9, height: 300)
                 .onDisappear {
                     print(signupData)
                 }
                 
                 Spacer()
             }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: { dismiss() }) {
-                        NavigationViewBackButton()
-                    }
-                }
         }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
         }
     }
 }

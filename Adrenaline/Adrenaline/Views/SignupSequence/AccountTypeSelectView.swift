@@ -35,22 +35,25 @@ struct AccountTypeSelectView: View {
                     .font(.title2)
                     .bold()
                     .multilineTextAlignment(.center)
-                OptionView(signupData: $signupData, selectedOption: $selectedOption, optionType: .athlete, optionDescription: athleteDesc)
+                OptionView(signupData: $signupData, selectedOption: $selectedOption,
+                           optionType: .athlete, optionDescription: athleteDesc)
                 OptionView(signupData: $signupData,
-                           selectedOption: $selectedOption, optionType: .coach, optionDescription: coachDesc)
+                           selectedOption: $selectedOption, optionType: .coach,
+                           optionDescription: coachDesc)
                 OptionView(signupData: $signupData,
-                           selectedOption: $selectedOption, optionType: .spectator, optionDescription: spectatorDesc)
+                           selectedOption: $selectedOption, optionType: .spectator,
+                           optionDescription: spectatorDesc)
                 
                 NavigationLink(destination: BasicInfoView(signupData: $signupData,
                                                           selectedOption: $selectedOption)) {
                     Text("Next")
                         .bold()
                 }
-                .buttonStyle(.bordered)
-                .cornerRadius(40)
-                .foregroundColor(.primary)
-                .opacity(selectedOption == nil ? 0.5 : 1.0)
-                .disabled(selectedOption == nil)
+                                                          .buttonStyle(.bordered)
+                                                          .cornerRadius(40)
+                                                          .foregroundColor(.primary)
+                                                          .opacity(selectedOption == nil ? 0.5 : 1.0)
+                                                          .disabled(selectedOption == nil)
             }
             
             Spacer()
@@ -79,16 +82,10 @@ struct OptionView: View {
     }
     
     var body: some View {
-        ZStack {
-            Rectangle()
-            .foregroundColor(Custom.grayThinMaterial)
-            .mask(RoundedRectangle(cornerRadius: 40))
-            .shadow(radius: 6)
-            .overlay(
-                RoundedRectangle(cornerRadius: 40)
-                    .stroke(selectedColor, lineWidth: showBorder ? 2 : 0)
-            )
-            
+        BackgroundBubble(onTapGesture: {
+            selectedOption = optionType
+            signupData.accountType = optionType
+        }) {
             VStack(spacing: 10) {
                 Text(optionType.rawValue)
                     .font(.title3)
@@ -99,11 +96,11 @@ struct OptionView: View {
             }
             .padding()
         }
+        .overlay(
+            RoundedRectangle(cornerRadius: 40)
+                .stroke(selectedColor, lineWidth: showBorder ? 2 : 0)
+        )
         .frame(width: screenWidth * 0.95, height: 125)
-        .onTapGesture {
-            selectedOption = optionType
-            signupData.accountType = optionType
-        }
     }
 }
 

@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct BackgroundBubble<Content: View>: View {
-    var content: Content
     var color: Color = Custom.darkGray
     var cornerRadius: CGFloat = 40
     var shadow: CGFloat = 10
+    var vPadding: CGFloat = 14
+    var hPadding: CGFloat = 14
+    var onTapGesture: () -> Void = {}
+    var content: () -> Content
     var width: CGFloat {
-        contentSize.width + 14
+        contentSize.width + hPadding
     }
     var height: CGFloat {
-        contentSize.height + 14
+        contentSize.height + vPadding
     }
     @State private var contentSize: CGSize = .zero
     
@@ -27,7 +30,8 @@ struct BackgroundBubble<Content: View>: View {
                 .cornerRadius(cornerRadius)
                 .shadow(radius: shadow)
                 .frame(width: width, height: height)
-            content
+                .onTapGesture(perform: onTapGesture)
+            content()
                 .background {
                     GeometryReader { geometry in
                         Color.clear
