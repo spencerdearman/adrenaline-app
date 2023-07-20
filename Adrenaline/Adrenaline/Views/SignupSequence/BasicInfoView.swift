@@ -32,18 +32,22 @@ struct BasicInfoView: View {
     }
     
     private var requiredFieldsFilledIn: Bool {
-        firstName != "" && lastName != "" && email != ""
+        firstName != "" && lastName != "" && email != "" && (phone == "" || phone.count == 14)
     }
     
     private var bgColor: Color {
         currentMode == .light ? .white : .black
     }
     
+    private func removePhoneFormatting(string: String) -> String {
+        return string.filter { $0.isNumber }
+    }
+    
     private func formatPhoneString(string: String) -> String {
         // (123) 456-7890
         // 12345678901234
         
-        var chars = string.filter { $0.isNumber }
+        var chars = removePhoneFormatting(string: string)
         if chars.count > 0 {
             chars = "(" + chars
         }
@@ -115,7 +119,7 @@ struct BasicInfoView: View {
                                 .focused($focusedField, equals: .phone)
                                 .onChange(of: phone) { _ in
                                     phone = formatPhoneString(string: phone)
-                                    signupData.phone = phone
+                                    signupData.phone = removePhoneFormatting(string: phone)
                                 }
                             
                             Spacer()
