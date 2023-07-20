@@ -308,6 +308,7 @@ struct AthleteRecruitingView: View {
                 Spacer()
             }
         }
+        .dynamicTypeSize(.xSmall ... .accessibility1)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
