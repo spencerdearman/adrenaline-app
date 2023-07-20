@@ -43,7 +43,8 @@ struct AdrenalineProfileView: View {
                     VStack {
                         BackgroundBubble(vPadding: 20, hPadding: 20) {
                             VStack {
-                                Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? "")) .font(.title3).fontWeight(.semibold)
+                                Text((signupData.firstName ?? "") + " " + (signupData.lastName
+                                                    ?? "")) .font(.title3).fontWeight(.semibold)
                                 Text(selectedOption?.rawValue ?? "")
                                     .foregroundColor(.secondary)
                             }
@@ -101,12 +102,13 @@ struct AdrenalineProfileView: View {
                 }
             }
             .offset(y: offSet)
-            .animation(.easeInOut(duration: 0.25))
             .onSwipeGesture(trigger: .onEnded) { direction in
-                if direction == .up {
-                    offSet = screenHeight * 0.13
-                } else if direction == .down {
-                    offSet = screenHeight * 0.48
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    if direction == .up {
+                        offSet = screenHeight * 0.13
+                    } else if direction == .down {
+                        offSet = screenHeight * 0.48
+                    }
                 }
             }
         }
@@ -151,8 +153,11 @@ struct SettingsPage: View {
                         HStack {
                             BackgroundBubble(color: Custom.coolBlue, vPadding: 20, hPadding: 20) {
                                 HStack {
-                                    Text("Edit Profile").foregroundColor(.white).fontWeight(.semibold)
-                                    Image(systemName: "chevron.right").foregroundColor(.white)
+                                    Text("Edit Profile")
+                                        .foregroundColor(.white)
+                                        .fontWeight(.semibold)
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(.white)
                                 }
                             }
                         }
@@ -211,7 +216,8 @@ struct DiverView: View {
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    private let linkHead: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
+    private let linkHead: String =
+    "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     var body: some View {
         VStack {
             Spacer()
@@ -229,9 +235,6 @@ struct DiverView: View {
             } else {
                 ProfileContent(diveMeetsID: $diveMeetsID)
                     .padding(.top, screenHeight * 0.05)
-                //                MeetList(profileLink: linkHead + diveMeetsID)
-                //                    .frame(height: screenHeight * 0.8)
-                //                    .offset(y: -screenHeight * 0.08)
             }
             Spacer()
             Spacer()
@@ -245,7 +248,8 @@ struct DiverView: View {
 struct CoachView: View {
     @Binding var diveMeetsID: String
     @Binding var personalAccount: DiverCoachAccounts?
-    private let linkHead: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
+    private let linkHead: String =
+    "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     var body: some View {
         BackgroundBubble() {
             NavigationLink(destination: {
@@ -281,7 +285,9 @@ struct ProfileContent: View {
         
         switch selectedPage {
         case 0:
-            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID, nameShowing: false)
+            MeetList(profileLink:
+                    "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+                     diveMeetsID, nameShowing: false)
                 .offset(y: -screenHeight * 0.05)
         case 1:
             MetricsView()
@@ -290,7 +296,9 @@ struct ProfileContent: View {
         case 3:
             VideosView()
         default:
-            MeetList(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID, nameShowing: false)
+            MeetList(profileLink:
+                     "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+                     diveMeetsID, nameShowing: false)
         }
     }
 }
