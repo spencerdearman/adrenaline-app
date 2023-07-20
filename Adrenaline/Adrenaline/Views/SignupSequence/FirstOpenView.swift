@@ -32,7 +32,7 @@ struct Height: Hashable {
 }
 
 struct Weight: Hashable {
-    var weight: Double
+    var weight: Int
     var unit: WeightUnit
 }
 
