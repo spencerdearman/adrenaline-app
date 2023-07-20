@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct DiverCoachAccounts: Hashable {
-    var DiveMeetsID: String?
-    var USADivingID: String?
-    var AAUDivingID: String?
-    var NCAAID: String?
+    var diveMeetsID: String?
+    var usaDivingID: String?
+    var aauDivingID: String?
+    var ncaaID: String?
 }
 
 struct AdrenalineProfileView: View {
