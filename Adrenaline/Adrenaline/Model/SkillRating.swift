@@ -20,18 +20,18 @@ final class SkillRating {
     }
     
     // Separates ProfileDiveStatisticsData into three sets separated by event (1M, 3M, Platform)
-    func getDiverStatsByEvent() -> (Set<DiveStatistic>, Set<DiveStatistic>, Set<DiveStatistic>) {
-        var oneDives: Set<DiveStatistic> = Set<DiveStatistic>()
-        var threeDives: Set<DiveStatistic> = Set<DiveStatistic>()
-        var platformDives: Set<DiveStatistic> = Set<DiveStatistic>()
+    func getDiverStatsByEvent() -> ([DiveStatistic], [DiveStatistic], [DiveStatistic]) {
+        var oneDives: [DiveStatistic] = []
+        var threeDives: [DiveStatistic] = []
+        var platformDives: [DiveStatistic] = []
         
         for dive in diveStatistics {
             if dive.height > 3 {
-                platformDives.insert(dive)
+                platformDives.append(dive)
             } else if dive.height > 1 {
-                threeDives.insert(dive)
+                threeDives.append(dive)
             } else {
-                oneDives.insert(dive)
+                oneDives.append(dive)
             }
         }
         
@@ -67,7 +67,7 @@ final class SkillRating {
     
     // Gets top six dives from given set of statistics
     // Note: set of dives should be passed in after filtering by event
-    func getTopDives(dives: Set<DiveStatistic>) -> [DiveStatistic] {
+    func getTopDives(dives: [DiveStatistic]) -> [DiveStatistic] {
         var front: DiveStatistic?
         var back: DiveStatistic?
         var reverse: DiveStatistic?
@@ -103,7 +103,8 @@ final class SkillRating {
                         // best
                         } else {
                             // Only replaces second best if the dive nums are different
-                            if !isSameDiveNumber(a: dive, b: secondFront) {
+                            if !isSameDiveNumber(a: dive, b: front),
+                                !isSameDiveNumber(a: dive, b: secondFront) {
                                 secondFront = getBestDive(dive: dive, stored: secondFront)
                             }
                         }
@@ -125,7 +126,8 @@ final class SkillRating {
                             back = dive
                         } else {
                             // Only replaces second best if the dive nums are different
-                            if !isSameDiveNumber(a: dive, b: secondBack) {
+                            if !isSameDiveNumber(a: dive, b: back),
+                               !isSameDiveNumber(a: dive, b: secondBack){
                                 secondBack = getBestDive(dive: dive, stored: secondBack)
                             }
                         }
@@ -147,7 +149,8 @@ final class SkillRating {
                             reverse = dive
                         } else {
                             // Only replaces second best if the dive nums are different
-                            if !isSameDiveNumber(a: dive, b: secondReverse) {
+                            if !isSameDiveNumber(a: dive, b: reverse),
+                               !isSameDiveNumber(a: dive, b: secondReverse) {
                                 secondReverse = getBestDive(dive: dive, stored: secondReverse)
                             }
                         }
@@ -169,7 +172,8 @@ final class SkillRating {
                             inward = dive
                         } else {
                             // Only replaces second best if the dive nums are different
-                            if !isSameDiveNumber(a: dive, b: secondInward) {
+                            if !isSameDiveNumber(a: dive, b: inward),
+                               !isSameDiveNumber(a: dive, b: secondInward) {
                                 secondInward = getBestDive(dive: dive, stored: secondInward)
                             }
                         }
@@ -191,7 +195,8 @@ final class SkillRating {
                             twist = dive
                         } else {
                             // Only replaces second best if the dive nums are different
-                            if !isSameDiveNumber(a: dive, b: secondTwist) {
+                            if !isSameDiveNumber(a: dive, b: twist),
+                               !isSameDiveNumber(a: dive, b: secondTwist) {
                                 secondTwist = getBestDive(dive: dive, stored: secondTwist)
                             }
                         }
@@ -213,7 +218,8 @@ final class SkillRating {
                             armstand = dive
                         } else {
                             // Only replaces second best if the dive nums are different
-                            if !isSameDiveNumber(a: dive, b: secondArmstand) {
+                            if !isSameDiveNumber(a: dive, b: armstand),
+                               !isSameDiveNumber(a: dive, b: secondArmstand) {
                                 secondArmstand = getBestDive(dive: dive, stored: secondArmstand)
                             }
                         }
