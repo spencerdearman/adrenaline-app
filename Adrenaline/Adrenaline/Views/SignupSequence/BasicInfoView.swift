@@ -38,6 +38,25 @@ struct BasicInfoView: View {
         currentMode == .light ? .white : .black
     }
     
+    private func formatPhoneString(string: String) -> String {
+        // (123) 456-7890
+        // 12345678901234
+        
+        var chars = string.filter { $0.isNumber }
+        if chars.count > 0 {
+            chars = "(" + chars
+        }
+        if chars.count > 4 {
+            chars.insert(")", at: chars.index(chars.startIndex, offsetBy: 4))
+            chars.insert(" ", at: chars.index(chars.startIndex, offsetBy: 5))
+        }
+        if chars.count > 9 {
+            chars.insert("-", at: chars.index(chars.startIndex, offsetBy: 9))
+        }
+        
+        return String(chars.prefix(14))
+    }
+    
     var body: some View {
         ZStack {
             bgColor.ignoresSafeArea()
@@ -93,6 +112,7 @@ struct BasicInfoView: View {
                                 .multilineTextAlignment(.center)
                                 .focused($focusedField, equals: .phone)
                                 .onChange(of: phone) { _ in
+                                    phone = formatPhoneString(string: phone)
                                     signupData.phone = phone
                                 }
                             
