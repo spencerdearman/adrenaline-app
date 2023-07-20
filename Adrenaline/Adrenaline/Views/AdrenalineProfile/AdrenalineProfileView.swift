@@ -346,31 +346,6 @@ struct VideosView: View {
     }
 }
 
-
-//struct SignupData: Hashable {
-//    var accountType: AccountType?
-//    var firstName: String?
-//    var lastName: String?
-//    var email: String?
-//    var phone: String?
-//    var recruiting: RecruitingData?
-//}
-//struct RecruitingData: Hashable {
-//    var height: Height?
-//    var weight: Int?
-//    var gender: String?
-//    var age: Int?
-//    var gradYear: Int?
-//    var highSchool: String?
-//    var hometown: String?
-//}
-//
-//struct Height: Hashable {
-//    var feet: Int
-//    var inches: Int
-//}
-//
-//
 //struct AdrenalineProfileView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
