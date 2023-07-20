@@ -48,8 +48,11 @@ struct AthleteRecruitingView: View {
         screenWidth * 0.5
     }
     
+    // Verifies that weight and gradYear have appropriate values and high school and hometown
+    // are not empty
     private var requiredFieldsFilledIn: Bool {
-        weight != "" && gradYear != "" && highSchool != "" && hometown != ""
+        weight.filter { $0.isNumber }.count > 0 &&
+        gradYear.filter { $0.isNumber }.count > 0 && highSchool != "" && hometown != ""
     }
     
     private var bgColor: Color {
@@ -147,7 +150,7 @@ struct AthleteRecruitingView: View {
                                 TextField("Weight", text: $weight)
                                     .textFieldStyle(.roundedBorder)
                                     .frame(width: textFieldWidth / 2)
-                                    .keyboardType(.decimalPad)
+                                    .keyboardType(.numberPad)
                                     .multilineTextAlignment(.center)
                                     .focused($focusedField, equals: .weight)
                                     .onChange(of: weight) { _ in
@@ -156,7 +159,7 @@ struct AthleteRecruitingView: View {
                                         if signupData.recruiting == nil {
                                             signupData.recruiting = RecruitingData()
                                         }
-                                        if let weight = Double(weight) {
+                                        if let weight = Int(weight) {
                                             signupData.recruiting!.weight = Weight(weight: weight,
                                                                                    unit: weightUnit)
                                         }
@@ -167,7 +170,7 @@ struct AthleteRecruitingView: View {
                                         if signupData.recruiting == nil {
                                             signupData.recruiting = RecruitingData()
                                         }
-                                        if let weight = Double(weight) {
+                                        if let weight = Int(weight) {
                                             signupData.recruiting!.weight = Weight(weight: weight,
                                                                                    unit: weightUnit)
                                         }
@@ -213,6 +216,7 @@ struct AthleteRecruitingView: View {
                                 TextField("Graduation Year", text: $gradYear)
                                     .textFieldStyle(.roundedBorder)
                                     .frame(width: textFieldWidth * 0.75)
+                                    .keyboardType(.numberPad)
                                     .multilineTextAlignment(.center)
                                     .focused($focusedField, equals: .gradYear)
                                     .onChange(of: gradYear) { _ in
