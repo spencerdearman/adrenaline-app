@@ -330,7 +330,11 @@ struct ProfileView: View {
                 }
                 if let stats = parser.profileData.diveStatistics {
                     let skill = SkillRating(diveStatistics: stats)
-                    print(await skill.getSkillRating(link: profileLink, metric: skill.computeMetric1))
+                    let (springboard, platform, total) = await skill.getSkillRating(link: profileLink,
+                                                                                    metric: skill.computeMetric1)
+                    print(String(format: "Springboard: %.2f", springboard))
+                    print(String(format: "Platform: %.2f", platform))
+                    print(String(format: "Total: %.2f", total))
                 }
             }
         }

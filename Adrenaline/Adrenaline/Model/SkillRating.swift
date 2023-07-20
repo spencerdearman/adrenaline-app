@@ -288,9 +288,7 @@ final class SkillRating {
         var platform: Double = 0.0
         for (event, dives) in divesList {
             let topDives = skill.getTopDives(dives: dives)
-            //            print(topDives)
             let eventRating = metric(topDives)
-            //            print(event, ": ", eventRating)
             if event == "Platform" {
                 platform += eventRating
             } else {
