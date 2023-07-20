@@ -99,12 +99,12 @@ final class SkillRating {
                                 secondFront = front
                             }
                             front = dive
-                        // Incoming dive is not better than best, but could be better than second
-                        // best
+                            // Incoming dive is not better than best, but could be better than second
+                            // best
                         } else {
                             // Only replaces second best if the dive nums are different
                             if !isSameDiveNumber(a: dive, b: front),
-                                !isSameDiveNumber(a: dive, b: secondFront) {
+                               !isSameDiveNumber(a: dive, b: secondFront) {
                                 secondFront = getBestDive(dive: dive, stored: secondFront)
                             }
                         }
@@ -265,7 +265,8 @@ final class SkillRating {
     }
     
     // Returns a triple of springboard rating, platform rating, and total rating
-    func getSkillRating(link: String, metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
+    func getSkillRating(link: String,
+                        metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
         let p = ProfileParser()
         
         let _ = await p.parseProfile(link: link)
@@ -324,7 +325,8 @@ final class SkillRating {
         
         var ratings: [Double] = []
         for (name, link) in pairs {
-            let (springboard, platform, total) = await getSkillRating(link: link, metric: metrics[index])
+            let (springboard, platform, total) = await getSkillRating(link: link,
+                                                                      metric: metrics[index])
             let rating: Double
             if onlyPlatform {
                 rating = platform
