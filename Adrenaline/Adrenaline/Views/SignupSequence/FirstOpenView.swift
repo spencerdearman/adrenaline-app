@@ -13,6 +13,7 @@ struct SignupData: Hashable {
     var lastName: String?
     var email: String?
     var phone: String?
+    var password: String?
     var recruiting: RecruitingData?
 }
 

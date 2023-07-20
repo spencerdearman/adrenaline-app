@@ -12,6 +12,8 @@ enum BasicInfoField: Int, Hashable, CaseIterable {
     case last
     case email
     case phone
+    case password
+    case repeatPassword
 }
 
 struct BasicInfoView: View {
@@ -21,6 +23,9 @@ struct BasicInfoView: View {
     @State private var lastName: String = ""
     @State private var email: String = ""
     @State private var phone: String = ""
+    @State private var password: String = ""
+    @State private var repeatPassword: String = ""
+    @State private var isPasswordVisible: Bool = false
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
     @FocusState private var focusedField: BasicInfoField?
@@ -31,7 +36,7 @@ struct BasicInfoView: View {
     }
     
     private var requiredFieldsFilledIn: Bool {
-        firstName != "" && lastName != "" && email != "" && (phone == "" || phone.count == 14)
+        firstName != "" && lastName != "" && email != "" && (phone == "" || phone.count == 14) && password != "" && password == repeatPassword
     }
     
     private var bgColor: Color {
@@ -119,6 +124,44 @@ struct BasicInfoView: View {
                                     phone = formatPhoneString(string: phone)
                                     signupData.phone = removePhoneFormatting(string: phone)
                                 }
+                            
+                            Spacer()
+                            
+                            VStack {
+                                HStack {
+                                    SecureField("Password", text: $password)
+                                        .textFieldStyle(.roundedBorder)
+                                        .autocapitalization(.none)
+                                        .textContentType(.newPassword)
+                                        .multilineTextAlignment(.center)
+                                        .focused($focusedField, equals: .password)
+                                        .onChange(of: password) { _ in
+                                            signupData.password = password
+                                        }
+                                    Button(action: {
+                                        isPasswordVisible.toggle()
+                                    }) {
+                                        Image(systemName: isPasswordVisible ? "eye.circle" : "eye.slash.circle")
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                                
+                                HStack {
+                                    SecureField("Password again", text: $password)
+                                        .textFieldStyle(.roundedBorder)
+                                        .autocapitalization(.none)
+                                        .textContentType(.newPassword)
+                                        .multilineTextAlignment(.center)
+                                    .focused($focusedField, equals: .repeatPassword)
+                                    Button(action: {
+                                        isPasswordVisible.toggle()
+                                    }) {
+                                        Image(systemName: "eye.circle")
+                                            .opacity(0.0)
+                                    }
+                                }
+                            }
+                            .frame(width: textFieldWidth)
                             
                             Spacer()
                             
