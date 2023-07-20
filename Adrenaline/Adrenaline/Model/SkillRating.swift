@@ -264,15 +264,41 @@ final class SkillRating {
         return sum
     }
     
-    func getSkillRating(link: String, metric: ([DiveStatistic]) -> Double) async -> Double {
+    // Returns a triple of springboard rating, platform rating, and total rating
+    func getSkillRating(link: String, metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
         let p = ProfileParser()
         
         let _ = await p.parseProfile(link: link)
-        guard let stats = p.profileData.diveStatistics else { print("Failed getting stats"); return 0.0 }
+        guard let stats = p.profileData.diveStatistics else {
+            print("Failed getting stats")
+            return (0.0, 0.0, 0.0)
+        }
+        
+        return await getSkillRating(stats: stats, metric: metric)
+    }
+    
+    func getSkillRating(stats: ProfileDiveStatisticsData,
+                        metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
         let skill = SkillRating(diveStatistics: stats)
-        let dives = skill.getDiverStatsByEvent().0
-        let topDives = skill.getTopDives(dives: dives)
-        return metric(topDives)
+        let divesByEvent = skill.getDiverStatsByEvent()
+        
+        let divesList = [("1M", divesByEvent.0), ("3M", divesByEvent.1), ("Platform", divesByEvent.2)]
+        
+        var springboard: Double = 0.0
+        var platform: Double = 0.0
+        for (event, dives) in divesList {
+            let topDives = skill.getTopDives(dives: dives)
+            //            print(topDives)
+            let eventRating = metric(topDives)
+            //            print(event, ": ", eventRating)
+            if event == "Platform" {
+                platform += eventRating
+            } else {
+                springboard += eventRating
+            }
+        }
+        
+        return (springboard, platform, springboard + platform)
     }
     
     func getRatingNorm(value: Double, ratings: [Double]) -> Double {
@@ -281,26 +307,49 @@ final class SkillRating {
         return (value - min) / (max - min) * 100.0
     }
     
-    func testMetrics(_ index: Int) async {
+    func testMetrics(_ index: Int, includePlatform: Bool = true, onlyPlatform: Bool = false) async {
         let metrics: [([DiveStatistic]) -> Double] = [computeMetric1]
         
         let pairs: [(String, String)] = [
-            ("Tyler", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36256"),
+            ("Tyler Downs", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36256"),
             ("Logan", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961"),
             ("Holden", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=45186"),
+            ("Spencer", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197"),
+            ("Andrew", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36825"),
+            ("Tim", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=50923"),
+            ("Skylar", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=53397"),
+            ("Trevor", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=63091"),
+            ("David Boudia", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=11408"),
+            ("Josh Parquet", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=37447"),
+            ("Dylan Reed", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=43209"),
         ]
         
         var ratings: [Double] = []
         for (name, link) in pairs {
-            let rating = await getSkillRating(link: link, metric: metrics[index])
+            let (springboard, platform, total) = await getSkillRating(link: link, metric: metrics[index])
+            let rating: Double
+            if onlyPlatform {
+                rating = platform
+            } else if includePlatform {
+                rating = total
+            } else {
+                rating = springboard
+            }
+            
             ratings.append(rating)
             print(String(format: "\(name) Skill Rating: %.2f", rating))
+            print("-------------------------")
         }
         
         print("-------------------------")
         
+        var norms: [(String, Double)] = []
         for (i, (name, _)) in pairs.enumerated() {
-            print(String(format: "\(name) Skill Rating: %.2f", getRatingNorm(value: ratings[i], ratings: ratings)))
+            norms.append((name, getRatingNorm(value: ratings[i], ratings: ratings)))
+        }
+        
+        for (name, rating) in norms.sorted(by: { $0.1 > $1.1 }) {
+            print(String(format: "\(name) Skill Rating: %.2f", rating))
         }
     }
 }

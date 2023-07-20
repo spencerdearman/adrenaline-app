@@ -330,12 +330,7 @@ struct ProfileView: View {
                 }
                 if let stats = parser.profileData.diveStatistics {
                     let skill = SkillRating(diveStatistics: stats)
-                    let (one, three, platform) = skill.getDiverStatsByEvent()
-                    print(skill.getTopDives(dives: one))
-                    print("----------------------------")
-                    print(skill.getTopDives(dives: three))
-                    print("----------------------------")
-                    print(skill.getTopDives(dives: platform))
+                    print(await skill.getSkillRating(link: profileLink, metric: skill.computeMetric1))
                 }
             }
         }

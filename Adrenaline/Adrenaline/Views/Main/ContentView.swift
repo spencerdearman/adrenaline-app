@@ -15,7 +15,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @Environment(\.meetsDB) var db
     @EnvironmentObject private var p: MeetParser
-    @State private var selectedTab: Tab = .wrench
+    @State private var selectedTab: Tab = .house
     @State var isIndexingMeets: Bool = false
     @State var showSplash: Bool = false
     @FetchRequest(sortDescriptors: []) private var meets: FetchedResults<DivingMeet>
@@ -105,7 +105,9 @@ struct ContentView: View {
                     
                     // Runs this task asynchronously so rest of app can function while this finishes
                     Task {
-                        await SkillRating(diveStatistics: nil).testMetrics(0)
+//                        await SkillRating(diveStatistics: nil).testMetrics(0)
+                        await SkillRating(diveStatistics: nil).testMetrics(0, includePlatform: false)
+//                        await SkillRating(diveStatistics: nil).testMetrics(0, onlyPlatform: true)
                         
                         // This sets p's upcoming, current, and past meets fields
                         try await p.parseMeets(storedMeets: meets)
