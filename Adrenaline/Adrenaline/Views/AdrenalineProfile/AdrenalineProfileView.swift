@@ -260,7 +260,7 @@ struct CoachView: View {
 }
 
 struct ProfileContent: View {
-    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Videos"]
+    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
     @State var selectedPage: Int = 1
     @Binding var diveMeetsID: String
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
