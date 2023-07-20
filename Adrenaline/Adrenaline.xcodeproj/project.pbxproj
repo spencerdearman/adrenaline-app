@@ -52,6 +52,7 @@
 		4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */; };
 		4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D254F1529C0411C0033838D /* HTMLParser.swift */; };
 		4D261CB42A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D261CB32A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift */; };
+		4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */; };
 		4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D26F43B2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift */; };
 		4D3FD9CF2A5DFAF6003E1FF7 /* SearchBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3FD9CE2A5DFAF6003E1FF7 /* SearchBackgroundView.swift */; };
 		4D50E7902A29106E009BFBFA /* diveTable.json in Resources */ = {isa = PBXBuildFile; fileRef = 4D50E78F2A29106E009BFBFA /* diveTable.json */; };
@@ -128,6 +129,7 @@
 		4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordList.swift; sourceTree = "<group>"; };
 		4D254F1529C0411C0033838D /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
 		4D261CB32A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiveMeetsConnectorView.swift; sourceTree = "<group>"; };
+		4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsGraph.swift; sourceTree = "<group>"; };
 		4D26F43B2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIWheelPicker.swift; sourceTree = "<group>"; };
 		4D3FD9CE2A5DFAF6003E1FF7 /* SearchBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBackgroundView.swift; sourceTree = "<group>"; };
 		4D50E78F2A29106E009BFBFA /* diveTable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = diveTable.json; sourceTree = "<group>"; };
@@ -390,6 +392,7 @@
 			isa = PBXGroup;
 			children = (
 				4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */,
+				4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */,
 			);
 			path = AdrenalineProfile;
 			sourceTree = "<group>";
@@ -499,6 +502,7 @@
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
+				4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */,
 				4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
