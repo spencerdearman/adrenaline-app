@@ -11,8 +11,12 @@ final class SkillRating {
     let diveStatistics: ProfileDiveStatisticsData
     let diveTableData: [String: DiveData]? = getDiveTableData()
     
-    init(diveStatistics: ProfileDiveStatisticsData) {
-        self.diveStatistics = diveStatistics
+    init(diveStatistics: ProfileDiveStatisticsData?) {
+        if let diveStatistics = diveStatistics {
+            self.diveStatistics = diveStatistics
+        } else {
+            self.diveStatistics = []
+        }
     }
     
     // Separates ProfileDiveStatisticsData into three sets separated by event (1M, 3M, Platform)
@@ -63,7 +67,7 @@ final class SkillRating {
     
     // Gets top six dives from given set of statistics
     // Note: set of dives should be passed in after filtering by event
-    func getTopDives(dives: Set<DiveStatistic>) -> [DiveStatistic?] {
+    func getTopDives(dives: Set<DiveStatistic>) -> [DiveStatistic] {
         var front: DiveStatistic?
         var back: DiveStatistic?
         var reverse: DiveStatistic?
@@ -227,6 +231,70 @@ final class SkillRating {
             sixth = getBestDive(dive: dive, stored: sixth)
         }
         
-        return [front, back, reverse, inward, twist, sixth]
+        let final = [front, back, reverse, inward, twist, sixth]
+        var result: [DiveStatistic] = []
+        for r in final {
+            guard let r = r else { continue }
+            result.append(r)
+        }
+        
+        return result
+    }
+    
+    func invertedNumberOfTimes(num: Int) -> Double {
+        return 1.01 - (1.0 / Double(num))
+    }
+    
+    func computeMetric1(dives: [DiveStatistic]) -> Double {
+        var sum: Double = 0
+        
+        for dive in dives {
+            sum += (dive.avgScore * (getDiveDD(data: diveTableData ?? [:],
+                                               forKey: dive.number,
+                                               height: dive.height) ?? 0.0) *
+                    invertedNumberOfTimes(num: dive.numberOfTimes))
+        }
+        
+        return sum
+    }
+    
+    func getSkillRating(link: String, metric: ([DiveStatistic]) -> Double) async -> Double {
+        let p = ProfileParser()
+        
+        let _ = await p.parseProfile(link: link)
+        guard let stats = p.profileData.diveStatistics else { print("Failed getting stats"); return 0.0 }
+        let skill = SkillRating(diveStatistics: stats)
+        let dives = skill.getDiverStatsByEvent().0
+        let topDives = skill.getTopDives(dives: dives)
+        return metric(topDives)
+    }
+    
+    func getRatingNorm(value: Double, ratings: [Double]) -> Double {
+        guard let min = ratings.min() else { return 0.0 }
+        guard let max = ratings.max() else { return 0.0 }
+        return (value - min) / (max - min) * 100.0
+    }
+    
+    func testMetrics(_ index: Int) async {
+        let metrics: [([DiveStatistic]) -> Double] = [computeMetric1]
+        
+        let pairs: [(String, String)] = [
+            ("Tyler", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36256"),
+            ("Logan", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961"),
+            ("Holden", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=45186"),
+        ]
+        
+        var ratings: [Double] = []
+        for (name, link) in pairs {
+            let rating = await getSkillRating(link: link, metric: metrics[index])
+            ratings.append(rating)
+            print(String(format: "\(name) Skill Rating: %.2f", rating))
+        }
+        
+        print("-------------------------")
+        
+        for (i, (name, _)) in pairs.enumerated() {
+            print(String(format: "\(name) Skill Rating: %.2f", getRatingNorm(value: ratings[i], ratings: ratings)))
+        }
     }
 }

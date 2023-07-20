@@ -76,8 +76,7 @@ struct ContentView: View {
                                         //.navigationViewStyle(StackNavigationViewStyle())
 //                                        ToolsMenu()
                                          //SearchColorfulView()
-//                                        FirstOpenView()
-                                        ProfileView(profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36256")
+                                        FirstOpenView()
                                     case .magnifyingglass:
                                         SearchView(isIndexingMeets: $isIndexingMeets)
                                     case .person:
@@ -106,6 +105,8 @@ struct ContentView: View {
                     
                     // Runs this task asynchronously so rest of app can function while this finishes
                     Task {
+                        await SkillRating(diveStatistics: nil).testMetrics(0)
+                        
                         // This sets p's upcoming, current, and past meets fields
                         try await p.parseMeets(storedMeets: meets)
                         
