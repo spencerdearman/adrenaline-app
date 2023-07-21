@@ -31,7 +31,7 @@ struct SkillsGraph: View {
                 .stroke(.primary, lineWidth: 2)
                 .foregroundColor(.gray)
                 .frame(width : 500)
-            Polygon(metrics: [4.0, 4.23, 3.56, 3.21, 4.9])
+            Polygon(metrics: [4.0, 4.6, 3.56, 3.21, 4.9])
                 .fill(Custom.medBlue.opacity(0.5))
                 .frame(width: 500)
         }
