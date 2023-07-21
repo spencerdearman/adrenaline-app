@@ -127,22 +127,24 @@ private func argsToPredParams(
             endDate = df.date(from: endDateStr) as? NSDate
         }
         
-        if let startDate = startDate, let endDate = endDate {
-            if haveName && haveOrg && haveYear {
-                return NSPredicate(format: pred, name, org, startDate, endDate)
-            } else if haveName && haveOrg {
-                return NSPredicate(format: pred, name, org)
-            } else if haveName && haveYear {
-                return NSPredicate(format: pred, name, startDate, endDate)
-            } else if haveOrg && haveYear {
-                return NSPredicate(format: pred, org, startDate, endDate)
-            } else if haveName {
-                return NSPredicate(format: pred, name)
-            } else if haveOrg {
-                return NSPredicate(format: pred, org)
-            } else if haveYear {
-                return NSPredicate(format: pred, startDate, endDate)
-            }
+        if haveName && haveOrg && haveYear {
+            guard let startDate = startDate, let endDate = endDate else { return nil }
+            return NSPredicate(format: pred, name, org, startDate, endDate)
+        } else if haveName && haveOrg {
+            return NSPredicate(format: pred, name, org)
+        } else if haveName && haveYear {
+            guard let startDate = startDate, let endDate = endDate else { return nil }
+            return NSPredicate(format: pred, name, startDate, endDate)
+        } else if haveOrg && haveYear {
+            guard let startDate = startDate, let endDate = endDate else { return nil }
+            return NSPredicate(format: pred, org, startDate, endDate)
+        } else if haveName {
+            return NSPredicate(format: pred, name)
+        } else if haveOrg {
+            return NSPredicate(format: pred, org)
+        } else if haveYear {
+            guard let startDate = startDate, let endDate = endDate else { return nil }
+            return NSPredicate(format: pred, startDate, endDate)
         }
         
         return nil
