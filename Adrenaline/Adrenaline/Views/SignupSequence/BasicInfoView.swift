@@ -76,7 +76,7 @@ struct BasicInfoView: View {
             
             VStack {
                 Spacer()
-           
+                
                 BackgroundBubble(onTapGesture: { focusedField = nil }) {
                         VStack(spacing: 5) {
                             Text("Basic Information")
@@ -186,8 +186,8 @@ struct BasicInfoView: View {
                             .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
                             .disabled(!requiredFieldsFilledIn)
                         }
-                        .padding()
-                    }
+                        .frame(width: textFieldWidth)
+                }
                 .frame(height: 300)
                 .onAppear {
                     // Clears recruiting data on appear and if user comes back from recruiting
@@ -221,6 +221,6 @@ struct BasicInfoView: View {
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
         BasicInfoView(signupData: .constant(SignupData()),
-                                            selectedOption: .constant(nil))
+                      selectedOption: .constant(nil))
     }
 }
