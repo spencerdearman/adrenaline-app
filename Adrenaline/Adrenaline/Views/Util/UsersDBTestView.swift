@@ -10,7 +10,7 @@ import SwiftUI
 struct UsersDBTestView: View {
     @Environment(\.managedObjectContext) var moc
     @Environment(\.modelDB) var db
-
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(key: "email", ascending: true)]
     ) var users: FetchedResults<User>
@@ -22,15 +22,16 @@ struct UsersDBTestView: View {
         VStack {
             HStack {
                 Button("Add User") {
-                    db.addUser(firstName: "Beck", lastName: "Benson", email: "rlbenson@uchicago.edu",
-                               phone: nil, password: "12345")
+                    db.addUser(firstName: "Beck", lastName: "Benson",
+                               email: "rlbenson@uchicago.edu", phone: nil, password: "12345")
                 }
                 Spacer()
                 Button("Add Athlete") {
-                    db.addAthlete(firstName: "Logan", lastName: "Sherwin", email: "lsherwin@uchicago.edu",
-                               phone: "7247713142", password: "password", heightFeet: 5, heightInches: 8,
-                               weight: 175, weightUnit: "lb", gender: "Male", age: 22, gradYear: 2023,
-                    highSchool: "Penn-Trafford", hometown: "Pittsburgh, PA")
+                    db.addAthlete(firstName: "Logan", lastName: "Sherwin",
+                                  email: "lsherwin@uchicago.edu", phone: "7247713142",
+                                  password: "password", heightFeet: 5, heightInches: 8, weight: 175,
+                                  weightUnit: "lb", gender: "Male", age: 22, gradYear: 2023,
+                                  highSchool: "Penn-Trafford", hometown: "Pittsburgh, PA")
                 }
                 Spacer()
                 Group {
@@ -45,7 +46,8 @@ struct UsersDBTestView: View {
                     }
                     Spacer()
                     Button("Set Platform") {
-                        db.updateAthleteSkillRating(email: "lsherwin@uchicago.edu", platformRating: 50.0)
+                        db.updateAthleteSkillRating(email: "lsherwin@uchicago.edu",
+                                                    platformRating: 50.0)
                     }
                 }
                 Spacer()
@@ -57,14 +59,8 @@ struct UsersDBTestView: View {
             
             List(users) { user in
                 HStack {
-                    if let first = user.firstName, let last = user.lastName {
-                        Text(first + " " + last)
-                    }
                     if let email = user.email {
                         Text(email)
-                    }
-                    if let phone = user.phone {
-                        Text(phone)
                     }
                     if let password = user.password {
                         Text(password)
@@ -73,14 +69,8 @@ struct UsersDBTestView: View {
             }
             List(athletes) { user in
                 HStack {
-                    if let first = user.firstName, let last = user.lastName {
-                        Text(first + " " + last)
-                    }
                     if let email = user.email {
                         Text(email)
-                    }
-                    if let phone = user.phone {
-                        Text(phone)
                     }
                     if let password = user.password {
                         Text(password)

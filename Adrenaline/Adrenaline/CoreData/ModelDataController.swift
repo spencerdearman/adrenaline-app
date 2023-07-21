@@ -87,7 +87,7 @@ class ModelDataController: ObservableObject {
                                     meetId ?? NSNull())
         fetchRequest.predicate = predicate
         
-        var result = try? moc.fetch(fetchRequest)
+        let result = try? moc.fetch(fetchRequest)
         
         // Deletes all meets that match meetId and have a lower or equal type value
         // (upcoming < current < past)
