@@ -190,6 +190,7 @@ struct BasicInfoView: View {
                 }
                 .onDisappear {
                     print(signupData)
+                    signupData.save()
                 }
                 
                 Spacer()

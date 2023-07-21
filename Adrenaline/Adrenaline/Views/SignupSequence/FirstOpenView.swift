@@ -15,6 +15,43 @@ struct SignupData: Hashable {
     var phone: String?
     var password: String?
     var recruiting: RecruitingData?
+    
+    private let defaults = UserDefaults.standard
+    
+    func save() {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(email)  {
+            defaults.set(encoded, forKey: "username")
+        }
+        
+        if let encoded = try? encoder.encode(password)  {
+            defaults.set(encoded, forKey: "password")
+        }
+    }
+    
+    func clear() {
+        defaults.removeObject(forKey: "username")
+        defaults.removeObject(forKey: "password")
+    }
+}
+
+struct LoginData: Hashable {
+    var username: String?
+    var password: String?
+    
+    init() {
+        let defaults = UserDefaults.standard
+        let decoder = JSONDecoder()
+        if let data = defaults.data(forKey: "username") {
+            let username = try? decoder.decode(String.self, from: data)
+            self.username = username
+        }
+        
+        if let data = defaults.data(forKey: "password") {
+            let password = try? decoder.decode(String.self, from: data)
+            self.password = password
+        }
+    }
 }
 
 struct RecruitingData: Hashable {
@@ -39,6 +76,7 @@ struct Weight: Hashable {
 
 struct FirstOpenView: View {
     @State var signupData = SignupData()
+    @State var loginData = LoginData()
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -67,6 +105,13 @@ struct FirstOpenView: View {
                     }
                     .padding()
                 }
+            }
+        }
+        .onAppear {
+            if let username = loginData.username,
+               let password = loginData.password {
+                print("Username: \(username)")
+                print("Password: \(password)")
             }
         }
     }
