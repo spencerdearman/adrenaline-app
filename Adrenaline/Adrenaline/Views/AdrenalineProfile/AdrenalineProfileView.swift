@@ -25,6 +25,19 @@ struct AdrenalineProfileView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
+    func formatLocationString(_ input: String) -> String {
+        var formattedString = input
+        
+        if let spaceIndex = input.firstIndex(of: " ") {
+            formattedString.insert(",", at: spaceIndex)
+        }
+        if formattedString.count >= 2 {
+            let lastTwo = formattedString.suffix(2).uppercased()
+            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex, offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
+        }
+        return formattedString
+    }
+    
     var body: some View {
         ZStack{
             // Universal Base View
@@ -53,11 +66,20 @@ struct AdrenalineProfileView: View {
                             HStack {
                                 HStack{
                                     Image(systemName: "mappin.and.ellipse")
-                                    Text("Oakton, VA")
+                                    if signupData.recruiting == nil {
+                                        Text("?")
+                                    } else {
+                                        Text(formatLocationString(signupData.recruiting!.hometown ?? " "))
+                                    }
                                 }
                                 HStack {
                                     Image(systemName: "person.fill")
-                                    Text("19")
+                                    if signupData.recruiting == nil {
+                                        Text("?")
+                                    } else {
+                                        Text(String(signupData.recruiting!.age ?? 0))
+                                    }
+
                                 }
                             }
                         }
@@ -295,6 +317,8 @@ struct ProfileContent: View {
             RecruitingView()
         case 3:
             VideosView()
+        case 4:
+            StatisticsView()
         default:
             MeetList(profileLink:
                      "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
@@ -351,6 +375,12 @@ struct RecruitingView: View {
 struct VideosView: View {
     var body: some View {
         Text("Welcome to the Videos View")
+    }
+}
+
+struct StatisticsView: View {
+    var body: some View {
+        Text("Welcome to the Statistics View")
     }
 }
 

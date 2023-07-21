@@ -84,7 +84,10 @@ struct IsThisYouView: View {
                 .font(.title).fontWeight(.semibold)
             ForEach(getSortedRecords(records), id: \.1) { record in
                 let (key, value) = record
-                NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData, selectedOption: $selectedOption)) {
+                
+                NavigationLink(destination: signupData.accountType == .athlete
+                               ? AnyView(AthleteRecruitingView(signupData: $signupData, selectedOption: $selectedOption, diveMeetsID: $diveMeetsID))
+                               : AnyView(ProfileView(profileLink: ""))) {
                     HStack {
                         Spacer()
                         ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))
@@ -103,11 +106,11 @@ struct IsThisYouView: View {
                     .background(Custom.darkGray)
                     .cornerRadius(50)
                 }
-                .simultaneousGesture(TapGesture().onEnded{
-                    diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
-                })
-                .shadow(radius: 5)
-                .padding([.leading, .trailing])
+                               .simultaneousGesture(TapGesture().onEnded{
+                                   diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                               })
+                               .shadow(radius: 5)
+                               .padding([.leading, .trailing])
             }
             Spacer()
         }

@@ -166,23 +166,26 @@ struct BasicInfoView: View {
                         .frame(width: textFieldWidth)
                         
                         Spacer()
-                        
-                        NavigationLink(destination: signupData.accountType == .athlete
-                                       ? AnyView(AthleteRecruitingView(signupData: $signupData))
-                                       : AnyView(ProfileView(profileLink: ""))) {
+                        NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName, signupData: $signupData, selectedOption: $selectedOption)) {
                             Text("Next")
                                 .bold()
                         }
-                                       .simultaneousGesture(TapGesture().onEnded{
-                                           print("Coming in here")
-                                           focusedField = nil
-                                           searchSubmitted = true
-                                       })
-                                       .buttonStyle(.bordered)
-                                       .cornerRadius(40)
-                                       .foregroundColor(.primary)
-                                       .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                                       .disabled(!requiredFieldsFilledIn)
+                        //                        NavigationLink(destination: signupData.accountType == .athlete
+                        //                                       ? AnyView(AthleteRecruitingView(signupData: $signupData))
+                        //                                       : AnyView(ProfileView(profileLink: ""))) {
+                        //                            Text("Next")
+                        //                                .bold()
+                        //                        }
+                        .simultaneousGesture(TapGesture().onEnded{
+                            print("Coming in here")
+                            focusedField = nil
+                            searchSubmitted = true
+                        })
+                        .buttonStyle(.bordered)
+                        .cornerRadius(40)
+                        .foregroundColor(.primary)
+                        .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                        .disabled(!requiredFieldsFilledIn)
                     }
                     .frame(width: textFieldWidth)
                     .padding()
