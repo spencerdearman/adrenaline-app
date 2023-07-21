@@ -295,9 +295,6 @@ struct ProfileContent: View {
                     .font(.title2).fontWeight(.semibold)
                     .frame(width: g.size.width, height: g.size.height,
                            alignment: .center)
-                    .onAppear{
-                        print(selectedPage)
-                    }
             }
         }
         .scrollAlpha(0.3)

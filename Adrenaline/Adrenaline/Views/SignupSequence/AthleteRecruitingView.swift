@@ -392,7 +392,6 @@ struct AthleteRecruitingView: View {
         .onAppear {
             Task {
                 if diveMeetsID != "" && parser.profileData.info == nil {
-                    print("https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID)
                     if await !parser.parseProfile(link: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID) {
                         print("Failed to parse profile")
                     }
