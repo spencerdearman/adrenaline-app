@@ -33,9 +33,20 @@ struct UsersDBTestView: View {
                     highSchool: "Penn-Trafford", hometown: "Pittsburgh, PA")
                 }
                 Spacer()
-                Button("Update Skill Rating") {
-                    db.updateAthleteSkillRating(email: "lsherwin@uchicago.edu",
-                                                springboardRating: 100.0, platformRating: 50.0)
+                Group {
+                    Button("Update Skill Rating") {
+                        db.updateAthleteSkillRating(email: "lsherwin@uchicago.edu",
+                                                    springboardRating: 100.0, platformRating: 50.0)
+                    }
+                    Spacer()
+                    Button("Set Springboard") {
+                        db.updateAthleteSkillRating(email: "lsherwin@uchicago.edu",
+                                                    springboardRating: 100.0)
+                    }
+                    Spacer()
+                    Button("Set Platform") {
+                        db.updateAthleteSkillRating(email: "lsherwin@uchicago.edu", platformRating: 50.0)
+                    }
                 }
                 Spacer()
                 Button("Drop All") {

@@ -412,8 +412,8 @@ class ModelDataController: ObservableObject {
         return resultData[0]
     }
     
-    func updateAthleteSkillRating(email: String, springboardRating: Double?,
-                                  platformRating: Double?) {
+    func updateAthleteSkillRating(email: String, springboardRating: Double? = nil,
+                                  platformRating: Double? = nil) {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
         fetchRequest.predicate = NSPredicate(format: "email == %@", email)
