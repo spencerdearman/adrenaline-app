@@ -13,12 +13,8 @@ let timeoutInterval: TimeInterval = 30
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.modelDB) var db
-    @EnvironmentObject private var p: MeetParser
     @State private var selectedTab: Tab = .house
-    @State var isIndexingMeets: Bool = false
     @State var showSplash: Bool = false
-    @FetchRequest(sortDescriptors: []) private var meets: FetchedResults<DivingMeet>
     
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -79,7 +75,7 @@ struct ContentView: View {
                                         FirstOpenView()
 //                                        UsersDBTestView()
                                     case .magnifyingglass:
-                                        SearchView(isIndexingMeets: $isIndexingMeets)
+                                        SearchView()
                                     case .person:
                                         LoginSearchView()
                                 }
@@ -96,38 +92,6 @@ struct ContentView: View {
                     .dynamicTypeSize(.medium ... .xxxLarge)
             }
             .ignoresSafeArea(.keyboard)
-            // Executes on app launch
-            .onAppear {
-                // isIndexingMeets is set to false by default so it is only executed from start
-                //     to finish one time (allows indexing to occur in the background without
-                //     starting over)
-                if !isIndexingMeets {
-                    isIndexingMeets = true
-                    
-                    // Runs this task asynchronously so rest of app can function while this finishes
-                    Task {
-//                        await SkillRating(diveStatistics: nil).testMetrics(0)
-//                        await SkillRating(diveStatistics: nil).testMetrics(0, includePlatform: false)
-//                        await SkillRating(diveStatistics: nil).testMetrics(0, onlyPlatform: true)
-                        
-                        // This sets p's upcoming, current, and past meets fields
-                        try await p.parseMeets(storedMeets: meets)
-                        
-                        // Check that each set of meets is not nil and add each to the database
-                        if let upcoming = p.upcomingMeets {
-                            db.addRecords(records: db.dictToTuple(dict: upcoming), type: .upcoming)
-                        }
-                        if let current = p.currentMeets {
-                            db.addRecords(records: db.dictToTuple(dict: current), type: .current)
-                        }
-                        if let past = p.pastMeets {
-                            db.addRecords(records: db.dictToTuple(dict: past), type: .past)
-                        }
-                        
-                        isIndexingMeets = false
-                    }
-                }
-            }
             // Executes when other views are opened (notification center, control center, swiped up)
             .onChange(of: scenePhase) { newPhase in
                 if newPhase == .active {

@@ -196,7 +196,6 @@ struct SearchView: View {
     @State var dmSearchSubmitted: Bool = false
     @State var linksParsed: Bool = false
     @State var personTimedOut: Bool = false
-    @Binding var isIndexingMeets: Bool
     
     private var personSearchSubmitted: Bool {
         searchSubmitted && selection == .person
@@ -218,7 +217,7 @@ struct SearchView: View {
                             meetName: $meetName, orgName: $orgName, meetYear: $meetYear,
                             searchSubmitted: $searchSubmitted, parsedLinks: $parsedLinks,
                             dmSearchSubmitted: $dmSearchSubmitted, linksParsed: $linksParsed,
-                            isIndexingMeets: $isIndexingMeets, personTimedOut: $personTimedOut)
+                            personTimedOut: $personTimedOut)
         }
         .ignoresSafeArea(.keyboard)
         .dynamicTypeSize(.xSmall ... .xxxLarge)
@@ -231,6 +230,7 @@ struct SearchView: View {
 
 struct SearchInputView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.isIndexingMeets) var isIndexingMeets
     
     @State private var debounceWorkItem: DispatchWorkItem?
     @State private var showError: Bool = false
@@ -249,7 +249,6 @@ struct SearchInputView: View {
     @Binding var parsedLinks: DiverProfileRecords
     @Binding var dmSearchSubmitted: Bool
     @Binding var linksParsed: Bool
-    @Binding var isIndexingMeets: Bool
     @Binding var personTimedOut: Bool
     
     @State var predicate: NSPredicate?
@@ -348,7 +347,8 @@ struct SearchInputView: View {
                 VStack {
                     if selection == .meet {
                         MeetSearchView(meetName: $meetName, orgName: $orgName,
-                                       meetYear: $meetYear, isIndexingMeet: $isIndexingMeets, focusedField: $focusedField)
+                                       meetYear: $meetYear,
+                                       focusedField: $focusedField)
                         .offset(y: -screenHeight * 0.15)
                     } else {
                         DiverSearchView(firstName: $firstName, lastName: $lastName,
@@ -567,7 +567,9 @@ struct SearchInputView: View {
 }
 
 struct IndexingCounterView: View {
-    @EnvironmentObject var meetParser: MeetParser
+    @Environment(\.meetsParsedCount) var meetsParsedCount
+    @Environment(\.totalMeetsParsedCount) var totalMeetsParsedCount
+    @Environment(\.isFinishedCounting) var isFinishedCounting
     
     private func getPercentString(count: Int, total: Int) -> String {
         return String(Int(trunc(Double(count) / Double(total) * 100)))
@@ -578,18 +580,18 @@ struct IndexingCounterView: View {
             // Displays loading bar if counts are done, otherwise shows indefinite
             // progress bar
             Group {
-                if meetParser.isFinishedCounting {
+                if isFinishedCounting {
                     VStack(alignment: .leading) {
                         Text("Indexing...")
                             .font(.headline)
                             .padding(.leading)
-                        ProgressView(value: Double(meetParser.meetsParsedCount),
-                                     total: Double(meetParser.totalMeetsParsedCount))
+                        ProgressView(value: Double(meetsParsedCount),
+                                     total: Double(totalMeetsParsedCount))
                         .progressViewStyle(.linear)
                         .frame(width: 250)
                         .padding(.leading)
-                        Text(getPercentString(count: meetParser.meetsParsedCount,
-                                              total: meetParser.totalMeetsParsedCount)
+                        Text(getPercentString(count: meetsParsedCount,
+                                              total: totalMeetsParsedCount)
                              + "%")
                         .foregroundColor(.gray)
                         .padding(.leading)
@@ -661,10 +663,12 @@ struct DiverSearchView: View {
 
 
 struct MeetSearchView: View {
+    @Environment(\.meetsParsedCount) var meetsParsedCount
+    @Environment(\.totalMeetsParsedCount) var totalMeetsParsedCount
+    @Environment(\.isIndexingMeets) var isIndexingMeets
     @Binding var meetName: String
     @Binding var orgName: String
     @Binding var meetYear: String
-    @Binding var isIndexingMeet: Bool
     @State var meetYearIndex: Int = 0
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -681,11 +685,10 @@ struct MeetSearchView: View {
     }
     
     fileprivate init(meetName: Binding<String>, orgName: Binding<String>,
-                     meetYear: Binding<String>, isIndexingMeet: Binding<Bool>, focusedField: FocusState<SearchField?>.Binding) {
+                     meetYear: Binding<String>, focusedField: FocusState<SearchField?>.Binding) {
         self._meetName = meetName
         self._orgName = orgName
         self._meetYear = meetYear
-        self._isIndexingMeet = isIndexingMeet
         self.focusedField = focusedField
     }
     
@@ -695,8 +698,8 @@ struct MeetSearchView: View {
                 .mask(RoundedRectangle(cornerRadius: 50))
                 .foregroundColor(Custom.grayThinMaterial)
                 .shadow(radius: 10)
-                .frame(width: screenWidth * 0.9, height: isIndexingMeet ? screenHeight * 0.6 : screenHeight * 0.31)
-                .offset(y: isPhone ? (isIndexingMeet ? screenWidth * 0.33 : screenWidth * 0.015) : isIndexingMeet ? screenHeight * 0.15 : screenWidth * 0.015)
+                .frame(width: screenWidth * 0.9, height: isIndexingMeets ? screenHeight * 0.6 : screenHeight * 0.31)
+                .offset(y: isPhone ? (isIndexingMeets ? screenWidth * 0.33 : screenWidth * 0.015) : isIndexingMeets ? screenHeight * 0.15 : screenWidth * 0.015)
             VStack {
                 Spacer()
                 HStack {
@@ -743,14 +746,14 @@ struct MeetSearchView: View {
                                   }
                 }
                 .offset(y: -20)
-                if isIndexingMeet {
+                if isIndexingMeets {
                     IndexingCounterView()
                         .offset(y: screenHeight * 0.1)
                 }
                 Spacer()
             }
             .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
-            .offset(y: isIndexingMeet ? screenHeight * 0.04: -screenHeight * 0.02)
+            .offset(y: isIndexingMeets ? screenHeight * 0.04: -screenHeight * 0.02)
             .padding([.top, .leading, .trailing])
             .onAppear {
                 meetName = ""
