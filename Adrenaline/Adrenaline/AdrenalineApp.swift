@@ -6,39 +6,40 @@
 //
 
 import SwiftUI
+import CoreData
 
-private struct MeetsDB: EnvironmentKey {
-    static var defaultValue: MeetsDataController {
+private struct ModelDB: EnvironmentKey {
+    static var defaultValue: ModelDataController {
         get {
-            MeetsDataController()
+            ModelDataController()
         }
     }
 }
 
 extension EnvironmentValues {
-    var meetsDB: MeetsDataController {
-        get { self[MeetsDB.self] }
-        set { self[MeetsDB.self] = newValue }
+    var modelDB: ModelDataController {
+        get { self[ModelDB.self] }
+        set { self[ModelDB.self] = newValue }
     }
 }
 
 extension View {
-    func meetsDB(_ meetsDB: MeetsDataController) -> some View {
-        environment(\.meetsDB, meetsDB)
+    func modelDB(_ modelDB: ModelDataController) -> some View {
+        environment(\.modelDB, modelDB)
     }
 }
 
 @main
 struct AdrenalineApp: App {
     // Only one of these should exist, add @Environment to use variable in views
-    // instead of creating a new instance of MeetsDataController()
-    @StateObject var meetsDataController = MeetsDataController()
+    // instead of creating a new instance of ModelDataController()
+    @StateObject var modelDataController = ModelDataController()
     @StateObject var meetParser: MeetParser = MeetParser()
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, meetsDataController.container.viewContext)
-                .environment(\.meetsDB, meetsDataController)
+                .environment(\.managedObjectContext, modelDataController.container.viewContext)
+                .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)
         }
     }
