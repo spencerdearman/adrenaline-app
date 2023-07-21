@@ -38,6 +38,21 @@ final class SkillRating {
         return (oneDives, threeDives, platformDives)
     }
     
+    func getDiverStatsByCategory() -> [Int: [DiveStatistic]] {
+        var result: [Int: [DiveStatistic]] = [:]
+        
+        for dive in diveStatistics {
+            guard let key = Int(dive.number.prefix(1)) else { return [:] }
+            if !result.keys.contains(key) {
+                result[key] = []
+            }
+            
+            result[key]!.append(dive)
+        }
+        
+        return result
+    }
+    
     // Computes average score times DD for a given dive
     func computeSkillValue(_ dive: DiveStatistic) -> Double {
         return dive.avgScore * (getDiveDD(data: diveTableData ?? [:], forKey: dive.number,

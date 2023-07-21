@@ -330,6 +330,7 @@ struct ProfileView: View {
                 }
                 if let stats = parser.profileData.diveStatistics {
                     let skill = SkillRating(diveStatistics: stats)
+                    let divesByCategory = skill.getDiverStatsByCategory()
                     let (springboard, platform, total) = await skill
                         .getSkillRating(link: profileLink, metric: skill.computeMetric1)
                     print(String(format: "Springboard: %.2f", springboard))
