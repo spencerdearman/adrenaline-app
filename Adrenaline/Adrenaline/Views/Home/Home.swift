@@ -88,7 +88,7 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
 
 struct Home: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.meetsDB) var db
+    @Environment(\.modelDB) var db
     @StateObject var meetParser: MeetParser = MeetParser()
     @State private var meetsParsed: Bool = false
     @State private var timedOut: Bool = false
@@ -264,7 +264,7 @@ struct Home: View {
 }
 
 struct UpcomingMeetsView: View {
-    @Environment(\.meetsDB) var db
+    @Environment(\.modelDB) var db
     @ObservedObject var meetParser: MeetParser
     @Binding var timedOut: Bool
     let gridItems = [GridItem(.adaptive(minimum: 300))]
@@ -341,7 +341,7 @@ struct UpcomingMeetsView: View {
 
 
 struct CurrentMeetsView: View {
-    @Environment(\.meetsDB) var db
+    @Environment(\.modelDB) var db
     @ObservedObject var meetParser: MeetParser
     let gridItems = [GridItem(.adaptive(minimum: 300))]
     @Binding var timedOut: Bool

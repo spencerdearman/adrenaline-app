@@ -13,7 +13,7 @@ let timeoutInterval: TimeInterval = 30
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.meetsDB) var db
+    @Environment(\.modelDB) var db
     @EnvironmentObject private var p: MeetParser
     @State private var selectedTab: Tab = .house
     @State var isIndexingMeets: Bool = false
@@ -76,7 +76,8 @@ struct ContentView: View {
                                         //.navigationViewStyle(StackNavigationViewStyle())
 //                                        ToolsMenu()
                                          //SearchColorfulView()
-                                        FirstOpenView()
+//                                        FirstOpenView()
+                                        UsersDBTestView()
                                     case .magnifyingglass:
                                         SearchView(isIndexingMeets: $isIndexingMeets)
                                     case .person:

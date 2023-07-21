@@ -10,7 +10,7 @@ import CoreData
 
 struct MeetDBTestView: View {
     @Environment(\.managedObjectContext) var moc
-    @Environment(\.meetsDB) var db
+    @Environment(\.modelDB) var db
     @State var liveResultsLink: String = ""
     @State var liveResultHTML: String = ""
     @State var finishedParsing: Bool = false
@@ -48,7 +48,7 @@ struct MeetDBTestView: View {
                 HStack {
                     Spacer()
                     Button("Drop All") {
-                        db.dropAllRecords()
+                        db.dropAllMeetRecords()
                     }
                     Spacer()
                     Button("Fix Dates") {
