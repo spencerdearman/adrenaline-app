@@ -217,6 +217,7 @@ struct BasicInfoView: View {
             }
         }
     }
+    }
 }
 
 struct BasicInfoView_Previews: PreviewProvider {
