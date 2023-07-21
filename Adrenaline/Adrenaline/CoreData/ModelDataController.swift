@@ -80,7 +80,7 @@ class ModelDataController: ObservableObject {
                                     meetId ?? NSNull())
         fetchRequest.predicate = predicate
         
-        let result = try? moc.fetch(fetchRequest)
+        var result = try? moc.fetch(fetchRequest)
         
         // Deletes all meets that match meetId and have a lower or equal type value
         // (upcoming < current < past)
@@ -326,7 +326,7 @@ class ModelDataController: ObservableObject {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Athlete")
         fetchRequest.predicate = NSPredicate(format: "email == %@", email)
         
-        var result = try? moc.fetch(fetchRequest)
+        let result = try? moc.fetch(fetchRequest)
         
         if let result = result, result.count == 0 {
             let user = Athlete(context: moc)
