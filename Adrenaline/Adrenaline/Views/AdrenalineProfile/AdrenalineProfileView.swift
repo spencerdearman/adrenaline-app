@@ -21,7 +21,6 @@ struct AdrenalineProfileView: View {
     @State private var offSet: CGFloat = 0
     @Binding var diveMeetsID: String
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -58,7 +57,7 @@ struct AdrenalineProfileView: View {
                             VStack {
                                 Text((signupData.firstName ?? "") + " " + (signupData.lastName
                                                     ?? "")) .font(.title3).fontWeight(.semibold)
-                                Text(selectedOption?.rawValue ?? "")
+                                Text(signupData.accountType?.rawValue ?? "")
                                     .foregroundColor(.secondary)
                             }
                         }
@@ -107,13 +106,13 @@ struct AdrenalineProfileView: View {
                     .shadow(radius: 10)
                     .frame(height: screenHeight * 1.1)
                 VStack {
-                    if let type = selectedOption {
-                        if type.rawValue == AccountType.athlete.rawValue {
+                    if let type = signupData.accountType?.rawValue {
+                        if type == AccountType.athlete.rawValue {
                             DiverView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                        } else if type.rawValue == AccountType.coach.rawValue {
+                        } else if type == AccountType.coach.rawValue {
                             Text("This is a coaching profile")
                             CoachView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                        } else if type.rawValue == AccountType.spectator.rawValue {
+                        } else if type == AccountType.spectator.rawValue {
                             Text("This is a spectator profile")
                         } else {
                             Text("The account type has not been specified")

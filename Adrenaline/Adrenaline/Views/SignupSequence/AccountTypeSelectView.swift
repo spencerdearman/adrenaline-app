@@ -41,8 +41,7 @@ struct AccountTypeSelectView: View {
                            selectedOption: $selectedOption, optionType: .spectator,
                            optionDescription: spectatorDesc)
                 
-                NavigationLink(destination: BasicInfoView(signupData: $signupData,
-                                                          selectedOption: $selectedOption)) {
+                NavigationLink(destination: BasicInfoView(signupData: $signupData)) {
                     Text("Next")
                         .bold()
                 }

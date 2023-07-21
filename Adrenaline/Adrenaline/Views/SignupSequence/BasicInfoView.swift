@@ -28,7 +28,6 @@ struct BasicInfoView: View {
     @State private var repeatPassword: String = ""
     @State private var isPasswordVisible: Bool = false
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     @FocusState private var focusedField: BasicInfoField?
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -166,7 +165,7 @@ struct BasicInfoView: View {
                         .frame(width: textFieldWidth)
                         
                         Spacer()
-                        NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName, signupData: $signupData, selectedOption: $selectedOption)) {
+                        NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName, signupData: $signupData)) {
                             Text("Next")
                                 .bold()
                         }
@@ -217,7 +216,6 @@ struct BasicInfoView: View {
 
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        BasicInfoView(signupData: .constant(SignupData()),
-                      selectedOption: .constant(nil))
+        BasicInfoView(signupData: .constant(SignupData()))
     }
 }

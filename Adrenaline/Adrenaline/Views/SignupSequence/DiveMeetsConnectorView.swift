@@ -13,7 +13,6 @@ struct DiveMeetsConnectorView: View {
     @Binding var firstName: String
     @Binding var lastName: String
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     @State private var parsedLinks: DiverProfileRecords = [:]
     @State private var dmSearchSubmitted: Bool = false
     @State private var linksParsed: Bool = false
@@ -33,7 +32,7 @@ struct DiveMeetsConnectorView: View {
             }
             if linksParsed {
                 ZStack (alignment: .topLeading) {
-                    IsThisYouView(records: $parsedLinks, signupData: $signupData, selectedOption: $selectedOption, diveMeetsID: $diveMeetsID)
+                    IsThisYouView(records: $parsedLinks, signupData: $signupData, diveMeetsID: $diveMeetsID)
                 }
             } else {
                 ZStack{
@@ -60,7 +59,6 @@ struct IsThisYouView: View {
     @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     @Binding var diveMeetsID: String
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
@@ -94,7 +92,7 @@ struct IsThisYouView: View {
                 Text("No DiveMeets Profile Found")
                     .font(.title).fontWeight(.semibold)
                 NavigationLink {
-                    AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData, selectedOption: $selectedOption)
+                    AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
                 } label: {
                     BackgroundBubble() {
                         Text("Next")
@@ -105,7 +103,7 @@ struct IsThisYouView: View {
                 let (key, value) = record
                 
                 NavigationLink(destination: signupData.accountType == .athlete
-                               ? AnyView(AthleteRecruitingView(signupData: $signupData, selectedOption: $selectedOption, diveMeetsID: $diveMeetsID))
+                               ? AnyView(AthleteRecruitingView(signupData: $signupData, diveMeetsID: $diveMeetsID))
                                : AnyView(ProfileView(profileLink: ""))) {
                     HStack {
                         Spacer()

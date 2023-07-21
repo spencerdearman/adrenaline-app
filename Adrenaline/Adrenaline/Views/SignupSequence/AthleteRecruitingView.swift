@@ -43,7 +43,6 @@ struct AthleteRecruitingView: View {
     @State private var highSchool: String = ""
     @State private var hometown: String = ""
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     @Binding var diveMeetsID: String
     @FocusState private var focusedField: RecruitingInfoField?
     @ScaledMetric var pickerFontSize: CGFloat = 18
@@ -343,7 +342,7 @@ struct AthleteRecruitingView: View {
                         Spacer()
                         
                         HStack {
-                            NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData, selectedOption: $selectedOption)) {
+                            NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)) {
                                 Text("Skip")
                                     .bold()
                             }
@@ -351,7 +350,7 @@ struct AthleteRecruitingView: View {
                             .cornerRadius(40)
                             .foregroundColor(.secondary)
                             
-                            NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData, selectedOption: $selectedOption)) {
+                            NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)) {
                                 Text("Next")
                                     .bold()
                             }
