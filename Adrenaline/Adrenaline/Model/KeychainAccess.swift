@@ -23,13 +23,13 @@ func saveToKeychain(value: String?, for key: String?) throws {
         kSecValueData as String: value.data(using: String.Encoding.utf8)!
     ]
     
-    let status = SecItemAdd(query as CFDictionary, nil)
+    var status = SecItemAdd(query as CFDictionary, nil)
     if status == errSecDuplicateItem {
-        print("Found duplicate, updating")
         try updateKeychainItem(value: value, for: key)
+        status = errSecSuccess
     }
     
-    guard status == errSecDuplicateItem || status == errSecSuccess else {
+    guard status == errSecSuccess else {
         throw KeychainError.unhandledError(status: status)
     }
 }
