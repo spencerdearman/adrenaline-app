@@ -28,7 +28,6 @@ struct BasicInfoView: View {
     @State private var repeatPassword: String = ""
     @State private var isPasswordVisible: Bool = false
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     @FocusState private var focusedField: BasicInfoField?
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -167,23 +166,20 @@ struct BasicInfoView: View {
                         .frame(width: textFieldWidth)
                         
                         Spacer()
-                        
-                        NavigationLink(destination: signupData.accountType == .athlete
-                                       ? AnyView(AthleteRecruitingView(signupData: $signupData))
-                                       : AnyView(ProfileView(profileLink: ""))) {
+                        NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName, signupData: $signupData)) {
                             Text("Next")
                                 .bold()
                         }
-                                       .simultaneousGesture(TapGesture().onEnded{
-                                           print("Coming in here")
-                                           focusedField = nil
-                                           searchSubmitted = true
-                                       })
-                                       .buttonStyle(.bordered)
-                                       .cornerRadius(40)
-                                       .foregroundColor(.primary)
-                                       .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                                       .disabled(!requiredFieldsFilledIn)
+                        .simultaneousGesture(TapGesture().onEnded{
+                            print("Coming in here")
+                            focusedField = nil
+                            searchSubmitted = true
+                        })
+                        .buttonStyle(.bordered)
+                        .cornerRadius(40)
+                        .foregroundColor(.primary)
+                        .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                        .disabled(!requiredFieldsFilledIn)
                     }
                     .frame(width: textFieldWidth)
                     .padding()
@@ -221,7 +217,6 @@ struct BasicInfoView: View {
 
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        BasicInfoView(signupData: .constant(SignupData()),
-                      selectedOption: .constant(nil))
+        BasicInfoView(signupData: .constant(SignupData()))
     }
 }

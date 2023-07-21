@@ -21,9 +21,21 @@ struct AdrenalineProfileView: View {
     @State private var offSet: CGFloat = 0
     @Binding var diveMeetsID: String
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    func formatLocationString(_ input: String) -> String {
+        var formattedString = input
+        
+        if let spaceIndex = input.firstIndex(of: " ") {
+            formattedString.insert(",", at: spaceIndex)
+        }
+        if formattedString.count >= 2 {
+            let lastTwo = formattedString.suffix(2).uppercased()
+            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex, offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
+        }
+        return formattedString
+    }
     
     var body: some View {
         ZStack{
@@ -45,7 +57,7 @@ struct AdrenalineProfileView: View {
                             VStack {
                                 Text((signupData.firstName ?? "") + " " + (signupData.lastName
                                                     ?? "")) .font(.title3).fontWeight(.semibold)
-                                Text(selectedOption?.rawValue ?? "")
+                                Text(signupData.accountType?.rawValue ?? "")
                                     .foregroundColor(.secondary)
                             }
                         }
@@ -53,11 +65,20 @@ struct AdrenalineProfileView: View {
                             HStack {
                                 HStack{
                                     Image(systemName: "mappin.and.ellipse")
-                                    Text("Oakton, VA")
+                                    if signupData.recruiting == nil {
+                                        Text("?")
+                                    } else {
+                                        Text(formatLocationString(signupData.recruiting!.hometown ?? " "))
+                                    }
                                 }
                                 HStack {
                                     Image(systemName: "person.fill")
-                                    Text("19")
+                                    if signupData.recruiting == nil {
+                                        Text("?")
+                                    } else {
+                                        Text(String(signupData.recruiting!.age ?? 0))
+                                    }
+
                                 }
                             }
                         }
@@ -85,13 +106,13 @@ struct AdrenalineProfileView: View {
                     .shadow(radius: 10)
                     .frame(height: screenHeight * 1.1)
                 VStack {
-                    if let type = selectedOption {
-                        if type.rawValue == AccountType.athlete.rawValue {
+                    if let type = signupData.accountType?.rawValue {
+                        if type == AccountType.athlete.rawValue {
                             DiverView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                        } else if type.rawValue == AccountType.coach.rawValue {
+                        } else if type == AccountType.coach.rawValue {
                             Text("This is a coaching profile")
                             CoachView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                        } else if type.rawValue == AccountType.spectator.rawValue {
+                        } else if type == AccountType.spectator.rawValue {
                             Text("This is a spectator profile")
                         } else {
                             Text("The account type has not been specified")
@@ -260,7 +281,7 @@ struct CoachView: View {
 }
 
 struct ProfileContent: View {
-    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Videos"]
+    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
     @State var selectedPage: Int = 1
     @Binding var diveMeetsID: String
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
@@ -273,9 +294,6 @@ struct ProfileContent: View {
                     .font(.title2).fontWeight(.semibold)
                     .frame(width: g.size.width, height: g.size.height,
                            alignment: .center)
-                    .onAppear{
-                        print(selectedPage)
-                    }
             }
         }
         .scrollAlpha(0.3)
@@ -294,6 +312,8 @@ struct ProfileContent: View {
         case 2:
             RecruitingView()
         case 3:
+            StatisticsView()
+        case 4:
             VideosView()
         default:
             MeetList(profileLink:
@@ -351,6 +371,12 @@ struct RecruitingView: View {
 struct VideosView: View {
     var body: some View {
         Text("Welcome to the Videos View")
+    }
+}
+
+struct StatisticsView: View {
+    var body: some View {
+        Text("Welcome to the Statistics View")
     }
 }
 

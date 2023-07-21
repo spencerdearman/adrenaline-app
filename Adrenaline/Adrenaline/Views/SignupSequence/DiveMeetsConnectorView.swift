@@ -13,7 +13,6 @@ struct DiveMeetsConnectorView: View {
     @Binding var firstName: String
     @Binding var lastName: String
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     @State private var parsedLinks: DiverProfileRecords = [:]
     @State private var dmSearchSubmitted: Bool = false
     @State private var linksParsed: Bool = false
@@ -33,7 +32,7 @@ struct DiveMeetsConnectorView: View {
             }
             if linksParsed {
                 ZStack (alignment: .topLeading) {
-                    IsThisYouView(records: $parsedLinks, signupData: $signupData, selectedOption: $selectedOption, diveMeetsID: $diveMeetsID)
+                    IsThisYouView(records: $parsedLinks, signupData: $signupData, diveMeetsID: $diveMeetsID)
                 }
             } else {
                 ZStack{
@@ -57,9 +56,9 @@ struct DiveMeetsConnectorView: View {
 struct IsThisYouView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var currentMode
+    @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
-    @Binding var selectedOption: AccountType?
     @Binding var diveMeetsID: String
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
@@ -80,11 +79,32 @@ struct IsThisYouView: View {
         bgColor.ignoresSafeArea()
         VStack {
             Spacer()
-            Text("Is this you?")
-                .font(.title).fontWeight(.semibold)
-            ForEach(getSortedRecords(records), id: \.1) { record in
+            if sortedRecords.count == 1 {
+                Text("Is this you?")
+                    .onAppear {
+                        print(String(records.values.count))
+                    }
+                    .font(.title).fontWeight(.semibold)
+            } else if sortedRecords.count > 1 {
+                Text("Are you one of these profiles?")
+                    .font(.title).fontWeight(.semibold)
+            } else {
+                Text("No DiveMeets Profile Found")
+                    .font(.title).fontWeight(.semibold)
+                NavigationLink {
+                    AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
+                } label: {
+                    BackgroundBubble() {
+                        Text("Next")
+                    }
+                }
+            }
+            ForEach(sortedRecords, id: \.1) { record in
                 let (key, value) = record
-                NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData, selectedOption: $selectedOption)) {
+                
+                NavigationLink(destination: signupData.accountType == .athlete
+                               ? AnyView(AthleteRecruitingView(signupData: $signupData, diveMeetsID: $diveMeetsID))
+                               : AnyView(ProfileView(profileLink: ""))) {
                     HStack {
                         Spacer()
                         ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))
@@ -103,13 +123,16 @@ struct IsThisYouView: View {
                     .background(Custom.darkGray)
                     .cornerRadius(50)
                 }
-                .simultaneousGesture(TapGesture().onEnded{
-                    diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
-                })
-                .shadow(radius: 5)
-                .padding([.leading, .trailing])
+                               .simultaneousGesture(TapGesture().onEnded{
+                                   diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                               })
+                               .shadow(radius: 5)
+                               .padding([.leading, .trailing])
             }
             Spacer()
+        }
+        .onAppear{
+            sortedRecords = getSortedRecords(records)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
