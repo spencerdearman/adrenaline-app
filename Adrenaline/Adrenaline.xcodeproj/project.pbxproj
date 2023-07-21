@@ -173,10 +173,10 @@
 		009F41B62A6ABA1700348C68 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				002A1B7A29DB937C00A26FED /* Meets.xcdatamodeld */,
-				009F41B32A6AB41800348C68 /* Users.xcdatamodeld */,
 				002A1B7D29DB93FC00A26FED /* MeetsDataController.swift */,
 				009F41B72A6ABA6200348C68 /* UsersDataController.swift */,
+				002A1B7A29DB937C00A26FED /* Meets.xcdatamodeld */,
+				009F41B32A6AB41800348C68 /* Users.xcdatamodeld */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
