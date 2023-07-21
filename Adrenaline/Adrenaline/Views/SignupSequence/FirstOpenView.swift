@@ -24,14 +24,20 @@ struct SignupData: Hashable {
             defaults.set(encoded, forKey: "username")
         }
         
-        if let encoded = try? encoder.encode(password)  {
-            defaults.set(encoded, forKey: "password")
+        do {
+            try saveToKeychain(value: password, for: email)
+        } catch {
+            print("Unable to save password to keychain")
         }
     }
     
     func clear() {
         defaults.removeObject(forKey: "username")
-        defaults.removeObject(forKey: "password")
+        do {
+            try deleteFromKeychain(for: email)
+        } catch {
+            print("Unable to delete password from keychain")
+        }
     }
 }
 
@@ -39,7 +45,7 @@ struct LoginData: Hashable {
     var username: String?
     var password: String?
     
-    init() {
+    mutating func loadStoredCredentials() {
         let defaults = UserDefaults.standard
         let decoder = JSONDecoder()
         if let data = defaults.data(forKey: "username") {
@@ -47,10 +53,7 @@ struct LoginData: Hashable {
             self.username = username
         }
         
-        if let data = defaults.data(forKey: "password") {
-            let password = try? decoder.decode(String.self, from: data)
-            self.password = password
-        }
+        self.password = try? readFromKeychain(for: username)
     }
 }
 
@@ -108,6 +111,8 @@ struct FirstOpenView: View {
             }
         }
         .onAppear {
+            loginData.loadStoredCredentials()
+            
             if let username = loginData.username,
                let password = loginData.password {
                 print("Username: \(username)")
