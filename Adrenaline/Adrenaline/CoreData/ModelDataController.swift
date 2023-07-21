@@ -22,16 +22,23 @@ typealias MeetRecord = (Int?, String?, String?, String?, String?, String?, Strin
 //                             [(MeetRecord, resultsLink)]
 typealias CurrentMeetRecords = [(MeetRecord, String?)]
 
-func encryptPassword(_ password: String) -> (String, Int64) {
-    let salt = Int64.random(in: 0 ... Int64.max)
+private func encryptPasswordWithSalt(password: String, salt: Int64) -> String {
     let saltedPassword = password + String(salt)
     
-    guard let saltedPasswordData = saltedPassword.data(using: .utf8) else { return ("", -1) }
+    guard let saltedPasswordData = saltedPassword.data(using: .utf8) else { return "" }
     
     let hashedPassword = SHA256.hash(data: saltedPasswordData)
     let hashedPasswordString = hashedPassword.compactMap { String(format: "%02x", $0) }.joined()
     
-    return (hashedPasswordString, salt)
+    return hashedPasswordString
+}
+
+func encryptPassword(_ password: String) -> (String, Int64) {
+    let salt = Int64.random(in: 0 ... Int64.max)
+    let encryptedPassword = encryptPasswordWithSalt(password: password, salt: salt)
+    
+    if encryptedPassword == "" { return ("", -1) }
+    return (encryptedPassword, salt)
 }
 
 class ModelDataController: ObservableObject {
@@ -382,6 +389,26 @@ class ModelDataController: ObservableObject {
         }
         
         try? moc.save()
+    }
+    
+    func validatePassword(email: String, password: String) -> Bool {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return false }
+        let resultData = result as! [User]
+        if resultData.count != 1 {
+            print("Failed to validate password, email matches to zero or more than one user")
+            return false
+        }
+        
+        let user = resultData[0]
+        let storedPassword = user.password
+        let storedPasswordSalt = user.passwordSalt
+        
+        return encryptPasswordWithSalt(password: password,
+                                       salt: storedPasswordSalt) == storedPassword
     }
     
     // Purges the entire Model database
