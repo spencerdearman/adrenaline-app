@@ -103,34 +103,40 @@ class ModelDataController: ObservableObject {
         }
         
         // Refetch results after removing above
-        result = try? moc.fetch(fetchRequest)
+        guard let result = try? moc.fetch(fetchRequest) else {
+            print("Failed to get result for meet")
+            return
+        }
         
         // Only adds to the database if the meet id doesn't already exist
-        if let result = result, result.count == 0 {
-            let meet = DivingMeet(context: moc)
-            
-            meet.id = UUID()
-            if let meetId = meetId {
-                meet.meetId = Int32(meetId)
-            }
-            meet.name = name
-            meet.organization = org
-            meet.link = link
-            if let type = type {
-                meet.meetType = Int16(type.rawValue)
-            }
-            if let startDate = startDate, let date = df.date(from: startDate) {
-                meet.startDate = cal.startOfDay(for: date)
-            }
-            if let endDate = endDate, let date = df.date(from: endDate) {
-                meet.endDate = cal.startOfDay(for: date)
-            }
-            meet.city = city
-            meet.state = state
-            meet.country = country
-            
-            try? moc.save()
+        if result.count != 0 {
+            print("Failed to add meet, meet id already exists")
+            return
         }
+        
+        let meet = DivingMeet(context: moc)
+        
+        meet.id = UUID()
+        if let meetId = meetId {
+            meet.meetId = Int32(meetId)
+        }
+        meet.name = name
+        meet.organization = org
+        meet.link = link
+        if let type = type {
+            meet.meetType = Int16(type.rawValue)
+        }
+        if let startDate = startDate, let date = df.date(from: startDate) {
+            meet.startDate = cal.startOfDay(for: date)
+        }
+        if let endDate = endDate, let date = df.date(from: endDate) {
+            meet.endDate = cal.startOfDay(for: date)
+        }
+        meet.city = city
+        meet.state = state
+        meet.country = country
+        
+        try? moc.save()
     }
     
     // Adds a list of records to the CoreData database
@@ -170,7 +176,7 @@ class ModelDataController: ObservableObject {
             state ?? NSNull(), country ?? NSNull())
         fetchRequest.predicate = predicate
         
-        let result = try? moc.fetch(fetchRequest)
+        guard let result = try? moc.fetch(fetchRequest) else { return }
         let resultData = result as! [DivingMeet]
         
         for object in resultData {
@@ -196,7 +202,7 @@ class ModelDataController: ObservableObject {
         let predicate = NSPredicate(format: "organization == nil")
         fetchRequest.predicate = predicate
         
-        let result = try? moc.fetch(fetchRequest)
+        guard let result = try? moc.fetch(fetchRequest) else { return }
         let resultData = result as! [DivingMeet]
         
         for object in resultData {
@@ -216,7 +222,7 @@ class ModelDataController: ObservableObject {
                                     meetId ?? NSNull())
         fetchRequest.predicate = predicate
         
-        let result = try? moc.fetch(fetchRequest)
+        guard let result = try? moc.fetch(fetchRequest) else { return }
         let resultData = result as! [DivingMeet]
         
         var latestTypeIdx: Int = -1
@@ -244,7 +250,7 @@ class ModelDataController: ObservableObject {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "DivingMeet")
         
-        let result = try? moc.fetch(fetchRequest)
+        guard let result = try? moc.fetch(fetchRequest) else { return }
         let resultData = result as! [DivingMeet]
         
         for object in resultData {
@@ -305,22 +311,28 @@ class ModelDataController: ObservableObject {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
         fetchRequest.predicate = NSPredicate(format: "email == %@", email)
         
-        let result = try? moc.fetch(fetchRequest)
-        
-        if let result = result, result.count == 0 {
-            let user = User(context: moc)
-            
-            user.id = UUID()
-            user.firstName = firstName
-            user.lastName = lastName
-            user.email = email
-            user.phone = phone
-            let (encryptedPassword, salt) = encryptPassword(password)
-            user.password = encryptedPassword
-            user.passwordSalt = salt
-            
-            try? moc.save()
+        guard let result = try? moc.fetch(fetchRequest) else {
+            print("Failed to get result of fetch request for user")
+            return
         }
+        
+        if result.count != 0 {
+            print("Failed to add user, email already exists")
+            return
+        }
+        
+        let user = User(context: moc)
+        
+        user.id = UUID()
+        user.firstName = firstName
+        user.lastName = lastName
+        user.email = email
+        user.phone = phone
+        let (encryptedPassword, salt) = encryptPassword(password)
+        user.password = encryptedPassword
+        user.passwordSalt = salt
+        
+        try? moc.save()
     }
     
     // Adds an Athlete to the database (with or without recruiting)
@@ -333,32 +345,38 @@ class ModelDataController: ObservableObject {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Athlete")
         fetchRequest.predicate = NSPredicate(format: "email == %@", email)
         
-        let result = try? moc.fetch(fetchRequest)
-        
-        if let result = result, result.count == 0 {
-            let user = Athlete(context: moc)
-            
-            user.id = UUID()
-            user.firstName = firstName
-            user.lastName = lastName
-            user.email = email
-            user.phone = phone
-            let (encryptedPassword, salt) = encryptPassword(password)
-            user.password = encryptedPassword
-            user.passwordSalt = salt
-            
-            if let feet = heightFeet { user.heightFeet = Int16(feet) }
-            if let inches = heightInches { user.heightInches = Int16(inches) }
-            if let weight = weight { user.weight = Int16(weight) }
-            user.weightUnit = weightUnit
-            user.gender = gender
-            if let age = age { user.age = Int16(age) }
-            if let gradYear = gradYear { user.graduationYear = Int16(gradYear) }
-            user.highSchool = highSchool
-            user.hometown = hometown
-            
-            try? moc.save()
+        guard let result = try? moc.fetch(fetchRequest) else {
+            print("Failed to get result of fetch request for athlete")
+            return
         }
+        
+        if result.count != 0 {
+            print("Failed to add athlete, email already exists")
+            return
+        }
+        
+        let user = Athlete(context: moc)
+        
+        user.id = UUID()
+        user.firstName = firstName
+        user.lastName = lastName
+        user.email = email
+        user.phone = phone
+        let (encryptedPassword, salt) = encryptPassword(password)
+        user.password = encryptedPassword
+        user.passwordSalt = salt
+        
+        if let feet = heightFeet { user.heightFeet = Int16(feet) }
+        if let inches = heightInches { user.heightInches = Int16(inches) }
+        if let weight = weight { user.weight = Int16(weight) }
+        user.weightUnit = weightUnit
+        user.gender = gender
+        if let age = age { user.age = Int16(age) }
+        if let gradYear = gradYear { user.graduationYear = Int16(gradYear) }
+        user.highSchool = highSchool
+        user.hometown = hometown
+        
+        try? moc.save()
     }
     
     // Drops the User with the given email username
@@ -367,7 +385,7 @@ class ModelDataController: ObservableObject {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
         fetchRequest.predicate = NSPredicate(format: "email == %@", email)
         
-        let result = try? moc.fetch(fetchRequest)
+        guard let result = try? moc.fetch(fetchRequest) else { return }
         let resultData = result as! [User]
         
         for object in resultData {
@@ -381,7 +399,7 @@ class ModelDataController: ObservableObject {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
         
-        let result = try? moc.fetch(fetchRequest)
+        guard let result = try? moc.fetch(fetchRequest) else { return }
         let resultData = result as! [User]
         
         for object in resultData {
