@@ -37,7 +37,8 @@ struct BasicInfoView: View {
     }
     
     private var requiredFieldsFilledIn: Bool {
-        firstName != "" && lastName != "" && email != "" && (phone == "" || phone.count == 14) && password != "" && password == repeatPassword
+        firstName != "" && lastName != "" && email != "" && (phone == "" || phone.count == 14) &&
+        password != "" && password == repeatPassword
     }
     
     private var bgColor: Color {
