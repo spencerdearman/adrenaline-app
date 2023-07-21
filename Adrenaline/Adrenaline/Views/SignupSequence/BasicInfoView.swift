@@ -170,12 +170,6 @@ struct BasicInfoView: View {
                             Text("Next")
                                 .bold()
                         }
-                        //                        NavigationLink(destination: signupData.accountType == .athlete
-                        //                                       ? AnyView(AthleteRecruitingView(signupData: $signupData))
-                        //                                       : AnyView(ProfileView(profileLink: ""))) {
-                        //                            Text("Next")
-                        //                                .bold()
-                        //                        }
                         .simultaneousGesture(TapGesture().onEnded{
                             print("Coming in here")
                             focusedField = nil

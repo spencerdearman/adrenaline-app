@@ -282,7 +282,7 @@ struct CoachView: View {
 }
 
 struct ProfileContent: View {
-    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Videos"]
+    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
     @State var selectedPage: Int = 1
     @Binding var diveMeetsID: String
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
@@ -313,9 +313,9 @@ struct ProfileContent: View {
         case 2:
             RecruitingView()
         case 3:
-            VideosView()
-        case 4:
             StatisticsView()
+        case 4:
+            VideosView()
         default:
             MeetList(profileLink:
                      "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
