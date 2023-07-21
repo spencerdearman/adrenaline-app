@@ -57,6 +57,7 @@ struct DiveMeetsConnectorView: View {
 struct IsThisYouView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var currentMode
+    @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
     @Binding var selectedOption: AccountType?
@@ -80,9 +81,27 @@ struct IsThisYouView: View {
         bgColor.ignoresSafeArea()
         VStack {
             Spacer()
-            Text("Is this you?")
-                .font(.title).fontWeight(.semibold)
-            ForEach(getSortedRecords(records), id: \.1) { record in
+            if sortedRecords.count == 1 {
+                Text("Is this you?")
+                    .onAppear {
+                        print(String(records.values.count))
+                    }
+                    .font(.title).fontWeight(.semibold)
+            } else if sortedRecords.count > 1 {
+                Text("Are you one of these profiles?")
+                    .font(.title).fontWeight(.semibold)
+            } else {
+                Text("No DiveMeets Profile Found")
+                    .font(.title).fontWeight(.semibold)
+                NavigationLink {
+                    AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData, selectedOption: $selectedOption)
+                } label: {
+                    BackgroundBubble() {
+                        Text("Next")
+                    }
+                }
+            }
+            ForEach(sortedRecords, id: \.1) { record in
                 let (key, value) = record
                 
                 NavigationLink(destination: signupData.accountType == .athlete
@@ -113,6 +132,9 @@ struct IsThisYouView: View {
                                .padding([.leading, .trailing])
             }
             Spacer()
+        }
+        .onAppear{
+            sortedRecords = getSortedRecords(records)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
