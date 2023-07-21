@@ -8,6 +8,9 @@
         <attribute name="heightInches" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="highSchool" optional="YES" attributeType="String"/>
         <attribute name="hometown" optional="YES" attributeType="String"/>
+        <attribute name="platformRating" optional="YES" attributeType="Double" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="springboardRating" optional="YES" attributeType="Double" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="totalRating" optional="YES" attributeType="Double" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="weight" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="weightUnit" optional="YES" attributeType="String" minValueString="2" maxValueString="2"/>
     </entity>

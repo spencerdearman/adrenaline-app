@@ -25,16 +25,25 @@ struct UsersDBTestView: View {
                     db.addUser(firstName: "Beck", lastName: "Benson", email: "rlbenson@uchicago.edu",
                                phone: nil, password: "12345")
                 }
+                Spacer()
                 Button("Add Athlete") {
                     db.addAthlete(firstName: "Logan", lastName: "Sherwin", email: "lsherwin@uchicago.edu",
                                phone: "7247713142", password: "password", heightFeet: 5, heightInches: 8,
                                weight: 175, weightUnit: "lb", gender: "Male", age: 22, gradYear: 2023,
                     highSchool: "Penn-Trafford", hometown: "Pittsburgh, PA")
                 }
+                Spacer()
+                Button("Update Skill Rating") {
+                    db.updateAthleteSkillRating(email: "lsherwin@uchicago.edu",
+                                                springboardRating: 100.0, platformRating: 50.0)
+                }
+                Spacer()
                 Button("Drop All") {
                     db.dropAllUsers()
                 }
             }
+            .padding()
+            
             List(users) { user in
                 HStack {
                     if let first = user.firstName, let last = user.lastName {
@@ -65,15 +74,13 @@ struct UsersDBTestView: View {
                     if let password = user.password {
                         Text(password)
                     }
-                    Text(String(user.heightFeet) + "-" + String(user.heightInches))
+                    VStack {
+                        Text(String(user.springboardRating))
+                        Text(String(user.platformRating))
+                        Text(String(user.totalRating))
+                    }
                 }
             }
         }
-    }
-}
-
-struct UsersDBTestView_Previews: PreviewProvider {
-    static var previews: some View {
-        UsersDBTestView()
     }
 }

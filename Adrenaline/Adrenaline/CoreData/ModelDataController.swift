@@ -375,6 +375,67 @@ class ModelDataController: ObservableObject {
         if let gradYear = gradYear { user.graduationYear = Int16(gradYear) }
         user.highSchool = highSchool
         user.hometown = hometown
+        user.springboardRating = 0.0
+        user.platformRating = 0.0
+        user.totalRating = 0.0
+        
+        try? moc.save()
+    }
+    
+    func getUser(email: String) -> User? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [User]
+        if resultData.count != 1 {
+            print("Failed to get User, result returned invalid number of results")
+            return nil
+        }
+        
+        return resultData[0]
+    }
+    
+    func getAthlete(email: String) -> Athlete? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Athlete")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [Athlete]
+        if resultData.count != 1 {
+            print("Failed to get Athlete, result returned invalid number of results")
+            return nil
+        }
+        
+        return resultData[0]
+    }
+    
+    func updateAthleteSkillRating(email: String, springboardRating: Double?,
+                                  platformRating: Double?) {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return }
+        let resultData = result as! [Athlete]
+        if resultData.count != 1 {
+            print("Failed to get Athlete, result returned invalid number of results")
+            return
+        }
+        
+        let athlete = resultData[0]
+        var keyValues: [String: Double] = [:]
+        if let springboard = springboardRating {
+            keyValues["springboardRating"] = springboard
+        }
+        if let platform = platformRating {
+            keyValues["platformRating"] = platform
+        }
+        
+        athlete.setValuesForKeys(keyValues)
+        athlete.setValue(athlete.springboardRating + athlete.platformRating, forKey: "totalRating")
         
         try? moc.save()
     }
