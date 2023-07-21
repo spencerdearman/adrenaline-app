@@ -75,110 +75,113 @@ struct BasicInfoView: View {
             
             VStack {
                 Spacer()
-           
+                
                 BackgroundBubble(onTapGesture: { focusedField = nil }) {
-                        VStack(spacing: 5) {
-                            Text("Basic Information")
-                                .font(.title2)
-                                .bold()
-                                .padding()
-                            Spacer()
-                            
-                            TextField("First Name", text: $firstName)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: textFieldWidth)
-                                .textContentType(.givenName)
-                                .multilineTextAlignment(.center)
-                                .focused($focusedField, equals: .first)
-                                .onChange(of: firstName) { _ in
-                                    signupData.firstName = firstName
-                                }
-                            TextField("Last Name", text: $lastName)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: textFieldWidth)
-                                .textContentType(.familyName)
-                                .multilineTextAlignment(.center)
-                                .focused($focusedField, equals: .last)
-                                .onChange(of: lastName) { _ in
-                                    signupData.lastName = lastName
-                                }
-                            TextField("Email", text: $email)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: textFieldWidth)
-                                .textContentType(.emailAddress)
-                                .autocapitalization(.none)
-                                .keyboardType(.emailAddress)
-                                .multilineTextAlignment(.center)
-                                .focused($focusedField, equals: .email)
-                                .onChange(of: email) { _ in
-                                    signupData.email = email
-                                }
-                            TextField("Phone (optional)", text: $phone)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: textFieldWidth)
-                                .textContentType(.telephoneNumber)
-                                .keyboardType(.numberPad)
-                                .multilineTextAlignment(.center)
-                                .focused($focusedField, equals: .phone)
-                                .onChange(of: phone) { _ in
-                                    phone = formatPhoneString(string: phone)
-                                    signupData.phone = removePhoneFormatting(string: phone)
-                                }
-                            
-                            Spacer()
-                            
-                            VStack {
-                                HStack {
-                                    SecureField("Password", text: $password)
-                                        .textFieldStyle(.roundedBorder)
-                                        .autocapitalization(.none)
-                                        .textContentType(.newPassword)
-                                        .multilineTextAlignment(.center)
-                                        .focused($focusedField, equals: .password)
-                                        .onChange(of: password) { _ in
-                                            signupData.password = password
-                                        }
-                                    Button(action: {
-                                        isPasswordVisible.toggle()
-                                    }) {
-                                        Image(systemName: isPasswordVisible ? "eye.circle" : "eye.slash.circle")
-                                            .foregroundColor(.gray)
-                                    }
-                                }
-                                
-                                HStack {
-                                    SecureField("Password again", text: $password)
-                                        .textFieldStyle(.roundedBorder)
-                                        .autocapitalization(.none)
-                                        .textContentType(.newPassword)
-                                        .multilineTextAlignment(.center)
-                                    .focused($focusedField, equals: .repeatPassword)
-                                    Button(action: {
-                                        isPasswordVisible.toggle()
-                                    }) {
-                                        Image(systemName: "eye.circle")
-                                            .opacity(0.0)
-                                    }
-                                }
-                            }
+                    VStack(spacing: 5) {
+                        Text("Basic Information")
+                            .font(.title2)
+                            .bold()
+                            .padding()
+                        Spacer()
+                        
+                        TextField("First Name", text: $firstName)
+                            .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
-                            
-                            Spacer()
-                            
-                            NavigationLink(destination: signupData.accountType == .athlete
-                                           ? AnyView(AthleteRecruitingView(signupData: $signupData))
-                                           : AnyView(ProfileView(profileLink: ""))) {
-                                Text("Next")
-                                    .bold()
+                            .textContentType(.givenName)
+                            .multilineTextAlignment(.center)
+                            .focused($focusedField, equals: .first)
+                            .onChange(of: firstName) { _ in
+                                signupData.firstName = firstName
                             }
-                                           .buttonStyle(.bordered)
-                                           .cornerRadius(40)
-                                           .foregroundColor(.primary)
-                                           .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                                           .disabled(!requiredFieldsFilledIn)
+                        TextField("Last Name", text: $lastName)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
+                            .textContentType(.familyName)
+                            .multilineTextAlignment(.center)
+                            .focused($focusedField, equals: .last)
+                            .onChange(of: lastName) { _ in
+                                signupData.lastName = lastName
+                            }
+                        TextField("Email", text: $email)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
+                            .textContentType(.emailAddress)
+                            .autocapitalization(.none)
+                            .keyboardType(.emailAddress)
+                            .multilineTextAlignment(.center)
+                            .focused($focusedField, equals: .email)
+                            .onChange(of: email) { _ in
+                                signupData.email = email
+                            }
+                        TextField("Phone (optional)", text: $phone)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: textFieldWidth)
+                            .textContentType(.telephoneNumber)
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.center)
+                            .focused($focusedField, equals: .phone)
+                            .onChange(of: phone) { _ in
+                                phone = formatPhoneString(string: phone)
+                                signupData.phone = removePhoneFormatting(string: phone)
+                            }
+                        
+                        Spacer()
+                        
+                        VStack {
+                            HStack {
+                                (isPasswordVisible
+                                 ? AnyView(TextField("Password", text: $password))
+                                 : AnyView(SecureField("Password", text: $password)))
+                                .textFieldStyle(.roundedBorder)
+                                .autocapitalization(.none)
+                                .textContentType(.newPassword)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .password)
+                                .onChange(of: password) { _ in
+                                    signupData.password = password
+                                }
+                                Button(action: {
+                                    isPasswordVisible.toggle()
+                                }) {
+                                    Image(systemName: isPasswordVisible
+                                          ? "eye.circle"
+                                          : "eye.slash.circle")
+                                    .foregroundColor(.gray)
+                                }
+                            }
+                            
+                            HStack {
+                                (isPasswordVisible
+                                 ? AnyView(TextField("Retype password", text: $repeatPassword))
+                                 : AnyView(SecureField("Retype password", text: $repeatPassword)))
+                                .textFieldStyle(.roundedBorder)
+                                .autocapitalization(.none)
+                                .textContentType(.newPassword)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .repeatPassword)
+                                Image(systemName: "eye.circle")
+                                    .opacity(0.0)
+                            }
                         }
-                        .padding()
+                        .frame(width: textFieldWidth)
+                        
+                        
+                        Spacer()
+                        
+                        NavigationLink(destination: signupData.accountType == .athlete
+                                       ? AnyView(AthleteRecruitingView(signupData: $signupData))
+                                       : AnyView(ProfileView(profileLink: ""))) {
+                            Text("Next")
+                                .bold()
+                        }
+                                       .buttonStyle(.bordered)
+                                       .cornerRadius(40)
+                                       .foregroundColor(.primary)
+                                       .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
+                                       .disabled(!requiredFieldsFilledIn)
                     }
+                    .padding()
+                }
                 .frame(height: 300)
                 .onAppear {
                     // Clears recruiting data on appear and if user comes back from recruiting
@@ -212,6 +215,6 @@ struct BasicInfoView: View {
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
         BasicInfoView(signupData: .constant(SignupData()),
-                                            selectedOption: .constant(nil))
+                      selectedOption: .constant(nil))
     }
 }
