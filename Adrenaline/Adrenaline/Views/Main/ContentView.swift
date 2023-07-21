@@ -128,13 +128,13 @@ struct ContentView: View {
                 }
             }
             // Executes when other views are opened (notification center, control center, swiped up)
-            .onChange(of: scenePhase) { newPhase in
-                if newPhase == .active {
-                    GlobalCaches.loadAllCaches()
-                } else if scenePhase == .active && newPhase == .inactive {
-                    GlobalCaches.saveAllCaches()
-                }
-            }
+//            .onChange(of: scenePhase) { newPhase in
+//                if newPhase == .active {
+//                    GlobalCaches.loadAllCaches()
+//                } else if scenePhase == .active && newPhase == .inactive {
+//                    GlobalCaches.saveAllCaches()
+//                }
+//            }
         }
     }
 }
