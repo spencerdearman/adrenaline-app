@@ -45,7 +45,7 @@ struct LoginData: Hashable {
     var username: String?
     var password: String?
     
-    init() {
+    mutating func loadStoredCredentials() {
         let defaults = UserDefaults.standard
         let decoder = JSONDecoder()
         if let data = defaults.data(forKey: "username") {
@@ -111,6 +111,8 @@ struct FirstOpenView: View {
             }
         }
         .onAppear {
+            loginData.loadStoredCredentials()
+            
             if let username = loginData.username,
                let password = loginData.password {
                 print("Username: \(username)")
