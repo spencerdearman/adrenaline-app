@@ -70,6 +70,9 @@ struct AccountTypeSelectView: View {
                     .bold()
             }
         }
+        .onAppear {
+            signupData.clear()
+        }
     }
 }
 
