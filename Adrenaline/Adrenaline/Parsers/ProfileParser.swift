@@ -90,7 +90,7 @@ struct DiverInfo: Hashable {
     }
 }
 
-struct DiveStatistic {
+struct DiveStatistic: Hashable {
     let number: String
     let name: String
     let height: Double

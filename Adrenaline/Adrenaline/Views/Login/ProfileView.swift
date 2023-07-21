@@ -304,7 +304,7 @@ struct ProfileView: View {
                                 }
                                 .background(
                                     Custom.darkGray.matchedGeometryEffect(id: "background",
-                                                                             in: profilespace)
+                                                                          in: profilespace)
                                 )
                                 .mask(
                                     RoundedRectangle(cornerRadius: 40, style: .continuous)
@@ -327,6 +327,15 @@ struct ProfileView: View {
                     if await !parser.parseProfile(link: profileLink) {
                         print("Failed to parse profile")
                     }
+                }
+                if let stats = parser.profileData.diveStatistics {
+                    let skill = SkillRating(diveStatistics: stats)
+                    let divesByCategory = skill.getDiverStatsByCategory()
+                    let (springboard, platform, total) = await skill
+                        .getSkillRating(link: profileLink, metric: skill.computeMetric1)
+                    print(String(format: "Springboard: %.2f", springboard))
+                    print(String(format: "Platform: %.2f", platform))
+                    print(String(format: "Total: %.2f", total))
                 }
             }
         }
