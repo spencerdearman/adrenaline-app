@@ -24,10 +24,6 @@ struct AccountTypeSelectView: View {
     
     var body: some View {
         VStack {
-            Text("Signup")
-                .font(.title)
-                .bold()
-            
             Spacer()
             
             VStack(spacing: 20) {
@@ -35,6 +31,7 @@ struct AccountTypeSelectView: View {
                     .font(.title2)
                     .bold()
                     .multilineTextAlignment(.center)
+                    .padding()
                 OptionView(signupData: $signupData, selectedOption: $selectedOption,
                            optionType: .athlete, optionDescription: athleteDesc)
                 OptionView(signupData: $signupData,
@@ -58,6 +55,7 @@ struct AccountTypeSelectView: View {
             
             Spacer()
         }
+        .dynamicTypeSize(.xSmall ... .accessibility1)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -65,6 +63,15 @@ struct AccountTypeSelectView: View {
                     NavigationViewBackButton()
                 }
             }
+            
+            ToolbarItem(placement: .principal) {
+                Text("Signup")
+                    .font(.title)
+                    .bold()
+            }
+        }
+        .onAppear {
+            signupData.clear()
         }
     }
 }
