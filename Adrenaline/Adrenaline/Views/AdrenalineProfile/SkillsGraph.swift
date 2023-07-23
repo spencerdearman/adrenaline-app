@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SkillsGraph: View {
     @StateObject private var parser = ProfileParser()
-    @State private var profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961"
+    @State private var profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36256"
     @State var metrics: [Double] = [4.0, 4.6, 3.56, 3.21, 4.9]
     @State var oneMeterDict: [Int: Double] = [:]
     @State var threeMeterDict: [Int: Double] = [:]
@@ -103,7 +103,7 @@ struct SkillsGraph: View {
     func diveDictToOrderedList(d: [Int:Double]) -> [Double] {
         var result: [Double] = []
         for i in 1..<6 {
-            result.append((d[i] ?? 0.0) / 2)
+            result.append((d[i] ?? 0.0) / 1.45) // Doing this to scale slightly larger
         }
         return result
     }
