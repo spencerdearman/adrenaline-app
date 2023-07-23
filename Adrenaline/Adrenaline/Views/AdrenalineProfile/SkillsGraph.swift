@@ -10,36 +10,21 @@ import SwiftUI
 
 struct SkillsGraph: View {
     @StateObject private var parser = ProfileParser()
-    @State private var profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197"
+    @State private var profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961"
     @State var metrics: [Double] = [4.0, 4.6, 3.56, 3.21, 4.9]
-    @State var oneMeterMetrics: [Int: Double] = [:]
-    @State var threeMeterMetrics: [Int: Double] = [:]
-    @State var platformMetrics: [Int: Double] = [:]
-    @State var overallMetrics: [Int: Double] = [:]
+    @State var oneMeterDict: [Int: Double] = [:]
+    @State var threeMeterDict: [Int: Double] = [:]
+    @State var platformDict: [Int: Double] = [:]
+    @State var overallDict: [Int: Double] = [:]
+    @State var oneMetrics: [Double] = []
+    @State var threeMetrics: [Double] = []
+    @State var platformMetrics: [Double] = []
+    @State var overallMetrics: [Double] = []
     let diveTableData: [String: DiveData]? = getDiveTableData()
     var body: some View {
         ZStack {
-            Pentagon()
-                .stroke(.primary, lineWidth: 2)
-                .frame(width : 100)
-                .foregroundColor(.gray)
-            Pentagon()
-                .stroke(.primary, lineWidth: 2)
-                .foregroundColor(.gray)
-                .frame(width : 200)
-            Pentagon()
-                .stroke(.primary, lineWidth: 2)
-                .foregroundColor(.gray)
-                .frame(width : 300)
-            Pentagon()
-                .stroke(.primary, lineWidth: 2)
-                .foregroundColor(.gray)
-                .frame(width : 400)
-            Pentagon()
-                .stroke(.primary, lineWidth: 2)
-                .foregroundColor(.gray)
-                .frame(width : 500)
-            Polygon(metrics: metrics)
+            Graph()
+            Polygon(metrics: oneMetrics)
                 .fill(Custom.medBlue.opacity(0.5))
                 .frame(width: 500)
         }
@@ -53,19 +38,25 @@ struct SkillsGraph: View {
                 if let stats = parser.profileData.diveStatistics {
                     let skill = SkillRating(diveStatistics: stats)
                     let divesByCategory = skill.getDiverStatsByCategory()
-                    oneMeterMetrics = skillGraphMetrics(d: divesByCategory, height: 1)
-                    threeMeterMetrics = skillGraphMetrics(d: divesByCategory, height: 3)
-                    platformMetrics = skillGraphMetrics(d: divesByCategory, height: 5)
+                    oneMeterDict = skillGraphMetrics(d: divesByCategory, height: 1)
+                    threeMeterDict = skillGraphMetrics(d: divesByCategory, height: 3)
+                    platformDict = skillGraphMetrics(d: divesByCategory, height: 5)
                     var divisor = 3.0
                     for i in 1..<6 {
                         var divisor = 3.0
-                        if platformMetrics[i] == 0.0 {
+                        if platformDict[i] == 0.0 {
                             divisor = 2.0
                         }
-                        let total = (oneMeterMetrics[i] ?? 0.0) + (threeMeterMetrics[i] ?? 0.0) + (platformMetrics[i] ?? 0.0)
-                        overallMetrics[i] = total / divisor
+                        let oneMScaled = oneMeterDict[i] ?? 0.0
+                        let threeMScaled = threeMeterDict[i] ?? 0.0
+                        let platformScaled = platformDict[i] ?? 0.0
+                        let total = oneMScaled + threeMScaled + platformScaled
+                        overallDict[i] = total / divisor
                     }
-                    print(overallMetrics)
+                    oneMetrics = diveDictToOrderedList(d: oneMeterDict)
+                    threeMetrics = diveDictToOrderedList(d: threeMeterDict)
+                    platformMetrics = diveDictToOrderedList(d: platformDict)
+                    overallMetrics = diveDictToOrderedList(d: overallDict)
                 }
             }
         }
@@ -105,6 +96,14 @@ struct SkillsGraph: View {
                     }
                 }
             }
+        }
+        return result
+    }
+    
+    func diveDictToOrderedList(d: [Int:Double]) -> [Double] {
+        var result: [Double] = []
+        for i in 1..<6 {
+            result.append((d[i] ?? 0.0) / 2)
         }
         return result
     }
@@ -192,6 +191,31 @@ struct Polygon: Shape {
         }
         
         return path
+    }
+}
+
+struct Graph: View {
+    var body: some View {
+        Pentagon()
+            .stroke(.primary, lineWidth: 2)
+            .frame(width : 100)
+            .foregroundColor(.gray)
+        Pentagon()
+            .stroke(.primary, lineWidth: 2)
+            .foregroundColor(.gray)
+            .frame(width : 200)
+        Pentagon()
+            .stroke(.primary, lineWidth: 2)
+            .foregroundColor(.gray)
+            .frame(width : 300)
+        Pentagon()
+            .stroke(.primary, lineWidth: 2)
+            .foregroundColor(.gray)
+            .frame(width : 400)
+        Pentagon()
+            .stroke(.primary, lineWidth: 2)
+            .foregroundColor(.gray)
+            .frame(width : 500)
     }
 }
 
