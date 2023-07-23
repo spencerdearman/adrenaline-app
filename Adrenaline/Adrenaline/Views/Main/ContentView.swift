@@ -81,7 +81,8 @@ struct ContentView: View {
                                     case .magnifyingglass:
                                         SearchView(isIndexingMeets: $isIndexingMeets)
                                     case .person:
-                                        LoginSearchView()
+//                                        LoginSearchView()
+                                        UsersDBTestView()
                                 }
                             }
                             .tag(tab)
