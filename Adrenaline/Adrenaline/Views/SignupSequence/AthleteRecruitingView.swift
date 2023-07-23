@@ -30,6 +30,7 @@ enum Gender: String, CaseIterable {
 struct AthleteRecruitingView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelDB) var db
     // Starts the picker at height 6' 0"
     @State private var heightIndex: Int = 24
     @State private var height: String = ""
@@ -366,6 +367,22 @@ struct AthleteRecruitingView: View {
                 .frame(height: 300)
                 .onDisappear {
                     print(signupData)
+                    let heightSplit = height.components(separatedBy: "-")
+                    guard let email = signupData.email else { return }
+                    if let ft = heightSplit.first,
+                       let inches = heightSplit.last,
+                       let ft = Int(ft),
+                       let inches = Int(inches) {
+                        db.updateAthleteField(email: email, key: "heightFeet", value: ft)
+                        db.updateAthleteField(email: email, key: "heightInches", value: inches)
+                    }
+                    db.updateAthleteField(email: email, key: "weight", value: weight)
+                    db.updateAthleteField(email: email, key: "weightUnit", value: weightUnit.rawValue)
+                    db.updateAthleteField(email: email, key: "gender", value: gender.rawValue)
+                    db.updateAthleteField(email: email, key: "age", value: age)
+                    db.updateAthleteField(email: email, key: "graduationYear", value: gradYear)
+                    db.updateAthleteField(email: email, key: "highSchool", value: highSchool)
+                    db.updateAthleteField(email: email, key: "hometown", value: hometown)
                 }
                 
                 Spacer()

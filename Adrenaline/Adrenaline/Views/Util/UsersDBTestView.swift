@@ -62,8 +62,8 @@ struct UsersDBTestView: View {
                     if let email = user.email {
                         Text(email)
                     }
-                    if let password = user.password {
-                        Text(password)
+                    if let diveMeetsID = user.diveMeetsID {
+                        Text(diveMeetsID)
                     }
                 }
             }
@@ -72,8 +72,8 @@ struct UsersDBTestView: View {
                     if let email = user.email {
                         Text(email)
                     }
-                    if let password = user.password {
-                        Text(password)
+                    if let diveMeetsID = user.diveMeetsID {
+                        Text(diveMeetsID)
                     }
                     VStack {
                         Text(String(user.springboardRating))

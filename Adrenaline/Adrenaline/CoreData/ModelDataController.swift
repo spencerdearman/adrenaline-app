@@ -412,6 +412,16 @@ class ModelDataController: ObservableObject {
         return resultData[0]
     }
     
+    func updateUserField(email: String, key: String, value: Any) {
+        guard let user = getUser(email: email) else { return }
+        user.setValue(value, forKey: key)
+    }
+    
+    func updateAthleteField(email: String, key: String, value: Any) {
+        guard let athlete = getAthlete(email: email) else { return }
+        athlete.setValue(value, forKey: key)
+    }
+    
     func updateAthleteSkillRating(email: String, springboardRating: Double? = nil,
                                   platformRating: Double? = nil) {
         let moc = container.viewContext

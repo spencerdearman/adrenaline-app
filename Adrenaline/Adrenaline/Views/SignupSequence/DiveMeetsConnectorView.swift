@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DiveMeetsConnectorView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.modelDB) var db
     @Binding var searchSubmitted: Bool
     @Binding var firstName: String
     @Binding var lastName: String
@@ -48,6 +49,9 @@ struct DiveMeetsConnectorView: View {
         .dynamicTypeSize(.xSmall ... .xxxLarge)
         .onDisappear {
             searchSubmitted = false
+            if diveMeetsID != "", let email = signupData.email {
+                db.updateUserField(email: email, key: "diveMeetsID", value: diveMeetsID)
+            }
         }
         
     }
