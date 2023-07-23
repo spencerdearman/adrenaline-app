@@ -5,6 +5,7 @@
 //  Created by Logan Sherwin on 3/22/23.
 //
 
+import CoreData
 import SwiftUI
 import SwiftSoup
 
@@ -136,7 +137,7 @@ final class MeetParser: ObservableObject {
     }
     
     // Loads each stored year in the database into a set
-    private func pullStoredPastMeetYears(storedMeets: FetchedResults<DivingMeet>) {
+    private func pullStoredPastMeetYears(storedMeets: [DivingMeet]) {
         let entries = Array(storedMeets).filter {(m) -> Bool in
             m.startDate != nil
         }
@@ -430,7 +431,7 @@ final class MeetParser: ObservableObject {
     // Counts all of the meets to be parsed from the meet parse on launch to provide an accurate
     // indexing progress bar
     private func countParsedMeets(
-        html: String, storedMeets: FetchedResults<DivingMeet>? = nil) async throws {
+        html: String, storedMeets: [DivingMeet]? = nil) async throws {
             do {
                 let document: Document = try SwiftSoup.parse(html)
                 guard let body = document.body() else { return }
@@ -604,7 +605,7 @@ final class MeetParser: ObservableObject {
     
     // Parses the "Meets" tab from the homepage and stores results in MeetDict and CurrentMeetDict
     // objects to the respective fields in MeetParser
-    func parseMeets(storedMeets: FetchedResults<DivingMeet>? = nil, skipCount: Bool = false) async throws {
+    func parseMeets(storedMeets: [DivingMeet]? = nil, skipCount: Bool = false) async throws {
         do {
             // Initialize meet parse from index page
             guard let url = URL(string: "https://secure.meetcontrol.com/divemeets/system/index.php") else { return }
@@ -821,7 +822,7 @@ struct MeetParserView: View {
                 finishedParsing = false
                 
                 // This sets p's upcoming, current, and past meets fields
-                try await p.parseMeets(storedMeets: meets)
+                try await p.parseMeets(storedMeets: Array(meets))
                 
                 finishedParsing = true
                 print("Finished parsing")

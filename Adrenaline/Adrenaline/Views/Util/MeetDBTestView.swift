@@ -73,7 +73,7 @@ struct MeetDBTestView: View {
                                 finishedParsing = false
                                 
                                 // This sets p's upcoming, current, and past meets fields
-                                try await p.parseMeets(storedMeets: meets)
+                                try await p.parseMeets(storedMeets: Array(meets))
                                 
                                 finishedParsing = true
                                 print("Finished parsing")
