@@ -9,6 +9,10 @@
 import SwiftUI
 
 struct SkillsGraph: View {
+    @StateObject private var parser = ProfileParser()
+    @State private var profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197"
+    @State var metrics: [Double] = [4.0, 4.6, 3.56, 3.21, 4.9]
+    let diveTableData: [String: DiveData]? = getDiveTableData()
     var body: some View {
         ZStack {
             Pentagon()
@@ -31,12 +35,63 @@ struct SkillsGraph: View {
                 .stroke(.primary, lineWidth: 2)
                 .foregroundColor(.gray)
                 .frame(width : 500)
-            Polygon(metrics: [4.0, 4.6, 3.56, 3.21, 4.9])
+            Polygon(metrics: metrics)
                 .fill(Custom.medBlue.opacity(0.5))
                 .frame(width: 500)
         }
+        .onAppear {
+            Task {
+                if parser.profileData.info == nil {
+                    if await !parser.parseProfile(link: profileLink) {
+                        print("Failed to parse profile")
+                    }
+                }
+                if let stats = parser.profileData.diveStatistics {
+                    let skill = SkillRating(diveStatistics: stats)
+                    let divesByCategory = skill.getDiverStatsByCategory()
+                    let calculatedMetrics = skillGraphMetrics(d: divesByCategory)
+                    print(calculatedMetrics)
+                }
+            }
+        }
         .scaleEffect(0.5)
         .rotationEffect(.degrees(-17.4))
+    }
+    
+    func skillGraphMetrics(d: [Int: [DiveStatistic]]) -> [Double: [Double]] {
+        var result: [Double: [Double]] = [1.0: [], 3.0: [], 5.0: []]
+
+        let sortedKeys = d.keys.sorted()
+
+        for key in sortedKeys {
+            if let diveStatistics = d[key] {
+                var ddFixedScore: Double = 0.0
+                var judgeScore: Double = 0.0
+                var combinedDirectionScore: [Double] = [0.0, 0.0, 0.0]
+                var counter: [Double] = [0.0, 0.0, 0.0]
+
+                for dive in diveStatistics {
+                    ddFixedScore = dive.avgScore / (getDiveDD(data: diveTableData ?? [:], forKey: dive.number, height: dive.height) ?? 0.0)
+                    judgeScore = ddFixedScore / 3
+
+                    if dive.height >= 5.0 {
+                        combinedDirectionScore[2] += judgeScore
+                        counter[2] += 1
+                    } else if dive.height == 3.0 {
+                        combinedDirectionScore[1] += judgeScore
+                        counter[1] += 1
+                    } else {
+                        combinedDirectionScore[0] += judgeScore
+                        counter[0] += 1
+                    }
+                }
+                result[1.0]?.append(combinedDirectionScore[0] / counter[0])
+                result[3.0]?.append(combinedDirectionScore[1] / counter[1])
+                result[5.0]?.append(combinedDirectionScore[2] / counter[2])
+            }
+        }
+
+        return result
     }
 }
 
