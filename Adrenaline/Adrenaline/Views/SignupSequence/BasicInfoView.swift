@@ -19,9 +19,11 @@ enum BasicInfoField: Int, Hashable, CaseIterable {
 struct BasicInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelDB) var db
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var email: String = ""
+    @State private var emailTaken: Bool = false
     @State private var phone: String = ""
     @State var searchSubmitted: Bool = false
     @State private var password: String = ""
@@ -67,6 +69,10 @@ struct BasicInfoView: View {
         return String(chars.prefix(14))
     }
     
+    private func emailInDatabase(email: String) -> Bool {
+        return db.getUser(email: email) != nil
+    }
+    
     var body: some View {
         ZStack {
             bgColor.ignoresSafeArea()
@@ -103,18 +109,30 @@ struct BasicInfoView: View {
                             .onChange(of: lastName) { _ in
                                 signupData.lastName = lastName
                             }
-                        TextField("Email", text: $email)
-                            .autocapitalization(.none)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.emailAddress)
-                            .autocapitalization(.none)
-                            .keyboardType(.emailAddress)
-                            .multilineTextAlignment(.center)
-                            .focused($focusedField, equals: .email)
-                            .onChange(of: email) { _ in
-                                signupData.email = email
+                        VStack {
+                            TextField("Email", text: $email)
+                                .autocapitalization(.none)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.emailAddress)
+                                .autocapitalization(.none)
+                                .keyboardType(.emailAddress)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .email)
+                                .onChange(of: email) { _ in
+                                    emailTaken = false
+                                    signupData.email = email
+                                }
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(.red, lineWidth: emailTaken ? 1 : 0)
+                            )
+                            if emailTaken {
+                                Text("Email already in use")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
                             }
+                        }
                         TextField("Phone (optional)", text: $phone)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
@@ -171,9 +189,13 @@ struct BasicInfoView: View {
                                 .bold()
                         }
                         .simultaneousGesture(TapGesture().onEnded{
-                            print("Coming in here")
-                            focusedField = nil
-                            searchSubmitted = true
+                            if !emailInDatabase(email: email) {
+                                print("Coming in here")
+                                focusedField = nil
+                                searchSubmitted = true
+                            } else {
+                                dismiss()
+                            }
                         })
                         .buttonStyle(.bordered)
                         .cornerRadius(40)
