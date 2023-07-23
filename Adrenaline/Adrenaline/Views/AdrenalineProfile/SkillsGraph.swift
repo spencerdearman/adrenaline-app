@@ -12,6 +12,10 @@ struct SkillsGraph: View {
     @StateObject private var parser = ProfileParser()
     @State private var profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197"
     @State var metrics: [Double] = [4.0, 4.6, 3.56, 3.21, 4.9]
+    @State var oneMeterMetrics: [Int: Double] = [:]
+    @State var threeMeterMetrics: [Int: Double] = [:]
+    @State var platformMetrics: [Int: Double] = [:]
+    @State var overallMetrics: [Int: Double] = [:]
     let diveTableData: [String: DiveData]? = getDiveTableData()
     var body: some View {
         ZStack {
@@ -49,8 +53,19 @@ struct SkillsGraph: View {
                 if let stats = parser.profileData.diveStatistics {
                     let skill = SkillRating(diveStatistics: stats)
                     let divesByCategory = skill.getDiverStatsByCategory()
-                    let calculatedMetrics = skillGraphMetrics(d: divesByCategory)
-                    print(calculatedMetrics)
+                    oneMeterMetrics = skillGraphMetrics(d: divesByCategory, height: 1)
+                    threeMeterMetrics = skillGraphMetrics(d: divesByCategory, height: 3)
+                    platformMetrics = skillGraphMetrics(d: divesByCategory, height: 5)
+                    var divisor = 3.0
+                    for i in 1..<6 {
+                        var divisor = 3.0
+                        if platformMetrics[i] == 0.0 {
+                            divisor = 2.0
+                        }
+                        let total = (oneMeterMetrics[i] ?? 0.0) + (threeMeterMetrics[i] ?? 0.0) + (platformMetrics[i] ?? 0.0)
+                        overallMetrics[i] = total / divisor
+                    }
+                    print(overallMetrics)
                 }
             }
         }
@@ -58,39 +73,39 @@ struct SkillsGraph: View {
         .rotationEffect(.degrees(-17.4))
     }
     
-    func skillGraphMetrics(d: [Int: [DiveStatistic]]) -> [Double: [Double]] {
-        var result: [Double: [Double]] = [1.0: [], 3.0: [], 5.0: []]
+    func skillGraphMetrics(d: [Int: [DiveStatistic]], height: Int) -> [Int:Double] {
+        var result: [Int:Double] = [1: 0, 2: 0, 3: 0, 4: 0, 5: 0]
 
         let sortedKeys = d.keys.sorted()
 
-        for key in sortedKeys {
+        for key in sortedKeys { //For Each Direction
             if let diveStatistics = d[key] {
                 var ddFixedScore: Double = 0.0
                 var judgeScore: Double = 0.0
-                var combinedDirectionScore: [Double] = [0.0, 0.0, 0.0]
-                var counter: [Double] = [0.0, 0.0, 0.0]
-
-                for dive in diveStatistics {
+                var counter = 0.0
+                var total = 0.0
+                
+                for dive in diveStatistics { //Each Dive Within the Direction
+                    let dd = getDiveDD(data: diveTableData ?? [:], forKey: dive.number, height: dive.height) ?? 0.0
+                    if dd == 0.0 {
+                        continue
+                    }
                     ddFixedScore = dive.avgScore / (getDiveDD(data: diveTableData ?? [:], forKey: dive.number, height: dive.height) ?? 0.0)
                     judgeScore = ddFixedScore / 3
-
-                    if dive.height >= 5.0 {
-                        combinedDirectionScore[2] += judgeScore
-                        counter[2] += 1
-                    } else if dive.height == 3.0 {
-                        combinedDirectionScore[1] += judgeScore
-                        counter[1] += 1
-                    } else {
-                        combinedDirectionScore[0] += judgeScore
-                        counter[0] += 1
+                    if (height == 5 && dive.height >= 5.0) || (dive.height == Double(height)) {
+                        total += judgeScore //Adding each individual judge score to the running total
+                        counter += 1
                     }
                 }
-                result[1.0]?.append(combinedDirectionScore[0] / counter[0])
-                result[3.0]?.append(combinedDirectionScore[1] / counter[1])
-                result[5.0]?.append(combinedDirectionScore[2] / counter[2])
+                if counter != 0 {
+                    if result[key] == 0 {
+                        result[key] = total / counter
+                    } else {
+                        result[key] = (result[key] ?? 0.0) + total / counter
+                    }
+                }
             }
         }
-
         return result
     }
 }
@@ -181,8 +196,8 @@ struct Polygon: Shape {
 }
 
 
-struct SkillsGraphView_Previews: PreviewProvider {
-    static var previews: some View {
-        SkillsGraph()
-    }
-}
+//struct SkillsGraphView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SkillsGraph()
+//    }
+//}
