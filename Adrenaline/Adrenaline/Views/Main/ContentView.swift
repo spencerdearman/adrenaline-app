@@ -76,8 +76,7 @@ struct ContentView: View {
                                         //.navigationViewStyle(StackNavigationViewStyle())
 //                                        ToolsMenu()
                                          //SearchColorfulView()
-//                                        FirstOpenView()
-                                          SkillsGraph()
+                                        FirstOpenView()
 //                                        UsersDBTestView()
                                     case .magnifyingglass:
                                         SearchView(isIndexingMeets: $isIndexingMeets)

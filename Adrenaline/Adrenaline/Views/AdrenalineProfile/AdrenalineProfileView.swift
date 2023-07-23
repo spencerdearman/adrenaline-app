@@ -308,7 +308,7 @@ struct ProfileContent: View {
                      diveMeetsID, nameShowing: false)
                 .offset(y: -screenHeight * 0.05)
         case 1:
-            MetricsView()
+            MetricsView(diveMeetsID: $diveMeetsID)
         case 2:
             RecruitingView()
         case 3:
@@ -357,8 +357,10 @@ struct DiveMeetsLink: View {
 }
 
 struct MetricsView: View {
+    @Binding var diveMeetsID: String
     var body: some View {
-        Text("Welcome to the Metrics View")
+        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID
+        SkillsGraph(profileLink: profileLink)
     }
 }
 

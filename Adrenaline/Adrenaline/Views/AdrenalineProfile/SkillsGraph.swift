@@ -10,8 +10,9 @@ import SwiftUI
 
 struct SkillsGraph: View {
     @StateObject private var parser = ProfileParser()
-    @State private var profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36256"
-    @State var metrics: [Double] = [4.0, 4.6, 3.56, 3.21, 4.9]
+    var profileLink: String = ""
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     @State var oneMeterDict: [Int: Double] = [:]
     @State var threeMeterDict: [Int: Double] = [:]
     @State var platformDict: [Int: Double] = [:]
@@ -22,11 +23,33 @@ struct SkillsGraph: View {
     @State var overallMetrics: [Double] = []
     let diveTableData: [String: DiveData]? = getDiveTableData()
     var body: some View {
-        ZStack {
-            Graph()
-            Polygon(metrics: oneMetrics)
-                .fill(Custom.medBlue.opacity(0.5))
-                .frame(width: 500)
+        VStack {
+            ZStack {
+                Graph()
+                    .scaleEffect(0.5)
+                    .rotationEffect(.degrees(-17.4))
+                NavigationLink {
+                    AdvancedSkillsGraphs(oneMetrics: $oneMetrics, threeMetrics: $threeMetrics, platformMetrics: $platformMetrics)
+                } label: {
+                    Polygon(metrics: overallMetrics)
+                        .fill(Custom.medBlue.opacity(0.5))
+                        .frame(width: 500)
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                }
+                Text("Front")
+                    .offset(x: screenWidth * 0.35, y: -screenHeight * 0.05)
+                Text("Back")
+                    .offset(x: screenWidth * 0.23, y: screenHeight * 0.12)
+                Text("Reverse")
+                    .offset(x: -screenWidth * 0.23, y: screenHeight * 0.12)
+                Text("Inward")
+                    .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.05)
+                Text("Twister")
+                    .offset(y: -screenHeight * 0.15)
+                
+            }
+            .offset(y: -300)
         }
         .onAppear {
             Task {
@@ -60,15 +83,13 @@ struct SkillsGraph: View {
                 }
             }
         }
-        .scaleEffect(0.5)
-        .rotationEffect(.degrees(-17.4))
     }
     
     func skillGraphMetrics(d: [Int: [DiveStatistic]], height: Int) -> [Int:Double] {
         var result: [Int:Double] = [1: 0, 2: 0, 3: 0, 4: 0, 5: 0]
-
+        
         let sortedKeys = d.keys.sorted()
-
+        
         for key in sortedKeys { //For Each Direction
             if let diveStatistics = d[key] {
                 var ddFixedScore: Double = 0.0
@@ -219,9 +240,91 @@ struct Graph: View {
     }
 }
 
+struct AdvancedSkillsGraphs: View {
+    @Binding var oneMetrics: [Double]
+    @Binding var threeMetrics: [Double]
+    @Binding var platformMetrics: [Double]
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    var body: some View {
+        ScrollView {
+            VStack {
+                BackgroundBubble() {
+                    Text("One-Meter Skills")
+                }
+                .font(.title2).fontWeight(.semibold)
+                ZStack{
+                    Graph()
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                    Polygon(metrics: oneMetrics)
+                        .fill(Custom.medBlue.opacity(0.5))
+                        .frame(width: 500, height: 300)
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                    Text("Front")
+                        .offset(x: screenWidth * 0.35, y: -screenHeight * 0.05)
+                    Text("Back")
+                        .offset(x: screenWidth * 0.23, y: screenHeight * 0.12)
+                    Text("Reverse")
+                        .offset(x: -screenWidth * 0.23, y: screenHeight * 0.12)
+                    Text("Inward")
+                        .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.05)
+                    Text("Twister")
+                        .offset(y: -screenHeight * 0.15)
+                }
+                
+                BackgroundBubble() {
+                    Text("Three-Meter Skills")
+                        .font(.title2).fontWeight(.semibold)
+                }
+                ZStack{
+                    Graph()
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                    Polygon(metrics: threeMetrics)
+                        .fill(Custom.medBlue.opacity(0.5))
+                        .frame(width: 500, height: 300)
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                    Text("Front")
+                        .offset(x: screenWidth * 0.35, y: -screenHeight * 0.05)
+                    Text("Back")
+                        .offset(x: screenWidth * 0.23, y: screenHeight * 0.12)
+                    Text("Reverse")
+                        .offset(x: -screenWidth * 0.23, y: screenHeight * 0.12)
+                    Text("Inward")
+                        .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.05)
+                    Text("Twister")
+                        .offset(y: -screenHeight * 0.15)
+                }
+                
+                BackgroundBubble() {
+                    Text("Platform Skills")
+                        .font(.title2).fontWeight(.semibold)
+                }
+                ZStack{
+                    Graph()
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                    Polygon(metrics: platformMetrics)
+                        .fill(Custom.medBlue.opacity(0.5))
+                        .frame(width: 500, height: 300)
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                    Text("Front")
+                        .offset(x: screenWidth * 0.35, y: -screenHeight * 0.05)
+                    Text("Back")
+                        .offset(x: screenWidth * 0.23, y: screenHeight * 0.12)
+                    Text("Reverse")
+                        .offset(x: -screenWidth * 0.23, y: screenHeight * 0.12)
+                    Text("Inward")
+                        .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.05)
+                    Text("Twister")
+                        .offset(y: -screenHeight * 0.15)
+                }
+            }
+        }
+    }
+}
 
-//struct SkillsGraphView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SkillsGraph()
-//    }
-//}
