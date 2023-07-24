@@ -249,7 +249,7 @@ struct ParseLoaderView: View {
             //Diving Table
             abBoardEvent = true
             for (i, t) in rows.enumerated(){
-                if i < rows.count - 1 && i >= 10 {
+                if i < rows.count - 1 && i >= 2 {
                     var tempList: [String] = []
                     for (i, v) in try t.getElementsByTag("td").enumerated() {
                         if i > 10 { break }
@@ -429,16 +429,10 @@ struct LoadedView: View {
                 VStack(spacing: 0.5) {
                     if !starSelected {
                         VStack {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(Custom.grayThinMaterial)
-                                    .mask(RoundedRectangle(cornerRadius: 40))
-                                    .frame(width: 300, height: 70)
-                                    .shadow(radius: 6)
+                            BackgroundBubble() {
                                 VStack {
                                     Text(title)
                                         .bold()
-                                        .scaledToFit()
                                         .fixedSize(horizontal: false, vertical: true)
                                         .lineLimit(2)
                                         .multilineTextAlignment(.center)
@@ -448,6 +442,7 @@ struct LoadedView: View {
                                     }
                                 }
                             }
+                            .padding(.bottom)
                             if !abBoardEvent {
                                 if isPhone {
                                     TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
@@ -470,7 +465,6 @@ struct LoadedView: View {
                             }
                         }
                     }
-                    Spacer()
                     HomeBubbleView(diveTable: abBoardEvent ? $boardDiveTable : $diveTable, starSelected: $starSelected, abBoardEvent: $abBoardEvent)
                         .offset(y: screenWidth * 0.1)
                 }

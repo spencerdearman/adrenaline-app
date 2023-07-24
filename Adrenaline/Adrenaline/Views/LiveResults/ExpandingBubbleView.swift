@@ -17,21 +17,17 @@ struct HomeBubbleView: View{
     
     var body: some View {
         if starSelected{
-            ZStack{
-                Rectangle()
-                    .foregroundColor(Custom.darkGray)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .frame(width: 200, height: 50)
-                    .shadow(radius: 6)
+            BackgroundBubble(vPadding: 25, hPadding: 25) {
                 Text("Live Rankings")
                     .font(.title2).bold()
                     .matchedGeometryEffect(id: "ranking", in: mainspace)
             }
         } else {
-            Text("Live Rankings")
-                .font(.title2).bold()
-                .padding(.top)
-                .matchedGeometryEffect(id: "ranking", in: mainspace)
+            BackgroundBubble(vPadding: 25, hPadding: 25) {
+                Text("Live Rankings")
+                    .font(.title2).bold()
+                    .matchedGeometryEffect(id: "ranking", in: mainspace)
+            }
         }
         ZStack{
             ScrollView {
@@ -221,6 +217,11 @@ struct OpenTileView: View {
                             .font(.footnote.weight(.semibold)).scaledToFit()
                             .foregroundColor(txtColor)
                             .matchedGeometryEffect(id: "currentScore", in: namespace)
+                        if abBoardEvent {
+                            Text("Board: " + bubbleData[11])
+                                .font(.footnote.weight(.semibold))
+                                .matchedGeometryEffect(id: "board", in: namespace)
+                        }
                     }
                     NavigationLink {
                         ProfileView(profileLink: abBoardEvent ? bubbleData[4] : bubbleData[7])
@@ -242,26 +243,20 @@ struct OpenTileView: View {
                             Text("Advanced Statistics")
                                 .font(.title2)
                                 .fontWeight(.bold).underline()
-                            if !abBoardEvent {
-                                HStack{
-                                    Text("Order: " + bubbleData[1])
-                                    Text("Last Round Place: " + bubbleData[2])
-                                        .matchedGeometryEffect(id: "previous", in: namespace)
-                                }
-                                .fontWeight(.semibold)
-                                Text("Last Round Score: " + bubbleData[3])
-                                    .fontWeight(.semibold)
-                                Text("Last Dive Average: " + bubbleData[8])
-                                    .fontWeight(.semibold)
-                                Text("Average Event Score: " + bubbleData[9])
-                                    .fontWeight(.semibold)
-                                Text("Average Round Score: " + bubbleData[10])
-                                    .fontWeight(.semibold)
-                            } else {
-                                Text("Board: " + bubbleData[11])
-                                    .font(.footnote.weight(.semibold))
-                                    .matchedGeometryEffect(id: "board", in: namespace)
+                            HStack{
+                                Text("Order: " + bubbleData[1])
+                                Text("Last Round Place: " + bubbleData[2])
+                                    .matchedGeometryEffect(id: "previous", in: namespace)
                             }
+                            .fontWeight(.semibold)
+                            Text("Last Round Score: " + bubbleData[3])
+                                .fontWeight(.semibold)
+                            Text("Last Dive Average: " + bubbleData[8])
+                                .fontWeight(.semibold)
+                            Text("Average Event Score: " + bubbleData[9])
+                                .fontWeight(.semibold)
+                            Text("Average Round Score: " + bubbleData[10])
+                                .fontWeight(.semibold)
                         }
                         .foregroundColor(txtColor)
                     }
@@ -279,6 +274,6 @@ struct OpenTileView: View {
             RoundedRectangle(cornerRadius: 40, style: .continuous)
                 .matchedGeometryEffect(id: "mask", in: namespace)
         )
-        .frame(height: 500)
+        .frame(height: abBoardEvent ? 275 : 500)
     }
 }
