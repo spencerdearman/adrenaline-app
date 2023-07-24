@@ -27,7 +27,7 @@ struct AdrenalineProfileView: View {
     func formatLocationString(_ input: String) -> String {
         var formattedString = input
         
-        if let spaceIndex = input.firstIndex(of: " ") {
+        if let spaceIndex = input.lastIndex(of: " ") {
             formattedString.insert(",", at: spaceIndex)
         }
         if formattedString.count >= 2 {
