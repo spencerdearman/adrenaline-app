@@ -291,6 +291,9 @@ struct ParseLoaderView: View {
                 if (try rows[1].text().suffix(3) == "Brd") {
                     print("you are in a board based event")
                     parseABBoardResults(rows: rows)
+                    //Title
+                    title = try rows[0].getElementsByTag("td")[0].text()
+                        .replacingOccurrences(of: "Unofficial Statistics ", with: "")
                 } else {
                     if rows.count < 9 { throw error }
                     upperTables = try rows[1].getElementsByTag("tbody")
@@ -434,15 +437,19 @@ struct LoadedView: View {
                                     .shadow(radius: 6)
                                 VStack {
                                     Text(title)
-                                        .font(.title2).bold()
+                                        .bold()
+                                        .scaledToFit()
                                         .fixedSize(horizontal: false, vertical: true)
                                         .lineLimit(2)
                                         .multilineTextAlignment(.center)
-                                    Text(roundString)
+                                        .frame(width: 300, height: 70)
+                                    if !abBoardEvent {
+                                        Text(roundString)
+                                    }
                                 }
                             }
                             if !abBoardEvent {
-                                    if isPhone {
+                                if isPhone {
                                     TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
                                                  bottomView: NextDiverView(nextInfo: $nextDiverInformation),
                                                  width: screenWidth * 0.95,
@@ -543,6 +550,7 @@ struct LastDiverView: View
                             .scaledToFit()
                     }
                 }
+                .padding([.leading, .trailing])
                 
                 Spacer()
                 
@@ -596,6 +604,16 @@ struct NextDiverView: View
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     @Binding var nextInfo: NextDiverInfo
+    @State var diveTitle: String = ""
+    
+    func getSecondSpaceString(s: String) -> String {
+        let components = s.split(separator: " ")
+        if components.count >= 3 {
+            return components[2...].joined(separator: " ")
+        } else {
+            return s
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -629,6 +647,7 @@ struct NextDiverView: View
                             .scaledToFit()
                     }
                 }
+                .padding([.leading, .trailing])
                 
                 Spacer()
                 
@@ -646,7 +665,7 @@ struct NextDiverView: View
                             .minimumScaleFactor(0.5)
                             .lineLimit(1)
                         VStack {
-                            Text(getDiveName(data: tableData ?? [:], forKey: nextInfo.5) ?? "")
+                            Text(nextInfo.5.components(separatedBy: " - ").last ?? "")
                                 .font(.title3)
                                 .bold()
                                 .scaledToFill()

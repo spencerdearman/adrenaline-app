@@ -231,38 +231,40 @@ struct OpenTileView: View {
                             .shadow(radius: 10)
                     }
                 }
-                ZStack{
-                    Rectangle()
-                        .foregroundColor(Custom.accentThinMaterial)
-                        .mask(RoundedRectangle(cornerRadius: 30, style: .continuous))
-                        .matchedGeometryEffect(id: "blur", in: namespace)
-                        .shadow(radius: 10)
-                    VStack(spacing: 10){
-                        Text("Advanced Statistics")
-                            .font(.title2)
-                            .fontWeight(.bold).underline()
-                        if !abBoardEvent {
-                            HStack{
-                                Text("Order: " + bubbleData[1])
-                                Text("Last Round Place: " + bubbleData[2])
-                                    .matchedGeometryEffect(id: "previous", in: namespace)
+                if !abBoardEvent {
+                    ZStack{
+                        Rectangle()
+                            .foregroundColor(Custom.accentThinMaterial)
+                            .mask(RoundedRectangle(cornerRadius: 30, style: .continuous))
+                            .matchedGeometryEffect(id: "blur", in: namespace)
+                            .shadow(radius: 10)
+                        VStack(spacing: 10){
+                            Text("Advanced Statistics")
+                                .font(.title2)
+                                .fontWeight(.bold).underline()
+                            if !abBoardEvent {
+                                HStack{
+                                    Text("Order: " + bubbleData[1])
+                                    Text("Last Round Place: " + bubbleData[2])
+                                        .matchedGeometryEffect(id: "previous", in: namespace)
+                                }
+                                .fontWeight(.semibold)
+                                Text("Last Round Score: " + bubbleData[3])
+                                    .fontWeight(.semibold)
+                                Text("Last Dive Average: " + bubbleData[8])
+                                    .fontWeight(.semibold)
+                                Text("Average Event Score: " + bubbleData[9])
+                                    .fontWeight(.semibold)
+                                Text("Average Round Score: " + bubbleData[10])
+                                    .fontWeight(.semibold)
+                            } else {
+                                Text("Board: " + bubbleData[11])
+                                    .font(.footnote.weight(.semibold))
+                                    .matchedGeometryEffect(id: "board", in: namespace)
                             }
-                            .fontWeight(.semibold)
-                            Text("Last Round Score: " + bubbleData[3])
-                                .fontWeight(.semibold)
-                            Text("Last Dive Average: " + bubbleData[8])
-                                .fontWeight(.semibold)
-                            Text("Average Event Score: " + bubbleData[9])
-                                .fontWeight(.semibold)
-                            Text("Average Round Score: " + bubbleData[10])
-                                .fontWeight(.semibold)
-                        } else {
-                            Text("Board: " + bubbleData[11])
-                                .font(.footnote.weight(.semibold))
-                                .matchedGeometryEffect(id: "board", in: namespace)
                         }
+                        .foregroundColor(txtColor)
                     }
-                    .foregroundColor(txtColor)
                     
                 }
                 Spacer()
