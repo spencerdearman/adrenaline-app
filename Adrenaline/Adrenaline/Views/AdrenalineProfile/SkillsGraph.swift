@@ -8,6 +8,12 @@
 
 import SwiftUI
 
+enum EventType: Int, CaseIterable {
+    case one = 1
+    case three = 3
+    case platform = 5
+}
+
 struct SkillsGraph: View {
     @StateObject private var parser = ProfileParser()
     var profileLink: String = ""
@@ -49,7 +55,7 @@ struct SkillsGraph: View {
                     .offset(y: -screenHeight * 0.15)
                 
             }
-            .offset(y: -300)
+            .offset(y: -200)
         }
         .onAppear {
             Task {
@@ -61,9 +67,9 @@ struct SkillsGraph: View {
                 if let stats = parser.profileData.diveStatistics {
                     let skill = SkillRating(diveStatistics: stats)
                     let divesByCategory = skill.getDiverStatsByCategory()
-                    oneMeterDict = skillGraphMetrics(d: divesByCategory, height: 1)
-                    threeMeterDict = skillGraphMetrics(d: divesByCategory, height: 3)
-                    platformDict = skillGraphMetrics(d: divesByCategory, height: 5)
+                    oneMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.one)
+                    threeMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.three)
+                    platformDict = skillGraphMetrics(d: divesByCategory, height: EventType.platform)
                     var divisor = 3.0
                     for i in 1..<6 {
                         var divisor = 3.0
@@ -85,7 +91,7 @@ struct SkillsGraph: View {
         }
     }
     
-    func skillGraphMetrics(d: [Int: [DiveStatistic]], height: Int) -> [Int:Double] {
+    func skillGraphMetrics(d: [Int: [DiveStatistic]], height: EventType) -> [Int:Double] {
         var result: [Int:Double] = [1: 0, 2: 0, 3: 0, 4: 0, 5: 0]
         
         let sortedKeys = d.keys.sorted()
@@ -99,12 +105,12 @@ struct SkillsGraph: View {
                 
                 for dive in diveStatistics { //Each Dive Within the Direction
                     let dd = getDiveDD(data: diveTableData ?? [:], forKey: dive.number, height: dive.height) ?? 0.0
-                    if dd == 0.0 {
+                    guard dd != 0.0 else {
                         continue
                     }
-                    ddFixedScore = dive.avgScore / (getDiveDD(data: diveTableData ?? [:], forKey: dive.number, height: dive.height) ?? 0.0)
+                    ddFixedScore = dive.avgScore / dd
                     judgeScore = ddFixedScore / 3
-                    if (height == 5 && dive.height >= 5.0) || (dive.height == Double(height)) {
+                    if (height.rawValue == 5 && dive.height >= 5.0) || (dive.height == Double(height.rawValue)) {
                         total += judgeScore //Adding each individual judge score to the running total
                         counter += 1
                     }
