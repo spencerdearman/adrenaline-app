@@ -63,23 +63,23 @@ struct ContentView: View {
                             HStack {
                                 // Add different page views here for different tabs
                                 switch tab {
-                                case .house:
-                                    Home()
-                                case .wrench:
-                                    //NavigationView {
-                                    //LiveResultsView(request: "debug")
-                                    //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
-                                    //}
-                                    //.navigationViewStyle(StackNavigationViewStyle())
-                                    //                                    ToolsMenu()
-                                    //SearchColorfulView()
-                                    AppLaunchSequence()
-                                    //                                    FirstOpenView()
-                                    //                                        UsersDBTestView()
-                                case .magnifyingglass:
-                                    SearchView()
-                                case .person:
-                                    LoginSearchView()
+                                    case .house:
+                                        Home()
+                                    case .wrench:
+                                        //NavigationView {
+                                        //LiveResultsView(request: "debug")
+                                        //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                                        //}
+                                        //.navigationViewStyle(StackNavigationViewStyle())
+                                        //                                    ToolsMenu()
+                                        //SearchColorfulView()
+                                        //                                    AppLaunchSequence()
+                                        RankingsView()
+                                        //                                        UsersDBTestView()
+                                    case .magnifyingglass:
+                                        SearchView()
+                                    case .person:
+                                        LoginSearchView()
                                 }
                             }
                             .tag(tab)
