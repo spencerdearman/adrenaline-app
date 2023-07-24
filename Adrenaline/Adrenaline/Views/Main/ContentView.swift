@@ -70,9 +70,9 @@ struct ContentView: View {
 //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
                                         //}
                                         //.navigationViewStyle(StackNavigationViewStyle())
-//                                        ToolsMenu()
+                                        ToolsMenu()
                                          //SearchColorfulView()
-                                        FirstOpenView()
+//                                        FirstOpenView()
 //                                        UsersDBTestView()
                                     case .magnifyingglass:
                                         SearchView()
