@@ -231,7 +231,6 @@ struct AthleteRecruitingView: View {
                             }
                             
                             if infoSafe, let parsedGender = parsedGender{
-                                var g = ""
                                 if parsedGender == "M" {
                                     Text("Gender: Male")
                                         .onAppear {
@@ -389,6 +388,18 @@ struct AthleteRecruitingView: View {
                             .disabled(!requiredFieldsFilledIn)
                             .simultaneousGesture(TapGesture().onEnded {
                                 setAthleteRecruitingFields()
+                                guard let stats = parser.profileData.diveStatistics else { return }
+                                let skill = SkillRating(diveStatistics: stats)
+                                Task {
+                                    let (springboard, platform, _) =
+                                    await skill.getSkillRating(stats: stats,
+                                                               metric: skill.computeMetric1)
+                                    print(springboard, " - ", platform)
+                                    guard let email = signupData.email else { return }
+                                    db.updateAthleteSkillRating(email: email,
+                                                                springboardRating: springboard,
+                                                                platformRating: platform)
+                                }
                             })
                         }
                     }
