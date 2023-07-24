@@ -13,7 +13,7 @@ struct HomeBubbleView: View{
     @Binding var diveTable: [[String]]
     @Binding var starSelected: Bool
     @Binding var abBoardEvent: Bool
-    @State var expandedIndex: Int = -1
+    @State var expandedIndex: String = "-1"
     
     var body: some View {
         if starSelected{
@@ -52,10 +52,10 @@ struct HomeView: View {
     @State var show: Bool = false
     @State var bubbleData: [String]
     @Binding var starSelected: Bool
-    @Binding var expandedIndex: Int
+    @Binding var expandedIndex: String
     @Binding var abBoardEvent: Bool
     
-    init(bubbleData: [String], starSelected: Binding<Bool>, expandedIndex: Binding<Int>, abBoardEvent: Binding<Bool>) {
+    init(bubbleData: [String], starSelected: Binding<Bool>, expandedIndex: Binding<String>, abBoardEvent: Binding<Bool>) {
         self.bubbleData = bubbleData
         self._starSelected = starSelected
         self._expandedIndex = expandedIndex
@@ -66,8 +66,9 @@ struct HomeView: View {
         if show {
             OpenTileView(namespace: namespace, show: $show, bubbleData: $bubbleData, abBoardEvent: $abBoardEvent)
                 .onTapGesture {
-                    if expandedIndex == Int(bubbleData[1]){
-                        expandedIndex = -1
+                    print(bubbleData[1])
+                    if expandedIndex == (abBoardEvent ? bubbleData[3] : bubbleData[1]){
+                        expandedIndex = "-1"
                         starSelected = false
                         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                             show.toggle()
@@ -78,8 +79,8 @@ struct HomeView: View {
         } else {
             ClosedTileView(namespace: namespace, show: $show, bubbleData: $bubbleData, abBoardEvent: $abBoardEvent)
                 .onTapGesture {
-                    if expandedIndex == -1{
-                        expandedIndex = Int(bubbleData[1]) ?? 0
+                    if expandedIndex == "-1"{
+                        expandedIndex = abBoardEvent ? bubbleData[3] : bubbleData[1]
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                             starSelected = true
                             show.toggle()
@@ -125,7 +126,7 @@ struct ClosedTileView: View {
                         VStack(alignment: .leading){
                             Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").first ?? "")
                                 .matchedGeometryEffect(id: "firstname", in: namespace)
-                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
+                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").last ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
                                 .matchedGeometryEffect(id: "lastname", in: namespace)
                         }
                         .lineLimit(2)
@@ -159,6 +160,10 @@ struct ClosedTileView: View {
                             Text("Last Round Place: " + bubbleData[2])
                                 .font(.footnote.weight(.semibold))
                                 .matchedGeometryEffect(id: "previous", in: namespace)
+                        } else {
+                            Text("Board: " + bubbleData[11])
+                                .font(.footnote.weight(.semibold))
+                                .matchedGeometryEffect(id: "board", in: namespace)
                         }
                     }
                 }
@@ -195,7 +200,7 @@ struct OpenTileView: View {
                         VStack(alignment: .leading) {
                             Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").first ?? "")
                                 .matchedGeometryEffect(id: "firstname", in: namespace)
-                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
+                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").last ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
                                 .matchedGeometryEffect(id: "lastname", in: namespace)
                         }
                         .font(.largeTitle)
@@ -251,6 +256,10 @@ struct OpenTileView: View {
                                 .fontWeight(.semibold)
                             Text("Average Round Score: " + bubbleData[10])
                                 .fontWeight(.semibold)
+                        } else {
+                            Text("Board: " + bubbleData[11])
+                                .font(.footnote.weight(.semibold))
+                                .matchedGeometryEffect(id: "board", in: namespace)
                         }
                     }
                     .foregroundColor(txtColor)

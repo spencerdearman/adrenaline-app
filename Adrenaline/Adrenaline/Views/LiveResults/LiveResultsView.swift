@@ -639,7 +639,7 @@ struct NextDiverView: View
                         .foregroundColor(Custom.darkGray)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
-                        Text(nextInfo.5)
+                        Text(nextInfo.5.prefix(5))
                             .font(.title2)
                             .bold()
                             .scaledToFill()
