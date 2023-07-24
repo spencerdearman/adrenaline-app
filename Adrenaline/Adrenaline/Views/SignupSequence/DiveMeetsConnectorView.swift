@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DiveMeetsConnectorView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelDB) var db
     @Binding var searchSubmitted: Bool
     @Binding var firstName: String
     @Binding var lastName: String
@@ -48,14 +50,31 @@ struct DiveMeetsConnectorView: View {
         .dynamicTypeSize(.xSmall ... .xxxLarge)
         .onDisappear {
             searchSubmitted = false
+            if diveMeetsID != "", let email = signupData.email {
+                db.updateUserField(email: email, key: "diveMeetsID", value: diveMeetsID)
+            }
         }
-        
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    // If user backs up into BasicInfoView, it drops them from db so they can be
+                    // added again if they fill out the information and proceed
+                    if let email = signupData.email {
+                        db.dropUser(email: email)
+                    }
+                    dismiss()
+                }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
 }
 
 struct IsThisYouView: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.modelDB) var db
     @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
@@ -81,9 +100,6 @@ struct IsThisYouView: View {
             Spacer()
             if sortedRecords.count == 1 {
                 Text("Is this you?")
-                    .onAppear {
-                        print(String(records.values.count))
-                    }
                     .font(.title).fontWeight(.semibold)
             } else if sortedRecords.count > 1 {
                 Text("Are you one of these profiles?")
@@ -125,22 +141,17 @@ struct IsThisYouView: View {
                 }
                                .simultaneousGesture(TapGesture().onEnded{
                                    diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                                   guard let email = signupData.email else { return }
+                                   db.updateUserField(email: email, key: "diveMeetsID",
+                                                      value: diveMeetsID)
                                })
                                .shadow(radius: 5)
                                .padding([.leading, .trailing])
             }
             Spacer()
         }
-        .onAppear{
+        .onAppear {
             sortedRecords = getSortedRecords(records)
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
-                }
-            }
         }
     }
 }

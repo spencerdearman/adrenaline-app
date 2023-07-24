@@ -62,8 +62,8 @@ struct UsersDBTestView: View {
                     if let email = user.email {
                         Text(email)
                     }
-                    if let password = user.password {
-                        Text(password)
+                    if let diveMeetsID = user.diveMeetsID {
+                        Text(diveMeetsID)
                     }
                 }
             }
@@ -72,13 +72,17 @@ struct UsersDBTestView: View {
                     if let email = user.email {
                         Text(email)
                     }
-                    if let password = user.password {
-                        Text(password)
+                    if let diveMeetsID = user.diveMeetsID {
+                        Text(diveMeetsID)
                     }
+                    Text("\(user.heightFeet)\' \(user.heightInches)\"")
+                    Text(String(user.weight) + " " + (user.weightUnit ?? ""))
+                    Text(String(user.graduationYear))
+                    Text(user.hometown ?? "")
                     VStack {
-                        Text(String(user.springboardRating))
-                        Text(String(user.platformRating))
-                        Text(String(user.totalRating))
+                        Text(String(format: "%.2f", user.springboardRating))
+                        Text(String(format: "%.2f", user.platformRating))
+                        Text(String(format: "%.2f", user.totalRating))
                     }
                 }
             }
