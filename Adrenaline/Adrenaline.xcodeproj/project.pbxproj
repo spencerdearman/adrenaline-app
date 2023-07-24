@@ -26,6 +26,7 @@
 		0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */; };
 		006CF0842A02340500E7C2A5 /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006CF0832A02340500E7C2A5 /* TextFieldClearButton.swift */; };
 		007EAFED2A4B639600061113 /* MovingSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007EAFEC2A4B639600061113 /* MovingSplashView.swift */; };
+		0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */; };
 		008CB5652A61000400935537 /* NavigationViewBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008CB5642A61000400935537 /* NavigationViewBackButton.swift */; };
 		008CB5672A61B3EE00935537 /* ProfileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008CB5662A61B3EE00935537 /* ProfileParser.swift */; };
 		0095BD2D29B1491D004D7EFD /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0095BD2C29B1491D004D7EFD /* SearchView.swift */; };
@@ -102,6 +103,7 @@
 		0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalingScrollView.swift; sourceTree = "<group>"; };
 		006CF0832A02340500E7C2A5 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldClearButton.swift; sourceTree = "<group>"; };
 		007EAFEC2A4B639600061113 /* MovingSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingSplashView.swift; sourceTree = "<group>"; };
+		0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingsView.swift; sourceTree = "<group>"; };
 		008CB5642A61000400935537 /* NavigationViewBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewBackButton.swift; sourceTree = "<group>"; };
 		008CB5662A61B3EE00935537 /* ProfileParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileParser.swift; sourceTree = "<group>"; };
 		0095BD2C29B1491D004D7EFD /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
@@ -172,6 +174,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0080BF9D2A6F0CD9001F5764 /* Rankings */ = {
+			isa = PBXGroup;
+			children = (
+				0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */,
+			);
+			path = Rankings;
+			sourceTree = "<group>";
+		};
 		009F41B62A6ABA1700348C68 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -280,6 +290,7 @@
 				4D8B9C1129F898D5002B53AD /* Login */,
 				4D8B9C1329F89A54002B53AD /* Main */,
 				00E7B0AA2A3EBFF8004575F0 /* MeetPages */,
+				0080BF9D2A6F0CD9001F5764 /* Rankings */,
 				4D8B9C1029F898AD002B53AD /* Search */,
 				00B6A5D22A66500F00C4DFDA /* SignupSequence */,
 				4D50E78B2A27148B009BFBFA /* Tools */,
@@ -511,6 +522,7 @@
 				4D09308529D3A1B7003AAA90 /* LoginScreen.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
+				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
 				0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */,
 				00B6A5D42A66504C00C4DFDA /* FirstOpenView.swift in Sources */,
 				006CF0842A02340500E7C2A5 /* TextFieldClearButton.swift in Sources */,

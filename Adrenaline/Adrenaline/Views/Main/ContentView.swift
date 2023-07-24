@@ -72,7 +72,8 @@ struct ContentView: View {
                                         //.navigationViewStyle(StackNavigationViewStyle())
 //                                        ToolsMenu()
                                          //SearchColorfulView()
-                                        FirstOpenView()
+//                                        FirstOpenView()
+                                        RankingsView()
 //                                        UsersDBTestView()
                                     case .magnifyingglass:
                                         SearchView()
