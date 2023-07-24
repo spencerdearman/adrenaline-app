@@ -12,6 +12,7 @@ struct HomeBubbleView: View{
     let gridItems = [GridItem(.adaptive(minimum: 300))]
     @Binding var diveTable: [[String]]
     @Binding var starSelected: Bool
+    @Binding var abBoardEvent: Bool
     @State var expandedIndex: Int = -1
     
     var body: some View {
@@ -36,7 +37,7 @@ struct HomeBubbleView: View{
             ScrollView {
                 LazyVGrid(columns: gridItems, spacing: 5) {
                     ForEach(diveTable, id: \.self) { elem in
-                        HomeView(bubbleData: elem, starSelected: $starSelected, expandedIndex: $expandedIndex)
+                        HomeView(bubbleData: elem, starSelected: $starSelected, expandedIndex: $expandedIndex, abBoardEvent: $abBoardEvent)
                     }
                 }
                 .padding(20)
@@ -52,16 +53,18 @@ struct HomeView: View {
     @State var bubbleData: [String]
     @Binding var starSelected: Bool
     @Binding var expandedIndex: Int
+    @Binding var abBoardEvent: Bool
     
-    init(bubbleData: [String], starSelected: Binding<Bool>, expandedIndex: Binding<Int>) {
+    init(bubbleData: [String], starSelected: Binding<Bool>, expandedIndex: Binding<Int>, abBoardEvent: Binding<Bool>) {
         self.bubbleData = bubbleData
         self._starSelected = starSelected
         self._expandedIndex = expandedIndex
+        self._abBoardEvent = abBoardEvent
     }
     
     var body: some View{
         if show {
-            OpenTileView(namespace: namespace, show: $show, bubbleData: $bubbleData)
+            OpenTileView(namespace: namespace, show: $show, bubbleData: $bubbleData, abBoardEvent: $abBoardEvent)
                 .onTapGesture {
                     if expandedIndex == Int(bubbleData[1]){
                         expandedIndex = -1
@@ -73,7 +76,7 @@ struct HomeView: View {
                 }
                 .shadow(radius: 5)
         } else {
-            ClosedTileView(namespace: namespace, show: $show, bubbleData: $bubbleData)
+            ClosedTileView(namespace: namespace, show: $show, bubbleData: $bubbleData, abBoardEvent: $abBoardEvent)
                 .onTapGesture {
                     if expandedIndex == -1{
                         expandedIndex = Int(bubbleData[1]) ?? 0
@@ -92,6 +95,7 @@ struct ClosedTileView: View {
     var namespace: Namespace.ID
     @Binding var show: Bool
     @Binding var bubbleData: [String]
+    @Binding var abBoardEvent: Bool
     
     private var bgColor: Color {
         currentMode == .light ? Custom.tileColor : Custom.tileColor
@@ -119,15 +123,15 @@ struct ClosedTileView: View {
                 VStack(alignment: .leading, spacing: 12){
                     HStack {
                         VStack(alignment: .leading){
-                            Text(bubbleData[6].components(separatedBy: " ").first ?? "")
+                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").first ?? "")
                                 .matchedGeometryEffect(id: "firstname", in: namespace)
-                            Text(bubbleData[6].components(separatedBy: " ").last ?? "")
+                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
                                 .matchedGeometryEffect(id: "lastname", in: namespace)
                         }
                         .lineLimit(2)
                         .font(.title2)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        if Bool(bubbleData[0])! {
+                        if !abBoardEvent && (Bool(bubbleData[0]) ?? false) {
                             Image(systemName: "checkmark")
                                 .offset(x: -10)
                                 .matchedGeometryEffect(id: "checkmark", in: namespace)
@@ -138,7 +142,7 @@ struct ClosedTileView: View {
                                 .mask(RoundedRectangle(cornerRadius: 60, style: .continuous))
                                 .shadow(radius: 2)
                                 .frame(width: 200, height: 40)
-                            Text("Current Score: " + bubbleData[5])
+                            Text("Current Score: " + (abBoardEvent ? bubbleData[1] : bubbleData[5]))
                                 .fontWeight(.semibold)
                                 .scaledToFit()
                                 .matchedGeometryEffect(id: "currentScore", in: namespace)
@@ -147,13 +151,15 @@ struct ClosedTileView: View {
                     }
                     
                     HStack {
-                        Text("Current Place: " + bubbleData[4])
+                        Text("Current Place: " + (abBoardEvent ? bubbleData[0] : bubbleData[4]))
                             .fontWeight(.semibold)
                             .matchedGeometryEffect(id: "currentPlace", in: namespace)
                         Spacer()
-                        Text("Last Round Place: " + bubbleData[2])
-                            .font(.footnote.weight(.semibold))
-                            .matchedGeometryEffect(id: "previous", in: namespace)
+                        if !abBoardEvent {
+                            Text("Last Round Place: " + bubbleData[2])
+                                .font(.footnote.weight(.semibold))
+                                .matchedGeometryEffect(id: "previous", in: namespace)
+                        }
                     }
                 }
                 .padding(20)
@@ -169,6 +175,7 @@ struct OpenTileView: View {
     var namespace: Namespace.ID
     @Binding var show: Bool
     @Binding var bubbleData: [String]
+    @Binding var abBoardEvent: Bool
     
     private var bgColor: Color {
         currentMode == .light ? Custom.darkGray : Custom.darkGray
@@ -186,34 +193,34 @@ struct OpenTileView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         VStack(alignment: .leading) {
-                            Text(bubbleData[6].components(separatedBy: " ").first ?? "")
+                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").first ?? "")
                                 .matchedGeometryEffect(id: "firstname", in: namespace)
-                            Text(bubbleData[6].components(separatedBy: " ").last ?? "")
+                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
                                 .matchedGeometryEffect(id: "lastname", in: namespace)
                         }
                         .font(.largeTitle)
                         .foregroundColor(txtColor)
                         .lineLimit(2)
                         HStack {
-                            Text("Current Place: " + bubbleData[4])
+                            Text("Current Place: " + (abBoardEvent ? bubbleData[0] : bubbleData[4]))
                                 .scaledToFit()
                                 .fontWeight(.semibold)
                                 .matchedGeometryEffect(id: "currentPlace", in: namespace)
-                            if Bool(bubbleData[0])! {
+                            if !abBoardEvent && (Bool(bubbleData[0]) ?? false) {
                                 Image(systemName: "checkmark")
                                     .matchedGeometryEffect(id: "checkmark", in: namespace)
                             }
                         }
                         .foregroundColor(txtColor)
-                        Text("Current Score: " + bubbleData[5])
+                        Text("Current Score: " + (abBoardEvent ? bubbleData[1] : bubbleData[5]))
                             .font(.footnote.weight(.semibold)).scaledToFit()
                             .foregroundColor(txtColor)
                             .matchedGeometryEffect(id: "currentScore", in: namespace)
                     }
                     NavigationLink {
-                        ProfileView(profileLink: bubbleData[7])
+                        ProfileView(profileLink: abBoardEvent ? bubbleData[4] : bubbleData[7])
                     } label: {
-                        MiniProfileImage(diverID: String(bubbleData[7].components(separatedBy: "=").last ?? ""), width: 150, height: 200)
+                        MiniProfileImage(diverID: abBoardEvent ? String(bubbleData[4].components(separatedBy: "=").last ?? "") : String(bubbleData[7].components(separatedBy: "=").last ?? ""), width: 150, height: 200)
                             .scaledToFit()
                             .padding(.horizontal)
                             .shadow(radius: 10)
@@ -229,20 +236,22 @@ struct OpenTileView: View {
                         Text("Advanced Statistics")
                             .font(.title2)
                             .fontWeight(.bold).underline()
-                        HStack{
-                            Text("Order: " + bubbleData[1])
-                            Text("Last Round Place: " + bubbleData[2])
-                                .matchedGeometryEffect(id: "previous", in: namespace)
+                        if !abBoardEvent {
+                            HStack{
+                                Text("Order: " + bubbleData[1])
+                                Text("Last Round Place: " + bubbleData[2])
+                                    .matchedGeometryEffect(id: "previous", in: namespace)
+                            }
+                            .fontWeight(.semibold)
+                            Text("Last Round Score: " + bubbleData[3])
+                                .fontWeight(.semibold)
+                            Text("Last Dive Average: " + bubbleData[8])
+                                .fontWeight(.semibold)
+                            Text("Average Event Score: " + bubbleData[9])
+                                .fontWeight(.semibold)
+                            Text("Average Round Score: " + bubbleData[10])
+                                .fontWeight(.semibold)
                         }
-                        .fontWeight(.semibold)
-                        Text("Last Round Score: " + bubbleData[3])
-                            .fontWeight(.semibold)
-                        Text("Last Dive Average: " + bubbleData[8])
-                            .fontWeight(.semibold)
-                        Text("Average Event Score: " + bubbleData[9])
-                            .fontWeight(.semibold)
-                        Text("Average Round Score: " + bubbleData[10])
-                            .fontWeight(.semibold)
                     }
                     .foregroundColor(txtColor)
                     

@@ -178,7 +178,7 @@ struct JudgeScoreCalculator: View {
                             }
                         } else if name != nil, dd == nil {
                                 BackgroundBubble() {
-                                    Text("Not Possible on " + height.rawValue)
+                                    Text("Not possible on " + height.rawValue)
                                         .scaledToFit()
                                         .multilineTextAlignment(.center)
                                         .padding()

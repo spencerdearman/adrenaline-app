@@ -22,6 +22,8 @@ typealias NextDiverInfo = (String, String, Int, Double, Int, String, String, Dou
 //                      current score, name, link, last dive average, event average score, avg round score]]
 typealias DiveTable = [[String]]
 
+typealias BoardDiveTable = [[String]]
+
 struct LiveResultsView: View {
     @Environment(\.dismiss) private var dismiss
     var request: String
@@ -55,6 +57,7 @@ struct ParseLoaderView: View {
     @State private var roundString = ""
     @State private var title: String = ""
     @State var starSelected: Bool = false
+    @State var abBoardEvent: Bool = false
     @Binding var shiftingBool: Bool
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
@@ -64,6 +67,7 @@ struct ParseLoaderView: View {
     @State var lastDiverInformation: LastDiverInfo = ("", "", 0, 0.0, 0, 0, 0.0, "", "", 0.0, 0.0, "")
     @State var nextDiverInformation: NextDiverInfo = ("", "", 0, 0.0, 0, "", "", 0.0, 0.0, 0.0, 0.0)
     @State var diveTable: DiveTable = []
+    @State var boardDiveTable: BoardDiveTable = []
     @State var loaded: Bool = true
     
     // Shows debug dataset, sets to true if "debug" is request string
@@ -238,10 +242,45 @@ struct ParseLoaderView: View {
         return false
     }
     
+    private func parseABBoardResults(rows: Elements) -> Bool {
+        do {
+            //Current Round Not Available on Board Pages
+            
+            //Diving Table
+            abBoardEvent = true
+            for (i, t) in rows.enumerated(){
+                if i < rows.count - 1 && i >= 10 {
+                    var tempList: [String] = []
+                    for (i, v) in try t.getElementsByTag("td").enumerated() {
+                        if i > 10 { break }
+                        if i == 1 {
+                            tempList.append(try v.text())
+                            let halfLink = try v.getElementsByTag("a").attr("href")
+                            tempList.append(linkHead + halfLink)
+                        } else if i == 2 {
+                            focusViewList[try v.text()]
+                            tempList.append(try v.text())
+                            let halfLink = try v.getElementsByTag("a").attr("href")
+                            tempList.append(linkHead + halfLink)
+                        } else {
+                            tempList.append(try v.text())
+                        }
+                    }
+                    boardDiveTable.append(tempList)
+                }
+            }
+            print(boardDiveTable)
+            return true
+        } catch {
+            print("Failed to parse current round")
+        }
+        return false
+    }
+    
     private func parseLiveResultsData(newValue: String) async -> Bool {
-        let error = ParseError("Failed to parse")
         let parseTask = Task {
             do {
+                let error = ParseError("Failed to parse")
                 diveTable = []
                 var upperTables: Elements = Elements()
                 var individualTables: Elements = Elements()
@@ -249,22 +288,25 @@ struct ParseLoaderView: View {
                 guard let body = document.body() else { throw error }
                 let table = try body.getElementById("Results")
                 guard let rows = try table?.getElementsByTag("tr") else { throw error }
-                if rows.count < 9 { throw error }
-                upperTables = try rows[1].getElementsByTag("tbody")
-                
-                if upperTables.isEmpty() { throw error }
-                individualTables = try upperTables[0].getElementsByTag("table")
-                
-                //Title
-                title = try rows[0].getElementsByTag("td")[0].text()
-                    .replacingOccurrences(of: "Unofficial Statistics ", with: "")
-                
-                // If not enough tables or last, next, or round parsing fails, throw error
-                if individualTables.count < 3 ||
-                    !parseLastDiverData(table: individualTables[0]) ||
-                    !parseNextDiverData(table: individualTables[2]) ||
-                    !parseCurrentRound(rows: rows) { throw error }
-                
+                if (try rows[1].text().suffix(3) == "Brd") {
+                    print("you are in a board based event")
+                    parseABBoardResults(rows: rows)
+                } else {
+                    if rows.count < 9 { throw error }
+                    upperTables = try rows[1].getElementsByTag("tbody")
+                    
+                    if upperTables.isEmpty() { throw error }
+                    individualTables = try upperTables[0].getElementsByTag("table")
+                    
+                    //Title
+                    title = try rows[0].getElementsByTag("td")[0].text()
+                        .replacingOccurrences(of: "Unofficial Statistics ", with: "")
+                    // If not enough tables or last, next, or round parsing fails, throw error
+                    if individualTables.count < 3 ||
+                        !parseLastDiverData(table: individualTables[0]) ||
+                        !parseNextDiverData(table: individualTables[2]) ||
+                        !parseCurrentRound(rows: rows) { throw error }
+                }
             } catch {
                 print("Parsing live event failed")
                 try Task.checkCancellation()
@@ -314,9 +356,9 @@ struct ParseLoaderView: View {
             
             if loaded {
                 LoadedView(lastDiverInformation: $lastDiverInformation, nextDiverInformation:
-                            $nextDiverInformation, diveTable: $diveTable, focusViewList: $focusViewList,
+                            $nextDiverInformation, diveTable: $diveTable, boardDiveTable: $boardDiveTable, focusViewList: $focusViewList,
                            starSelected: $starSelected, shiftingBool: $shiftingBool, title: $title,
-                           roundString: $roundString)
+                           roundString: $roundString, abBoardEvent: $abBoardEvent)
             } else if timedOut {
                 TimedOutView()
             } else {
@@ -348,11 +390,13 @@ struct LoadedView: View {
     @Binding var nextDiverInformation:
     (String, String, Int, Double, Int, String, String, Double, Double, Double, Double)
     @Binding var diveTable: [[String]]
+    @Binding var boardDiveTable: [[String]]
     @Binding var focusViewList: [String: Bool]
     @Binding var starSelected: Bool
     @Binding var shiftingBool: Bool
     @Binding var title: String
     @Binding var roundString: String
+    @Binding var abBoardEvent: Bool
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
@@ -397,28 +441,30 @@ struct LoadedView: View {
                                     Text(roundString)
                                 }
                             }
-                            if isPhone {
-                                TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
-                                             bottomView: NextDiverView(nextInfo: $nextDiverInformation),
-                                             width: screenWidth * 0.95,
-                                             height: screenHeight * 0.28)
-                                .dynamicTypeSize(.xSmall ... .xxxLarge)
-                            } else {
-                                HStack {
-                                    Spacer()
-                                    LastDiverView(lastInfo: $lastDiverInformation)
-                                        .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
-                                    Spacer()
-                                    NextDiverView(nextInfo: $nextDiverInformation)
-                                        .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
-                                    Spacer()
+                            if !abBoardEvent {
+                                    if isPhone {
+                                    TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
+                                                 bottomView: NextDiverView(nextInfo: $nextDiverInformation),
+                                                 width: screenWidth * 0.95,
+                                                 height: screenHeight * 0.28)
+                                    .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                } else {
+                                    HStack {
+                                        Spacer()
+                                        LastDiverView(lastInfo: $lastDiverInformation)
+                                            .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
+                                        Spacer()
+                                        NextDiverView(nextInfo: $nextDiverInformation)
+                                            .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
+                                        Spacer()
+                                    }
+                                    .offset(y: screenWidth * 0.05)
                                 }
-                                .offset(y: screenWidth * 0.05)
                             }
                         }
                     }
                     Spacer()
-                    HomeBubbleView(diveTable: $diveTable, starSelected: $starSelected)
+                    HomeBubbleView(diveTable: abBoardEvent ? $boardDiveTable : $diveTable, starSelected: $starSelected, abBoardEvent: $abBoardEvent)
                         .offset(y: screenWidth * 0.1)
                 }
                 .padding(.bottom, maxHeightOffset)
