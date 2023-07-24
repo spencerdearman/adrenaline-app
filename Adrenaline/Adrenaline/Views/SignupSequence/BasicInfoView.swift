@@ -122,7 +122,12 @@ struct BasicInfoView: View {
                                 .focused($focusedField, equals: .email)
                                 .onChange(of: email) { _ in
                                     signupData.email = email
-                                    isEmailTaken = emailInDatabase(email: email)
+                                }
+                            // Only updates the changed email boolean if the user leaves email focus
+                                .onChange(of: focusedField) { [focusedField] newValue in
+                                    if focusedField == .email && newValue != .email {
+                                        isEmailTaken = emailInDatabase(email: email)
+                                    }
                                 }
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 5)
@@ -197,8 +202,13 @@ struct BasicInfoView: View {
                                 print("Coming in here")
                                 focusedField = nil
                                 searchSubmitted = true
-                                db.addUser(firstName: firstName, lastName: lastName,
-                                           email: email, phone: phone, password: password)
+                                if signupData.accountType == .athlete {
+                                    db.addAthlete(firstName: firstName, lastName: lastName,
+                                               email: email, phone: phone, password: password)
+                                } else {
+                                    db.addUser(firstName: firstName, lastName: lastName,
+                                               email: email, phone: phone, password: password)
+                                }
                             })
                             .buttonStyle(.bordered)
                             .cornerRadius(40)

@@ -60,6 +60,7 @@ struct DiveMeetsConnectorView: View {
 struct IsThisYouView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.modelDB) var db
     @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
@@ -85,9 +86,6 @@ struct IsThisYouView: View {
             Spacer()
             if sortedRecords.count == 1 {
                 Text("Is this you?")
-                    .onAppear {
-                        print(String(records.values.count))
-                    }
                     .font(.title).fontWeight(.semibold)
             } else if sortedRecords.count > 1 {
                 Text("Are you one of these profiles?")
@@ -129,6 +127,9 @@ struct IsThisYouView: View {
                 }
                                .simultaneousGesture(TapGesture().onEnded{
                                    diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                                   guard let email = signupData.email else { return }
+                                   db.updateUserField(email: email, key: "diveMeetsID",
+                                                      value: diveMeetsID)
                                })
                                .shadow(radius: 5)
                                .padding([.leading, .trailing])

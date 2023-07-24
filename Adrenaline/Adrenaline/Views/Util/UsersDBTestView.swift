@@ -75,11 +75,15 @@ struct UsersDBTestView: View {
                     if let diveMeetsID = user.diveMeetsID {
                         Text(diveMeetsID)
                     }
-                    VStack {
-                        Text(String(user.springboardRating))
-                        Text(String(user.platformRating))
-                        Text(String(user.totalRating))
-                    }
+                    Text("\(user.heightFeet)\' \(user.heightInches)\"")
+                    Text(String(user.weight) + " " + (user.weightUnit ?? ""))
+                    Text(String(user.graduationYear))
+                    Text(user.hometown ?? "")
+//                    VStack {
+//                        Text(String(user.springboardRating))
+//                        Text(String(user.platformRating))
+//                        Text(String(user.totalRating))
+//                    }
                 }
             }
         }

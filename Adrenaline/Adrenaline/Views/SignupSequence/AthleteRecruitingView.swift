@@ -115,6 +115,32 @@ struct AthleteRecruitingView: View {
         signupData.recruiting!.age = ageRange[ageIndex]
     }
     
+    private func setAthleteRecruitingFields() {
+        guard let recruiting = signupData.recruiting else { return }
+        guard let email = signupData.email else { return }
+        var values: [String: Any?] = ["weightUnit": recruiting.weight?.unit.rawValue,
+                                      "gender": gender.rawValue,
+                                      "graduationYear": recruiting.gradYear,
+                                      "hometown": recruiting.hometown]
+        
+        if let feet = recruiting.height?.feet {
+            values["heightFeet"] = Int16(feet)
+        }
+        if let inches = recruiting.height?.inches {
+            values["heightInches"] = Int16(inches)
+        }
+        if let weight = recruiting.weight?.weight {
+            values["weight"] = Int16(weight)
+        }
+        if let age = recruiting.age {
+            values["age"] = Int16(age)
+        }
+        
+        for (key, value) in values {
+            db.updateAthleteField(email: email, key: key, value: value)
+        }
+    }
+    
     var body: some View {
         ZStack {
             bgColor.ignoresSafeArea()
@@ -125,7 +151,6 @@ struct AthleteRecruitingView: View {
             // Profile Information
             let infoSafe = parser.profileData.info != nil
             let info = parser.profileData.info
-            let parsedName = info?.name
             let parsedCityState = info?.cityState
             let parsedGender = info?.gender
             let parsedAge = info?.age
@@ -343,7 +368,8 @@ struct AthleteRecruitingView: View {
                         Spacer()
                         
                         HStack {
-                            NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)) {
+                            NavigationLink(destination: AdrenalineProfileView(
+                                diveMeetsID: $diveMeetsID, signupData: $signupData)) {
                                 Text("Skip")
                                     .bold()
                             }
@@ -351,7 +377,8 @@ struct AthleteRecruitingView: View {
                             .cornerRadius(40)
                             .foregroundColor(.secondary)
                             
-                            NavigationLink(destination: AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)) {
+                            NavigationLink(destination: AdrenalineProfileView(
+                                diveMeetsID: $diveMeetsID, signupData: $signupData)) {
                                 Text("Next")
                                     .bold()
                             }
@@ -360,6 +387,9 @@ struct AthleteRecruitingView: View {
                             .foregroundColor(.primary)
                             .opacity(!requiredFieldsFilledIn ? 0.3 : 1.0)
                             .disabled(!requiredFieldsFilledIn)
+                            .simultaneousGesture(TapGesture().onEnded {
+                                setAthleteRecruitingFields()
+                            })
                         }
                     }
                     .padding()
@@ -367,22 +397,6 @@ struct AthleteRecruitingView: View {
                 .frame(height: 300)
                 .onDisappear {
                     print(signupData)
-                    let heightSplit = height.components(separatedBy: "-")
-                    guard let email = signupData.email else { return }
-                    if let ft = heightSplit.first,
-                       let inches = heightSplit.last,
-                       let ft = Int(ft),
-                       let inches = Int(inches) {
-                        db.updateAthleteField(email: email, key: "heightFeet", value: ft)
-                        db.updateAthleteField(email: email, key: "heightInches", value: inches)
-                    }
-                    db.updateAthleteField(email: email, key: "weight", value: weight)
-                    db.updateAthleteField(email: email, key: "weightUnit", value: weightUnit.rawValue)
-                    db.updateAthleteField(email: email, key: "gender", value: gender.rawValue)
-                    db.updateAthleteField(email: email, key: "age", value: age)
-                    db.updateAthleteField(email: email, key: "graduationYear", value: gradYear)
-                    db.updateAthleteField(email: email, key: "highSchool", value: highSchool)
-                    db.updateAthleteField(email: email, key: "hometown", value: hometown)
                 }
                 
                 Spacer()
@@ -410,6 +424,16 @@ struct AthleteRecruitingView: View {
                 if diveMeetsID != "" && parser.profileData.info == nil {
                     if await !parser.parseProfile(link: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID) {
                         print("Failed to parse profile")
+                    } else {
+                        let info = parser.profileData.info
+                        guard let g = info?.gender else { return }
+                        gender = g == "Male" ? .male : .female
+                        guard let parsedAge = info?.age else { return }
+                        age = String(parsedAge)
+                        guard let parsedGradYear = info?.hsGradYear else { return }
+                        gradYear = String(parsedGradYear)
+                        guard let parsedHometown = info?.cityState else { return }
+                        hometown = parsedHometown
                     }
                 }
             }
