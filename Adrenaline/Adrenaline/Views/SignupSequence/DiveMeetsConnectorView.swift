@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DiveMeetsConnectorView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelDB) var db
     @Binding var searchSubmitted: Bool
     @Binding var firstName: String
@@ -53,12 +54,25 @@ struct DiveMeetsConnectorView: View {
                 db.updateUserField(email: email, key: "diveMeetsID", value: diveMeetsID)
             }
         }
-        
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    // If user backs up into BasicInfoView, it drops them from db so they can be
+                    // added again if they fill out the information and proceed
+                    if let email = signupData.email {
+                        db.dropUser(email: email)
+                    }
+                    dismiss()
+                }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
 }
 
 struct IsThisYouView: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) var currentMode
     @Environment(\.modelDB) var db
     @State var sortedRecords: [(String, String)] = []
@@ -136,16 +150,8 @@ struct IsThisYouView: View {
             }
             Spacer()
         }
-        .onAppear{
+        .onAppear {
             sortedRecords = getSortedRecords(records)
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
-                }
-            }
         }
     }
 }
