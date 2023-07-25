@@ -116,6 +116,7 @@ struct JudgeScoreCalculator: View {
                             .font(.title2)
                             .bold()
                             .padding(.top, 30)
+                            .dynamicTypeSize(.xSmall ... .xxxLarge)
                         
                         DiveHeightSelectView(height: $height)
                             .scaleEffect(0.9)
@@ -149,6 +150,7 @@ struct JudgeScoreCalculator: View {
                                 }
                             Spacer()
                         }
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                         
                         if let name = name, let dd = dd {
                             VStack(spacing: 5) {
@@ -174,6 +176,7 @@ struct JudgeScoreCalculator: View {
                                     Text(judgesScores.joined(separator: " | "))
                                         .fontWeight(.semibold)
                                 }
+                                .dynamicTypeSize(.xSmall ... .xxxLarge)
                                 .font(.title2)
                             }
                         } else if name != nil, dd == nil {
@@ -182,6 +185,7 @@ struct JudgeScoreCalculator: View {
                                         .scaledToFit()
                                         .multilineTextAlignment(.center)
                                         .padding()
+                                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                                 }
                                 .frame(minWidth: screenWidth * 0.5, maxWidth: screenWidth * 0.95, minHeight: screenHeight * 0.09, maxHeight: screenHeight * 0.11)
                             
@@ -233,6 +237,7 @@ struct JudgeScoreCalculator: View {
                                          : 0)
                             Text(h.rawValue)
                         }
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                         .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
                         .onTapGesture {
                             height = h

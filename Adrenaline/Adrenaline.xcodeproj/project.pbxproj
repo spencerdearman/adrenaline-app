@@ -196,7 +196,10 @@
 		00E7B0AA2A3EBFF8004575F0 /* MeetPages */ = {
 			isa = PBXGroup;
 			children = (
+				4D9DD0992A058EF700F6D31C /* Event.swift */,
+				4D753DDF2A214F640029138B /* EventResultPage.swift */,
 				00FEF7BA2A2A990900AAFC7C /* EntryPageView.swift */,
+				4D74FEBF29AEBD6F00401178 /* MeetList.swift */,
 				4D74FEC529AEC95500401178 /* MeetPageView.swift */,
 			);
 			path = MeetPages;
@@ -328,13 +331,10 @@
 		4D8B9C1129F898D5002B53AD /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				4D9DD0992A058EF700F6D31C /* Event.swift */,
-				4D753DDF2A214F640029138B /* EventResultPage.swift */,
 				4D8B9C1C29FB4EBD002B53AD /* LoginProfile.swift */,
 				4D09308429D3A1B7003AAA90 /* LoginScreen.swift */,
 				00E0D4992A042A8D00B01D98 /* LoginTextFieldClearButton.swift */,
 				4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */,
-				4D74FEBF29AEBD6F00401178 /* MeetList.swift */,
 				4D74FEA429AE7C2B00401178 /* ProfileImage.swift */,
 				4D74FE9829AE7B9800401178 /* ProfileView.swift */,
 			);

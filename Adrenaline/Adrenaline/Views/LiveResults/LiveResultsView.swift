@@ -289,7 +289,6 @@ struct ParseLoaderView: View {
                 let table = try body.getElementById("Results")
                 guard let rows = try table?.getElementsByTag("tr") else { throw error }
                 if (try rows[1].text().suffix(3) == "Brd") {
-                    print("you are in a board based event")
                     parseABBoardResults(rows: rows)
                     //Title
                     title = try rows[0].getElementsByTag("td")[0].text()
@@ -544,6 +543,7 @@ struct LastDiverView: View
                             .scaledToFit()
                     }
                 }
+                .dynamicTypeSize(.xSmall ... .xxxLarge)
                 .padding([.leading, .trailing])
                 
                 Spacer()
@@ -582,6 +582,7 @@ struct LastDiverView: View
                                 .font(.headline)
                         }
                     }
+                    .dynamicTypeSize(.xSmall ... .xxxLarge)
                     .scaledToFit()
                     .padding()
                 }
@@ -641,6 +642,7 @@ struct NextDiverView: View
                             .scaledToFit()
                     }
                 }
+                .dynamicTypeSize(.xSmall ... .xxxLarge)
                 .padding([.leading, .trailing])
                 
                 Spacer()
@@ -679,6 +681,7 @@ struct NextDiverView: View
                             .lineLimit(1)
                         }
                     }
+                    .dynamicTypeSize(.xSmall ... .xxxLarge)
                     .scaledToFit()
                     .padding()
                 }

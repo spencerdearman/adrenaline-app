@@ -47,6 +47,7 @@ struct Event: View {
                     VStack {
                         Text("Dates: " + diverData.1)
                         Text("Organization: " + diverData.2)
+                            .multilineTextAlignment(.trailing)
                         WhiteDivider()
                         Text("Total Score: " + String(diverData.5))
                             .font(.title3)
