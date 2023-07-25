@@ -62,7 +62,6 @@ struct HomeView: View {
         if show {
             OpenTileView(namespace: namespace, show: $show, bubbleData: $bubbleData, abBoardEvent: $abBoardEvent)
                 .onTapGesture {
-                    print(bubbleData[1])
                     if expandedIndex == (abBoardEvent ? bubbleData[3] : bubbleData[1]){
                         expandedIndex = "-1"
                         starSelected = false
