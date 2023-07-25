@@ -87,16 +87,12 @@ struct LivePersonBubbleView: View {
                             }
                             .foregroundColor(.primary)
                         }
-                        
-                        Text(elements[4])
-                            .foregroundColor(.gray)
-                            .font(.title3)
                         Spacer()
                     }
                     .lineLimit(2)
                     .font(.title2)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    
+                    .fontWeight(.semibold)
                     // If we link to the results sheet in the future, elements[6] is the link
                     ZStack {
                         Rectangle()
@@ -114,6 +110,10 @@ struct LivePersonBubbleView: View {
                 HStack {
                     Text("Place: " + elements[0])
                         .fontWeight(.semibold)
+                    Spacer()
+                    Text(elements[4])
+                        .foregroundColor(.gray)
+                        .font(.title3)
                     Spacer()
                     VStack(alignment: .trailing) {
                         Text("Event Avg Score: " + elements[7])
