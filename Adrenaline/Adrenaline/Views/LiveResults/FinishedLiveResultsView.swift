@@ -40,7 +40,7 @@ struct FinishedLiveResultsView: View {
                         .padding()
                         .multilineTextAlignment(.center)
                     Divider()
-                    ScalingScrollView(records: elements, bgColor: .clear, rowSpacing: 50) { (elem) in
+                    ScalingScrollView(records: elements, bgColor: .clear, rowSpacing: 50, shadowRadius: 10) { (elem) in
                         LivePersonBubbleView(elements: elem)
                     }
                     .padding(.bottom, maxHeightOffset)

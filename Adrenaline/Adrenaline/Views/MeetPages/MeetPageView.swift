@@ -508,7 +508,7 @@ struct MeetResultsPageView: View {
                 
                 if let liveResults = liveResults {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: liveResultsToRecords(liveResults), bgColor: .clear, shadowRadius: 10) { (elems) in
+                        ScalingScrollView(records: liveResultsToRecords(liveResults), bgColor: .clear, shadowRadius: 3) { (elems) in
                             LiveResultsListView(elements: elems)
                         }
                         .frame(height: 300)
@@ -525,7 +525,7 @@ struct MeetResultsPageView: View {
                 
                 if let events = events {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: eventsToRecords(events), bgColor: .clear, shadowRadius: 10) { (elems) in
+                        ScalingScrollView(records: eventsToRecords(events), bgColor: .clear, shadowRadius: 3) { (elems) in
                             EventResultsView(elements: elems)
                         }
                         .frame(height: 500)
@@ -542,7 +542,7 @@ struct MeetResultsPageView: View {
                 
                 if let divers = divers {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, shadowRadius: 10) { (elems) in
+                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, shadowRadius: 3) { (elems) in
                             DiverListView(elements: elems)
                         }
                         .frame(height: 500)
