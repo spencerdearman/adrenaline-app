@@ -639,6 +639,7 @@ struct DiverSearchView: View {
                                                        fieldType: .firstName,
                                                        focusedField: focusedField))
                         .multilineTextAlignment(.leading)
+                        .disableAutocorrection(true)
                         .textFieldStyle(.roundedBorder)
                         .padding(.trailing)
                         .focused(focusedField, equals: .firstName)
@@ -652,6 +653,7 @@ struct DiverSearchView: View {
                                                        focusedField: focusedField))
                         .multilineTextAlignment(.leading)
                         .textFieldStyle(.roundedBorder)
+                        .disableAutocorrection(true)
                         .padding(.trailing)
                         .focused(focusedField, equals: .lastName)
                     
@@ -710,6 +712,7 @@ struct MeetSearchView: View {
                     Text("Meet Name:")
                         .padding(.leading)
                     TextField("Meet Name", text: $meetName)
+                        .disableAutocorrection(true)
                         .modifier(TextFieldClearButton(text: $meetName,
                                                        fieldType: .meetName,
                                                        focusedField: focusedField))
@@ -723,6 +726,7 @@ struct MeetSearchView: View {
                     Text("Organization Name:")
                         .padding(.leading)
                     TextField("Organization Name", text: $orgName)
+                        .disableAutocorrection(true)
                         .modifier(TextFieldClearButton(text: $orgName,
                                                        fieldType: .meetOrg,
                                                        focusedField: focusedField))

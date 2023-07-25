@@ -275,6 +275,7 @@ struct LoginPageSearchView: View {
                                                                 focusedField: focusedField))
                             .textContentType(.password)
                             .autocapitalization(.none)
+                            .disableAutocorrection(true)
                             .keyboardType(.default)
                             .textFieldStyle(.roundedBorder)
                             .focused(focusedField, equals: .passwd)
@@ -284,6 +285,7 @@ struct LoginPageSearchView: View {
                                                                 fieldType: .passwd,
                                                                 focusedField: focusedField))
                             .textFieldStyle(.roundedBorder)
+                            .disableAutocorrection(true)
                             .autocapitalization(.none)
                             .focused(focusedField, equals: .passwd)
                     }
