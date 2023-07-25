@@ -335,6 +335,38 @@ class ModelDataController: ObservableObject {
         try? moc.save()
     }
     
+    // Adds shell Athlete to the database (no recruiting, can be updated later)
+    func addAthlete(firstName: String, lastName: String, email: String, phone: String?,
+                    password: String) {
+        let moc = container.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Athlete")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else {
+            print("Failed to get result of fetch request for athlete")
+            return
+        }
+        
+        if result.count != 0 {
+            print("Failed to add athlete, email already exists")
+            return
+        }
+        
+        let user = Athlete(context: moc)
+        
+        user.id = UUID()
+        user.firstName = firstName
+        user.lastName = lastName
+        user.email = email
+        user.phone = phone
+        let (encryptedPassword, salt) = encryptPassword(password)
+        user.password = encryptedPassword
+        user.passwordSalt = salt
+        
+        try? moc.save()
+    }
+    
     // Adds an Athlete to the database (with or without recruiting)
     func addAthlete(firstName: String, lastName: String, email: String, phone: String?,
                     password: String, heightFeet: Int?, heightInches: Int?, weight: Int?,
@@ -410,6 +442,19 @@ class ModelDataController: ObservableObject {
         }
         
         return resultData[0]
+    }
+    
+    func updateUserField(email: String, key: String, value: Any) {
+        guard let user = getUser(email: email) else { return }
+        user.setValue(value, forKey: key)
+    }
+    
+    func updateAthleteField(email: String, key: String, value: Any?) {
+        let moc = container.viewContext
+        guard let athlete = getAthlete(email: email) else { return }
+        athlete.setValue(value, forKey: key)
+        
+        try? moc.save()
     }
     
     func updateAthleteSkillRating(email: String, springboardRating: Double? = nil,

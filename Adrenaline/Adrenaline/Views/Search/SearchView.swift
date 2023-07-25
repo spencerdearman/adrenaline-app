@@ -526,29 +526,26 @@ struct SearchInputView: View {
             .onAppear {
                 showError = false
             }
-        }
-        // Keyboard toolbar with up/down arrows and Done button
-        .overlay{
-            VStack{}
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Button(action: previous) {
-                            Image(systemName: "chevron.up")
-                        }
-                        .disabled(hasReachedPersonStart || hasReachedMeetStart)
-                        
-                        Button(action: next) {
-                            Image(systemName: "chevron.down")
-                        }
-                        .disabled(hasReachedPersonEnd || hasReachedMeetEnd)
-                        
-                        Spacer()
-                        
-                        Button(action: dismissKeyboard) {
-                            Text("**Done**")
-                        }
+            // Keyboard toolbar with up/down arrows and Done button
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Button(action: previous) {
+                        Image(systemName: "chevron.up")
+                    }
+                    .disabled(hasReachedPersonStart || hasReachedMeetStart)
+                    
+                    Button(action: next) {
+                        Image(systemName: "chevron.down")
+                    }
+                    .disabled(hasReachedPersonEnd || hasReachedMeetEnd)
+                    
+                    Spacer()
+                    
+                    Button(action: dismissKeyboard) {
+                        Text("**Done**")
                     }
                 }
+            }
         }
         .ignoresSafeArea(.keyboard)
         .navigationViewStyle(StackNavigationViewStyle())

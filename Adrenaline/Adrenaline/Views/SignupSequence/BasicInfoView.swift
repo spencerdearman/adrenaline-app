@@ -19,9 +19,12 @@ enum BasicInfoField: Int, Hashable, CaseIterable {
 struct BasicInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelDB) var db
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var email: String = ""
+    @State private var isEmailTaken: Bool = false
+    @State private var emailSearched: Bool = false
     @State private var phone: String = ""
     @State var searchSubmitted: Bool = false
     @State private var password: String = ""
@@ -35,9 +38,9 @@ struct BasicInfoView: View {
         screenWidth * 0.5
     }
     
-    private var requiredFieldsFilledIn: Bool {
-        firstName != "" && lastName != "" && email != "" && (phone == "" || phone.count == 14) &&
-        password != "" && password == repeatPassword
+    private var isNextDisabled: Bool {
+        firstName == "" || lastName == "" || email == "" || isEmailTaken ||
+        (phone != "" && phone.count != 14) || password == "" || password != repeatPassword
     }
     
     private var bgColor: Color {
@@ -65,6 +68,10 @@ struct BasicInfoView: View {
         }
         
         return String(chars.prefix(14))
+    }
+    
+    private func emailInDatabase(email: String) -> Bool {
+        return db.getUser(email: email) != nil
     }
     
     var body: some View {
@@ -105,19 +112,35 @@ struct BasicInfoView: View {
                             .onChange(of: lastName) { _ in
                                 signupData.lastName = lastName
                             }
-                        TextField("Email", text: $email)
-                            .disableAutocorrection(true)
-                            .autocapitalization(.none)
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: textFieldWidth)
-                            .textContentType(.emailAddress)
-                            .autocapitalization(.none)
-                            .keyboardType(.emailAddress)
-                            .multilineTextAlignment(.center)
-                            .focused($focusedField, equals: .email)
-                            .onChange(of: email) { _ in
-                                signupData.email = email
+                        VStack {
+                            TextField("Email", text: $email)
+                                .autocapitalization(.none)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: textFieldWidth)
+                                .textContentType(.emailAddress)
+                                .autocapitalization(.none)
+                                .keyboardType(.emailAddress)
+                                .multilineTextAlignment(.center)
+                                .focused($focusedField, equals: .email)
+                                .onChange(of: email) { _ in
+                                    signupData.email = email
+                                }
+                            // Only updates the changed email boolean if the user leaves email focus
+                                .onChange(of: focusedField) { [focusedField] newValue in
+                                    if focusedField == .email && newValue != .email {
+                                        isEmailTaken = emailInDatabase(email: email)
+                                    }
+                                }
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(.red, lineWidth: isEmailTaken ? 1 : 0)
+                                )
+                            if isEmailTaken {
+                                Text("Email already in use")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
                             }
+                        }
                         TextField("Phone (optional)", text: $phone)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
@@ -149,8 +172,10 @@ struct BasicInfoView: View {
                                 Button(action: {
                                     isPasswordVisible.toggle()
                                 }) {
-                                    Image(systemName: isPasswordVisible ? "eye.circle" : "eye.slash.circle")
-                                        .foregroundColor(.gray)
+                                    Image(systemName: isPasswordVisible
+                                          ? "eye.circle"
+                                          : "eye.slash.circle")
+                                    .foregroundColor(.gray)
                                 }
                             }
                             
@@ -171,26 +196,41 @@ struct BasicInfoView: View {
                         .frame(width: textFieldWidth)
                         
                         Spacer()
-                        NavigationLink(destination: DiveMeetsConnectorView(searchSubmitted: $searchSubmitted, firstName: $firstName, lastName: $lastName, signupData: $signupData)) {
-                            Text("Next")
-                                .bold()
-                        }
-                        .simultaneousGesture(TapGesture().onEnded{
-                            print("Coming in here")
-                            focusedField = nil
-                            searchSubmitted = true
-                        })
-                        .buttonStyle(.bordered)
-                        .cornerRadius(40)
-                        .foregroundColor(.primary)
-                        .opacity(!requiredFieldsFilledIn ? 0.5 : 1.0)
-                        .disabled(!requiredFieldsFilledIn)
+                        NavigationLink(destination: DiveMeetsConnectorView(
+                            searchSubmitted: $searchSubmitted, firstName: $firstName,
+                            lastName: $lastName, signupData: $signupData)) {
+                                Text("Next")
+                                    .bold()
+                            }
+                            .simultaneousGesture(TapGesture().onEnded{
+                                print("Coming in here")
+                                focusedField = nil
+                                searchSubmitted = true
+                                if signupData.accountType == .athlete {
+                                    db.addAthlete(firstName: firstName, lastName: lastName,
+                                               email: email, phone: phone, password: password)
+                                } else {
+                                    db.addUser(firstName: firstName, lastName: lastName,
+                                               email: email, phone: phone, password: password)
+                                }
+                            })
+                            .buttonStyle(.bordered)
+                            .cornerRadius(40)
+                            .foregroundColor(.primary)
+                            .opacity(isNextDisabled ? 0.5 : 1.0)
+                            .disabled(isNextDisabled)
                     }
                     .frame(width: textFieldWidth)
                     .padding()
                 }
                 .frame(height: 300)
                 .onAppear {
+                    firstName = ""
+                    lastName = ""
+                    email = ""
+                    phone = ""
+                    password = ""
+                    repeatPassword = ""
                     // Clears recruiting data on appear and if user comes back from recruiting
                     // section into basic info
                     signupData.recruiting = nil
