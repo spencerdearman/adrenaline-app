@@ -90,6 +90,10 @@ struct BasicInfoView: View {
                             .font(.title2)
                             .bold()
                             .padding()
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                        
                         Spacer()
                         
                         TextField("First Name", text: $firstName)
