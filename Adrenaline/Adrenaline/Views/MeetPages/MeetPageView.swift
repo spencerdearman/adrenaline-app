@@ -516,9 +516,9 @@ struct MeetResultsPageView: View {
                         
                     }, label: {
                         Text("Live Results")
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.primary)
+                            .font(.headline)
+                            .foregroundColor(Color.primary)
+                            .padding([.leading, .trailing])
                     })
                     Divider()
                 }
@@ -533,9 +533,9 @@ struct MeetResultsPageView: View {
                         
                     }, label: {
                         Text("Event Results")
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.primary)
+                            .font(.headline)
+                            .foregroundColor(Color.primary)
+                            .padding([.leading, .trailing])
                     })
                     Divider()
                 }
@@ -550,10 +550,11 @@ struct MeetResultsPageView: View {
                         
                     }, label: {
                         Text("Divers Entered")
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.primary)
+                            .font(.headline)
+                            .foregroundColor(Color.primary)
+                            .padding([.leading, .trailing])
                     })
+                    Divider()
                 }
                 Spacer()
             }
