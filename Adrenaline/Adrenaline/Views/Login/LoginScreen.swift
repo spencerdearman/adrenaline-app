@@ -238,13 +238,7 @@ struct LoginPageSearchView: View {
     private let failTimeout: Double = 3
     
     var body: some View {
-        ZStack {
-            Rectangle()
-                .mask(RoundedRectangle(cornerRadius: cornerRadius))
-                .foregroundColor(Custom.grayThinMaterial)
-                .frame(width: screenWidth * 0.8, height: screenHeight * 0.3)
-                .aspectRatio(contentMode: .fit)
-                .shadow(radius: 10)
+        BackgroundBubble() {
             VStack{
                 VStack{
                     Text("Login")
@@ -336,10 +330,14 @@ struct LoginPageSearchView: View {
                     VStack {
                         if errorMessage && !timedOut {
                             Text("Login unsuccessful, please try again")
-                                .padding()
+                                .scaledToFit()
+                                .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                .lineLimit(2)
                         } else if timedOut {
                             Text("Unable to log in, network timed out")
-                                .padding()
+                                .scaledToFit()
+                                .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                .lineLimit(2)
                         } else {
                             Text("")
                         }
@@ -347,13 +345,14 @@ struct LoginPageSearchView: View {
                 }
                 if showError {
                     Text("You must enter both fields to search")
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                         .foregroundColor(Color.red)
                     
                 } else {
                     Text("")
                 }
             }
-            .frame(width: screenWidth * 0.75, height: screenHeight * 0.3)
+            .frame(width: screenWidth * 0.75)
             .padding(.bottom, maxHeightOffset)
             .onAppear {
                 divemeetsID = ""

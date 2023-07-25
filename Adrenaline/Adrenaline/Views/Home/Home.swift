@@ -162,12 +162,7 @@ struct Home: View {
                 HomeColorfulView()
                 VStack {
                     VStack {
-                        ZStack{
-                            Rectangle()
-                                .foregroundColor(Custom.grayThinMaterial)
-                                .mask(RoundedRectangle(cornerRadius: 40))
-                                .frame(width: 120, height: 40)
-                                .shadow(radius: 6)
+                        BackgroundBubble(vPadding: 15, hPadding: 30) {
                             Text("Home")
                                 .font(.title2).bold()
                         }
@@ -299,42 +294,26 @@ struct UpcomingMeetsView: View {
                     }
                 }
             } else {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(Custom.grayThinMaterial)
-                        .frame(width: 275, height: 75)
-                        .mask(RoundedRectangle(cornerRadius: 40))
-                        .shadow(radius: 6)
+                BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
                     Text("No upcoming meets found")
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                 }
-                .frame(width: 275, height: 75)
             }
         } else if !timedOut {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .frame(width: 275, height: 100)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
+            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
                 VStack {
                     Text("Getting upcoming meets")
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                     ProgressView()
                 }
             }
-            .frame(width: 275, height: 100)
         } else {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
-                VStack(alignment: .center) {
-                    Text("Unable to get upcoming meets, network timed out")
-                        .padding()
-                        .multilineTextAlignment(.center)
-                }
+            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
+                Text("Unable to get upcoming meets, network timed out")
+                    .dynamicTypeSize(.xSmall ... .xxxLarge)
+                    .padding()
+                    .multilineTextAlignment(.center)
             }
-            .frame(width: 275, height: 100)
         }
     }
 }
@@ -364,7 +343,7 @@ struct CurrentMeetsView: View {
                     (elem) in
                     MeetBubbleView(elements: elem)
                 }
-                .padding(.bottom, maxHeightOffset)
+                                  .padding(.bottom, maxHeightOffset)
             } else {
                 ScrollView {
                     LazyVGrid(columns: gridItems, spacing: 10) {
@@ -386,31 +365,20 @@ struct CurrentMeetsView: View {
             }
             .frame(width: 275, height: 75)
         } else if !timedOut {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .frame(width: 275, height: 100)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
+            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
                 VStack {
                     Text("Getting current meets")
                     ProgressView()
                 }
             }
-            .frame(width: 275, height: 100)
         } else {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.thinMaterialColor)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
+            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
                 VStack(alignment: .center) {
                     Text("Unable to get current meets, network timed out")
                         .padding()
                         .multilineTextAlignment(.center)
                 }
             }
-            .frame(width: 275, height: 100)
         }
     }
 }
@@ -591,44 +559,44 @@ struct MeetBubbleView: View {
     func getPhoneTextSizeForAccessibility() -> CGFloat {
         let sizeCategory = UIApplication.shared.preferredContentSizeCategory
         switch sizeCategory {
-            case .extraSmall:
-                return 170
-            case .small:
-                return 180
-            case .medium:
-                return 190
-            case .large:
-                return 200
-            case .extraLarge:
-                return 215
-            case .extraExtraLarge:
-                return 225
-            case .extraExtraExtraLarge:
-                return 235
-            default:
-                return 190
+        case .extraSmall:
+            return 170
+        case .small:
+            return 180
+        case .medium:
+            return 190
+        case .large:
+            return 200
+        case .extraLarge:
+            return 215
+        case .extraExtraLarge:
+            return 225
+        case .extraExtraExtraLarge:
+            return 235
+        default:
+            return 190
         }
     }
     
     func getPadTextSizeForAccessibility() -> CGFloat {
         let sizeCategory = UIApplication.shared.preferredContentSizeCategory
         switch sizeCategory {
-            case .extraSmall:
-                return 180
-            case .small:
-                return 190
-            case .medium:
-                return 200
-            case .large:
-                return 210
-            case .extraLarge:
-                return 220
-            case .extraExtraLarge:
-                return 240
-            case .extraExtraExtraLarge:
-                return 265
-            default:
-                return 190
+        case .extraSmall:
+            return 180
+        case .small:
+            return 190
+        case .medium:
+            return 200
+        case .large:
+            return 210
+        case .extraLarge:
+            return 220
+        case .extraExtraLarge:
+            return 240
+        case .extraExtraExtraLarge:
+            return 265
+        default:
+            return 190
         }
     }
 }
