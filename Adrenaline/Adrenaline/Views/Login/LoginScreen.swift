@@ -110,12 +110,9 @@ struct LoginSearchInputView: View {
                                 .position(x: loginSuccessful
                                           ? geometry.size.width
                                           : geometry.size.width / 2,
-                                          y: loginSuccessful
+                                          y: loginSuccessful || isPhone || !isLandscape
                                           ? -geometry.size.width * 0.55
-                                          : isPhone ? -geometry.size.width * 0.55 : isLandscape ? -geometry.size.width * 0.85 : -geometry.size.width * 0.55)
-                                .onAppear {
-                                    print(isLandscape)
-                                }
+                                          : -geometry.size.width * 0.85)
                                 .shadow(radius: 15)
                                 .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
                                 .clipped().ignoresSafeArea()
@@ -132,8 +129,12 @@ struct LoginSearchInputView: View {
                                           ? geometry.size.width 
                                           : geometry.size.width / 2,
                                           y: loginSuccessful
-                                          ? geometry.size.width * 0.7
-                                          : isPhone ? -geometry.size.width * 0.55 : isLandscape ? -geometry.size.width * 0.75 : -geometry.size.width * 0.55)
+                                          ? geometry.size.width * 0.6
+                                          : isPhone
+                                          ? -geometry.size.width * 0.55
+                                          : isLandscape
+                                          ? -geometry.size.width * 0.75
+                                          : -geometry.size.width * 0.55)
                                 .shadow(radius: 15)
                                 .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
                                 .clipped().ignoresSafeArea()
@@ -147,11 +148,13 @@ struct LoginSearchInputView: View {
                                        ? geometry.size.width * 1.1
                                        : geometry.size.width * 1.5)
                                 .position(x: loginSuccessful ? 0 : geometry.size.width / 2,
-                                          y: loginSuccessful
-                                          ? geometry.size.width * 0.7
-                                          : isPhone ? -geometry.size.width * 0.55 : isLandscape ? -geometry.size.width * 0.65 : -geometry.size.width * 0.55)
+                                          y: loginSuccessful || (!isPhone && isLandscape)
+                                          ? geometry.size.width * 0.65
+                                          : -geometry.size.width * 0.55)
                                 .shadow(radius: 15)
-                                .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
+                                .frame(height: loginSuccessful
+                                       ? geometry.size.height * 0.7
+                                       : geometry.size.height)
                                 .clipped().ignoresSafeArea()
                         }
                     }
