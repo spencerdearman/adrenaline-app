@@ -428,6 +428,19 @@ struct LoadedView: View {
                 VStack(spacing: 0.5) {
                     if !starSelected {
                         VStack {
+                            if abBoardEvent {
+                                BackgroundBubble() {
+                                    VStack {
+                                        Text(title)
+                                            .bold()
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .lineLimit(2)
+                                            .multilineTextAlignment(.center)
+                                        Text("Live Rankings")
+                                            .bold()
+                                    }
+                                }
+                            } else {
                             BackgroundBubble() {
                                 VStack {
                                     Text(title)
@@ -435,13 +448,10 @@ struct LoadedView: View {
                                         .fixedSize(horizontal: false, vertical: true)
                                         .lineLimit(2)
                                         .multilineTextAlignment(.center)
-                                        .frame(width: 300, height: 70)
-                                    if !abBoardEvent {
                                         Text(roundString)
                                     }
                                 }
                             }
-                            .padding(.bottom)
                             if !abBoardEvent {
                                 if isPhone {
                                     TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),

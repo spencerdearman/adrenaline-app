@@ -96,62 +96,64 @@ struct IsThisYouView: View {
     
     var body: some View {
         bgColor.ignoresSafeArea()
-        VStack {
-            Spacer()
-            if sortedRecords.count == 1 {
-                Text("Is this you?")
-                    .font(.title).fontWeight(.semibold)
-            } else if sortedRecords.count > 1 {
-                Text("Are you one of these profiles?")
-                    .font(.title).fontWeight(.semibold)
-            } else {
-                Text("No DiveMeets Profile Found")
-                    .font(.title).fontWeight(.semibold)
-                NavigationLink {
-                    AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
-                } label: {
-                    BackgroundBubble() {
-                        Text("Next")
+        ScrollView {
+            VStack {
+                Spacer()
+                if sortedRecords.count == 1 {
+                    Text("Is this you?")
+                        .font(.title).fontWeight(.semibold)
+                } else if sortedRecords.count > 1 {
+                    Text("Are you one of these profiles?")
+                        .font(.title).fontWeight(.semibold)
+                } else {
+                    Text("No DiveMeets Profile Found")
+                        .font(.title).fontWeight(.semibold)
+                    NavigationLink {
+                        AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
+                    } label: {
+                        BackgroundBubble() {
+                            Text("Next")
+                        }
                     }
                 }
-            }
-            ForEach(sortedRecords, id: \.1) { record in
-                let (key, value) = record
-                
-                NavigationLink(destination: signupData.accountType == .athlete
-                               ? AnyView(AthleteRecruitingView(signupData: $signupData, diveMeetsID: $diveMeetsID))
-                               : AnyView(ProfileView(profileLink: ""))) {
-                    HStack {
-                        Spacer()
-                        ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))
-                            .scaleEffect(0.4)
-                            .frame(width: 100, height: 100)
-                        Text(key)
-                            .foregroundColor(.primary)
-                            .font(.title2).fontWeight(.semibold)
-                            .padding()
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(Color.gray)
-                            .padding()
-                        
+                ForEach(sortedRecords, id: \.1) { record in
+                    let (key, value) = record
+                    
+                    NavigationLink(destination: signupData.accountType == .athlete
+                                   ? AnyView(AthleteRecruitingView(signupData: $signupData, diveMeetsID: $diveMeetsID))
+                                   : AnyView(ProfileView(profileLink: ""))) {
+                        HStack {
+                            Spacer()
+                            ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))
+                                .scaleEffect(0.4)
+                                .frame(width: 100, height: 100)
+                            Text(key)
+                                .foregroundColor(.primary)
+                                .font(.title2).fontWeight(.semibold)
+                                .padding()
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(Color.gray)
+                                .padding()
+                            
+                        }
+                        .background(Custom.darkGray)
+                        .cornerRadius(50)
                     }
-                    .background(Custom.darkGray)
-                    .cornerRadius(50)
+                                   .simultaneousGesture(TapGesture().onEnded{
+                                       diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                                       guard let email = signupData.email else { return }
+                                       db.updateUserField(email: email, key: "diveMeetsID",
+                                                          value: diveMeetsID)
+                                   })
+                                   .shadow(radius: 5)
+                                   .padding([.leading, .trailing])
                 }
-                               .simultaneousGesture(TapGesture().onEnded{
-                                   diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
-                                   guard let email = signupData.email else { return }
-                                   db.updateUserField(email: email, key: "diveMeetsID",
-                                                      value: diveMeetsID)
-                               })
-                               .shadow(radius: 5)
-                               .padding([.leading, .trailing])
+                Spacer()
             }
-            Spacer()
-        }
-        .onAppear {
-            sortedRecords = getSortedRecords(records)
+            .onAppear {
+                sortedRecords = getSortedRecords(records)
+            }
         }
     }
 }

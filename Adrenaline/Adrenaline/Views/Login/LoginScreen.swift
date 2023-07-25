@@ -36,9 +36,8 @@ struct LoginSearchView: View {
     @ViewBuilder
     var body: some View {
         
-        NavigationView{
+//        NavigationView{
             ZStack {
-                
                 if searchSubmitted && !timedOut {
                     LoginUIWebView(divemeetsID: $divemeetsID, password: $password,
                                    parsedUserHTML: $parsedUserHTML,
@@ -57,7 +56,7 @@ struct LoginSearchView: View {
                                      loginSuccessful: $loginSuccessful, loggedIn: $loggedIn,
                                      timedOut: $timedOut)
             }
-        }
+//        }
         .navigationViewStyle(StackNavigationViewStyle())
         .ignoresSafeArea(.keyboard)
     }
@@ -130,10 +129,10 @@ struct LoginSearchInputView: View {
                                        ? geometry.size.width * 1.3
                                        : geometry.size.width * 2.0)
                                 .position(x: loginSuccessful
-                                          ? geometry.size.width * 0.8
+                                          ? geometry.size.width 
                                           : geometry.size.width / 2,
                                           y: loginSuccessful
-                                          ? geometry.size.width * 0.6
+                                          ? geometry.size.width * 0.7
                                           : isPhone ? -geometry.size.width * 0.55 : isLandscape ? -geometry.size.width * 0.75 : -geometry.size.width * 0.55)
                                 .shadow(radius: 15)
                                 .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
@@ -149,7 +148,7 @@ struct LoginSearchInputView: View {
                                        : geometry.size.width * 1.5)
                                 .position(x: loginSuccessful ? 0 : geometry.size.width / 2,
                                           y: loginSuccessful
-                                          ? geometry.size.width * 0.65
+                                          ? geometry.size.width * 0.7
                                           : isPhone ? -geometry.size.width * 0.55 : isLandscape ? -geometry.size.width * 0.65 : -geometry.size.width * 0.55)
                                 .shadow(radius: 15)
                                 .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
@@ -209,6 +208,9 @@ struct LoginSearchInputView: View {
 
 
 struct LoginPageSearchView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State var signupData = SignupData()
+    @State var loginData = LoginData()
     @Binding var showError: Bool
     @Binding var divemeetsID: String
     @Binding var password: String
@@ -352,12 +354,33 @@ struct LoginPageSearchView: View {
                 } else {
                     Text("")
                 }
+                
+                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
+                    Text("Create an account")
+                }
+                .cornerRadius(40)
+                .foregroundColor(Custom.medBlue)
+            }
+            .onAppear {
+                loginData.loadStoredCredentials()
+                divemeetsID = ""
+                password = ""
+                
+                if let username = loginData.username,
+                   let password = loginData.password {
+                    print("Username: \(username)")
+                    print("Password: \(password)")
+                }
             }
             .frame(width: screenWidth * 0.75)
             .padding(.bottom, maxHeightOffset)
-            .onAppear {
-                divemeetsID = ""
-                password = ""
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
             }
         }
         .offset(y: isPhone ? screenHeight * 0.1 : 0)

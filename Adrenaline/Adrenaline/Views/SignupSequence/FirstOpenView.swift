@@ -92,7 +92,7 @@ struct FirstOpenView: View {
                             .font(.title)
                             .bold()
                         HStack {
-                            NavigationLink(destination: ProfileView(profileLink: "")) {
+                            NavigationLink(destination: LoginSearchView()) {
                                 Text("Login")
                             }
                             .buttonStyle(.bordered)
