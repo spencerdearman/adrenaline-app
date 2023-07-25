@@ -78,6 +78,7 @@ struct Weight: Hashable {
 }
 
 struct FirstOpenView: View {
+    @Environment(\.dismiss) private var dismiss
     @State var signupData = SignupData()
     @State var loginData = LoginData()
     private let screenWidth = UIScreen.main.bounds.width

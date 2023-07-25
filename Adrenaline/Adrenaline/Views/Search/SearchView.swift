@@ -570,6 +570,7 @@ struct IndexingCounterView: View {
     @Environment(\.meetsParsedCount) var meetsParsedCount
     @Environment(\.totalMeetsParsedCount) var totalMeetsParsedCount
     @Environment(\.isFinishedCounting) var isFinishedCounting
+    private let screenWidth = UIScreen.main.bounds.width
     
     private func getPercentString(count: Int, total: Int) -> String {
         return String(Int(trunc(Double(count) / Double(total) * 100)))
@@ -607,6 +608,8 @@ struct IndexingCounterView: View {
             }
             .padding(.bottom)
             Text("Some results may not appear in Search yet")
+                .dynamicTypeSize(.xSmall ... .large)
+                .frame(width: 0.8 * screenWidth)
                 .foregroundColor(.gray)
             Spacer()
         }
@@ -655,6 +658,7 @@ struct DiverSearchView: View {
                 }
                 .padding(.bottom)
             }
+            .dynamicTypeSize(.xSmall ... .xxxLarge)
             .offset(y: -screenHeight * 0.03)
             .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
         }
@@ -714,6 +718,7 @@ struct MeetSearchView: View {
                         .padding(.trailing)
                         .focused(focusedField, equals: .meetName)
                 }
+                .padding(.top, 20)
                 HStack {
                     Text("Organization Name:")
                         .padding(.leading)
@@ -752,6 +757,7 @@ struct MeetSearchView: View {
                 }
                 Spacer()
             }
+            .dynamicTypeSize(.xSmall ... .xxxLarge)
             .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
             .offset(y: isIndexingMeets ? screenHeight * 0.04: -screenHeight * 0.02)
             .padding([.top, .leading, .trailing])
