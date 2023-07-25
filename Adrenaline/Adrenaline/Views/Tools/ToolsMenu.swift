@@ -40,6 +40,7 @@ struct ToolsMenu: View {
                             .shadow(radius: 6)
                         Text("Tools")
                             .font(.title2).bold()
+                            .dynamicTypeSize(.xSmall ... .xxxLarge)
                     }
                     Spacer()
                     VStack {
@@ -56,6 +57,7 @@ struct ToolsMenu: View {
                                     .font(.title2)
                                     .bold()
                                     .padding()
+                                    .dynamicTypeSize(.xSmall ... .xxxLarge)
                             }
                         }
                         JudgeScoreCalculator(focusedField: $focusedField)

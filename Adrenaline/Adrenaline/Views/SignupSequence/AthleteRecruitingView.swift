@@ -201,6 +201,7 @@ struct AthleteRecruitingView: View {
                             
                             HStack {
                                 TextField("Weight", text: $weight)
+                                    .disableAutocorrection(true)
                                     .textFieldStyle(.roundedBorder)
                                     .frame(width: textFieldWidth / 2)
                                     .keyboardType(.numberPad)
@@ -311,6 +312,7 @@ struct AthleteRecruitingView: View {
                             } else {
                                 VStack(spacing: 10) {
                                     TextField("Graduation Year", text: $gradYear)
+                                        .disableAutocorrection(true)
                                         .textFieldStyle(.roundedBorder)
                                         .frame(width: textFieldWidth * 0.75)
                                         .keyboardType(.numberPad)
@@ -330,6 +332,7 @@ struct AthleteRecruitingView: View {
                             }
                             
                             TextField("High School", text: $highSchool)
+                                .disableAutocorrection(true)
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: textFieldWidth)
                                 .multilineTextAlignment(.center)
@@ -351,6 +354,7 @@ struct AthleteRecruitingView: View {
                                     }
                             } else {
                                 TextField("Hometown", text: $hometown)
+                                    .disableAutocorrection(true)
                                     .textFieldStyle(.roundedBorder)
                                     .frame(width: textFieldWidth)
                                     .multilineTextAlignment(.center)

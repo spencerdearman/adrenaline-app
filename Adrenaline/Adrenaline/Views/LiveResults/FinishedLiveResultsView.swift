@@ -40,7 +40,7 @@ struct FinishedLiveResultsView: View {
                         .padding()
                         .multilineTextAlignment(.center)
                     Divider()
-                    ScalingScrollView(records: elements, rowSpacing: 50) { (elem) in
+                    ScalingScrollView(records: elements, bgColor: .clear, rowSpacing: 50) { (elem) in
                         LivePersonBubbleView(elements: elem)
                     }
                     .padding(.bottom, maxHeightOffset)
@@ -74,7 +74,7 @@ struct LivePersonBubbleView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .foregroundColor(Custom.tileColor)
+                .foregroundColor(Custom.darkGray)
             
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
@@ -84,6 +84,7 @@ struct LivePersonBubbleView: View {
                                 Text(elements[1])
                                 Text(elements[2])
                             }
+                            .foregroundColor(.primary)
                         }
                         
                         Text(elements[4])
@@ -98,7 +99,7 @@ struct LivePersonBubbleView: View {
                     // If we link to the results sheet in the future, elements[6] is the link
                     ZStack {
                         Rectangle()
-                            .foregroundColor(Custom.thinMaterialColor)
+                            .foregroundColor(Custom.accentThinMaterial)
                             .mask(RoundedRectangle(cornerRadius: 60, style: .continuous))
                             .shadow(radius: 2)
                             .frame(width: 200, height: 40)

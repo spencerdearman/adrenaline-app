@@ -93,6 +93,7 @@ struct BasicInfoView: View {
                         Spacer()
                         
                         TextField("First Name", text: $firstName)
+                            .disableAutocorrection(true)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
                             .textContentType(.givenName)
@@ -102,6 +103,7 @@ struct BasicInfoView: View {
                                 signupData.firstName = firstName
                             }
                         TextField("Last Name", text: $lastName)
+                            .disableAutocorrection(true)
                             .textFieldStyle(.roundedBorder)
                             .frame(width: textFieldWidth)
                             .textContentType(.familyName)
@@ -158,6 +160,7 @@ struct BasicInfoView: View {
                                 (isPasswordVisible
                                  ? AnyView(TextField("Password", text: $password))
                                  : AnyView(SecureField("Password", text: $password)))
+                                .disableAutocorrection(true)
                                 .textFieldStyle(.roundedBorder)
                                 .autocapitalization(.none)
                                 .textContentType(.newPassword)
@@ -180,6 +183,7 @@ struct BasicInfoView: View {
                                 (isPasswordVisible
                                  ? AnyView(TextField("Retype password", text: $repeatPassword))
                                  : AnyView(SecureField("Retype password", text: $repeatPassword)))
+                                .disableAutocorrection(true)
                                 .textFieldStyle(.roundedBorder)
                                 .autocapitalization(.none)
                                 .textContentType(.newPassword)

@@ -746,9 +746,8 @@ struct MeetEventListView: View {
                                                     .frame(width: geometry.size.width,
                                                            height: geometry.size.height)
                                                 Text(value[index].2)
-                                                    .foregroundColor(value[index].4 == "" &&
-                                                                     currentMode == .light
-                                                                     ? .gray
+                                                    .foregroundColor(value[index].4 == "" ?
+                                                                     Custom.grayThinMaterial
                                                                      : .primary)
                                                     .padding()
                                             }

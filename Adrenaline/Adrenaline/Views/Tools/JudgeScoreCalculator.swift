@@ -116,6 +116,7 @@ struct JudgeScoreCalculator: View {
                             .font(.title2)
                             .bold()
                             .padding(.top, 30)
+                            .dynamicTypeSize(.xSmall ... .xxxLarge)
                         
                         DiveHeightSelectView(height: $height)
                             .scaleEffect(0.9)
@@ -129,7 +130,7 @@ struct JudgeScoreCalculator: View {
                                 .font(.title2)
                                 .multilineTextAlignment(.center)
                                 .background(RoundedRectangle(cornerRadius: cornerRadius)
-                                    .fill(.thinMaterial))
+                                    .fill(Custom.darkGray))
                                 .onChange(of: dive) { _ in
                                     dive = String(dive.prefix(5))
                                 }
@@ -142,13 +143,14 @@ struct JudgeScoreCalculator: View {
                                 .font(.title2)
                                 .multilineTextAlignment(.center)
                                 .background(RoundedRectangle(cornerRadius: cornerRadius)
-                                    .fill(.thinMaterial))
+                                    .fill(Custom.darkGray))
                                 .shadow(radius: shadowRadius)
                                 .onChange(of: score) { _ in
                                     score = String(score.prefix(6))
                                 }
                             Spacer()
                         }
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                         
                         if let name = name, let dd = dd {
                             VStack(spacing: 5) {
@@ -166,12 +168,7 @@ struct JudgeScoreCalculator: View {
                         }
                         
                         if name != nil, dd != nil, scoreDouble != nil {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(Custom.thinMaterialColor)
-                                    .mask(RoundedRectangle(cornerRadius: 30))
-                                    .frame(width: screenWidth * 0.5, height: screenHeight * 0.09)
-                                    .shadow(radius: shadowRadius)
+                            BackgroundBubble(vPadding: 30, hPadding: 50) {
                                 VStack(spacing: 5) {
                                     Text("Judges Scores")
                                         .bold()
@@ -179,19 +176,18 @@ struct JudgeScoreCalculator: View {
                                     Text(judgesScores.joined(separator: " | "))
                                         .fontWeight(.semibold)
                                 }
+                                .dynamicTypeSize(.xSmall ... .xxxLarge)
                                 .font(.title2)
                             }
                         } else if name != nil, dd == nil {
-                            ZStack {
-                                Rectangle()
-                                    .foregroundColor(Custom.thinMaterialColor)
-                                    .mask(RoundedRectangle(cornerRadius: 30))
-                                    .shadow(radius: shadowRadius)
-                                Text("Dive is not possible at the chosen height")
-                                    .multilineTextAlignment(.center)
-                                    .padding()
-                            }
-                            .frame(width: screenWidth * 0.5, height: screenHeight * 0.09)
+                                BackgroundBubble() {
+                                    Text("Not possible on " + height.rawValue)
+                                        .scaledToFit()
+                                        .multilineTextAlignment(.center)
+                                        .padding()
+                                        .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                }
+                                .frame(minWidth: screenWidth * 0.5, maxWidth: screenWidth * 0.95, minHeight: screenHeight * 0.09, maxHeight: screenHeight * 0.11)
                             
                         }
                     }
@@ -199,6 +195,7 @@ struct JudgeScoreCalculator: View {
                         tableData = getDiveTableData()
                     }
                 }
+                .frame(width: screenWidth * 0.95)
             }
         }
     }
@@ -212,7 +209,7 @@ struct JudgeScoreCalculator: View {
         var body: some View {
             ZStack {
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .fill(Custom.grayThinMaterial)
+                    .fill(Custom.darkGray)
                     .shadow(radius: 10)
                 HStack(spacing: 0) {
                     ForEach(DiveHeight.allCases, id: \.self) { h in
@@ -240,6 +237,7 @@ struct JudgeScoreCalculator: View {
                                          : 0)
                             Text(h.rawValue)
                         }
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                         .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
                         .onTapGesture {
                             height = h

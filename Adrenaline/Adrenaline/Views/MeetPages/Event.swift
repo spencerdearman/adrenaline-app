@@ -47,6 +47,7 @@ struct Event: View {
                     VStack {
                         Text("Dates: " + diverData.1)
                         Text("Organization: " + diverData.2)
+                            .multilineTextAlignment(.trailing)
                         WhiteDivider()
                         Text("Total Score: " + String(diverData.5))
                             .font(.title3)
@@ -62,15 +63,10 @@ struct Event: View {
                     NavigationLink (destination: {
                         EventResultPage(meetLink: diverData.6)
                     }, label: {
-                        ZStack {
-                            Rectangle()
-                                .mask(RoundedRectangle(cornerRadius: 40))
-                                .foregroundColor(Custom.darkGray)
-                                .shadow(radius: 3)
-                                .frame(width: screenWidth * 0.3, height: screenHeight * 0.05)
-                            Text("Full Event Page")
-                                .foregroundColor(.primary)
-                        }
+                        BackgroundBubble(vPadding: 30, hPadding: 30) {
+                                Text("Full Event Page")
+                                    .foregroundColor(.primary)
+                            }
                     })
                 }
             }
