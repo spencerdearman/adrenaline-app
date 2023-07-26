@@ -321,6 +321,18 @@ final class SkillRating {
         return (value - min) / (max - min) * 100.0
     }
     
+    func normalizeRatings(ratings: [Double]) -> [Double] {
+        var result: [Double] = []
+        guard let min = ratings.min() else { return [] }
+        guard let max = ratings.max() else { return [] }
+        
+        for value in ratings {
+            result.append((value - min) / (max - min) * 100.0)
+        }
+        
+        return result
+    }
+    
     func testMetrics(_ index: Int, includePlatform: Bool = true, onlyPlatform: Bool = false) async {
         let metrics: [([DiveStatistic]) -> Double] = [computeMetric1]
         

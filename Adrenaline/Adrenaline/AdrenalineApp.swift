@@ -16,36 +16,44 @@ private struct ModelDB: EnvironmentKey {
     }
 }
 
-struct UpcomingMeetsKey: EnvironmentKey {
+private struct UpcomingMeetsKey: EnvironmentKey {
     static let defaultValue: MeetDict? = nil
 }
 
-struct CurrentMeetsKey: EnvironmentKey {
+private struct CurrentMeetsKey: EnvironmentKey {
     static let defaultValue: CurrentMeetList? = nil
 }
 
-struct LiveResultsKey: EnvironmentKey {
+private struct LiveResultsKey: EnvironmentKey {
     static let defaultValue: LiveResultsDict? = nil
 }
 
-struct PastMeetsKey: EnvironmentKey {
+private struct PastMeetsKey: EnvironmentKey {
     static let defaultValue: MeetDict? = nil
 }
 
-struct MeetsParsedCountKey: EnvironmentKey {
+private struct MeetsParsedCountKey: EnvironmentKey {
     static let defaultValue: Int = 0
 }
 
-struct TotalMeetsParsedCountKey: EnvironmentKey {
+private struct TotalMeetsParsedCountKey: EnvironmentKey {
     static let defaultValue: Int = 0
 }
 
-struct IsFinishedCountingKey: EnvironmentKey {
+private struct IsFinishedCountingKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
-struct IsIndexingMeetsKey: EnvironmentKey {
+private struct IsIndexingMeetsKey: EnvironmentKey {
     static let defaultValue: Bool = false
+}
+
+private struct GetMaleAthletesKey: EnvironmentKey {
+    static let defaultValue: () -> [Athlete]? = { return nil }
+}
+
+private struct GetFemaleAthletesKey: EnvironmentKey {
+    static let defaultValue: () -> [Athlete]? = { return nil }
 }
 
 extension EnvironmentValues {
@@ -93,6 +101,16 @@ extension EnvironmentValues {
         get { self[IsIndexingMeetsKey.self] }
         set { self[IsIndexingMeetsKey.self] = newValue }
     }
+    
+    var getMaleAthletes: () -> [Athlete]? {
+        get { self[GetMaleAthletesKey.self] }
+        set { self[GetMaleAthletesKey.self] = newValue }
+    }
+    
+    var getFemaleAthletes: () -> [Athlete]? {
+        get { self[GetFemaleAthletesKey.self] }
+        set { self[GetFemaleAthletesKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -123,6 +141,8 @@ struct AdrenalineApp: App {
                 .environment(\.totalMeetsParsedCount, meetParser.totalMeetsParsedCount)
                 .environment(\.isFinishedCounting, meetParser.isFinishedCounting)
                 .environment(\.isIndexingMeets, isIndexingMeets)
+                .environment(\.getMaleAthletes, modelDataController.getMaleAthletes)
+                .environment(\.getFemaleAthletes, modelDataController.getFemaleAthletes)
                 .onAppear {
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without

@@ -27,14 +27,15 @@ struct DiveMeetsConnectorView: View {
     @ViewBuilder
     var body: some View {
         ZStack {
-            if searchSubmitted {
+            if searchSubmitted && !personTimedOut {
                 SwiftUIWebView(firstName: $firstName, lastName: $lastName,
                                parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
                                linksParsed: $linksParsed, timedOut: $personTimedOut)
             }
-            if linksParsed {
+            if linksParsed || personTimedOut {
                 ZStack (alignment: .topLeading) {
-                    IsThisYouView(records: $parsedLinks, signupData: $signupData, diveMeetsID: $diveMeetsID)
+                    IsThisYouView(records: $parsedLinks, signupData: $signupData,
+                                  diveMeetsID: $diveMeetsID)
                 }
             } else {
                 ZStack{
@@ -107,19 +108,24 @@ struct IsThisYouView: View {
             } else {
                 Text("No DiveMeets Profile Found")
                     .font(.title).fontWeight(.semibold)
-                NavigationLink {
-                    AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
-                } label: {
+                NavigationLink(destination:
+                    signupData.accountType == .athlete
+                    ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                    diveMeetsID: $diveMeetsID))
+                    : AnyView(AdrenalineProfileView(diveMeetsID: $diveMeetsID,
+                                                    signupData: $signupData))) {
                     BackgroundBubble() {
                         Text("Next")
                     }
+                    .contentShape(RoundedRectangle(cornerRadius: 40))
                 }
             }
             ForEach(sortedRecords, id: \.1) { record in
                 let (key, value) = record
                 
                 NavigationLink(destination: signupData.accountType == .athlete
-                               ? AnyView(AthleteRecruitingView(signupData: $signupData, diveMeetsID: $diveMeetsID))
+                               ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                               diveMeetsID: $diveMeetsID))
                                : AnyView(ProfileView(profileLink: ""))) {
                     HStack {
                         Spacer()
