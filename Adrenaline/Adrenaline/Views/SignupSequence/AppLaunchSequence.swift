@@ -76,7 +76,7 @@ struct AppLaunchSequence: View {
                 
                 if options {
                     HStack {
-                        NavigationLink(destination: ProfileView(profileLink: "")) {
+                        NavigationLink(destination: LoginSearchView()) {
                             Text("Login")
                         }
                         .buttonStyle(.bordered)
