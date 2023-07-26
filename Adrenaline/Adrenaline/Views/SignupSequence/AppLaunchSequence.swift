@@ -16,6 +16,7 @@ struct AppLaunchSequence: View {
     @State private var imageData: Data? = nil
     @State private var isGIFPlaying = true
     @State private var showTitle: Bool = false
+    @State private var firstShowing: Bool = true
     @State var signupData = SignupData()
     @State var loginData = LoginData()
     
@@ -67,7 +68,7 @@ struct AppLaunchSequence: View {
                 if showTitle {
                     TypeWriterView(finalText: "Welcome to Adrenaline.")
                         .onAppear {
-                            withAnimation(.easeOut(duration: 1)) {
+                            if firstShowing {
                                 startTimer(delay: 6.0)
                             }
                         }
@@ -90,7 +91,7 @@ struct AppLaunchSequence: View {
                     }
                     .onAppear {
                         loginData.loadStoredCredentials()
-                        
+                        firstShowing = false
                         if let username = loginData.username,
                            let password = loginData.password {
                             print("Username: \(username)")

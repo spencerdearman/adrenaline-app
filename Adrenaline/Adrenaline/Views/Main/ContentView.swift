@@ -55,9 +55,6 @@ struct ContentView: View {
                         }
                 }
             }
-            if firstOpen {
-                AppLaunchSequence()
-            }
             
             ZStack {
                 VStack {
@@ -66,23 +63,23 @@ struct ContentView: View {
                             HStack {
                                 // Add different page views here for different tabs
                                 switch tab {
-                                    case .house:
+                                case .house:
+                                    Home()
+                                case .wrench:
+                                    //NavigationView {
+                                    //LiveResultsView(request: "debug")
+                                    //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                                    //}
+                                    //.navigationViewStyle(StackNavigationViewStyle())
+//                                    ToolsMenu()
+                                    //SearchColorfulView()
                                     AppLaunchSequence()
-                                        //Home()
-                                    case .wrench:
-                                        //NavigationView {
-                                            //LiveResultsView(request: "debug")
-//                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
-                                        //}
-                                        //.navigationViewStyle(StackNavigationViewStyle())
-//                                        ToolsMenu()
-                                         //SearchColorfulView()
-                                        FirstOpenView()
-//                                        UsersDBTestView()
-                                    case .magnifyingglass:
-                                        SearchView()
-                                    case .person:
-                                        LoginSearchView()
+//                                    FirstOpenView()
+                                    //                                        UsersDBTestView()
+                                case .magnifyingglass:
+                                    SearchView()
+                                case .person:
+                                    LoginSearchView()
                                 }
                             }
                             .tag(tab)
@@ -90,22 +87,20 @@ struct ContentView: View {
                         }
                     }
                 }
-                if !firstOpen {
-                    FloatingMenuBar(selectedTab: $selectedTab)
-                        .offset(y: menuBarOffset)
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .dynamicTypeSize(.medium ... .xxxLarge)
-                }
+                FloatingMenuBar(selectedTab: $selectedTab)
+                    .offset(y: menuBarOffset)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .dynamicTypeSize(.medium ... .xxxLarge)
             }
             .ignoresSafeArea(.keyboard)
             // Executes when other views are opened (notification center, control center, swiped up)
-//            .onChange(of: scenePhase) { newPhase in
-//                if newPhase == .active {
-//                    GlobalCaches.loadAllCaches()
-//                } else if scenePhase == .active && newPhase == .inactive {
-//                    GlobalCaches.saveAllCaches()
-//                }
-//            }
+            //            .onChange(of: scenePhase) { newPhase in
+            //                if newPhase == .active {
+            //                    GlobalCaches.loadAllCaches()
+            //                } else if scenePhase == .active && newPhase == .inactive {
+            //                    GlobalCaches.saveAllCaches()
+            //                }
+            //            }
         }
     }
 }
