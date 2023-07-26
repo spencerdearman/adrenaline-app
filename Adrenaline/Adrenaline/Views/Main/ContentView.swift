@@ -15,6 +15,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @State private var selectedTab: Tab = .house
     @State var showSplash: Bool = false
+    @State var firstOpen: Bool = true
     
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -54,6 +55,9 @@ struct ContentView: View {
                         }
                 }
             }
+            if firstOpen {
+                AppLaunchSequence()
+            }
             
             ZStack {
                 VStack {
@@ -63,7 +67,8 @@ struct ContentView: View {
                                 // Add different page views here for different tabs
                                 switch tab {
                                     case .house:
-                                        Home()
+                                    AppLaunchSequence()
+                                        //Home()
                                     case .wrench:
                                         //NavigationView {
                                             //LiveResultsView(request: "debug")
@@ -85,11 +90,12 @@ struct ContentView: View {
                         }
                     }
                 }
-                
-                FloatingMenuBar(selectedTab: $selectedTab)
-                    .offset(y: menuBarOffset)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .dynamicTypeSize(.medium ... .xxxLarge)
+                if !firstOpen {
+                    FloatingMenuBar(selectedTab: $selectedTab)
+                        .offset(y: menuBarOffset)
+                        .frame(maxHeight: .infinity, alignment: .bottom)
+                        .dynamicTypeSize(.medium ... .xxxLarge)
+                }
             }
             .ignoresSafeArea(.keyboard)
             // Executes when other views are opened (notification center, control center, swiped up)

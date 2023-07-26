@@ -71,6 +71,8 @@
 		4D74FEC629AEC95500401178 /* MeetPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74FEC529AEC95500401178 /* MeetPageView.swift */; };
 		4D753DE02A214F640029138B /* EventResultPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D753DDF2A214F640029138B /* EventResultPage.swift */; };
 		4D753DE32A2158370029138B /* EventPageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D753DE22A2158370029138B /* EventPageParser.swift */; };
+		4D7643892A70CB39000F35CB /* AppLaunchSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7643882A70CB39000F35CB /* AppLaunchSequence.swift */; };
+		4D76438C2A70F733000F35CB /* SwiftUIGIF in Frameworks */ = {isa = PBXBuildFile; productRef = 4D76438B2A70F733000F35CB /* SwiftUIGIF */; };
 		4D8B9C1929F8D395002B53AD /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B9C1829F8D395002B53AD /* Home.swift */; };
 		4D8B9C1D29FB4EBD002B53AD /* LoginProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B9C1C29FB4EBD002B53AD /* LoginProfile.swift */; };
 		4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9DD0992A058EF700F6D31C /* Event.swift */; };
@@ -149,6 +151,7 @@
 		4D74FEC529AEC95500401178 /* MeetPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetPageView.swift; sourceTree = "<group>"; };
 		4D753DDF2A214F640029138B /* EventResultPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventResultPage.swift; sourceTree = "<group>"; };
 		4D753DE22A2158370029138B /* EventPageParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventPageParser.swift; sourceTree = "<group>"; };
+		4D7643882A70CB39000F35CB /* AppLaunchSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLaunchSequence.swift; sourceTree = "<group>"; };
 		4D8B9C1829F8D395002B53AD /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		4D8B9C1C29FB4EBD002B53AD /* LoginProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginProfile.swift; sourceTree = "<group>"; };
 		4D9DD0992A058EF700F6D31C /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -166,6 +169,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */,
+				4D76438C2A70F733000F35CB /* SwiftUIGIF in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +193,7 @@
 				00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */,
 				00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */,
 				4D261CB32A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift */,
+				4D7643882A70CB39000F35CB /* AppLaunchSequence.swift */,
 			);
 			path = SignupSequence;
 			sourceTree = "<group>";
@@ -415,6 +420,7 @@
 			name = Adrenaline;
 			packageProductDependencies = (
 				4DEF7D3529BEE796003EAD70 /* SwiftSoup */,
+				4D76438B2A70F733000F35CB /* SwiftUIGIF */,
 			);
 			productName = DiveMeets;
 			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
@@ -446,6 +452,7 @@
 			mainGroup = 4D74FE8A29AE7B9800401178;
 			packageReferences = (
 				4DEF7D3429BEE796003EAD70 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+				4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */,
 			);
 			productRefGroup = 4D74FE9429AE7B9800401178 /* Products */;
 			projectDirPath = "";
@@ -475,6 +482,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D3FD9CF2A5DFAF6003E1FF7 /* SearchBackgroundView.swift in Sources */,
+				4D7643892A70CB39000F35CB /* AppLaunchSequence.swift in Sources */,
 				4D753DE32A2158370029138B /* EventPageParser.swift in Sources */,
 				0040A6B72A550C8E004C84BF /* NoStickPicker.swift in Sources */,
 				4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */,
@@ -753,6 +761,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/globulus/swiftui-gif";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		4DEF7D3429BEE796003EAD70 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/scinfu/SwiftSoup";
@@ -764,6 +780,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4D76438B2A70F733000F35CB /* SwiftUIGIF */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */;
+			productName = SwiftUIGIF;
+		};
 		4DEF7D3529BEE796003EAD70 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4DEF7D3429BEE796003EAD70 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
