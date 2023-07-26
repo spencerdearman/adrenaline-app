@@ -444,6 +444,30 @@ class ModelDataController: ObservableObject {
         return resultData[0]
     }
     
+    func getMaleAthletes() -> [Athlete]? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Athlete")
+        fetchRequest.predicate = NSPredicate(format: "gender == %@", "Male")
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [Athlete]
+        if resultData.count == 0 { return nil }
+        
+        return resultData
+    }
+    
+    func getFemaleAthletes() -> [Athlete]? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Athlete")
+        fetchRequest.predicate = NSPredicate(format: "gender == %@", "Female")
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [Athlete]
+        if resultData.count == 0 { return nil }
+        
+        return resultData
+    }
+    
     func updateUserField(email: String, key: String, value: Any) {
         guard let user = getUser(email: email) else { return }
         user.setValue(value, forKey: key)

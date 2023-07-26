@@ -27,14 +27,15 @@ struct DiveMeetsConnectorView: View {
     @ViewBuilder
     var body: some View {
         ZStack {
-            if searchSubmitted {
+            if searchSubmitted && !personTimedOut {
                 SwiftUIWebView(firstName: $firstName, lastName: $lastName,
                                parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
                                linksParsed: $linksParsed, timedOut: $personTimedOut)
             }
-            if linksParsed {
+            if linksParsed || personTimedOut {
                 ZStack (alignment: .topLeading) {
-                    IsThisYouView(records: $parsedLinks, signupData: $signupData, diveMeetsID: $diveMeetsID)
+                    IsThisYouView(records: $parsedLinks, signupData: $signupData,
+                                  diveMeetsID: $diveMeetsID)
                 }
             } else {
                 ZStack{
@@ -96,31 +97,34 @@ struct IsThisYouView: View {
     
     var body: some View {
         bgColor.ignoresSafeArea()
-        ScrollView {
-            VStack {
-                Spacer()
-                if sortedRecords.count == 1 {
-                    Text("Is this you?")
-                        .font(.title).fontWeight(.semibold)
-                } else if sortedRecords.count > 1 {
-                    Text("Are you one of these profiles?")
-                        .font(.title).fontWeight(.semibold)
-                } else {
-                    Text("No DiveMeets Profile Found")
-                        .font(.title).fontWeight(.semibold)
-                    NavigationLink {
-                        AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
-                    } label: {
-                        BackgroundBubble() {
-                            Text("Next")
-                        }
+        VStack {
+            Spacer()
+            if sortedRecords.count == 1 {
+                Text("Is this you?")
+                    .font(.title).fontWeight(.semibold)
+            } else if sortedRecords.count > 1 {
+                Text("Are you one of these profiles?")
+                    .font(.title).fontWeight(.semibold)
+            } else {
+                Text("No DiveMeets Profile Found")
+                    .font(.title).fontWeight(.semibold)
+                NavigationLink(destination:
+                                signupData.accountType == .athlete
+                               ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                               diveMeetsID: $diveMeetsID))
+                               : AnyView(AdrenalineProfileView(diveMeetsID: $diveMeetsID,
+                                                               signupData: $signupData))) {
+                    BackgroundBubble() {
+                        Text("Next")
                     }
+                    .contentShape(RoundedRectangle(cornerRadius: 40))
                 }
                 ForEach(sortedRecords, id: \.1) { record in
                     let (key, value) = record
                     
                     NavigationLink(destination: signupData.accountType == .athlete
-                                   ? AnyView(AthleteRecruitingView(signupData: $signupData, diveMeetsID: $diveMeetsID))
+                                   ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                                   diveMeetsID: $diveMeetsID))
                                    : AnyView(ProfileView(profileLink: ""))) {
                         HStack {
                             Spacer()
@@ -151,9 +155,9 @@ struct IsThisYouView: View {
                 }
                 Spacer()
             }
-            .onAppear {
-                sortedRecords = getSortedRecords(records)
-            }
+        }
+        .onAppear {
+            sortedRecords = getSortedRecords(records)
         }
     }
 }
