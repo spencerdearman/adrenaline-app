@@ -85,7 +85,9 @@ struct AdrenalineProfileView: View {
                     }
                     Spacer()
                 }
+                .padding([.leading, .trailing])
             }
+            .frame(width: screenWidth * 0.9)
             .overlay{
                 BackgroundBubble() {
                     NavigationLink {
@@ -104,7 +106,7 @@ struct AdrenalineProfileView: View {
                     .foregroundColor(Custom.darkGray)
                     .cornerRadius(50)
                     .shadow(radius: 10)
-                    .frame(height: screenHeight * 1.1)
+                    .frame(width: screenWidth, height: screenHeight * 1.05)
                 VStack {
                     if let type = signupData.accountType?.rawValue {
                         if type == AccountType.athlete.rawValue {
@@ -361,6 +363,7 @@ struct MetricsView: View {
     var body: some View {
         let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID
         SkillsGraph(profileLink: profileLink)
+//            .frame(height: 300)
     }
 }
 

@@ -494,7 +494,7 @@ struct BackgroundSpheres: View {
                     Circle()
                         .fill(Custom.coolBlue) // Circle color
                         .frame(width:geometry.size.width * 1.3, height:geometry.size.width * 1.3)
-                        .position(x: geometry.size.width * 0.8, y: geometry.size.width * 0.6)
+                        .position(x: geometry.size.width, y: geometry.size.width * 0.7)
                         .shadow(radius: 15)
                         .frame(height: geometry.size.height * 0.7)
                         .clipped().ignoresSafeArea()
@@ -502,7 +502,7 @@ struct BackgroundSpheres: View {
                     Circle()
                         .fill(Custom.medBlue) // Circle color
                         .frame(width: geometry.size.width * 1.1, height: geometry.size.width * 1.1)
-                        .position(x: 0, y: geometry.size.width * 0.65)
+                        .position(x: 0, y: geometry.size.width * 0.7)
                         .shadow(radius: 15)
                         .frame(height: geometry.size.height * 0.7)
                         .clipped().ignoresSafeArea()

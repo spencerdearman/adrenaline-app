@@ -14,6 +14,13 @@ enum EventType: Int, CaseIterable {
     case platform = 5
 }
 
+enum SkillGraph: String, CaseIterable {
+    case overall = "Overall"
+    case one = "1-Meter"
+    case three = "3-Meter"
+    case platform = "Platform"
+}
+
 struct SkillsGraph: View {
     @StateObject private var parser = ProfileParser()
     var profileLink: String = ""
@@ -27,36 +34,54 @@ struct SkillsGraph: View {
     @State var threeMetrics: [Double] = []
     @State var platformMetrics: [Double] = []
     @State var overallMetrics: [Double] = []
+    @State var selection: SkillGraph = .overall
     let diveTableData: [String: DiveData]? = getDiveTableData()
     var body: some View {
         VStack {
+            SkillGraphSelectView(selection: $selection)
+                .scaleEffect(0.8)
             ZStack {
                 Graph()
                     .scaleEffect(0.5)
                     .rotationEffect(.degrees(-17.4))
-                NavigationLink {
-                    AdvancedSkillsGraphs(oneMetrics: $oneMetrics, threeMetrics: $threeMetrics, platformMetrics: $platformMetrics)
-                } label: {
+                switch selection {
+                case .overall:
                     Polygon(metrics: overallMetrics)
                         .fill(Custom.medBlue.opacity(0.5))
-                        .frame(width: 500)
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                case .one:
+                    Polygon(metrics: oneMetrics)
+                        .fill(Custom.medBlue.opacity(0.5))
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                case .three:
+                    Polygon(metrics: threeMetrics)
+                        .fill(Custom.medBlue.opacity(0.5))
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                case .platform:
+                    Polygon(metrics: platformMetrics)
+                        .fill(Custom.medBlue.opacity(0.5))
                         .scaleEffect(0.5)
                         .rotationEffect(.degrees(-17.4))
                 }
-                Text("Front")
-                    .offset(x: screenWidth * 0.35, y: -screenHeight * 0.05)
-                Text("Back")
-                    .offset(x: screenWidth * 0.23, y: screenHeight * 0.12)
-                Text("Reverse")
-                    .offset(x: -screenWidth * 0.23, y: screenHeight * 0.12)
-                Text("Inward")
-                    .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.05)
-                Text("Twister")
-                    .offset(y: -screenHeight * 0.15)
+                Group {
+                    Text("Front")
+                        .offset(x: screenWidth * 0.34, y: -screenHeight * 0.04)
+                    Text("Back")
+                        .offset(x: screenWidth * 0.22, y: screenHeight * 0.115)
+                    Text("Reverse")
+                        .offset(x: -screenWidth * 0.22, y: screenHeight * 0.115)
+                    Text("Inward")
+                        .offset(x: -screenWidth * 0.34, y: -screenHeight * 0.04)
+                    Text("Twister")
+                        .offset(y: -screenHeight * 0.14)
+                }
                 
             }
-            .offset(y: -200)
         }
+        .frame(height: screenHeight * 0.4)
         .onAppear {
             Task {
                 if parser.profileData.info == nil {
@@ -70,7 +95,6 @@ struct SkillsGraph: View {
                     oneMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.one)
                     threeMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.three)
                     platformDict = skillGraphMetrics(d: divesByCategory, height: EventType.platform)
-                    var divisor = 3.0
                     for i in 1..<6 {
                         var divisor = 3.0
                         if platformDict[i] == 0.0 {
@@ -222,27 +246,28 @@ struct Polygon: Shape {
 }
 
 struct Graph: View {
+    private let screenWidth = UIScreen.main.bounds.width
     var body: some View {
         Pentagon()
             .stroke(.primary, lineWidth: 2)
-            .frame(width : 100)
+            .frame(width : screenWidth * 0.2)
             .foregroundColor(.gray)
         Pentagon()
             .stroke(.primary, lineWidth: 2)
             .foregroundColor(.gray)
-            .frame(width : 200)
+            .frame(width : screenWidth * 0.4)
         Pentagon()
             .stroke(.primary, lineWidth: 2)
             .foregroundColor(.gray)
-            .frame(width : 300)
+            .frame(width : screenWidth * 0.6)
         Pentagon()
             .stroke(.primary, lineWidth: 2)
             .foregroundColor(.gray)
-            .frame(width : 400)
+            .frame(width : screenWidth * 0.8)
         Pentagon()
             .stroke(.primary, lineWidth: 2)
             .foregroundColor(.gray)
-            .frame(width : 500)
+            .frame(width : screenWidth)
     }
 }
 
@@ -334,3 +359,55 @@ struct AdvancedSkillsGraphs: View {
     }
 }
 
+struct SkillGraphSelectView: View {
+    @Binding var selection: SkillGraph
+    
+    private let cornerRadius: CGFloat = 30
+    private let selectedGray = Color(red: 0.85, green: 0.85, blue: 0.85, opacity: 0.4)
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(Custom.darkGray)
+                .shadow(radius: 10)
+            HStack(spacing: 0) {
+                ForEach(SkillGraph.allCases, id: \.self) { s in
+                    ZStack {
+                        // Weird padding stuff to have end options rounded on the outside edge
+                        // only when selected
+                        // https://stackoverflow.com/a/72435691/22068672
+                        Rectangle()
+                            .fill(selection == s ? selectedGray : .clear)
+                            .padding(.trailing, s == SkillGraph.allCases.first
+                                     ? cornerRadius
+                                     : 0)
+                            .padding(.leading, s == SkillGraph.allCases.last
+                                     ? cornerRadius
+                                     : 0)
+                            .cornerRadius(s == SkillGraph.allCases.first ||
+                                          s == SkillGraph.allCases.last
+                                          ? cornerRadius
+                                          : 0)
+                            .padding(.trailing, s == SkillGraph.allCases.first
+                                     ? -cornerRadius
+                                     : 0)
+                            .padding(.leading, s == SkillGraph.allCases.last
+                                     ? -cornerRadius
+                                     : 0)
+                        Text(s.rawValue)
+                    }
+                    .dynamicTypeSize(.xSmall ... .xxxLarge)
+                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    .onTapGesture {
+                        selection = s
+                    }
+                    if s != SkillGraph.allCases.last {
+                        Divider()
+                    }
+                }
+            }
+        }
+        .frame(height: 50)
+        .padding([.leading, .trailing])
+    }
+}

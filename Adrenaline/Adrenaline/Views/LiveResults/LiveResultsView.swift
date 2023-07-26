@@ -387,6 +387,7 @@ struct LoadedView: View {
     @Environment(\.colorScheme) var currentMode
     var screenWidth = UIScreen.main.bounds.width
     var screenHeight = UIScreen.main.bounds.height
+    @State var titleReady: Bool = false
     @Binding var lastDiverInformation:
     (String, String, Int, Double, Int, Int, Double, String, String, Double, Double, String)
     @Binding var nextDiverInformation:
@@ -420,28 +421,47 @@ struct LoadedView: View {
         }
     }
     
+    func titleTimer() {
+        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
+            titleReady.toggle()
+        }
+    }
+    
     var body: some View {
         bgColor.ignoresSafeArea()
         ZStack {
             ColorfulView()
+                .onAppear{
+                    titleTimer()
+                }
             GeometryReader { geometry in
                 VStack(spacing: 0.5) {
                     if !starSelected {
                         VStack {
-                            BackgroundBubble() {
+                            if abBoardEvent && titleReady{
+                                BackgroundBubble(vPadding: 20, hPadding: 20) {
+                                    VStack {
+                                        Text(title)
+                                            .bold()
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .lineLimit(2)
+                                            .multilineTextAlignment(.center)
+                                        Text("Live Rankings")
+                                            .bold()
+                                    }
+                                }
+                            } else if titleReady {
+                                BackgroundBubble(vPadding: 20, hPadding: 20) {
                                 VStack {
                                     Text(title)
                                         .bold()
                                         .fixedSize(horizontal: false, vertical: true)
                                         .lineLimit(2)
                                         .multilineTextAlignment(.center)
-                                        .frame(width: 300, height: 70)
-                                    if !abBoardEvent {
                                         Text(roundString)
                                     }
                                 }
                             }
-                            .padding(.bottom)
                             if !abBoardEvent {
                                 if isPhone {
                                     TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
@@ -465,7 +485,7 @@ struct LoadedView: View {
                         }
                     }
                     HomeBubbleView(diveTable: abBoardEvent ? $boardDiveTable : $diveTable, starSelected: $starSelected, abBoardEvent: $abBoardEvent)
-                        .offset(y: screenWidth * 0.1)
+                        .offset(y: abBoardEvent ? screenWidth * 0.03 : screenWidth * 0.1)
                 }
                 .padding(.bottom, maxHeightOffset)
                 .padding(.top)
