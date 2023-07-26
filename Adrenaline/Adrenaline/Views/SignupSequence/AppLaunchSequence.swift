@@ -65,13 +65,15 @@ struct AppLaunchSequence: View {
                     }
                 }
                 .scaleEffect(0.7)
-                if showTitle {
+                if showTitle && firstShowing{
                     TypeWriterView(finalText: "Welcome to Adrenaline.")
                         .onAppear {
-                            if firstShowing {
                                 startTimer(delay: 6.0)
-                            }
                         }
+                } else if !firstShowing {
+                    Text("Welcome to Adrenaline.")
+                        .font(.title)
+                        .fontWeight(.semibold)
                 }
                 
                 if options {
@@ -139,7 +141,7 @@ struct TypeWriterView: View {
             text = ""
         }
         if position < finalText.count {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.14) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
                 text.append(finalText[position])
                 typeWriter(at: position + 1)
             }
