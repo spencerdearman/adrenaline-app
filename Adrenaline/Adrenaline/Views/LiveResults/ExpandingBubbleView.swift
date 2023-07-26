@@ -16,13 +16,13 @@ struct HomeBubbleView: View{
     @State var expandedIndex: String = "-1"
     
     var body: some View {
-        if starSelected{
+        if starSelected {
             BackgroundBubble(vPadding: 25, hPadding: 25) {
                 Text("Live Rankings")
                     .font(.title2).bold()
                     .matchedGeometryEffect(id: "ranking", in: mainspace)
             }
-        } else {
+        } else if !abBoardEvent {
             BackgroundBubble(vPadding: 25, hPadding: 25) {
                 Text("Live Rankings")
                     .font(.title2).bold()

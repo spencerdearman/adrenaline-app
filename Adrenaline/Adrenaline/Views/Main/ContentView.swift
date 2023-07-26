@@ -70,14 +70,13 @@ struct ContentView: View {
 //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
                                         //}
                                         //.navigationViewStyle(StackNavigationViewStyle())
-//                                        ToolsMenu()
-                                         //SearchColorfulView()
-                                        FirstOpenView()
+                                 //        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
+                                        ToolsMenu()
 //                                        UsersDBTestView()
                                     case .magnifyingglass:
                                         SearchView()
                                     case .person:
-                                        LoginSearchView()
+                                        FirstOpenView()
                                 }
                             }
                             .tag(tab)

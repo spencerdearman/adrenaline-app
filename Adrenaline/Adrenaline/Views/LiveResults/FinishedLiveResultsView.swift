@@ -10,6 +10,7 @@ import SwiftSoup
 
 struct FinishedLiveResultsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) var currentMode
     @State private var html: String = ""
     @State private var elements: [[String]]?
     @State private var eventTitle: String?
@@ -29,7 +30,7 @@ struct FinishedLiveResultsView: View {
         ZStack {
             LRWebView(request: link, html: $html)
             
-            Custom.background.ignoresSafeArea()
+            currentMode == .light ? Color.white.ignoresSafeArea() : Color.black.ignoresSafeArea()
             
             if let eventTitle = eventTitle,
                let elements = elements {
@@ -40,7 +41,7 @@ struct FinishedLiveResultsView: View {
                         .padding()
                         .multilineTextAlignment(.center)
                     Divider()
-                    ScalingScrollView(records: elements, bgColor: .clear, rowSpacing: 50) { (elem) in
+                    ScalingScrollView(records: elements, bgColor: .clear, rowSpacing: 50, shadowRadius: 3) { (elem) in
                         LivePersonBubbleView(elements: elem)
                     }
                     .padding(.bottom, maxHeightOffset)
@@ -86,16 +87,12 @@ struct LivePersonBubbleView: View {
                             }
                             .foregroundColor(.primary)
                         }
-                        
-                        Text(elements[4])
-                            .foregroundColor(.gray)
-                            .font(.title3)
                         Spacer()
                     }
                     .lineLimit(2)
                     .font(.title2)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    
+                    .fontWeight(.semibold)
                     // If we link to the results sheet in the future, elements[6] is the link
                     ZStack {
                         Rectangle()
@@ -113,6 +110,10 @@ struct LivePersonBubbleView: View {
                 HStack {
                     Text("Place: " + elements[0])
                         .fontWeight(.semibold)
+                    Spacer()
+                    Text(elements[4])
+                        .foregroundColor(.gray)
+                        .font(.title3)
                     Spacer()
                     VStack(alignment: .trailing) {
                         Text("Event Avg Score: " + elements[7])
