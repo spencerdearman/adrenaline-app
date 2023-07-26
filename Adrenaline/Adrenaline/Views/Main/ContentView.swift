@@ -15,6 +15,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @State private var selectedTab: Tab = .house
     @State var showSplash: Bool = false
+    @State var firstOpen: Bool = true
     
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -62,21 +63,23 @@ struct ContentView: View {
                             HStack {
                                 // Add different page views here for different tabs
                                 switch tab {
-                                    case .house:
-                                        Home()
-                                    case .wrench:
-                                        //NavigationView {
-                                            //LiveResultsView(request: "debug")
-//                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
-                                        //}
-                                        //.navigationViewStyle(StackNavigationViewStyle())
-                                 //        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
-                                        ToolsMenu()
-//                                        UsersDBTestView()
-                                    case .magnifyingglass:
-                                        SearchView()
-                                    case .person:
-                                        FirstOpenView()
+                                case .house:
+                                    Home()
+                                case .wrench:
+                                    //NavigationView {
+                                    //LiveResultsView(request: "debug")
+                                    //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                                    //}
+                                    //.navigationViewStyle(StackNavigationViewStyle())
+                                    //                                    ToolsMenu()
+                                    //SearchColorfulView()
+                                    AppLaunchSequence()
+                                    //                                    FirstOpenView()
+                                    //                                        UsersDBTestView()
+                                case .magnifyingglass:
+                                    SearchView()
+                                case .person:
+                                    LoginSearchView()
                                 }
                             }
                             .tag(tab)
@@ -84,7 +87,6 @@ struct ContentView: View {
                         }
                     }
                 }
-                
                 FloatingMenuBar(selectedTab: $selectedTab)
                     .offset(y: menuBarOffset)
                     .frame(maxHeight: .infinity, alignment: .bottom)
@@ -92,13 +94,13 @@ struct ContentView: View {
             }
             .ignoresSafeArea(.keyboard)
             // Executes when other views are opened (notification center, control center, swiped up)
-//            .onChange(of: scenePhase) { newPhase in
-//                if newPhase == .active {
-//                    GlobalCaches.loadAllCaches()
-//                } else if scenePhase == .active && newPhase == .inactive {
-//                    GlobalCaches.saveAllCaches()
-//                }
-//            }
+            //            .onChange(of: scenePhase) { newPhase in
+            //                if newPhase == .active {
+            //                    GlobalCaches.loadAllCaches()
+            //                } else if scenePhase == .active && newPhase == .inactive {
+            //                    GlobalCaches.saveAllCaches()
+            //                }
+            //            }
         }
     }
 }
