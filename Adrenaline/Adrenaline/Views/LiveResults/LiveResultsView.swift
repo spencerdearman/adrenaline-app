@@ -258,7 +258,6 @@ struct ParseLoaderView: View {
                             let halfLink = try v.getElementsByTag("a").attr("href")
                             tempList.append(linkHead + halfLink)
                         } else if i == 2 {
-                            focusViewList[try v.text()]
                             tempList.append(try v.text())
                             let halfLink = try v.getElementsByTag("a").attr("href")
                             tempList.append(linkHead + halfLink)
@@ -269,7 +268,7 @@ struct ParseLoaderView: View {
                     boardDiveTable.append(tempList)
                 }
             }
-            print(boardDiveTable)
+            
             return true
         } catch {
             print("Failed to parse current round")
@@ -289,7 +288,7 @@ struct ParseLoaderView: View {
                 let table = try body.getElementById("Results")
                 guard let rows = try table?.getElementsByTag("tr") else { throw error }
                 if (try rows[1].text().suffix(3) == "Brd") {
-                    parseABBoardResults(rows: rows)
+                    let _ = parseABBoardResults(rows: rows)
                     //Title
                     title = try rows[0].getElementsByTag("td")[0].text()
                         .replacingOccurrences(of: "Unofficial Statistics ", with: "")

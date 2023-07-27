@@ -48,8 +48,11 @@ struct RankingsView: View {
         platform = skill.normalizeRatings(ratings: platform)
         total = skill.normalizeRatings(ratings: total)
         
-        for i in 0..<ratings.count {
-            result.append((ratings[i].0, springboard[i], platform[i], total[i]))
+        // Don't include only one user, since ratings don't make sense
+        if ratings.count > 1 {
+            for i in 0..<ratings.count {
+                result.append((ratings[i].0, springboard[i], platform[i], total[i]))
+            }
         }
         
         return result
