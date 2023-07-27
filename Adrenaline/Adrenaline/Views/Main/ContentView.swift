@@ -73,13 +73,13 @@ struct ContentView: View {
                                         //.navigationViewStyle(StackNavigationViewStyle())
                                         //                                    ToolsMenu()
                                         //SearchColorfulView()
-                                                                            AppLaunchSequence()
-//                                        RankingsView()
+                                        RankingsView()
                                         //                                        UsersDBTestView()
                                     case .magnifyingglass:
                                         SearchView()
                                     case .person:
-                                        LoginSearchView()
+//                                        LoginSearchView()
+                                        AppLaunchSequence()
                                 }
                             }
                             .tag(tab)
