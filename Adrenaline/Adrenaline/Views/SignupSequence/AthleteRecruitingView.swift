@@ -442,7 +442,7 @@ struct AthleteRecruitingView: View {
                     } else {
                         let info = parser.profileData.info
                         guard let g = info?.gender else { return }
-                        gender = g == "Male" ? .male : .female
+                        gender = g == "M" ? .male : .female
                         guard let parsedAge = info?.age else { return }
                         age = String(parsedAge)
                         guard let parsedGradYear = info?.hsGradYear else { return }

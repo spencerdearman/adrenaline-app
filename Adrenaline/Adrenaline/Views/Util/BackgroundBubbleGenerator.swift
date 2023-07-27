@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BackgroundBubble<Content: View>: View {
-    @Environment(\.sizeCategory) var sizeCategory
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     var color: Color = Custom.darkGray
     var cornerRadius: CGFloat = 40
     var shadow: CGFloat = 10
@@ -39,7 +39,7 @@ struct BackgroundBubble<Content: View>: View {
                             .onAppear {
                                 contentSize = geometry.size
                             }
-                            .onChange(of: sizeCategory) { _ in // Observe changes to the dynamic type size
+                            .onChange(of: dynamicTypeSize) { _ in // Observe changes to the dynamic type size
                                 contentSize = geometry.size
                             }
                     }

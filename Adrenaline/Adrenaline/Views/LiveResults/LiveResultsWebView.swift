@@ -87,7 +87,6 @@ struct LRWebView: UIViewRepresentable {
                 guard let html = result as? String, error == nil else { return }
                 self?.html = html
             }
-            print("being called")
         }
     }
 }

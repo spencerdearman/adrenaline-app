@@ -480,6 +480,7 @@ struct CurrentMeetsPageView: View {
 
 struct MeetBubbleView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     
     private var bubbleColor: Color {
         currentMode == .light ? .white : .black
@@ -557,9 +558,8 @@ struct MeetBubbleView: View {
     }
     
     func getPhoneTextSizeForAccessibility() -> CGFloat {
-        let sizeCategory = UIApplication.shared.preferredContentSizeCategory
-        switch sizeCategory {
-        case .extraSmall:
+        switch dynamicTypeSize {
+        case .xSmall:
             return 170
         case .small:
             return 180
@@ -567,11 +567,11 @@ struct MeetBubbleView: View {
             return 190
         case .large:
             return 200
-        case .extraLarge:
+        case .xLarge:
             return 215
-        case .extraExtraLarge:
+        case .xxLarge:
             return 225
-        case .extraExtraExtraLarge:
+        case .xxxLarge:
             return 235
         default:
             return 190
@@ -579,9 +579,8 @@ struct MeetBubbleView: View {
     }
     
     func getPadTextSizeForAccessibility() -> CGFloat {
-        let sizeCategory = UIApplication.shared.preferredContentSizeCategory
-        switch sizeCategory {
-        case .extraSmall:
+        switch dynamicTypeSize {
+        case .xSmall:
             return 180
         case .small:
             return 190
@@ -589,11 +588,11 @@ struct MeetBubbleView: View {
             return 200
         case .large:
             return 210
-        case .extraLarge:
+        case .xLarge:
             return 220
-        case .extraExtraLarge:
+        case .xxLarge:
             return 240
-        case .extraExtraExtraLarge:
+        case .xxxLarge:
             return 265
         default:
             return 190
@@ -663,7 +662,12 @@ struct HomeColorfulView: View{
                         .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
                     
                 }
-                .offset(x: -screenWidth / 2, y: isPhone ? screenHeight / 5 : !isLandscape ? screenHeight / 20 : -screenHeight / 1.5)
+                .offset(x: -screenWidth / 2,
+                        y: isPhone
+                        ? screenHeight / 5
+                        : !isLandscape
+                        ? screenHeight / 20
+                        : -screenHeight / 1.5)
                 ZStack{
                     Circle()
                         .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)

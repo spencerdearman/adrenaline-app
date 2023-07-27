@@ -209,7 +209,7 @@ final class ProfileParser: ObservableObject {
                     country = value
                     break
                 case "Gender:":
-                    gender = value
+                    gender = value.trimmingCharacters(in: .whitespacesAndNewlines)
                     break
                 case "Age:":
                     age = Int(value)

@@ -77,7 +77,7 @@ struct UsersDBTestView: View {
                     }
                     Text("\(user.heightFeet)\' \(user.heightInches)\"")
                     Text(String(user.weight) + " " + (user.weightUnit ?? ""))
-                    Text(String(user.graduationYear))
+                    Text(user.gender ?? "")
                     Text(user.hometown ?? "")
                     VStack {
                         Text(String(format: "%.2f", user.springboardRating))

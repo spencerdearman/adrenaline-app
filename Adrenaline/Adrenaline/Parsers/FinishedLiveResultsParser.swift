@@ -38,7 +38,6 @@ class FinishedLiveResultsParser: ObservableObject {
                     let text = try row.text()
                     let links = try row.getElementsByTag("a")
                     assert(links.count == 2)
-                    print(try links.text())
                     
                     let firstComps = text.split(separator: " ", maxSplits: 1)
                     guard let place = firstComps.first else { return }
