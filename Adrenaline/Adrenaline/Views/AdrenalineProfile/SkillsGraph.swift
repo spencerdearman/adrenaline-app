@@ -96,7 +96,7 @@ struct SkillsGraph: View {
                     threeMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.three)
                     platformDict = skillGraphMetrics(d: divesByCategory, height: EventType.platform)
                     for i in 1..<6 {
-                        divisor = 3.0
+                        var divisor = 3.0
                         if platformDict[i] == 0.0 {
                             divisor = 2.0
                         }

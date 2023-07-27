@@ -97,27 +97,25 @@ struct IsThisYouView: View {
     
     var body: some View {
         bgColor.ignoresSafeArea()
-        VStack {
-            Spacer()
-            if sortedRecords.count == 1 {
-                Text("Is this you?")
-                    .font(.title).fontWeight(.semibold)
-            } else if sortedRecords.count > 1 {
-                Text("Are you one of these profiles?")
-                    .font(.title).fontWeight(.semibold)
-            } else {
-                Text("No DiveMeets Profile Found")
-                    .font(.title).fontWeight(.semibold)
-                NavigationLink(destination:
-                                signupData.accountType == .athlete
-                               ? AnyView(AthleteRecruitingView(signupData: $signupData,
-                                                               diveMeetsID: $diveMeetsID))
-                               : AnyView(AdrenalineProfileView(diveMeetsID: $diveMeetsID,
-                                                               signupData: $signupData))) {
-                    BackgroundBubble() {
-                        Text("Next")
+        ScrollView {
+            VStack {
+                Spacer()
+                if sortedRecords.count == 1 {
+                    Text("Is this you?")
+                        .font(.title).fontWeight(.semibold)
+                } else if sortedRecords.count > 1 {
+                    Text("Are you one of these profiles?")
+                        .font(.title).fontWeight(.semibold)
+                } else {
+                    Text("No DiveMeets Profile Found")
+                        .font(.title).fontWeight(.semibold)
+                    NavigationLink {
+                        AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
+                    } label: {
+                        BackgroundBubble() {
+                            Text("Next")
+                        }
                     }
-                    .contentShape(RoundedRectangle(cornerRadius: 40))
                 }
                 ForEach(sortedRecords, id: \.1) { record in
                     let (key, value) = record
@@ -155,9 +153,9 @@ struct IsThisYouView: View {
                 }
                 Spacer()
             }
-        }
-        .onAppear {
-            sortedRecords = getSortedRecords(records)
+            .onAppear {
+                sortedRecords = getSortedRecords(records)
+            }
         }
     }
 }
