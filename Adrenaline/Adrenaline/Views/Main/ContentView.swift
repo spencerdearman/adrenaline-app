@@ -14,8 +14,8 @@ struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
     @State private var selectedTab: Tab = .house
-    @State var showSplash: Bool = true
-    @State var firstOpen: Bool = true
+    @State var showSplash: Bool = false
+//    @State var firstOpen: Bool = true
     
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
