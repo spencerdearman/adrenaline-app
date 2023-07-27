@@ -30,7 +30,8 @@ enum Gender: String, CaseIterable {
 struct AthleteRecruitingView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelDB) var db
+    @Environment(\.updateAthleteField) private var updateAthleteField
+    @Environment(\.updateAthleteSkillRating) private var updateAthleteSkillRating
     // Starts the picker at height 6' 0"
     @State private var heightIndex: Int = 24
     @State private var height: String = ""
@@ -137,7 +138,7 @@ struct AthleteRecruitingView: View {
         }
         
         for (key, value) in values {
-            db.updateAthleteField(email: email, key: key, value: value)
+            updateAthleteField(email, key, value)
         }
     }
     
@@ -400,9 +401,7 @@ struct AthleteRecruitingView: View {
                                                                metric: skill.computeMetric1)
                                     print(springboard, " - ", platform)
                                     guard let email = signupData.email else { return }
-                                    db.updateAthleteSkillRating(email: email,
-                                                                springboardRating: springboard,
-                                                                platformRating: platform)
+                                    updateAthleteSkillRating(email, springboard, platform)
                                 }
                             })
                         }

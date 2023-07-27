@@ -10,7 +10,8 @@ import SwiftUI
 struct DiveMeetsConnectorView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelDB) var db
+    @Environment(\.updateUserField) private var updateUserField
+    @Environment(\.dropUser) private var dropUser
     @Binding var searchSubmitted: Bool
     @Binding var firstName: String
     @Binding var lastName: String
@@ -51,7 +52,7 @@ struct DiveMeetsConnectorView: View {
         .onDisappear {
             searchSubmitted = false
             if diveMeetsID != "", let email = signupData.email {
-                db.updateUserField(email: email, key: "diveMeetsID", value: diveMeetsID)
+                updateUserField(email, "diveMeetsID", diveMeetsID)
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -61,7 +62,7 @@ struct DiveMeetsConnectorView: View {
                     // If user backs up into BasicInfoView, it drops them from db so they can be
                     // added again if they fill out the information and proceed
                     if let email = signupData.email {
-                        db.dropUser(email: email)
+                        dropUser(email)
                     }
                     dismiss()
                 }) {
@@ -74,7 +75,7 @@ struct DiveMeetsConnectorView: View {
 
 struct IsThisYouView: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.modelDB) var db
+    @Environment(\.updateUserField) private var updateUserField
     @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
@@ -143,8 +144,7 @@ struct IsThisYouView: View {
                                    .simultaneousGesture(TapGesture().onEnded{
                                        diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
                                        guard let email = signupData.email else { return }
-                                       db.updateUserField(email: email, key: "diveMeetsID",
-                                                          value: diveMeetsID)
+                                       updateUserField(email, "diveMeetsID", diveMeetsID)
                                    })
                                    .shadow(radius: 5)
                                    .padding([.leading, .trailing])
