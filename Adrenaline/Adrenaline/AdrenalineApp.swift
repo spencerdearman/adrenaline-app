@@ -49,6 +49,7 @@ private struct IsIndexingMeetsKey: EnvironmentKey {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 private struct GetMaleAthletesKey: EnvironmentKey {
     static let defaultValue: () -> [Athlete]? = { return nil }
 }
@@ -56,6 +57,8 @@ private struct GetMaleAthletesKey: EnvironmentKey {
 private struct GetFemaleAthletesKey: EnvironmentKey {
     static let defaultValue: () -> [Athlete]? = { return nil }
 =======
+=======
+>>>>>>> 5c589c373d85641f5beb5e5fd3dafc5e0661bc4f
 private struct GetUserKey: EnvironmentKey {
     static let defaultValue: (String) -> User? = { _ in return nil }
 }
@@ -86,7 +89,10 @@ private struct UpdateAthleteSkillRatingKey: EnvironmentKey {
 
 private struct DictToTupleKey: EnvironmentKey {
     static let defaultValue: (MeetDict) -> [MeetRecord] = { _ in [] }
+<<<<<<< HEAD
 >>>>>>> 5c589c3 (Move essential db functions into environment to avoid view updates when db is updated)
+=======
+>>>>>>> 5c589c373d85641f5beb5e5fd3dafc5e0661bc4f
 }
 
 extension EnvironmentValues {
@@ -135,6 +141,7 @@ extension EnvironmentValues {
         set { self[IsIndexingMeetsKey.self] = newValue }
     }
     
+<<<<<<< HEAD
     var getMaleAthletes: () -> [Athlete]? {
         get { self[GetMaleAthletesKey.self] }
         set { self[GetMaleAthletesKey.self] = newValue }
@@ -144,6 +151,8 @@ extension EnvironmentValues {
         get { self[GetFemaleAthletesKey.self] }
         set { self[GetFemaleAthletesKey.self] = newValue }
         
+=======
+>>>>>>> 5c589c373d85641f5beb5e5fd3dafc5e0661bc4f
     var getUser: (String) -> User? {
         get { self[GetUserKey.self] }
         set { self[GetUserKey.self] = newValue }
