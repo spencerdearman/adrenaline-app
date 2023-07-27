@@ -19,7 +19,9 @@ enum BasicInfoField: Int, Hashable, CaseIterable {
 struct BasicInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelDB) var db
+    @Environment(\.getUser) private var getUser
+    @Environment(\.addUser) private var addUser
+    @Environment(\.addAthlete) private var addAthlete
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var email: String = ""
@@ -71,7 +73,7 @@ struct BasicInfoView: View {
     }
     
     private func emailInDatabase(email: String) -> Bool {
-        return db.getUser(email: email) != nil
+        return getUser(email) != nil
     }
     
     var body: some View {
@@ -211,11 +213,11 @@ struct BasicInfoView: View {
                                 focusedField = nil
                                 searchSubmitted = true
                                 if signupData.accountType == .athlete {
-                                    db.addAthlete(firstName: firstName, lastName: lastName,
-                                               email: email, phone: phone, password: password)
+                                    addAthlete(firstName, lastName,
+                                               email, phone, password)
                                 } else {
-                                    db.addUser(firstName: firstName, lastName: lastName,
-                                               email: email, phone: phone, password: password)
+                                    addUser(firstName, lastName,
+                                            email, phone, password)
                                 }
                             })
                             .buttonStyle(.bordered)

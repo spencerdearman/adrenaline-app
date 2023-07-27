@@ -48,12 +48,45 @@ private struct IsIndexingMeetsKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
+<<<<<<< HEAD
 private struct GetMaleAthletesKey: EnvironmentKey {
     static let defaultValue: () -> [Athlete]? = { return nil }
 }
 
 private struct GetFemaleAthletesKey: EnvironmentKey {
     static let defaultValue: () -> [Athlete]? = { return nil }
+=======
+private struct GetUserKey: EnvironmentKey {
+    static let defaultValue: (String) -> User? = { _ in return nil }
+}
+
+private struct AddUserKey: EnvironmentKey {
+    static let defaultValue: (String, String, String, String?, String) -> () = { _, _, _, _, _ in }
+}
+
+private struct AddAthleteKey: EnvironmentKey {
+    static let defaultValue: (String, String, String, String?, String) -> () = { _, _, _, _, _ in }
+}
+
+private struct UpdateUserFieldKey: EnvironmentKey {
+    static let defaultValue: (String, String, Any?) -> () = { _, _, _ in }
+}
+
+private struct DropUserKey: EnvironmentKey {
+    static let defaultValue: (String) -> () =  { _ in }
+}
+
+private struct UpdateAthleteFieldKey: EnvironmentKey {
+    static let defaultValue: (String, String, Any?) -> () = { _, _, _ in }
+}
+
+private struct UpdateAthleteSkillRatingKey: EnvironmentKey {
+    static let defaultValue: (String, Double?, Double?) -> () = { _, _, _ in }
+}
+
+private struct DictToTupleKey: EnvironmentKey {
+    static let defaultValue: (MeetDict) -> [MeetRecord] = { _ in [] }
+>>>>>>> 5c589c3 (Move essential db functions into environment to avoid view updates when db is updated)
 }
 
 extension EnvironmentValues {
@@ -110,6 +143,45 @@ extension EnvironmentValues {
     var getFemaleAthletes: () -> [Athlete]? {
         get { self[GetFemaleAthletesKey.self] }
         set { self[GetFemaleAthletesKey.self] = newValue }
+        
+    var getUser: (String) -> User? {
+        get { self[GetUserKey.self] }
+        set { self[GetUserKey.self] = newValue }
+    }
+    
+    var addUser: (String, String, String, String?, String) -> () {
+        get { self[AddUserKey.self] }
+        set { self[AddUserKey.self] = newValue }
+    }
+    
+    var addAthlete: (String, String, String, String?, String) -> () {
+        get { self[AddAthleteKey.self] }
+        set { self[AddAthleteKey.self] = newValue }
+    }
+    
+    var updateUserField: (String, String, Any?) -> () {
+        get { self[UpdateUserFieldKey.self] }
+        set { self[UpdateUserFieldKey.self] = newValue }
+    }
+    
+    var dropUser: (String) -> () {
+        get { self[DropUserKey.self] }
+        set { self[DropUserKey.self] = newValue }
+    }
+    
+    var updateAthleteField: (String, String, Any?) -> () {
+        get { self[UpdateAthleteFieldKey.self] }
+        set { self[UpdateAthleteFieldKey.self] = newValue }
+    }
+    
+    var updateAthleteSkillRating: (String, Double?, Double?) -> () {
+        get { self[UpdateAthleteSkillRatingKey.self] }
+        set { self[UpdateAthleteSkillRatingKey.self] = newValue }
+    }
+    
+    var dictToTuple: (MeetDict) -> [MeetRecord] {
+        get { self[DictToTupleKey.self] }
+        set { self[DictToTupleKey.self] = newValue }
     }
 }
 
@@ -143,6 +215,14 @@ struct AdrenalineApp: App {
                 .environment(\.isIndexingMeets, isIndexingMeets)
                 .environment(\.getMaleAthletes, modelDataController.getMaleAthletes)
                 .environment(\.getFemaleAthletes, modelDataController.getFemaleAthletes)
+                .environment(\.getUser, modelDataController.getUser)
+                .environment(\.addUser, modelDataController.addUser)
+                .environment(\.addAthlete, modelDataController.addAthlete)
+                .environment(\.updateUserField, modelDataController.updateUserField)
+                .environment(\.dropUser, modelDataController.dropUser)
+                .environment(\.updateAthleteField, modelDataController.updateAthleteField)
+                .environment(\.updateAthleteSkillRating, modelDataController.updateAthleteSkillRating)
+                .environment(\.dictToTuple, modelDataController.dictToTuple)
                 .onAppear {
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without
