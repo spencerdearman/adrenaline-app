@@ -88,7 +88,6 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
 
 struct Home: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.modelDB) var db
     @StateObject var meetParser: MeetParser = MeetParser()
     @State private var meetsParsed: Bool = false
     @State private var timedOut: Bool = false
@@ -259,7 +258,7 @@ struct Home: View {
 }
 
 struct UpcomingMeetsView: View {
-    @Environment(\.modelDB) var db
+    @Environment(\.dictToTuple) private var dictToTuple
     @ObservedObject var meetParser: MeetParser
     @Binding var timedOut: Bool
     let gridItems = [GridItem(.adaptive(minimum: 300))]
@@ -277,7 +276,7 @@ struct UpcomingMeetsView: View {
     var body: some View {
         if let meets = meetParser.upcomingMeets {
             if !meets.isEmpty && !timedOut {
-                let upcoming = tupleToList(tuples: db.dictToTuple(dict: meets))
+                let upcoming = tupleToList(tuples: dictToTuple(meets))
                 if isPhone {
                     ScalingScrollView(records: upcoming, bgColor: .clear, rowSpacing: 15,
                                       shadowRadius: 10) { (elem) in
@@ -320,7 +319,6 @@ struct UpcomingMeetsView: View {
 
 
 struct CurrentMeetsView: View {
-    @Environment(\.modelDB) var db
     @ObservedObject var meetParser: MeetParser
     let gridItems = [GridItem(.adaptive(minimum: 300))]
     @Binding var timedOut: Bool
