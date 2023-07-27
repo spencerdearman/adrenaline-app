@@ -21,6 +21,7 @@ struct DiveMeetsConnectorView: View {
     @State private var linksParsed: Bool = false
     @State private var personTimedOut: Bool = false
     @State private var diveMeetsID: String = ""
+    @Binding var showSplash: Bool
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -36,7 +37,7 @@ struct DiveMeetsConnectorView: View {
             if linksParsed || personTimedOut {
                 ZStack (alignment: .topLeading) {
                     IsThisYouView(records: $parsedLinks, signupData: $signupData,
-                                  diveMeetsID: $diveMeetsID)
+                                  diveMeetsID: $diveMeetsID, showSplash: $showSplash)
                 }
             } else {
                 ZStack{
@@ -81,6 +82,7 @@ struct IsThisYouView: View {
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
+    @Binding var showSplash: Bool
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -117,13 +119,19 @@ struct IsThisYouView: View {
                             Text("Next")
                         }
                     }
+                    .simultaneousGesture(TapGesture().onEnded({
+                        withAnimation {
+                            showSplash = false
+                        }
+                    }))
                 }
                 ForEach(sortedRecords, id: \.1) { record in
                     let (key, value) = record
                     
                     NavigationLink(destination: signupData.accountType == .athlete
                                    ? AnyView(AthleteRecruitingView(signupData: $signupData,
-                                                                   diveMeetsID: $diveMeetsID))
+                                                                   diveMeetsID: $diveMeetsID,
+                                                                   showSplash: $showSplash))
                                    : AnyView(ProfileView(profileLink: ""))) {
                         HStack {
                             Spacer()
@@ -147,6 +155,12 @@ struct IsThisYouView: View {
                                        diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
                                        guard let email = signupData.email else { return }
                                        updateUserField(email, "diveMeetsID", diveMeetsID)
+                                       
+                                       if signupData.accountType != .athlete {
+                                           withAnimation {
+                                               showSplash = false
+                                           }
+                                       }
                                    })
                                    .shadow(radius: 5)
                                    .padding([.leading, .trailing])

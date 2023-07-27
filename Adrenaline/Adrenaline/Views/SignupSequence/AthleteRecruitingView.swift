@@ -46,6 +46,7 @@ struct AthleteRecruitingView: View {
     @State private var hometown: String = ""
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
+    @Binding var showSplash: Bool
     @FocusState private var focusedField: RecruitingInfoField?
     @ScaledMetric var pickerFontSize: CGFloat = 18
     // Parsing information
@@ -380,6 +381,11 @@ struct AthleteRecruitingView: View {
                             .buttonStyle(.bordered)
                             .cornerRadius(40)
                             .foregroundColor(.secondary)
+                            .simultaneousGesture(TapGesture().onEnded({
+                                withAnimation {
+                                    showSplash = false
+                                }
+                            }))
                             
                             NavigationLink(destination: AdrenalineProfileView(
                                 diveMeetsID: $diveMeetsID, signupData: $signupData)) {
@@ -402,6 +408,12 @@ struct AthleteRecruitingView: View {
                                     print(springboard, " - ", platform)
                                     guard let email = signupData.email else { return }
                                     updateAthleteSkillRating(email, springboard, platform)
+                                    
+                                    await MainActor.run {
+                                        withAnimation {
+                                            showSplash = false
+                                        }
+                                    }
                                 }
                             })
                         }

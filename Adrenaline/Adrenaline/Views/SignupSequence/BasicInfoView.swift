@@ -33,6 +33,7 @@ struct BasicInfoView: View {
     @State private var repeatPassword: String = ""
     @State private var isPasswordVisible: Bool = false
     @Binding var signupData: SignupData
+    @Binding var showSplash: Bool
     @FocusState private var focusedField: BasicInfoField?
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -204,7 +205,8 @@ struct BasicInfoView: View {
                         Spacer()
                         NavigationLink(destination: DiveMeetsConnectorView(
                             searchSubmitted: $searchSubmitted, firstName: $firstName,
-                            lastName: $lastName, signupData: $signupData)) {
+                            lastName: $lastName, signupData: $signupData,
+                            showSplash: $showSplash)) {
                                 Text("Next")
                                     .bold()
                             }
@@ -268,6 +270,7 @@ struct BasicInfoView: View {
 
 struct BasicInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        BasicInfoView(signupData: .constant(SignupData()))
+        BasicInfoView(signupData: .constant(SignupData()),
+                      showSplash: .constant(true))
     }
 }
