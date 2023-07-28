@@ -19,10 +19,13 @@ struct AppLaunchSequence: View {
     @State private var firstShowing: Bool = true
     @State var signupData = SignupData()
     @State var loginData = LoginData()
+    @Binding var showSplash: Bool
     
     func startTimer(delay: Double) {
         Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { timer in
-            options.toggle()
+            withAnimation {
+                options.toggle()
+            }
         }
     }
     
@@ -78,13 +81,14 @@ struct AppLaunchSequence: View {
                 
                 if options {
                     HStack {
-                        NavigationLink(destination: LoginSearchView()) {
+                        NavigationLink(destination: LoginSearchView(showSplash: $showSplash)) {
                             Text("Login")
                         }
                         .buttonStyle(.bordered)
                         .cornerRadius(40)
                         .foregroundColor(.primary)
-                        NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
+                        NavigationLink(destination: AccountTypeSelectView(signupData: $signupData,
+                                                                          showSplash: $showSplash)) {
                             Text("Sign Up")
                         }
                         .buttonStyle(.bordered)

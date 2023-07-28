@@ -32,6 +32,7 @@ struct LoginSearchView: View {
     @State private var isUnlocked = false
     @State var loggedIn = false
     @State var timedOut: Bool = false
+    @Binding var showSplash: Bool
     
     @ViewBuilder
     var body: some View {
@@ -54,7 +55,7 @@ struct LoginSearchView: View {
                                      loginSearchSubmitted: $loginSearchSubmitted,
                                      loginAttempted: $loginAttempted,
                                      loginSuccessful: $loginSuccessful, loggedIn: $loggedIn,
-                                     timedOut: $timedOut)
+                                     timedOut: $timedOut, showSplash: $showSplash)
             }
 //        }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -77,6 +78,7 @@ struct LoginSearchInputView: View {
     @Binding var loginSuccessful: Bool
     @Binding var loggedIn: Bool
     @Binding var timedOut: Bool
+    @Binding var showSplash: Bool
     private let cornerRadius: CGFloat = 30
     
     private var isPhone: Bool {
@@ -168,13 +170,19 @@ struct LoginSearchInputView: View {
                             searchSubmitted: $searchSubmitted, loginSuccessful: $loginSuccessful,
                             loginSearchSubmitted: $loginSearchSubmitted)
                         .zIndex(1)
+                        .onAppear {
+                            withAnimation {
+                                showSplash = false
+                            }
+                        }
                     } else {
                         LoginPageSearchView(showError: $showError, divemeetsID: $divemeetsID,
                                             password: $password, searchSubmitted: $searchSubmitted,
                                             loginAttempted: $loginAttempted,
                                             loginSuccessful: $loginSuccessful,
                                             progressView: $progressView,
-                                            timedOut: $timedOut, focusedField: $focusedField)
+                                            timedOut: $timedOut, showSplash: $showSplash,
+                                            focusedField: $focusedField)
                         .ignoresSafeArea(.keyboard)
                         .overlay{
                             VStack{}
@@ -222,6 +230,7 @@ struct LoginPageSearchView: View {
     @Binding var loginSuccessful: Bool
     @Binding var progressView: Bool
     @Binding var timedOut: Bool
+    @Binding var showSplash: Bool
     @State private var isPasswordVisible = false
     fileprivate var focusedField: FocusState<LoginField?>.Binding
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
@@ -358,7 +367,8 @@ struct LoginPageSearchView: View {
                     Text("")
                 }
                 
-                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData)) {
+                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData,
+                                                                  showSplash: $showSplash)) {
                     Text("Create an account")
                 }
                 .cornerRadius(40)

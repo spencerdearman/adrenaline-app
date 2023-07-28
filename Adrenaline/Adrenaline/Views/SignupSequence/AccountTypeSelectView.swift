@@ -17,6 +17,7 @@ struct AccountTypeSelectView: View {
     @Environment(\.dismiss) private var dismiss
     @State var selectedOption: AccountType? = nil
     @Binding var signupData: SignupData
+    @Binding var showSplash: Bool
     
     private let athleteDesc: String = "You are looking to follow the results of your sport and get noticed by college coaches"
     private let coachDesc: String = "You are looking to follow the results of your sport and seek out athletes to bring to your program"
@@ -41,7 +42,8 @@ struct AccountTypeSelectView: View {
                            selectedOption: $selectedOption, optionType: .spectator,
                            optionDescription: spectatorDesc)
                 
-                NavigationLink(destination: BasicInfoView(signupData: $signupData)) {
+                NavigationLink(destination: BasicInfoView(signupData: $signupData,
+                                                          showSplash: $showSplash)) {
                     Text("Next")
                         .bold()
                 }
@@ -109,6 +111,7 @@ struct OptionView: View {
 
 struct AccountTypeSelectView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountTypeSelectView(signupData: .constant(SignupData()))
+        AccountTypeSelectView(signupData: .constant(SignupData()),
+                              showSplash: .constant(true))
     }
 }
