@@ -13,7 +13,7 @@ let timeoutInterval: TimeInterval = 30
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
-    @State private var selectedTab: Tab = .house
+    @State private var selectedTab: Tab = .person
     @State var showSplash: Bool = false
 //    @State var firstOpen: Bool = true
     
@@ -74,12 +74,14 @@ struct ContentView: View {
                                     //.navigationViewStyle(StackNavigationViewStyle())
                                     //                                    ToolsMenu()
                                     //SearchColorfulView()
-                                    RankingsView()
-                                    //                                        UsersDBTestView()
+//                                    RankingsView()
+                                AppLaunchSequence(showSplash: $showSplash)
+//                                                                            UsersDBTestView()
                                 case .magnifyingglass:
                                     SearchView()
                                 case .person:
-                                    LoginSearchView(showSplash: $showSplash)
+                                LoginPage()
+//                                    LoginSearchView(showSplash: $showSplash)
 //                                    AppLaunchSequence()
                             }
                         }
