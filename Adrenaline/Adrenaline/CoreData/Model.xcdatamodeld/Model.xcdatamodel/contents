@@ -28,6 +28,7 @@
         <attribute name="state" optional="YES" attributeType="String"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
+        <attribute name="accountType" optional="YES" attributeType="String"/>
         <attribute name="diveMeetsID" optional="YES" attributeType="String" maxValueString="6"/>
         <attribute name="email" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>

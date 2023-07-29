@@ -23,7 +23,8 @@ struct UsersDBTestView: View {
             HStack {
                 Button("Add User") {
                     db.addUser(firstName: "Beck", lastName: "Benson",
-                               email: "rlbenson@uchicago.edu", phone: nil, password: "12345")
+                               email: "rlbenson@uchicago.edu", phone: nil, password: "12345",
+                               accountType: "Coach")
                 }
                 Spacer()
                 Button("Add Athlete") {
