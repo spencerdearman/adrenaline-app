@@ -48,6 +48,7 @@ struct AthleteRecruitingView: View {
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
     @Binding var user: User
+    @Binding var athlete: Athlete
     @FocusState private var focusedField: RecruitingInfoField?
     @ScaledMetric var pickerFontSize: CGFloat = 18
     // Parsing information
@@ -374,7 +375,7 @@ struct AthleteRecruitingView: View {
                         Spacer()
                         
                         HStack {
-                            NavigationLink(destination: AdrenalineProfileView(user: $user)) {
+                            NavigationLink(destination: AdrenalineProfileView(user: $user, athlete: $athlete)) {
                                 Text("Skip")
                                     .bold()
                             }
@@ -387,7 +388,7 @@ struct AthleteRecruitingView: View {
                                 }
                             }))
                             
-                            NavigationLink(destination: AdrenalineProfileView(user: $user)) {
+                            NavigationLink(destination: AdrenalineProfileView(user: $user, athlete: $athlete)) {
                                 Text("Next")
                                     .bold()
                             }

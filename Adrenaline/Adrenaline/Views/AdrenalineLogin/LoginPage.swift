@@ -8,81 +8,6 @@
 import SwiftUI
 import LocalAuthentication
 
-struct LoginPage: View {
-    @Environment(\.getUser) private var getUser
-    @Environment(\.validatePassword) private var validatePassword
-    @Environment(\.getAthlete) private var getAthlete
-    @State var isPasswordVisible: Bool = false
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var loginData: LoginData = LoginData()
-    
-    private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
-    
-    private func emailInDatabase(email: String) -> Bool {
-        return getUser(email) != nil
-    }
-    
-    var body: some View {
-        VStack {
-            TextField("Email", text: $email)
-                .disableAutocorrection(true)
-                .textFieldStyle(.roundedBorder)
-                .autocapitalization(.none)
-                .textContentType(.newPassword)
-                .multilineTextAlignment(.center)
-                .padding()
-                .onChange(of: email) { _ in
-                    loginData.username = email
-                }
-            HStack {
-                (isPasswordVisible
-                 ? AnyView(TextField("Password", text: $password))
-                 : AnyView(SecureField("Password", text: $password)))
-                .disableAutocorrection(true)
-                .textFieldStyle(.roundedBorder)
-                .autocapitalization(.none)
-                .textContentType(.newPassword)
-                .multilineTextAlignment(.center)
-                .onChange(of: password) { _ in
-                    loginData.password = password
-                }
-                Button(action: {
-                    isPasswordVisible.toggle()
-                }) {
-                    Image(systemName: isPasswordVisible
-                          ? "eye.circle"
-                          : "eye.slash.circle")
-                    .foregroundColor(.gray)
-                }
-            }
-            .padding()
-            Button {
-                if emailInDatabase(email: email) {
-                    let canLogin = validatePassword(email, password)
-                    print(canLogin)
-                    let u = getUser(email)
-                    print(u?.diveMeetsID)
-                    print(u?.firstName)
-                    print(u?.lastName)
-                    let a = getAthlete(email)
-                    print(a?.firstName)
-                }
-            } label: {
-                Text("Login")
-            }
-
-        }
-        .frame(width: screenWidth * 0.8)
-    }
-}
-
-enum AdrenalineLoginField: Int, Hashable, CaseIterable {
-    case username
-    case password
-}
-
 private func checkFields(divemeetsID: String = "",
                          password: String = "") -> Bool {
     return divemeetsID != "" && password != ""
@@ -90,19 +15,18 @@ private func checkFields(divemeetsID: String = "",
 
 struct AdrenalineSearchView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.getUser) private var getUser
+    @Environment(\.validatePassword) private var validatePassword
+    @Environment(\.getAthlete) private var getAthlete
     @State var showError: Bool = false
     @FocusState private var focusedField: LoginField?
     @State var progressView = true
-    @Binding var createdKey: Bool
-    @Binding var divemeetsID: String
-    @Binding var password: String
-    @Binding var searchSubmitted: Bool
-    @Binding var parsedUserHTML: String
-    @Binding var loginSearchSubmitted: Bool
-    @Binding var loginAttempted: Bool
-    @Binding var loginSuccessful: Bool
-    @Binding var loggedIn: Bool
-    @Binding var timedOut: Bool
+    @State var isPasswordVisible: Bool = false
+    @State var email: String = ""
+    @State var password: String = ""
+    @State var user: User = User()
+    @State var athlete: Athlete = Athlete()
+    @State var loginSuccessful: Bool = false
     @Binding var showSplash: Bool
     private let cornerRadius: CGFloat = 30
     
@@ -141,7 +65,8 @@ struct AdrenalineSearchView: View {
                                           ? -geometry.size.width * 0.55
                                           : -geometry.size.width * 0.85)
                                 .shadow(radius: 15)
-                                .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
+                                .frame(height: loginSuccessful ? geometry.size.height * 0.7 :
+                                        geometry.size.height)
                                 .clipped().ignoresSafeArea()
                             Circle()
                             // Circle color
@@ -188,12 +113,7 @@ struct AdrenalineSearchView: View {
                 }
                 VStack {
                     if loginSuccessful {
-                        LoginProfile(
-                            link: "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
-                            + divemeetsID, diverID: divemeetsID, loggedIn: $loggedIn,
-                            divemeetsID: $divemeetsID, password: $password,
-                            searchSubmitted: $searchSubmitted, loginSuccessful: $loginSuccessful,
-                            loginSearchSubmitted: $loginSearchSubmitted)
+                        AdrenalineProfileView(user: $user, athlete: $athlete)
                         .zIndex(1)
                         .onAppear {
                             withAnimation {
@@ -201,14 +121,9 @@ struct AdrenalineSearchView: View {
                             }
                         }
                     } else {
-                        AdrenalineLoginView(showError: $showError, divemeetsID: $divemeetsID,
-                                            password: $password, searchSubmitted: $searchSubmitted,
-                                            loginAttempted: $loginAttempted,
-                                            loginSuccessful: $loginSuccessful,
-                                            progressView: $progressView,
-                                            timedOut: $timedOut, showSplash: $showSplash,
-                                            focusedField: $focusedField)
-                        .ignoresSafeArea(.keyboard)
+                        LoginPage(email: $email, password: $password, user: $user,
+                                  athlete: $athlete, loginSuccessful: $loginSuccessful,
+                                  showSplash: $showSplash, focusedField: $focusedField)
                     }
                 }
             }
@@ -221,20 +136,18 @@ struct AdrenalineSearchView: View {
 }
 
 
-struct AdrenalineLoginView: View {
+struct LoginPage: View {
     @Environment(\.dismiss) private var dismiss
-    @State var signupData = SignupData()
-    @State var loginData = LoginData()
-    @Binding var showError: Bool
-    @Binding var divemeetsID: String
+    @Environment(\.getUser) private var getUser
+    @Environment(\.validatePassword) private var validatePassword
+    @Environment(\.getAthlete) private var getAthlete
+    @State var isPasswordVisible: Bool = false
+    @Binding var email: String
     @Binding var password: String
-    @Binding var searchSubmitted: Bool
-    @Binding var loginAttempted: Bool
+    @Binding var user: User
+    @Binding var athlete: Athlete
     @Binding var loginSuccessful: Bool
-    @Binding var progressView: Bool
-    @Binding var timedOut: Bool
     @Binding var showSplash: Bool
-    @State private var isPasswordVisible = false
     fileprivate var focusedField: FocusState<LoginField?>.Binding
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private let screenWidth = UIScreen.main.bounds.width
@@ -243,15 +156,13 @@ struct AdrenalineLoginView: View {
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
-    
-    private var errorMessage: Bool {
-        loginAttempted && !loginSuccessful && !timedOut
+    private func emailInDatabase(email: String) -> Bool {
+        return getUser(email) != nil
     }
+    
     private var isPhone: Bool {
         UIDevice.current.userInterfaceIdiom != .pad
     }
-    
-    private let failTimeout: Double = 3
     
     var body: some View {
         BackgroundBubble() {
@@ -268,10 +179,10 @@ struct AdrenalineLoginView: View {
                 .font(.title)
                 .padding()
                 HStack {
-                    Text("DiveMeets ID:")
+                    Text("Email:")
                         .padding(.leading)
-                    TextField("DiveMeets ID", text: $divemeetsID)
-                        .modifier(LoginTextFieldClearButton(text: $divemeetsID,
+                    TextField("Email", text: $email)
+                        .modifier(LoginTextFieldClearButton(text: $email,
                                                             fieldType: .diveMeetsId,
                                                             focusedField: focusedField))
                         .textContentType(.username)
@@ -316,20 +227,22 @@ struct AdrenalineLoginView: View {
                 }
                 
                 Button(action: {
-                    // Need to initially set search to false so webView gets recreated
-                    searchSubmitted = false
-                    loginAttempted = false
-                    timedOut = false
-                    focusedField.wrappedValue = nil
-                    // Only submits a search if one of the relevant fields is filled,
-                    // otherwise toggles error
-                    if checkFields(divemeetsID: divemeetsID,
-                                   password: password) {
-                        showError = false
-                        searchSubmitted = true
-                    } else {
-                        showError = true
-                        searchSubmitted = false
+                    loginSuccessful = false
+                    if emailInDatabase(email: email) {
+                        let canLogin = validatePassword(email, password)
+                        print(canLogin)
+                        
+                        let u = getUser(email)
+                        let a = getAthlete(email)
+                        
+                        print(u?.diveMeetsID)
+                        print(u?.firstName)
+                        print(u?.lastName)
+                        print(a?.firstName)
+                        
+                        user = u ?? User()
+                        athlete = a ?? Athlete()
+                        loginSuccessful = true
                     }
                 }, label: {
                     Text("Submit")
@@ -338,55 +251,12 @@ struct AdrenalineLoginView: View {
                 })
                 .buttonStyle(.bordered)
                 .cornerRadius(cornerRadius)
-                if (searchSubmitted && !loginSuccessful) {
-                    VStack {
-                        if !errorMessage && !timedOut {
-                            ProgressView()
-                        }
-                    }
-                    
-                    VStack {
-                        if errorMessage && !timedOut {
-                            Text("Login unsuccessful, please try again")
-                                .scaledToFit()
-                                .dynamicTypeSize(.xSmall ... .xxxLarge)
-                                .lineLimit(2)
-                        } else if timedOut {
-                            Text("Unable to log in, network timed out")
-                                .scaledToFit()
-                                .dynamicTypeSize(.xSmall ... .xxxLarge)
-                                .lineLimit(2)
-                        } else {
-                            Text("")
-                        }
-                    }
-                }
-                if showError {
-                    Text("You must enter both fields to search")
-                        .dynamicTypeSize(.xSmall ... .xxxLarge)
-                        .foregroundColor(Color.red)
-                    
-                } else {
-                    Text("")
-                }
-                
-                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData,
-                                                                  showSplash: $showSplash)) {
-                    Text("Create an account")
-                }
-                .cornerRadius(40)
-                .foregroundColor(Custom.medBlue)
-            }
-            .onAppear {
-                loginData.loadStoredCredentials()
-                divemeetsID = ""
-                password = ""
-                
-                if let username = loginData.username,
-                   let password = loginData.password {
-                    print("Username: \(username)")
-                    print("Password: \(password)")
-                }
+//                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData,
+//                                                                  showSplash: $showSplash)) {
+//                    Text("Create an account")
+//                }
+//                .cornerRadius(40)
+//                .foregroundColor(Custom.medBlue)
             }
             .frame(width: screenWidth * 0.75)
             .padding(.bottom, maxHeightOffset)
@@ -405,8 +275,8 @@ struct AdrenalineLoginView: View {
 }
 
 
-struct LoginPage_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginPage()
-    }
-}
+//struct LoginPage_Previews: PreviewProvider {
+//    static var previews: some View {
+//        LoginPage()
+//    }
+//}
