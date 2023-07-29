@@ -78,11 +78,13 @@ struct DiveMeetsConnectorView: View {
 struct IsThisYouView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.updateUserField) private var updateUserField
+    @Environment(\.getUser) private var getUser
     @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
+    @State var user: User = User()
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -113,10 +115,17 @@ struct IsThisYouView: View {
                     Text("No DiveMeets Profile Found")
                         .font(.title).fontWeight(.semibold)
                     NavigationLink {
-                        AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
+                        AdrenalineProfileView(user: $user)
                     } label: {
                         BackgroundBubble() {
                             Text("Next")
+                        }
+                    }
+                    .onAppear {
+                        if let u = getUser(signupData.email ?? "") {
+                            user = u
+                        } else {
+                            print("User could not be loaded")
                         }
                     }
                     .simultaneousGesture(TapGesture().onEnded({
@@ -131,7 +140,7 @@ struct IsThisYouView: View {
                     NavigationLink(destination: signupData.accountType == .athlete
                                    ? AnyView(AthleteRecruitingView(signupData: $signupData,
                                                                    diveMeetsID: $diveMeetsID,
-                                                                   showSplash: $showSplash))
+                                                                   showSplash: $showSplash, user: $user))
                                    : AnyView(ProfileView(profileLink: ""))) {
                         HStack {
                             Spacer()

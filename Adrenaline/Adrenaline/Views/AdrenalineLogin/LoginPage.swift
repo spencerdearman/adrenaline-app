@@ -11,6 +11,7 @@ import LocalAuthentication
 struct LoginPage: View {
     @Environment(\.getUser) private var getUser
     @Environment(\.validatePassword) private var validatePassword
+    @Environment(\.getAthlete) private var getAthlete
     @State var isPasswordVisible: Bool = false
     @State var email: String = ""
     @State var password: String = ""
@@ -61,6 +62,12 @@ struct LoginPage: View {
                 if emailInDatabase(email: email) {
                     let canLogin = validatePassword(email, password)
                     print(canLogin)
+                    let u = getUser(email)
+                    print(u?.diveMeetsID)
+                    print(u?.firstName)
+                    print(u?.lastName)
+                    let a = getAthlete(email)
+                    print(a?.firstName)
                 }
             } label: {
                 Text("Login")
@@ -194,7 +201,7 @@ struct AdrenalineSearchView: View {
                             }
                         }
                     } else {
-                        LoginPageSearchView(showError: $showError, divemeetsID: $divemeetsID,
+                        AdrenalineLoginView(showError: $showError, divemeetsID: $divemeetsID,
                                             password: $password, searchSubmitted: $searchSubmitted,
                                             loginAttempted: $loginAttempted,
                                             loginSuccessful: $loginSuccessful,
@@ -202,28 +209,6 @@ struct AdrenalineSearchView: View {
                                             timedOut: $timedOut, showSplash: $showSplash,
                                             focusedField: $focusedField)
                         .ignoresSafeArea(.keyboard)
-                        .overlay{
-                            VStack{}
-                                .toolbar {
-                                    ToolbarItemGroup(placement: .keyboard) {
-                                        Button(action: previous) {
-                                            Image(systemName: "chevron.up")
-                                        }
-                                        .disabled(hasReachedStart)
-                                        
-                                        Button(action: next) {
-                                            Image(systemName: "chevron.down")
-                                        }
-                                        .disabled(hasReachedEnd)
-                                        
-                                        Spacer()
-                                        
-                                        Button(action: dismissKeyboard) {
-                                            Text("**Done**")
-                                        }
-                                    }
-                                }
-                        }
                     }
                 }
             }
@@ -236,7 +221,7 @@ struct AdrenalineSearchView: View {
 }
 
 
-struct LoginPageSearchView: View {
+struct AdrenalineLoginView: View {
     @Environment(\.dismiss) private var dismiss
     @State var signupData = SignupData()
     @State var loginData = LoginData()
@@ -416,38 +401,6 @@ struct LoginPageSearchView: View {
         }
         .offset(y: isPhone ? screenHeight * 0.1 : 0)
         .ignoresSafeArea(.keyboard)
-    }
-}
-
-
-
-private extension LoginSearchInputView {
-    var hasReachedStart: Bool {
-        self.focusedField == LoginField.allCases.first
-    }
-    
-    var hasReachedEnd: Bool {
-        self.focusedField == LoginField.allCases.last
-    }
-    
-    func dismissKeyboard() {
-        self.focusedField = nil
-    }
-    
-    func next() {
-        guard let currentInput = focusedField,
-              let lastIndex = LoginField.allCases.last?.rawValue else { return }
-        
-        let index = min(currentInput.rawValue + 1, lastIndex)
-        self.focusedField = LoginField(rawValue: index)
-    }
-    
-    func previous() {
-        guard let currentInput = focusedField,
-              let firstIndex = LoginField.allCases.first?.rawValue else { return }
-        
-        let index = max(currentInput.rawValue - 1, firstIndex)
-        self.focusedField = LoginField(rawValue: index)
     }
 }
 
