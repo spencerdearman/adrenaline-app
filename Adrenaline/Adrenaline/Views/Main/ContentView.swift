@@ -80,7 +80,7 @@ struct ContentView: View {
                                 case .magnifyingglass:
                                     SearchView()
                                 case .person:
-                                LoginPage()
+                                AdrenalineSearchView(showSplash: $showSplash)
 //                                    LoginSearchView(showSplash: $showSplash)
 //                                    AppLaunchSequence()
                             }

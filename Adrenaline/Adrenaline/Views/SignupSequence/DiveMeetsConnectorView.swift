@@ -79,12 +79,14 @@ struct IsThisYouView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.updateUserField) private var updateUserField
     @Environment(\.getUser) private var getUser
+    @Environment(\.getAthlete) private var getAthlete
     @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
     @State var user: User = User()
+    @State var athlete: Athlete = Athlete()
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -115,7 +117,7 @@ struct IsThisYouView: View {
                     Text("No DiveMeets Profile Found")
                         .font(.title).fontWeight(.semibold)
                     NavigationLink {
-                        AdrenalineProfileView(user: $user)
+                        AdrenalineProfileView(user: $user, athlete: $athlete)
                     } label: {
                         BackgroundBubble() {
                             Text("Next")
@@ -126,6 +128,11 @@ struct IsThisYouView: View {
                             user = u
                         } else {
                             print("User could not be loaded")
+                        }
+                        if let a = getAthlete(signupData.email ?? "") {
+                            athlete = a
+                        } else {
+                            print("Athlete could not be loaded")
                         }
                     }
                     .simultaneousGesture(TapGesture().onEnded({
@@ -140,7 +147,7 @@ struct IsThisYouView: View {
                     NavigationLink(destination: signupData.accountType == .athlete
                                    ? AnyView(AthleteRecruitingView(signupData: $signupData,
                                                                    diveMeetsID: $diveMeetsID,
-                                                                   showSplash: $showSplash, user: $user))
+                                                                   showSplash: $showSplash, user: $user, athlete: $athlete))
                                    : AnyView(ProfileView(profileLink: ""))) {
                         HStack {
                             Spacer()

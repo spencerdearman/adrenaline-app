@@ -15,7 +15,7 @@ struct AdrenalineProfileView: View {
     //@Binding var diveMeetsID: String
     @Binding var user: User
     //@Binding var signupData: SignupData
-    var athleteData: Athlete?
+    @Binding var athlete: Athlete
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
