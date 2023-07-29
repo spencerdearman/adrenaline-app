@@ -375,7 +375,7 @@ struct AthleteRecruitingView: View {
                         Spacer()
                         
                         HStack {
-                            NavigationLink(destination: AdrenalineProfileView(user: $user, athlete: $athlete)) {
+                            NavigationLink(destination: AdrenalineProfileView(user: $user)) {
                                 Text("Skip")
                                     .bold()
                             }
@@ -388,7 +388,7 @@ struct AthleteRecruitingView: View {
                                 }
                             }))
                             
-                            NavigationLink(destination: AdrenalineProfileView(user: $user, athlete: $athlete)) {
+                            NavigationLink(destination: AdrenalineProfileView(user: $user)) {
                                 Text("Next")
                                     .bold()
                             }

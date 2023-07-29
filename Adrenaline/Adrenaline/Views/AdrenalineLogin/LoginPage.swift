@@ -113,7 +113,7 @@ struct AdrenalineSearchView: View {
                 }
                 VStack {
                     if loginSuccessful {
-                        AdrenalineProfileView(user: $user, athlete: $athlete)
+                        AdrenalineProfileView(user: $user)
                         .zIndex(1)
                         .onAppear {
                             withAnimation {
@@ -122,7 +122,7 @@ struct AdrenalineSearchView: View {
                         }
                     } else {
                         LoginPage(email: $email, password: $password, user: $user,
-                                  athlete: $athlete, loginSuccessful: $loginSuccessful,
+                                  loginSuccessful: $loginSuccessful,
                                   showSplash: $showSplash, focusedField: $focusedField)
                     }
                 }
@@ -145,7 +145,6 @@ struct LoginPage: View {
     @Binding var email: String
     @Binding var password: String
     @Binding var user: User
-    @Binding var athlete: Athlete
     @Binding var loginSuccessful: Bool
     @Binding var showSplash: Bool
     fileprivate var focusedField: FocusState<LoginField?>.Binding
@@ -229,18 +228,18 @@ struct LoginPage: View {
                 Button(action: {
                     loginSuccessful = false
                     if emailInDatabase(email: email) {
-                        let canLogin = validatePassword(email, password)
-                        print(canLogin)
                         
+                        if getAthlete(email) != nil {
+                            print("Is an athlete")
+                        }
                         let u = getUser(email)
                         let a = getAthlete(email)
                         user = u ?? User()
-                        athlete = a ?? Athlete()
+                        print(u?.accountType)
                         print(u?.diveMeetsID)
                         print(u?.firstName)
                         print(u?.lastName)
-                        print(a?.firstName)
-                        //loginSuccessful = true
+                        loginSuccessful = true
                     }
                 }, label: {
                     Text("Submit")

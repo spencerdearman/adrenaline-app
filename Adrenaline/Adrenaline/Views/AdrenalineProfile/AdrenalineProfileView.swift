@@ -10,12 +10,13 @@ import SwiftUI
 struct AdrenalineProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.getUser) private var getUser
+    @Environment(\.getAthlete) private var getAthlete
     var firstSignIn: Bool = false
     @State private var offSet: CGFloat = 0
     //@Binding var diveMeetsID: String
     @Binding var user: User
     //@Binding var signupData: SignupData
-    @Binding var athlete: Athlete
+    @State var athlete: Athlete = Athlete()
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -38,8 +39,7 @@ struct AdrenalineProfileView: View {
             BackgroundSpheres()
                 .ignoresSafeArea()
                 .onAppear {
-                    offSet = screenHeight * 0.48
-                    print(athlete.firstName ?? "")
+                    offSet = screenHeight * 0.45
                 }
             
             VStack {
@@ -53,32 +53,47 @@ struct AdrenalineProfileView: View {
                             VStack {
                                 Text((user.firstName ?? "") + " " + (user.lastName
                                                     ?? "")) .font(.title3).fontWeight(.semibold)
-//                                Text(athlete3.accountType ?? "")
-//                                    .foregroundColor(.secondary)
+                                Text(user.accountType ?? "")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .onAppear {
+                            print(user.accountType)
+                            if let email = user.email {
+                                if let a = getAthlete(email) {
+                                    athlete = a
+                                    print(athlete.hometown)
+                                } else {
+                                    print("Athlete is not available")
+                                }
+                            } else {
+                                print("email not accessible")
                             }
                         }
                         
-//                        BackgroundBubble() {
-//                            HStack {
-//                                HStack{
-//                                    Image(systemName: "mappin.and.ellipse")
-//                                    if athlete.hometown == "" {
-//                                        Text("?")
-//                                    } else {
-//                                        Text(formatLocationString(athlete.hometown ?? " "))
-//                                    }
-//                                }
-//                                HStack {
-//                                    Image(systemName: "person.fill")
-//                                    if athlete.age == 0 {
-//                                        Text("?")
-//                                    } else {
-//                                        Text(String(athlete.age))
-//                                    }
-//
-//                                }
-//                            }
-//                        }
+                        if user.accountType == "Athlete" {
+                            let a = getAthlete(user.email ?? "")
+                            BackgroundBubble() {
+                                HStack {
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        if let hometown = a?.hometown, !hometown.isEmpty {
+                                            Text(formatLocationString(hometown))
+                                        } else {
+                                            Text("?")
+                                        }
+                                    }
+                                    HStack {
+                                        Image(systemName: "person.fill")
+                                        if let age = a?.age {
+                                            Text(String(age))
+                                        } else {
+                                            Text("?")
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     Spacer()
                 }
@@ -105,21 +120,20 @@ struct AdrenalineProfileView: View {
                     .shadow(radius: 10)
                     .frame(width: screenWidth, height: screenHeight * 1.05)
                 VStack {
-                    DiverView(user: $user)
-//                    if let type = signupData.accountType?.rawValue {
-//                        if type == AccountType.athlete.rawValue {
-//                            DiverView(user: $user)
-//                        } else if type == AccountType.coach.rawValue {
-//                            Text("This is a coaching profile")
-//                            CoachView(diveMeetsID: $diveMeetsID)
-//                        } else if type == AccountType.spectator.rawValue {
-//                            Text("This is a spectator profile")
-//                        } else {
-//                            Text("The account type has not been specified")
-//                        }
-//                    } else {
-//                        Text("Account type not selected")
-//                    }
+                    if let type = user.accountType {
+                        if type == AccountType.athlete.rawValue {
+                            DiverView(user: $user)
+                        } else if type == AccountType.coach.rawValue {
+                            Text("This is a coaching profile")
+                            CoachView(user: $user)
+                        } else if type == AccountType.spectator.rawValue {
+                            Text("This is a spectator profile")
+                        } else {
+                            Text("The account type has not been specified")
+                        }
+                    } else {
+                        Text("Account type not selected")
+                    }
                 }
             }
             .offset(y: offSet)
@@ -128,7 +142,7 @@ struct AdrenalineProfileView: View {
                     if direction == .up {
                         offSet = screenHeight * 0.13
                     } else if direction == .down {
-                        offSet = screenHeight * 0.48
+                        offSet = screenHeight * 0.45
                     }
                 }
             }

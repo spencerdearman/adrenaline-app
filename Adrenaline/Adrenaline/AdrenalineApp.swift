@@ -160,7 +160,7 @@ extension EnvironmentValues {
     
     var getAthlete: (String) -> Athlete? {
         get { self[GetAthleteKey.self] }
-        set { self[GetAthleteKey.self] }
+        set { self[GetAthleteKey.self] = newValue }
     }
     
     var addUser: (String, String, String, String?, String, String) -> () {
