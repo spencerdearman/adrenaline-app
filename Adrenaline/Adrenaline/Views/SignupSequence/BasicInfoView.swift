@@ -22,6 +22,7 @@ struct BasicInfoView: View {
     @Environment(\.getUser) private var getUser
     @Environment(\.addUser) private var addUser
     @Environment(\.addAthlete) private var addAthlete
+    @Environment(\.getAthlete) private var getAthlete
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var email: String = ""
@@ -32,6 +33,8 @@ struct BasicInfoView: View {
     @State private var password: String = ""
     @State private var repeatPassword: String = ""
     @State private var isPasswordVisible: Bool = false
+    @State var user: User = User()
+    @State var athlete: Athlete = Athlete()
     @Binding var signupData: SignupData
     @Binding var showSplash: Bool
     @FocusState private var focusedField: BasicInfoField?
@@ -206,7 +209,7 @@ struct BasicInfoView: View {
                         NavigationLink(destination: DiveMeetsConnectorView(
                             searchSubmitted: $searchSubmitted, firstName: $firstName,
                             lastName: $lastName, signupData: $signupData,
-                            showSplash: $showSplash)) {
+                            showSplash: $showSplash, user: $user, athlete: $athlete)) {
                                 Text("Next")
                                     .bold()
                             }
@@ -220,6 +223,17 @@ struct BasicInfoView: View {
                                 } else if let accountType = signupData.accountType {
                                     addUser(firstName, lastName,
                                             email, phone, password, accountType.rawValue)
+                                }
+                                if let u = getUser(signupData.email ?? "") {
+                                    user = u
+                                } else {
+                                    print("User could not be loaded")
+                                }
+                                if let a = getAthlete(signupData.email ?? "") {
+                                    print(a.firstName)
+                                    athlete = a
+                                } else {
+                                    print("Athlete could not be loaded")
                                 }
                             })
                             .buttonStyle(.bordered)

@@ -234,14 +234,13 @@ struct LoginPage: View {
                         
                         let u = getUser(email)
                         let a = getAthlete(email)
+                        user = u ?? User()
+                        athlete = a ?? Athlete()
                         print(u?.diveMeetsID)
                         print(u?.firstName)
                         print(u?.lastName)
                         print(a?.firstName)
-                        
-                        user = u ?? User()
-                        athlete = a ?? Athlete()
-                        loginSuccessful = true
+                        //loginSuccessful = true
                     }
                 }, label: {
                     Text("Submit")
