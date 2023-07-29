@@ -22,6 +22,8 @@ struct DiveMeetsConnectorView: View {
     @State private var personTimedOut: Bool = false
     @State private var diveMeetsID: String = ""
     @Binding var showSplash: Bool
+    @Binding var user: User
+    @Binding var athlete: Athlete
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -37,7 +39,8 @@ struct DiveMeetsConnectorView: View {
             if linksParsed || personTimedOut {
                 ZStack (alignment: .topLeading) {
                     IsThisYouView(records: $parsedLinks, signupData: $signupData,
-                                  diveMeetsID: $diveMeetsID, showSplash: $showSplash)
+                                  diveMeetsID: $diveMeetsID, showSplash: $showSplash,
+                                  user: $user, athlete: $athlete)
                 }
             } else {
                 ZStack{
@@ -85,8 +88,8 @@ struct IsThisYouView: View {
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
-    @State var user: User = User()
-    @State var athlete: Athlete = Athlete()
+    @Binding var user: User
+    @Binding var athlete: Athlete
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -121,18 +124,6 @@ struct IsThisYouView: View {
                     } label: {
                         BackgroundBubble() {
                             Text("Next")
-                        }
-                    }
-                    .onAppear {
-                        if let u = getUser(signupData.email ?? "") {
-                            user = u
-                        } else {
-                            print("User could not be loaded")
-                        }
-                        if let a = getAthlete(signupData.email ?? "") {
-                            athlete = a
-                        } else {
-                            print("Athlete could not be loaded")
                         }
                     }
                     .simultaneousGesture(TapGesture().onEnded({
