@@ -60,6 +60,10 @@ private struct GetUserKey: EnvironmentKey {
     static let defaultValue: (String) -> User? = { _ in return nil }
 }
 
+private struct GetAthleteKey: EnvironmentKey {
+    static let defaultValue: (String) -> Athlete? = { _ in return nil }
+}
+
 private struct AddUserKey: EnvironmentKey {
     static let defaultValue: (String, String, String, String?, String, String) -> () = {
         _, _, _, _, _, _ in }
@@ -154,6 +158,11 @@ extension EnvironmentValues {
         set { self[GetUserKey.self] = newValue }
     }
     
+    var getAthlete: (String) -> Athlete? {
+        get { self[GetAthleteKey.self] }
+        set { self[GetAthleteKey.self] }
+    }
+    
     var addUser: (String, String, String, String?, String, String) -> () {
         get { self[AddUserKey.self] }
         set { self[AddUserKey.self] = newValue }
@@ -226,6 +235,7 @@ struct AdrenalineApp: App {
                 .environment(\.getMaleAthletes, modelDataController.getMaleAthletes)
                 .environment(\.getFemaleAthletes, modelDataController.getFemaleAthletes)
                 .environment(\.getUser, modelDataController.getUser)
+                .environment(\.getAthlete, modelDataController.getAthlete)
                 .environment(\.addUser, modelDataController.addUser)
                 .environment(\.addAthlete, modelDataController.addAthlete)
                 .environment(\.updateUserField, modelDataController.updateUserField)
