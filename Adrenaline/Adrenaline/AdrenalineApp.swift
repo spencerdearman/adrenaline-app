@@ -61,7 +61,8 @@ private struct GetUserKey: EnvironmentKey {
 }
 
 private struct AddUserKey: EnvironmentKey {
-    static let defaultValue: (String, String, String, String?, String) -> () = { _, _, _, _, _ in }
+    static let defaultValue: (String, String, String, String?, String, String) -> () = {
+        _, _, _, _, _, _ in }
 }
 
 private struct AddAthleteKey: EnvironmentKey {
@@ -143,13 +144,13 @@ extension EnvironmentValues {
         get { self[GetFemaleAthletesKey.self] }
         set { self[GetFemaleAthletesKey.self] = newValue }
     }
-        
+    
     var getUser: (String) -> User? {
         get { self[GetUserKey.self] }
         set { self[GetUserKey.self] = newValue }
     }
     
-    var addUser: (String, String, String, String?, String) -> () {
+    var addUser: (String, String, String, String?, String, String) -> () {
         get { self[AddUserKey.self] }
         set { self[AddUserKey.self] = newValue }
     }
@@ -232,24 +233,33 @@ struct AdrenalineApp: App {
                         
                         // Runs this task asynchronously so rest of app can function while this finishes
                         Task {
-                            //                        await SkillRating(diveStatistics: nil).testMetrics(0)
-                            //                        await SkillRating(diveStatistics: nil).testMetrics(0, includePlatform: false)
-                            //                        await SkillRating(diveStatistics: nil).testMetrics(0, onlyPlatform: true)
+                            // await SkillRating(diveStatistics: nil).testMetrics(0)
+                            // await SkillRating(diveStatistics: nil)
+                            //     .testMetrics(0, includePlatform: false)
+                            // await SkillRating(diveStatistics: nil)
+                            //     .testMetrics(0, onlyPlatform: true)
                             let moc = modelDataController.container.viewContext
-                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "DivingMeet")
+                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
+                                entityName: "DivingMeet")
                             let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
                             
                             try await meetParser.parseMeets(storedMeets: meets)
                             
                             // Check that each set of meets is not nil and add each to the database
                             if let upcoming = meetParser.upcomingMeets {
-                                modelDataController.addRecords(records: modelDataController.dictToTuple(dict: upcoming), type: .upcoming)
+                                modelDataController.addRecords(
+                                    records: modelDataController.dictToTuple(dict: upcoming),
+                                    type: .upcoming)
                             }
                             if let current = meetParser.currentMeets {
-                                modelDataController.addRecords(records: modelDataController.dictToTuple(dict: current), type: .current)
+                                modelDataController.addRecords(
+                                    records: modelDataController.dictToTuple(dict: current),
+                                    type: .current)
                             }
                             if let past = meetParser.pastMeets {
-                                modelDataController.addRecords(records: modelDataController.dictToTuple(dict: past), type: .past)
+                                modelDataController.addRecords(
+                                    records: modelDataController.dictToTuple(dict: past),
+                                    type: .past)
                             }
                             
                             isIndexingMeets = false

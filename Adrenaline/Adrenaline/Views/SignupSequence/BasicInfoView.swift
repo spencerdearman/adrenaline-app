@@ -217,9 +217,9 @@ struct BasicInfoView: View {
                                 if signupData.accountType == .athlete {
                                     addAthlete(firstName, lastName,
                                                email, phone, password)
-                                } else {
+                                } else if let accountType = signupData.accountType {
                                     addUser(firstName, lastName,
-                                            email, phone, password)
+                                            email, phone, password, accountType.rawValue)
                                 }
                             })
                             .buttonStyle(.bordered)

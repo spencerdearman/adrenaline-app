@@ -305,7 +305,7 @@ class ModelDataController: ObservableObject {
     
     // Adds a generic User to database (coach, spectator)
     func addUser(firstName: String, lastName: String, email: String, phone: String?,
-                 password: String) {
+                 password: String, accountType: String) {
         let moc = container.viewContext
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
@@ -331,6 +331,7 @@ class ModelDataController: ObservableObject {
         let (encryptedPassword, salt) = encryptPassword(password)
         user.password = encryptedPassword
         user.passwordSalt = salt
+        user.accountType = accountType
         
         try? moc.save()
     }
@@ -363,6 +364,7 @@ class ModelDataController: ObservableObject {
         let (encryptedPassword, salt) = encryptPassword(password)
         user.password = encryptedPassword
         user.passwordSalt = salt
+        user.accountType = "Athlete"
         
         try? moc.save()
     }
