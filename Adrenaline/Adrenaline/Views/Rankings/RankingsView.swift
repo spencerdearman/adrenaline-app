@@ -20,6 +20,9 @@ enum GenderInt: Int, CaseIterable {
 
 //                            [(Athlete, springboard, platform, total)]]
 typealias GenderRankingList = [(Athlete, Double, Double, Double)]
+typealias RankingListItem = (Athlete, Double)
+typealias RankingList = [RankingListItem]
+typealias NumberedRankingList = [(Int, RankingListItem)]
 
 struct RankingsView: View {
     @Environment(\.colorScheme) var currentMode
@@ -109,7 +112,7 @@ struct RankingListView: View {
     @Binding var maleRatings: GenderRankingList
     @Binding var femaleRatings: GenderRankingList
     
-    private func getSortedRankingList() -> [(Athlete, Double)] {
+    private func getSortedRankingList() -> RankingList {
         let list = gender == .male ? maleRatings : femaleRatings
         let keep = list.map {
             switch rankingType {
@@ -135,16 +138,58 @@ struct RankingListView: View {
         })
     }
     
+    // This should be called after sorting to get a number for that result in the ranking list view
+    private func numberSortedRankingList(_ list: RankingList) -> NumberedRankingList {
+        var result: NumberedRankingList = []
+        
+        var everyIdx: Int = 0
+        var curIdx: Int = 0
+        var curRating: Double = 100.1
+        
+        do {
+            for item in list {
+                let rating = item.1
+                
+                // Fails fast if unsorted list is passed in (ratings should be in descending order)
+                if rating > curRating {
+                    throw ParseError("Numbering ranking list failed")
+                }
+
+                // If the rating is strictly less than the previous, then it updates the assigned
+                // number to the next number of the items it has seen (this keeps track of the
+                // total number of items seen so when there are ties, the next stricly lower rating
+                // will be appropriately ranked)
+                if rating < curRating {
+                    curRating = rating
+                    curIdx = everyIdx + 1
+                }
+                // If the rating is equal to the previous, the current rating need not be updated
+                // and the current index stays the same (this creates multiple of the same ranking
+                // number for ratings that are equal)
+
+                result.append((curIdx, item))
+                
+                everyIdx += 1
+            }
+        } catch {
+            print("Failed to number list, items not sorted in descending order")
+            return []
+        }
+        
+        return result
+    }
+    
     var body: some View {
-        let sortedList = getSortedRankingList()
+        let numberedList = numberSortedRankingList(getSortedRankingList())
         ScrollView(showsIndicators: false) {
             VStack {
-                ForEach(sortedList.indices, id: \.self) { index in
-                    let athlete = sortedList[index].0
-                    let rating = sortedList[index].1
+                ForEach(numberedList.indices, id: \.self) { index in
+                    let number = numberedList[index].0
+                    let athlete = numberedList[index].1.0
+                    let rating = numberedList[index].1.1
                     BackgroundBubble() {
                         HStack {
-                            Text(String(index + 1))
+                            Text(String(number))
                                 .padding(.trailing)
                             Text((athlete.firstName ?? "") + " "  +
                                  (athlete.lastName ?? ""))
