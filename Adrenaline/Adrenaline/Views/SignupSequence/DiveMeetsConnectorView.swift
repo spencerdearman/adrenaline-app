@@ -82,7 +82,6 @@ struct IsThisYouView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.updateUserField) private var updateUserField
     @Environment(\.getUser) private var getUser
-    @Environment(\.getAthlete) private var getAthlete
     @State var sortedRecords: [(String, String)] = []
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
@@ -120,7 +119,7 @@ struct IsThisYouView: View {
                     Text("No DiveMeets Profile Found")
                         .font(.title).fontWeight(.semibold)
                     NavigationLink {
-                        AdrenalineProfileView(user: $user, athlete: $athlete)
+                        AdrenalineProfileView(user: $user)
                     } label: {
                         BackgroundBubble() {
                             Text("Next")
