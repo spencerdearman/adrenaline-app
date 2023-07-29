@@ -234,7 +234,6 @@ struct LoginPage: View {
                         
                         let u = getUser(email)
                         let a = getAthlete(email)
-                        
                         print(u?.diveMeetsID)
                         print(u?.firstName)
                         print(u?.lastName)

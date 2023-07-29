@@ -39,6 +39,7 @@ struct AdrenalineProfileView: View {
                 .ignoresSafeArea()
                 .onAppear {
                     offSet = screenHeight * 0.48
+                    print(athlete.firstName ?? "")
                 }
             
             VStack {
@@ -52,26 +53,27 @@ struct AdrenalineProfileView: View {
                             VStack {
                                 Text((user.firstName ?? "") + " " + (user.lastName
                                                     ?? "")) .font(.title3).fontWeight(.semibold)
-//                                Text(signupData.accountType?.rawValue ?? "")
+//                                Text(athlete3.accountType ?? "")
 //                                    .foregroundColor(.secondary)
                             }
                         }
+                        
 //                        BackgroundBubble() {
 //                            HStack {
 //                                HStack{
 //                                    Image(systemName: "mappin.and.ellipse")
-//                                    if signupData.recruiting == nil {
+//                                    if athlete.hometown == "" {
 //                                        Text("?")
 //                                    } else {
-//                                        Text(formatLocationString(signupData.recruiting!.hometown ?? " "))
+//                                        Text(formatLocationString(athlete.hometown ?? " "))
 //                                    }
 //                                }
 //                                HStack {
 //                                    Image(systemName: "person.fill")
-//                                    if signupData.recruiting == nil {
+//                                    if athlete.age == 0 {
 //                                        Text("?")
 //                                    } else {
-//                                        Text(String(signupData.recruiting!.age ?? 0))
+//                                        Text(String(athlete.age))
 //                                    }
 //
 //                                }
