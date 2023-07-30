@@ -138,7 +138,7 @@ struct IsThisYouView: View {
                                    ? AnyView(AthleteRecruitingView(signupData: $signupData,
                                                                    diveMeetsID: $diveMeetsID,
                                                                    showSplash: $showSplash, user: $user, athlete: $athlete))
-                                   : AnyView(ProfileView(profileLink: ""))) {
+                                   : AnyView(AdrenalineProfileView(user: $user))) {
                         HStack {
                             Spacer()
                             ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))

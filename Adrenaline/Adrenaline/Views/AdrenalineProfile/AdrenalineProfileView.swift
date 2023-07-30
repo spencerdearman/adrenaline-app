@@ -12,6 +12,7 @@ struct AdrenalineProfileView: View {
     @Environment(\.getUser) private var getUser
     @Environment(\.getAthlete) private var getAthlete
     var firstSignIn: Bool = false
+    var loggedIn: Bool = false
     @State private var offSet: CGFloat = 0
     //@Binding var diveMeetsID: String
     @Binding var user: User
@@ -36,17 +37,19 @@ struct AdrenalineProfileView: View {
     var body: some View {
         ZStack {
             // Universal Base View
-            BackgroundSpheres()
-                .ignoresSafeArea()
-                .onAppear {
-                    offSet = screenHeight * 0.45
-                }
+            if !loggedIn {
+                BackgroundSpheres()
+                    .ignoresSafeArea()
+            }
             
             VStack {
                 HStack{
                     Spacer()
                     ProfileImage(diverID: user.diveMeetsID ?? "")
                         .scaleEffect(0.9)
+                        .onAppear {
+                            offSet = screenHeight * 0.45
+                        }
                     Spacer()
                     VStack {
                         BackgroundBubble(vPadding: 20, hPadding: 20) {
@@ -100,18 +103,26 @@ struct AdrenalineProfileView: View {
                 .padding([.leading, .trailing])
             }
             .frame(width: screenWidth * 0.9)
-//            .overlay{
-//                BackgroundBubble() {
-//                    NavigationLink {
-//                        SettingsPage(user: $user)
-//                    } label: {
-//                        Image(systemName: "gear")
-//                            .foregroundColor(.primary)
+            .overlay{
+//                if loggedIn {
+//                    BackgroundBubble() {
+//                        Text("Logout")
+//                            .onTapGesture {
+//                                loginSuccessful = false
+//                            }
 //                    }
 //                }
-//                .offset(x: screenWidth * 0.26, y: -screenHeight * 0.11)
-//                .scaleEffect(1.4)
-//            }
+                BackgroundBubble() {
+                    NavigationLink {
+                        SettingsPage(user: $user)
+                    } label: {
+                        Image(systemName: "gear")
+                            .foregroundColor(.primary)
+                    }
+                }
+                .offset(x: screenWidth * 0.26, y: -screenHeight * 0.11)
+                .scaleEffect(1.4)
+            }
             .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
             ZStack {
                 Rectangle()
@@ -124,7 +135,6 @@ struct AdrenalineProfileView: View {
                         if type == AccountType.athlete.rawValue {
                             DiverView(user: $user)
                         } else if type == AccountType.coach.rawValue {
-                            Text("This is a coaching profile")
                             CoachView(user: $user)
                         } else if type == AccountType.spectator.rawValue {
                             Text("This is a spectator profile")
@@ -247,95 +257,6 @@ struct EditProfile: View {
     }
 }
 
-struct DiverView: View {
-    @Binding var user: User
-    
-    private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
-    private let linkHead: String =
-    "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
-    var body: some View {
-        VStack {
-            Spacer()
-            // Showing DiveMeets Linking Screen
-            if user.diveMeetsID == "" {
-                BackgroundBubble(vPadding: 20, hPadding: 20) {
-                    NavigationLink(destination: {
-                        DiveMeetsLink(user: $user)
-                    }, label: {
-                        Text("Link DiveMeets Account")
-                            .foregroundColor(.primary)
-                            .font(.title2).fontWeight(.semibold)
-                    })
-                }
-            } else {
-                ProfileContent(user: $user)
-                    .padding(.top, screenHeight * 0.05)
-            }
-            Spacer()
-            Spacer()
-            Spacer()
-            Spacer()
-            Spacer()
-        }
-    }
-}
-
-struct CoachView: View {
-    @Binding var user: User
-    private let linkHead: String =
-    "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
-    var body: some View {
-        BackgroundBubble() {
-            NavigationLink(destination: {
-                DiveMeetsLink(user: $user)
-            }, label: { Text("Link to your DiveMeets Account") })
-        }
-    }
-}
-
-struct ProfileContent: View {
-    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
-    @State var selectedPage: Int = 1
-    @Binding var user: User
-    @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
-    private let screenHeight = UIScreen.main.bounds.height
-    
-    var body: some View {
-        SwiftUIWheelPicker($selectedPage, items: scoreValues) { value in
-            GeometryReader { g in
-                Text(value)
-                    .font(.title2).fontWeight(.semibold)
-                    .frame(width: g.size.width, height: g.size.height,
-                           alignment: .center)
-            }
-        }
-        .scrollAlpha(0.3)
-        .width(.Fixed(115))
-        .scrollScale(0.7)
-        .frame(height: 40)
-        
-        switch selectedPage {
-        case 0:
-            MeetList(profileLink:
-                    "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     (user.diveMeetsID ?? "00000"), nameShowing: false)
-                .offset(y: -screenHeight * 0.05)
-        case 1:
-            MetricsView(user: $user)
-        case 2:
-            RecruitingView()
-        case 3:
-            StatisticsView()
-        case 4:
-            VideosView()
-        default:
-            MeetList(profileLink:
-                     "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     (user.diveMeetsID ?? "00000"), nameShowing: false)
-        }
-    }
-}
 
 struct DiveMeetsLink: View {
     @Environment(\.presentationMode) var presentationMode
@@ -370,36 +291,49 @@ struct DiveMeetsLink: View {
     }
 }
 
-struct MetricsView: View {
-    @Binding var user: User
+struct BackgroundSpheres: View {
+    @State var width: CGFloat = 0
+    @State var height: CGFloat = 0
+    
     var body: some View {
-        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (user.diveMeetsID ?? "00000")
-        SkillsGraph(profileLink: profileLink)
-//            .frame(height: 300)
+        GeometryReader { geometry in
+            ZStack{}
+                .onAppear {
+                    width = geometry.size.width
+                    height = geometry.size.height
+                }
+            VStack {
+                ZStack {
+                    Circle()
+                    // Circle color
+                        .fill(Custom.darkBlue)
+                    // Adjust the size of the circle as desired
+                        .frame(width: geometry.size.width * 2.5,
+                               height: geometry.size.width * 2.5)
+                    // Center the circle
+                        .position(x: geometry.size.width, y: -geometry.size.width * 0.55)
+                        .shadow(radius: 15)
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
+                        .ignoresSafeArea()
+                    Circle()
+                        .fill(Custom.coolBlue) // Circle color
+                        .frame(width:geometry.size.width * 1.3, height:geometry.size.width * 1.3)
+                        .position(x: geometry.size.width, y: geometry.size.width * 0.7)
+                        .shadow(radius: 15)
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
+                        .ignoresSafeArea()
+                    Circle()
+                        .fill(Custom.medBlue) // Circle color
+                        .frame(width: geometry.size.width * 1.1, height: geometry.size.width * 1.1)
+                        .position(x: 0, y: geometry.size.width * 0.7)
+                        .shadow(radius: 15)
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
+                        .ignoresSafeArea()
+                }
+            }
+        }
     }
 }
-
-struct RecruitingView: View {
-    var body: some View {
-        Text("Welcome to the Recruiting View")
-    }
-}
-
-struct VideosView: View {
-    var body: some View {
-        Text("Welcome to the Videos View")
-    }
-}
-
-struct StatisticsView: View {
-    var body: some View {
-        Text("Welcome to the Statistics View")
-    }
-}
-
-//struct AdrenalineProfileView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
-//        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
-//    }
-//}

@@ -65,7 +65,7 @@ struct ContentView: View {
                             // Add different page views here for different tabs
                             switch tab {
                                 case .house:
-                                    Home()
+                                UsersDBTestView()
                                 case .wrench:
                                     //NavigationView {
                                     //LiveResultsView(request: "debug")
