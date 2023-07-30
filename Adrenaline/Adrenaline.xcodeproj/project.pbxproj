@@ -82,6 +82,8 @@
 		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
 		4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD868EC29F0E69C00FF988D /* keychain-swift.swift */; };
+		4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD880B82A76103D008F69F2 /* CoachProfile.swift */; };
+		4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD880BA2A761089008F69F2 /* AthleteProfile.swift */; };
 		4DE6CFC329E25A0D00831D1D /* LoginWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */; };
 		4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 4DEF7D3529BEE796003EAD70 /* SwiftSoup */; };
 /* End PBXBuildFile section */
@@ -164,6 +166,8 @@
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		4DC7ACEC29F38828008BBB62 /* Adrenaline.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adrenaline.entitlements; sourceTree = "<group>"; };
 		4DD868EC29F0E69C00FF988D /* keychain-swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "keychain-swift.swift"; sourceTree = "<group>"; };
+		4DD880B82A76103D008F69F2 /* CoachProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachProfile.swift; sourceTree = "<group>"; };
+		4DD880BA2A761089008F69F2 /* AthleteProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteProfile.swift; sourceTree = "<group>"; };
 		4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -419,6 +423,8 @@
 			isa = PBXGroup;
 			children = (
 				4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */,
+				4DD880BA2A761089008F69F2 /* AthleteProfile.swift */,
+				4DD880B82A76103D008F69F2 /* CoachProfile.swift */,
 				4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */,
 			);
 			path = AdrenalineProfile;
@@ -532,7 +538,9 @@
 				4D74FEC629AEC95500401178 /* MeetPageView.swift in Sources */,
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
+				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
+				4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */,
 				4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */,
 				4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,

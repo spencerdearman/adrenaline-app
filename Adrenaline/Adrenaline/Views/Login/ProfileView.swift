@@ -409,9 +409,6 @@ struct JudgedList: View {
     var body: some View {
         
         VStack {
-            Text("Judging History")
-                .font(.title2).fontWeight(.semibold)
-                .padding(.top)
             ScrollView(showsIndicators: false) {
                 VStack(spacing: rowSpacing) {
                     ForEach(data, id: \.self) { meet in
@@ -461,53 +458,6 @@ struct JudgedList: View {
                     }
                 }
                 .padding([.top, .bottom], rowSpacing)
-            }
-        }
-    }
-}
-
-struct BackgroundSpheres: View {
-    @State var width: CGFloat = 0
-    @State var height: CGFloat = 0
-    
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack{}
-                .onAppear {
-                    width = geometry.size.width
-                    height = geometry.size.height
-                }
-            VStack {
-                ZStack {
-                    Circle()
-                    // Circle color
-                        .fill(Custom.darkBlue)
-                    // Adjust the size of the circle as desired
-                        .frame(width: geometry.size.width * 2.5,
-                               height: geometry.size.width * 2.5)
-                    // Center the circle
-                        .position(x: geometry.size.width, y: -geometry.size.width * 0.55)
-                        .shadow(radius: 15)
-                        .frame(height: geometry.size.height * 0.7)
-                        .clipped().ignoresSafeArea()
-                        .ignoresSafeArea()
-                    Circle()
-                        .fill(Custom.coolBlue) // Circle color
-                        .frame(width:geometry.size.width * 1.3, height:geometry.size.width * 1.3)
-                        .position(x: geometry.size.width, y: geometry.size.width * 0.7)
-                        .shadow(radius: 15)
-                        .frame(height: geometry.size.height * 0.7)
-                        .clipped().ignoresSafeArea()
-                        .ignoresSafeArea()
-                    Circle()
-                        .fill(Custom.medBlue) // Circle color
-                        .frame(width: geometry.size.width * 1.1, height: geometry.size.width * 1.1)
-                        .position(x: 0, y: geometry.size.width * 0.7)
-                        .shadow(radius: 15)
-                        .frame(height: geometry.size.height * 0.7)
-                        .clipped().ignoresSafeArea()
-                        .ignoresSafeArea()
-                }
             }
         }
     }

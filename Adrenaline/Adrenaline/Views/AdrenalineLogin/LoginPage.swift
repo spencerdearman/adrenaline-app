@@ -20,7 +20,6 @@ struct AdrenalineSearchView: View {
     @Environment(\.getAthlete) private var getAthlete
     @State var showError: Bool = false
     @FocusState private var focusedField: LoginField?
-    @State var progressView = true
     @State var isPasswordVisible: Bool = false
     @State var email: String = ""
     @State var password: String = ""
@@ -28,6 +27,7 @@ struct AdrenalineSearchView: View {
     @State var athlete: Athlete = Athlete()
     @State var loginSuccessful: Bool = false
     @Binding var showSplash: Bool
+    var showBackButton: Bool = false
     private let cornerRadius: CGFloat = 30
     
     private var isPhone: Bool {
@@ -39,98 +39,140 @@ struct AdrenalineSearchView: View {
     }
     
     var body: some View {
-        ZStack {
-            (currentMode == .light ? Color.white : Color.black)
-                .ignoresSafeArea()
-            // Allows the user to hide the keyboard when clicking on the background of the page
-                .onTapGesture {
-                    focusedField = nil
-                }
-            
+        if showBackButton {
+            LoginContent(showError: $showError, isPasswordVisible: $isPasswordVisible, email: $email, password: $password, user: $user, athlete: $athlete, loginSuccessful: $loginSuccessful, showSplash: $showSplash, showBackButton: true)
+        } else {
+            NavigationView {
+                LoginContent(showError: $showError, isPasswordVisible: $isPasswordVisible, email: $email, password: $password, user: $user, athlete: $athlete, loginSuccessful: $loginSuccessful, showSplash: $showSplash)
+            }
+        }
+    }
+}
+
+struct LoginContent: View {
+    @Environment(\.colorScheme) var currentMode
+    @Environment(\.getUser) private var getUser
+    @Environment(\.validatePassword) private var validatePassword
+    @Environment(\.getAthlete) private var getAthlete
+    @Binding var showError: Bool
+    @FocusState private var focusedField: LoginField?
+    @Binding var isPasswordVisible: Bool
+    @Binding var email: String
+    @Binding var password: String
+    @Binding var user: User
+    @Binding var athlete: Athlete
+    @Binding var loginSuccessful: Bool
+    @Binding var showSplash: Bool
+    var showBackButton: Bool = false
+    private let cornerRadius: CGFloat = 30
+    
+    private var isPhone: Bool {
+        UIDevice.current.userInterfaceIdiom != .pad
+    }
+    private var isLandscape: Bool {
+        let deviceOrientation = UIDevice.current.orientation
+        return deviceOrientation.isLandscape
+    }
+    
+    var body: some View {
             ZStack {
-                GeometryReader { geometry in
-                    VStack {
-                        ZStack{
-                            Circle()
-                            // Circle color
-                                .fill(Custom.darkBlue)
-                            // Adjust the size of the circle as desired
-                                .frame(width: geometry.size.width * 2.5,
-                                       height: geometry.size.width * 2.5)
-                            // Center the circle
-                                .position(x: loginSuccessful
-                                          ? geometry.size.width
-                                          : geometry.size.width / 2,
-                                          y: loginSuccessful || isPhone || !isLandscape
-                                          ? -geometry.size.width * 0.55
-                                          : -geometry.size.width * 0.85)
-                                .shadow(radius: 15)
-                                .frame(height: loginSuccessful ? geometry.size.height * 0.7 :
-                                        geometry.size.height)
-                                .clipped().ignoresSafeArea()
-                            Circle()
-                            // Circle color
-                                .fill(Custom.coolBlue)
-                                .frame(width: loginSuccessful
-                                       ? geometry.size.width * 1.3
-                                       : geometry.size.width * 2.0,
-                                       height: loginSuccessful
-                                       ? geometry.size.width * 1.3
-                                       : geometry.size.width * 2.0)
-                                .position(x: loginSuccessful
-                                          ? geometry.size.width
-                                          : geometry.size.width / 2,
-                                          y: loginSuccessful
-                                          ? geometry.size.width * 0.6
-                                          : isPhone
-                                          ? -geometry.size.width * 0.55
-                                          : isLandscape
-                                          ? -geometry.size.width * 0.75
-                                          : -geometry.size.width * 0.55)
-                                .shadow(radius: 15)
-                                .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
-                                .clipped().ignoresSafeArea()
-                            Circle()
-                            // Circle color
-                                .fill(Custom.medBlue)
-                                .frame(width: loginSuccessful
-                                       ? geometry.size.width * 1.1
-                                       : geometry.size.width * 1.5,
-                                       height: loginSuccessful
-                                       ? geometry.size.width * 1.1
-                                       : geometry.size.width * 1.5)
-                                .position(x: loginSuccessful ? 0 : geometry.size.width / 2,
-                                          y: loginSuccessful || (!isPhone && isLandscape)
-                                          ? geometry.size.width * 0.65
-                                          : -geometry.size.width * 0.55)
-                                .shadow(radius: 15)
-                                .frame(height: loginSuccessful
-                                       ? geometry.size.height * 0.7
-                                       : geometry.size.height)
-                                .clipped().ignoresSafeArea()
-                        }
+                (currentMode == .light ? Color.white : Color.black)
+                    .ignoresSafeArea()
+                // Allows the user to hide the keyboard when clicking on the background of the page
+                    .onTapGesture {
+                        focusedField = nil
                     }
-                }
-                VStack {
-                    if loginSuccessful {
-                        AdrenalineProfileView(user: $user)
-                        .zIndex(1)
-                        .onAppear {
-                            withAnimation {
-                                showSplash = false
+                
+                ZStack {
+                    GeometryReader { geometry in
+                        VStack {
+                            ZStack{
+                                Circle()
+                                // Circle color
+                                    .fill(Custom.darkBlue)
+                                // Adjust the size of the circle as desired
+                                    .frame(width: geometry.size.width * 2.5,
+                                           height: geometry.size.width * 2.5)
+                                // Center the circle
+                                    .position(x: loginSuccessful
+                                              ? geometry.size.width
+                                              : geometry.size.width / 2,
+                                              y: loginSuccessful || isPhone || !isLandscape
+                                              ? -geometry.size.width * 0.55
+                                              : -geometry.size.width * 0.85)
+                                    .shadow(radius: 15)
+                                    .frame(height: loginSuccessful ? geometry.size.height * 0.7 :
+                                            geometry.size.height)
+                                    .clipped().ignoresSafeArea()
+                                Circle()
+                                // Circle color
+                                    .fill(Custom.coolBlue)
+                                    .frame(width: loginSuccessful
+                                           ? geometry.size.width * 1.3
+                                           : geometry.size.width * 2.0,
+                                           height: loginSuccessful
+                                           ? geometry.size.width * 1.3
+                                           : geometry.size.width * 2.0)
+                                    .position(x: loginSuccessful
+                                              ? geometry.size.width
+                                              : geometry.size.width / 2,
+                                              y: loginSuccessful
+                                              ? geometry.size.width * 0.7
+                                              : isPhone
+                                              ? -geometry.size.width * 0.55
+                                              : isLandscape
+                                              ? -geometry.size.width * 0.75
+                                              : -geometry.size.width * 0.55)
+                                    .shadow(radius: 15)
+                                    .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
+                                    .clipped().ignoresSafeArea()
+                                Circle()
+                                // Circle color
+                                    .fill(Custom.medBlue)
+                                    .frame(width: loginSuccessful
+                                           ? geometry.size.width * 1.1
+                                           : geometry.size.width * 1.5,
+                                           height: loginSuccessful
+                                           ? geometry.size.width * 1.1
+                                           : geometry.size.width * 1.5)
+                                    .position(x: loginSuccessful ? 0 : geometry.size.width / 2,
+                                              y: loginSuccessful || (!isPhone && isLandscape)
+                                              ? geometry.size.width * 0.7
+                                              : -geometry.size.width * 0.55)
+                                    .shadow(radius: 15)
+                                    .frame(height: loginSuccessful
+                                           ? geometry.size.height * 0.7
+                                           : geometry.size.height)
+                                    .clipped().ignoresSafeArea()
                             }
                         }
-                    } else {
-                        LoginPage(email: $email, password: $password, user: $user,
-                                  loginSuccessful: $loginSuccessful,
-                                  showSplash: $showSplash, focusedField: $focusedField)
+                    }
+                    VStack {
+                        if loginSuccessful {
+                            AdrenalineProfileView(loggedIn: true, user: $user)
+                            .zIndex(1)
+                            .onAppear {
+                                withAnimation {
+                                    showSplash = false
+                                }
+                            }
+                        } else {
+                            if showBackButton {
+                                LoginPage(email: $email, password: $password, user: $user,
+                                          loginSuccessful: $loginSuccessful,
+                                          showSplash: $showSplash, showBackButton: true, focusedField: $focusedField)
+                            } else {
+                                LoginPage(email: $email, password: $password, user: $user,
+                                          loginSuccessful: $loginSuccessful,
+                                          showSplash: $showSplash, focusedField: $focusedField)
+                            }
+                        }
                     }
                 }
+                .dynamicTypeSize(.xSmall ... .xxxLarge)
             }
-            .dynamicTypeSize(.xSmall ... .xxxLarge)
-        }
-        .onAppear {
-            showError = false
+            .onAppear {
+                showError = false
         }
     }
 }
@@ -142,11 +184,13 @@ struct LoginPage: View {
     @Environment(\.validatePassword) private var validatePassword
     @Environment(\.getAthlete) private var getAthlete
     @State var isPasswordVisible: Bool = false
+    @State var signupData: SignupData = SignupData()
     @Binding var email: String
     @Binding var password: String
     @Binding var user: User
     @Binding var loginSuccessful: Bool
     @Binding var showSplash: Bool
+    var showBackButton: Bool = false
     fileprivate var focusedField: FocusState<LoginField?>.Binding
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private let screenWidth = UIScreen.main.bounds.width
@@ -228,18 +272,11 @@ struct LoginPage: View {
                 Button(action: {
                     loginSuccessful = false
                     if emailInDatabase(email: email) {
-                        
-                        if getAthlete(email) != nil {
-                            print("Is an athlete")
-                        }
                         let u = getUser(email)
-                        let a = getAthlete(email)
                         user = u ?? User()
-                        print(u?.accountType)
-                        print(u?.diveMeetsID)
-                        print(u?.firstName)
-                        print(u?.lastName)
-                        loginSuccessful = true
+                        withAnimation {
+                            loginSuccessful = true
+                        }
                     }
                 }, label: {
                     Text("Submit")
@@ -248,21 +285,23 @@ struct LoginPage: View {
                 })
                 .buttonStyle(.bordered)
                 .cornerRadius(cornerRadius)
-//                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData,
-//                                                                  showSplash: $showSplash)) {
-//                    Text("Create an account")
-//                }
-//                .cornerRadius(40)
-//                .foregroundColor(Custom.medBlue)
+                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData,
+                                                                  showSplash: $showSplash)) {
+                    Text("Create an account")
+                }
+                .cornerRadius(40)
+                .foregroundColor(Custom.medBlue)
             }
             .frame(width: screenWidth * 0.75)
             .padding(.bottom, maxHeightOffset)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
+            if showBackButton {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: { dismiss() }) {
+                        NavigationViewBackButton()
+                    }
                 }
             }
         }
