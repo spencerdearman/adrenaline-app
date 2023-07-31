@@ -8,17 +8,22 @@
 import SwiftUI
 
 struct AdrenalineProfileView: View {
+    @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
     @Environment(\.getUser) private var getUser
     @Environment(\.getAthlete) private var getAthlete
     var firstSignIn: Bool = false
-    var loggedIn: Bool = false
     var showBackButton: Bool = false
     @State private var offSet: CGFloat = 0
     @State var athlete: Athlete = Athlete()
     @Binding var user: User
+    @Binding var loginSuccessful: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    private var bgColor: Color {
+        currentMode == .light ? .white : .black
+    }
     
     func formatLocationString(_ input: String) -> String {
         var formattedString = input
@@ -36,15 +41,16 @@ struct AdrenalineProfileView: View {
     var body: some View {
         ZStack{
             // Universal Base View
-            if !loggedIn {
+            if !loginSuccessful {
                 BackgroundSpheres()
                     .ignoresSafeArea()
             }
             VStack {
                 ProfileImage(diverID: (user.diveMeetsID ?? ""))
                     .frame(width: 200, height: 150)
+                    .scaleEffect(0.9)
                     .padding(.top, 50)
-                    .padding(.bottom, 50)
+                    .padding(.bottom, 30)
                     .onAppear {
                         offSet = screenHeight * 0.45
                     }
@@ -79,11 +85,13 @@ struct AdrenalineProfileView: View {
                                     }
                                 }
                                 if user.diveMeetsID != "" {
-                                    Image(systemName: "figure.pool.swim")
-                                    if let diveMeetsID = user.diveMeetsID {
-                                        Text(diveMeetsID)
-                                    } else {
-                                        Text("?")
+                                    HStack {
+                                        Image(systemName: "figure.pool.swim")
+                                        if let diveMeetsID = user.diveMeetsID {
+                                            Text(diveMeetsID)
+                                        } else {
+                                            Text("?")
+                                        }
                                     }
                                 }
                             }
@@ -96,14 +104,17 @@ struct AdrenalineProfileView: View {
             .padding([.leading, .trailing, .top])
             .frame(width: screenWidth * 0.9)
             .overlay{
-                //                if loggedIn {
-                //                    BackgroundBubble() {
-                //                        Text("Logout")
-                //                            .onTapGesture {
-                //                                loginSuccessful = false
-                //                            }
-                //                    }
-                //                }
+                if loginSuccessful {
+                    BackgroundBubble(vPadding: 20, hPadding: 35) {
+                        Text("Logout")
+                            .onTapGesture{
+                                withAnimation {
+                                    loginSuccessful = false
+                                }
+                            }
+                    }
+                    .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.42)
+                }
                 BackgroundBubble() {
                     NavigationLink {
                         SettingsPage(user: $user)
@@ -117,7 +128,7 @@ struct AdrenalineProfileView: View {
             }
             ZStack{
                 Rectangle()
-                    .foregroundColor(Custom.darkGray)
+                    .foregroundColor(bgColor)
                     .cornerRadius(50)
                     .shadow(radius: 10)
                     .frame(width: screenWidth, height: screenHeight * 1.05)

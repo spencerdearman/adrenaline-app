@@ -87,59 +87,50 @@ struct ProfileView: View {
                     VStack {
                         ProfileImage(diverID: diverId)
                             .frame(width: 200, height: 150)
+                            .scaleEffect(0.9)
                             .padding(.top)
                             .padding()
                         VStack {
-                            VStack(alignment: .leading) {
-                                
-                                HStack (alignment: .firstTextBaseline) {
-                                    if infoSafe, let name = name {
-                                        Text(name)
-                                            .font(.title)
-                                            .foregroundColor(.white)
-                                    } else {
-                                        Text("")
+                            BackgroundBubble(vPadding: 40, hPadding: 60) {
+                                VStack() {
+                                    HStack (alignment: .firstTextBaseline) {
+                                        if infoSafe, let name = name {
+                                            Text(name)
+                                                .font(.title3).fontWeight(.semibold)
+                                        } else {
+                                            Text("")
+                                        }
                                     }
-                                    
-                                    Text(diverId)
-                                        .font(.subheadline).foregroundColor(Custom.secondaryColor)
+                                    Divider()
+                                    HStack (alignment: .firstTextBaseline) {
+                                        HStack {
+                                            Image(systemName: "mappin.and.ellipse")
+                                            if infoSafe,
+                                               let cityState = cityState,
+                                               let country = country {
+                                                Text(cityState)
+                                            } else {
+                                                Text("")
+                                            }
+                                        }
+                                        HStack {
+                                            Image(systemName: "person.fill")
+                                            if infoSafe, let age = age {
+                                                Text("Age: " + String(age))
+                                            } else {
+                                                Text("")
+                                            }
+                                        }
+                                        HStack {
+                                            Image(systemName: "figure.pool.swim")
+                                            Text(diverId)
+                                        }
+                                    }
+                                    .padding([.leading], 2)
                                 }
-                                WhiteDivider()
-                                HStack (alignment: .firstTextBaseline) {
-                                    Image(systemName: "house.fill")
-                                    if infoSafe,
-                                       let cityState = cityState,
-                                       let country = country {
-                                        Text(cityState + ", " + country)
-                                    } else {
-                                        Text("")
-                                    }
-                                }
-                                .font(.subheadline).foregroundColor(.white)
-                                HStack (alignment: .firstTextBaseline) {
-                                    Image(systemName: "person.circle")
-                                    if infoSafe, let gender = gender {
-                                        Text("Gender: " + gender)
-                                    } else {
-                                        Text("")
-                                    }
-                                    
-                                    if infoSafe, let age = age {
-                                        Text("Age: " + String(age))
-                                    } else {
-                                        Text("")
-                                    }
-                                    
-                                    if infoSafe, let finaAge = finaAge {
-                                        Text("FINA Age: " + String(finaAge))
-                                    } else {
-                                        Text("")
-                                    }
-                                }
-                                .font(.subheadline).foregroundColor(.white)
-                                .padding([.leading], 2)
                             }
                         }
+                        .frame(width: screenWidth * 0.8)
                         .padding([.leading, .trailing, .top])
                         
                         if let upcomingMeets = parser.profileData.upcomingMeets {
@@ -225,10 +216,6 @@ struct ProfileView: View {
                                         } else {
                                             Text("")
                                         }
-                                        
-                                        Text(diverId)
-                                            .font(.subheadline)
-                                            .foregroundColor(Custom.secondaryColor)
                                     }
                                     WhiteDivider()
                                     HStack(alignment: .firstTextBaseline) {

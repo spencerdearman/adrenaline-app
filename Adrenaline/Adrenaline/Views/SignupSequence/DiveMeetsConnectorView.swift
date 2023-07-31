@@ -83,6 +83,7 @@ struct IsThisYouView: View {
     @Environment(\.updateUserField) private var updateUserField
     @Environment(\.getUser) private var getUser
     @State var sortedRecords: [(String, String)] = []
+    @State var loginSuccessful: Bool = false
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
@@ -119,7 +120,7 @@ struct IsThisYouView: View {
                     Text("No DiveMeets Profile Found")
                         .font(.title).fontWeight(.semibold)
                     NavigationLink {
-                        AdrenalineProfileView(user: $user)
+                        AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful)
                     } label: {
                         BackgroundBubble() {
                             Text("Next")
@@ -138,7 +139,7 @@ struct IsThisYouView: View {
                                    ? AnyView(AthleteRecruitingView(signupData: $signupData,
                                                                    diveMeetsID: $diveMeetsID,
                                                                    showSplash: $showSplash, user: $user, athlete: $athlete))
-                                   : AnyView(AdrenalineProfileView(user: $user))) {
+                                   : AnyView(AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful))) {
                         HStack {
                             Spacer()
                             ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))
