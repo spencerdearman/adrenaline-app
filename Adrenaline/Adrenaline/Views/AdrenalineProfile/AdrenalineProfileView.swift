@@ -13,6 +13,7 @@ struct AdrenalineProfileView: View {
     @Environment(\.getAthlete) private var getAthlete
     var firstSignIn: Bool = false
     var loggedIn: Bool = false
+    var showBackButton: Bool = false
     @State private var offSet: CGFloat = 0
     @State var athlete: Athlete = Athlete()
     @Binding var user: User
@@ -39,43 +40,27 @@ struct AdrenalineProfileView: View {
                 BackgroundSpheres()
                     .ignoresSafeArea()
             }
-            
             VStack {
-                HStack{
-                    Spacer()
-                    ProfileImage(diverID: user.diveMeetsID ?? "")
-                        .scaleEffect(0.9)
-                        .onAppear {
-                            offSet = screenHeight * 0.45
-                        }
-                    Spacer()
-                    VStack {
-                        BackgroundBubble(vPadding: 20, hPadding: 20) {
-                            VStack {
+                ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                    .frame(width: 200, height: 150)
+                    .padding(.top, 50)
+                    .padding(.bottom, 50)
+                    .onAppear {
+                        offSet = screenHeight * 0.45
+                    }
+                VStack {
+                    BackgroundBubble(vPadding: 20, hPadding: 60) {
+                        VStack() {
+                            HStack (alignment: .firstTextBaseline) {
                                 Text((user.firstName ?? "") + " " + (user.lastName
-                                                    ?? "")) .font(.title3).fontWeight(.semibold)
+                                                                     ?? "")) .font(.title3).fontWeight(.semibold)
                                 Text(user.accountType ?? "")
                                     .foregroundColor(.secondary)
                             }
-                        }
-                        .onAppear {
-                            print(user.accountType)
-                            if let email = user.email {
-                                if let a = getAthlete(email) {
-                                    athlete = a
-                                    print(athlete.hometown)
-                                } else {
-                                    print("Athlete is not available")
-                                }
-                            } else {
-                                print("email not accessible")
-                            }
-                        }
-                        
-                        if user.accountType == "Athlete" {
-                            let a = getAthlete(user.email ?? "")
-                            BackgroundBubble() {
-                                HStack {
+                            Divider()
+                            HStack (alignment: .firstTextBaseline) {
+                                if user.accountType == "Athlete" {
+                                    let a = getAthlete(user.email ?? "")
                                     HStack {
                                         Image(systemName: "mappin.and.ellipse")
                                         if let hometown = a?.hometown, !hometown.isEmpty {
@@ -93,23 +78,32 @@ struct AdrenalineProfileView: View {
                                         }
                                     }
                                 }
+                                if user.diveMeetsID != "" {
+                                    Image(systemName: "figure.pool.swim")
+                                    if let diveMeetsID = user.diveMeetsID {
+                                        Text(diveMeetsID)
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
                             }
                         }
+                        .frame(width: screenWidth * 0.8)
                     }
-                    Spacer()
                 }
-                .padding([.leading, .trailing])
             }
+            .offset(y: -screenHeight * 0.3)
+            .padding([.leading, .trailing, .top])
             .frame(width: screenWidth * 0.9)
             .overlay{
-//                if loggedIn {
-//                    BackgroundBubble() {
-//                        Text("Logout")
-//                            .onTapGesture {
-//                                loginSuccessful = false
-//                            }
-//                    }
-//                }
+                //                if loggedIn {
+                //                    BackgroundBubble() {
+                //                        Text("Logout")
+                //                            .onTapGesture {
+                //                                loginSuccessful = false
+                //                            }
+                //                    }
+                //                }
                 BackgroundBubble() {
                     NavigationLink {
                         SettingsPage(user: $user)
@@ -118,7 +112,7 @@ struct AdrenalineProfileView: View {
                             .foregroundColor(.primary)
                     }
                 }
-                .offset(x: screenWidth * 0.26, y: -screenHeight * 0.11)
+                .offset(x: screenWidth * 0.26, y: -screenHeight * 0.3)
                 .scaleEffect(1.4)
             }
             .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
@@ -156,6 +150,17 @@ struct AdrenalineProfileView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            if showBackButton {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        NavigationViewBackButton()
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -172,81 +177,81 @@ struct SettingsPage: View {
     var body: some View {
         Text("Settings Page")
     }
-//    var body: some View {
-//        ScrollView {
-//            VStack {
-//                Group {
-//                    BackgroundBubble(vPadding: 20, hPadding: 20) {
-//                        Text("Settings").font(.title2).fontWeight(.semibold)
-//                    }
-//                    ProfileImage(diverID: user.diveMeetsID)
-//                        .scaleEffect(0.75)
-//                        .frame(width: 150, height: 160)
-//                    Text((user.firstName ?? "") + " " + (user.lastName ?? ""))
-//                        .font(.title3).fontWeight(.semibold)
-//                    Text(user.email ?? "")
-//                        .foregroundColor(.secondary)
-//                    if let phoneNum = user.phone {
-//                        Text(phoneNum)
-//                            .foregroundColor(.secondary)
-//                    }
-//                }
-//                Group {
-//                    NavigationLink {
-//                        EditProfile()
-//                    } label: {
-//                        HStack {
-//                            BackgroundBubble(color: Custom.coolBlue, vPadding: 20, hPadding: 20) {
-//                                HStack {
-//                                    Text("Edit Profile")
-//                                        .foregroundColor(.white)
-//                                        .fontWeight(.semibold)
-//                                    Image(systemName: "chevron.right")
-//                                        .foregroundColor(.white)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-////                Group {
-////                    Text("Profile Information")
-////                    Divider()
-////                    Text("Update Email")
-////                    TextField("Email", text: $email)
-////                        .autocapitalization(.none)
-////                        .textFieldStyle(.roundedBorder)
-////                        .frame(width: textFieldWidth)
-////                        .textContentType(.emailAddress)
-////                        .keyboardType(.emailAddress)
-//////                        .onChange(of: email) { _ in
-//////                            user.email = email
-//////                        }
-////                    Text("Update Password")
-////                    //NEED PASSWORD FIELD
-////                    Text("Update Phone Number")
-////                    TextField("Phone", text: $phoneNumber)
-////                        .textFieldStyle(.roundedBorder)
-////                        .textContentType(.telephoneNumber)
-////                        .keyboardType(.numberPad)
-////                        .frame(width: textFieldWidth)
-//////                        .onChange(of: phoneNumber) { _ in
-//////                            user.phone = phoneNumber
-//////                        }
-////                    Divider()
-////                    Text("Preferences")
-////                    Divider()
-////                }
-//            }
-//        }
-//        .navigationBarBackButtonHidden(true)
-//        .toolbar {
-//            ToolbarItem(placement: .navigationBarLeading) {
-//                Button(action: { dismiss() }) {
-//                    NavigationViewBackButton()
-//                }
-//            }
-//        }
-//    }
+    //    var body: some View {
+    //        ScrollView {
+    //            VStack {
+    //                Group {
+    //                    BackgroundBubble(vPadding: 20, hPadding: 20) {
+    //                        Text("Settings").font(.title2).fontWeight(.semibold)
+    //                    }
+    //                    ProfileImage(diverID: user.diveMeetsID)
+    //                        .scaleEffect(0.75)
+    //                        .frame(width: 150, height: 160)
+    //                    Text((user.firstName ?? "") + " " + (user.lastName ?? ""))
+    //                        .font(.title3).fontWeight(.semibold)
+    //                    Text(user.email ?? "")
+    //                        .foregroundColor(.secondary)
+    //                    if let phoneNum = user.phone {
+    //                        Text(phoneNum)
+    //                            .foregroundColor(.secondary)
+    //                    }
+    //                }
+    //                Group {
+    //                    NavigationLink {
+    //                        EditProfile()
+    //                    } label: {
+    //                        HStack {
+    //                            BackgroundBubble(color: Custom.coolBlue, vPadding: 20, hPadding: 20) {
+    //                                HStack {
+    //                                    Text("Edit Profile")
+    //                                        .foregroundColor(.white)
+    //                                        .fontWeight(.semibold)
+    //                                    Image(systemName: "chevron.right")
+    //                                        .foregroundColor(.white)
+    //                                }
+    //                            }
+    //                        }
+    //                    }
+    //                }
+    ////                Group {
+    ////                    Text("Profile Information")
+    ////                    Divider()
+    ////                    Text("Update Email")
+    ////                    TextField("Email", text: $email)
+    ////                        .autocapitalization(.none)
+    ////                        .textFieldStyle(.roundedBorder)
+    ////                        .frame(width: textFieldWidth)
+    ////                        .textContentType(.emailAddress)
+    ////                        .keyboardType(.emailAddress)
+    //////                        .onChange(of: email) { _ in
+    //////                            user.email = email
+    //////                        }
+    ////                    Text("Update Password")
+    ////                    //NEED PASSWORD FIELD
+    ////                    Text("Update Phone Number")
+    ////                    TextField("Phone", text: $phoneNumber)
+    ////                        .textFieldStyle(.roundedBorder)
+    ////                        .textContentType(.telephoneNumber)
+    ////                        .keyboardType(.numberPad)
+    ////                        .frame(width: textFieldWidth)
+    //////                        .onChange(of: phoneNumber) { _ in
+    //////                            user.phone = phoneNumber
+    //////                        }
+    ////                    Divider()
+    ////                    Text("Preferences")
+    ////                    Divider()
+    ////                }
+    //            }
+    //        }
+    //        .navigationBarBackButtonHidden(true)
+    //        .toolbar {
+    //            ToolbarItem(placement: .navigationBarLeading) {
+    //                Button(action: { dismiss() }) {
+    //                    NavigationViewBackButton()
+    //                }
+    //            }
+    //        }
+    //    }
 }
 
 struct EditProfile: View {

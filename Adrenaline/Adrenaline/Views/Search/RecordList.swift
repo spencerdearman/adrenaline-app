@@ -93,7 +93,7 @@ struct RecordList: View {
                         Spacer()
                         ForEach(Array(adrenalineRecords), id: \.key) { record in // Convert dictionary to array with 'Array(adrenalineRecords)'
                             if let value = record.value { // Unwrap the optional User value
-                                NavigationLink(destination: AdrenalineProfileView(user: Binding(get: { value }, set: { newValue in }))) {
+                                NavigationLink(destination: AdrenalineProfileView(showBackButton: true, user: Binding(get: { value }, set: { newValue in }))) {
                                     HStack {
                                         Text(record.key) // 'record.key' is the String key
                                             .foregroundColor(textColor)
