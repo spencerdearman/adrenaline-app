@@ -80,7 +80,7 @@ struct MeetList: View {
                 
                 ZStack {
                     Rectangle()
-                        .fill(bgColor)
+                        .fill(Custom.darkGray)
                         .mask(RoundedRectangle(cornerRadius: 40))
                     VStack {
                         if nameShowing {
@@ -94,7 +94,7 @@ struct MeetList: View {
                                 ForEach($meets, id: \.id) { $meet in
                                     ZStack {
                                         RoundedRectangle(cornerRadius: cornerRadius)
-                                            .fill(Custom.darkGray)
+                                            .fill(Custom.specialGray)
                                             .shadow(radius: 5)
                                         DisclosureGroup(
                                             isExpanded: $meet.isExpanded,
@@ -160,7 +160,7 @@ struct MeetList: View {
                 
                 ZStack {
                     Rectangle()
-                        .fill(bgColor)
+                        .fill(Custom.darkGray)
                         .mask(RoundedRectangle(cornerRadius: 40))
                     VStack {
                         Text("Getting meets list...")
@@ -171,7 +171,7 @@ struct MeetList: View {
             } else {
                 ZStack {
                     Rectangle()
-                        .fill(bgColor)
+                        .fill(Custom.darkGray)
                         .mask(RoundedRectangle(cornerRadius: 40))
                     VStack {
                         Text("No meet data found")

@@ -25,7 +25,7 @@ struct NavigationViewBackButton: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 40)
-                .foregroundColor(Custom.grayThinMaterial)
+                .foregroundColor(Custom.darkGray)
                 .shadow(radius: 4)
                 .frame(width: buttonWidth, height: buttonHeight)
             Image("longLeftArrow")

@@ -538,9 +538,9 @@ struct SearchInputView: View {
                 if showResults {
                     ZStack (alignment: .topLeading) {
                         (RecordList(records: $parsedLinks, adrenalineRecords: $adrenalineFormattedResults,
-                                              resultSelected: $resultSelected,
-                                              fullScreenResults: $fullScreenResults,
-                                              selectionType: $profileSelection))
+                                    resultSelected: $resultSelected,
+                                    fullScreenResults: $fullScreenResults,
+                                    selectionType: $profileSelection))
                         .onAppear {
                             fullScreenResults = true
                             resultSelected = false
@@ -744,46 +744,46 @@ struct DiverSearchView: View {
     fileprivate var focusedField: FocusState<SearchField?>.Binding
     
     var body: some View {
-            VStack {
-                DiveMeetsAdrenalineSelection(selection: $selection)
-                    .padding(.top, screenHeight * 0.1)
-                    .padding(.bottom, screenHeight * 0.03)
-                BackgroundBubble(vPadding: 80) {
-                    VStack {
-                        HStack {
-                            Text("First Name:")
-                                .padding([.leading, .bottom, .top])
-                            TextField("First Name", text: $firstName)
-                                .modifier(TextFieldClearButton(text: $firstName,
-                                                               fieldType: .firstName,
-                                                               focusedField: focusedField))
-                                .multilineTextAlignment(.leading)
-                                .disableAutocorrection(true)
-                                .textFieldStyle(.roundedBorder)
-                                .padding(.trailing)
-                                .focused(focusedField, equals: .firstName)
-                        }
-                        HStack {
-                            Text("Last Name:")
-                                .padding([.leading])
-                            TextField("Last Name", text: $lastName)
-                                .modifier(TextFieldClearButton(text: $lastName,
-                                                               fieldType: .lastName,
-                                                               focusedField: focusedField))
-                                .multilineTextAlignment(.leading)
-                                .textFieldStyle(.roundedBorder)
-                                .disableAutocorrection(true)
-                                .padding(.trailing)
-                                .focused(focusedField, equals: .lastName)
-                            
-                        }
-                        .padding(.bottom, 40)
+        VStack {
+            DiveMeetsAdrenalineSelection(selection: $selection)
+                .padding(.top, screenHeight * 0.1)
+                .padding(.bottom, screenHeight * 0.03)
+            BackgroundBubble(vPadding: 80) {
+                VStack {
+                    HStack {
+                        Text("First Name:")
+                            .padding([.leading, .bottom, .top])
+                        TextField("First Name", text: $firstName)
+                            .modifier(TextFieldClearButton(text: $firstName,
+                                                           fieldType: .firstName,
+                                                           focusedField: focusedField))
+                            .multilineTextAlignment(.leading)
+                            .disableAutocorrection(true)
+                            .textFieldStyle(.roundedBorder)
+                            .padding(.trailing)
+                            .focused(focusedField, equals: .firstName)
                     }
+                    HStack {
+                        Text("Last Name:")
+                            .padding([.leading])
+                        TextField("Last Name", text: $lastName)
+                            .modifier(TextFieldClearButton(text: $lastName,
+                                                           fieldType: .lastName,
+                                                           focusedField: focusedField))
+                            .multilineTextAlignment(.leading)
+                            .textFieldStyle(.roundedBorder)
+                            .disableAutocorrection(true)
+                            .padding(.trailing)
+                            .focused(focusedField, equals: .lastName)
+                        
+                    }
+                    .padding(.bottom, 40)
                 }
             }
-            .dynamicTypeSize(.xSmall ... .xxxLarge)
-            .offset(y: -screenHeight * 0.03)
-            .frame(width: screenWidth * 0.85, height: screenHeight * 0.3)
+        }
+        .dynamicTypeSize(.xSmall ... .xxxLarge)
+        .offset(y: -screenHeight * 0.03)
+        .frame(width: screenWidth * 0.85, height: screenHeight * 0.3)
     }
 }
 

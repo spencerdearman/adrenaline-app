@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileImage: View {
     @Environment(\.colorScheme) var currentMode
     let diverID: String
-    
+
     var body: some View {
         let imageUrlString =
         "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
