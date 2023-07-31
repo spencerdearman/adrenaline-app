@@ -91,7 +91,8 @@ struct PersonBubbleView: View {
     private var bubbleColor: Color {
         currentMode == .light ? .white : .black
     }
-    //  (Place, Name, NameLink, Team, TeamLink, Score, ScoreLink, Score Diff., MeetName, SynchroName, SynchroLink, SynchroTeam, SynchroTeamLink)
+    //  (Place, Name, NameLink, Team, TeamLink, Score, ScoreLink, Score Diff., MeetName, SynchroName,
+    //   SynchroLink, SynchroTeam, SynchroTeamLink)
     private var elements: [String]
     private var eventTitle: String
     @State var navStatus: Bool = false
@@ -124,6 +125,7 @@ struct PersonBubbleView: View {
                                         ProfileView(profileLink: elements[10])
                                     } label: {
                                         Text(elements[9])
+                                            .foregroundColor(.primary)
                                     }
                                 }
                             }
