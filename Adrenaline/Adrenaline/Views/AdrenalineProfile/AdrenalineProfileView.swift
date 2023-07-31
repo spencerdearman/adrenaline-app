@@ -63,34 +63,40 @@ struct AdrenalineProfileView: View {
                                 Text(user.accountType ?? "")
                                     .foregroundColor(.secondary)
                             }
-                            Divider()
-                            HStack (alignment: .firstTextBaseline) {
-                                if user.accountType == "Athlete" {
-                                    let a = getAthlete(user.email ?? "")
-                                    HStack {
-                                        Image(systemName: "mappin.and.ellipse")
-                                        if let hometown = a?.hometown, !hometown.isEmpty {
-                                            Text(formatLocationString(hometown))
-                                        } else {
-                                            Text("?")
-                                        }
-                                    }
-                                    HStack {
-                                        Image(systemName: "person.fill")
-                                        if let age = a?.age {
-                                            Text(String(age))
-                                        } else {
-                                            Text("?")
-                                        }
-                                    }
+                            if user.accountType != "Spectator" {
+                                if currentMode == .light {
+                                    Divider()
+                                } else {
+                                    WhiteDivider()
                                 }
-                                if user.diveMeetsID != "" {
-                                    HStack {
-                                        Image(systemName: "figure.pool.swim")
-                                        if let diveMeetsID = user.diveMeetsID {
-                                            Text(diveMeetsID)
-                                        } else {
-                                            Text("?")
+                                HStack (alignment: .firstTextBaseline) {
+                                    if user.accountType == "Athlete" {
+                                        let a = getAthlete(user.email ?? "")
+                                        HStack {
+                                            Image(systemName: "mappin.and.ellipse")
+                                            if let hometown = a?.hometown, !hometown.isEmpty {
+                                                Text(formatLocationString(hometown))
+                                            } else {
+                                                Text("?")
+                                            }
+                                        }
+                                        HStack {
+                                            Image(systemName: "person.fill")
+                                            if let age = a?.age {
+                                                Text(String(age))
+                                            } else {
+                                                Text("?")
+                                            }
+                                        }
+                                    }
+                                    if user.diveMeetsID != "" {
+                                        HStack {
+                                            Image(systemName: "figure.pool.swim")
+                                            if let diveMeetsID = user.diveMeetsID {
+                                                Text(diveMeetsID)
+                                            } else {
+                                                Text("?")
+                                            }
                                         }
                                     }
                                 }
@@ -129,7 +135,7 @@ struct AdrenalineProfileView: View {
             .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
             ZStack {
                 Rectangle()
-                    .foregroundColor(bgColor)
+                    .foregroundColor(Custom.darkGray)
                     .cornerRadius(50)
                     .shadow(radius: 10)
                     .frame(width: screenWidth, height: screenHeight * 1.05)
@@ -186,88 +192,62 @@ struct SettingsPage: View {
         screenWidth * 0.5
     }
     var body: some View {
-        Text("Settings Page")
+        ScrollView {
+            VStack {
+                BackgroundBubble(vPadding: 20, hPadding: 20) {
+                    Text("Settings").font(.title2).fontWeight(.semibold)
+                }
+                ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                    .scaleEffect(0.75)
+                    .frame(width: 160, height: 160)
+                Text((user.firstName ?? "") + " " + (user.lastName ?? ""))
+                    .font(.title3).fontWeight(.semibold)
+                Text(user.email ?? "")
+                    .foregroundColor(.secondary)
+                if let phoneNum = user.phone {
+                    Text(phoneNum)
+                        .foregroundColor(.secondary)
+                }
+                NavigationLink {
+                    EditProfile()
+                } label: {
+                    HStack {
+                        HStack {
+                            Text("Edit Profile")
+                                .foregroundColor(.white)
+                                .fontWeight(.semibold)
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.white)
+                        }
+                    }
+                }
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
-    //    var body: some View {
-    //        ScrollView {
-    //            VStack {
-    //                Group {
-    //                    BackgroundBubble(vPadding: 20, hPadding: 20) {
-    //                        Text("Settings").font(.title2).fontWeight(.semibold)
-    //                    }
-    //                    ProfileImage(diverID: user.diveMeetsID)
-    //                        .scaleEffect(0.75)
-    //                        .frame(width: 150, height: 160)
-    //                    Text((user.firstName ?? "") + " " + (user.lastName ?? ""))
-    //                        .font(.title3).fontWeight(.semibold)
-    //                    Text(user.email ?? "")
-    //                        .foregroundColor(.secondary)
-    //                    if let phoneNum = user.phone {
-    //                        Text(phoneNum)
-    //                            .foregroundColor(.secondary)
-    //                    }
-    //                }
-    //                Group {
-    //                    NavigationLink {
-    //                        EditProfile()
-    //                    } label: {
-    //                        HStack {
-    //                            BackgroundBubble(color: Custom.coolBlue, vPadding: 20, hPadding: 20) {
-    //                                HStack {
-    //                                    Text("Edit Profile")
-    //                                        .foregroundColor(.white)
-    //                                        .fontWeight(.semibold)
-    //                                    Image(systemName: "chevron.right")
-    //                                        .foregroundColor(.white)
-    //                                }
-    //                            }
-    //                        }
-    //                    }
-    //                }
-    ////                Group {
-    ////                    Text("Profile Information")
-    ////                    Divider()
-    ////                    Text("Update Email")
-    ////                    TextField("Email", text: $email)
-    ////                        .autocapitalization(.none)
-    ////                        .textFieldStyle(.roundedBorder)
-    ////                        .frame(width: textFieldWidth)
-    ////                        .textContentType(.emailAddress)
-    ////                        .keyboardType(.emailAddress)
-    //////                        .onChange(of: email) { _ in
-    //////                            user.email = email
-    //////                        }
-    ////                    Text("Update Password")
-    ////                    //NEED PASSWORD FIELD
-    ////                    Text("Update Phone Number")
-    ////                    TextField("Phone", text: $phoneNumber)
-    ////                        .textFieldStyle(.roundedBorder)
-    ////                        .textContentType(.telephoneNumber)
-    ////                        .keyboardType(.numberPad)
-    ////                        .frame(width: textFieldWidth)
-    //////                        .onChange(of: phoneNumber) { _ in
-    //////                            user.phone = phoneNumber
-    //////                        }
-    ////                    Divider()
-    ////                    Text("Preferences")
-    ////                    Divider()
-    ////                }
-    //            }
-    //        }
-    //        .navigationBarBackButtonHidden(true)
-    //        .toolbar {
-    //            ToolbarItem(placement: .navigationBarLeading) {
-    //                Button(action: { dismiss() }) {
-    //                    NavigationViewBackButton()
-    //                }
-    //            }
-    //        }
-    //    }
 }
 
 struct EditProfile: View {
+    @Environment(\.dismiss) private var dismiss
     var body: some View {
         Text("This is where you will edit your account")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        NavigationViewBackButton()
+                    }
+                }
+            }
     }
 }
 

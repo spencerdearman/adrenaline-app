@@ -65,9 +65,9 @@ struct ProfileContent: View {
         switch selectedPage {
         case 0:
             MeetList(profileLink:
-                    "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+                        "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
                      (user.diveMeetsID ?? "00000"), nameShowing: false)
-                .offset(y: -screenHeight * 0.05)
+            .offset(y: -screenHeight * 0.05)
         case 1:
             MetricsView(user: $user)
         case 2:
@@ -78,7 +78,7 @@ struct ProfileContent: View {
             VideosView()
         default:
             MeetList(profileLink:
-                     "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+                        "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
                      (user.diveMeetsID ?? "00000"), nameShowing: false)
         }
     }
@@ -89,7 +89,7 @@ struct MetricsView: View {
     var body: some View {
         let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (user.diveMeetsID ?? "00000")
         SkillsGraph(profileLink: profileLink)
-//            .frame(height: 300)
+        //            .frame(height: 300)
     }
 }
 

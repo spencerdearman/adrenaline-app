@@ -74,7 +74,7 @@ struct ProfileView: View {
             let finaAge = info?.finaAge
             
             if !isLoginProfile {
-                bgColor.ignoresSafeArea()
+                Custom.darkGray.ignoresSafeArea()
                 GeometryReader { geometry in
                     BackgroundSpheres()
                 }
@@ -128,6 +128,7 @@ struct ProfileView: View {
                                     }
                                     .padding([.leading], 2)
                                 }
+                                .frame(width: screenWidth * 0.8)
                             }
                         }
                         .frame(width: screenWidth * 0.8)
@@ -180,15 +181,10 @@ struct ProfileView: View {
                                 .padding(.bottom, 5)
                             }
                             .padding([.leading, .trailing])
-                            
                             Spacer()
                         }
-                        
                         Spacer()
-                        
-                        
                         MeetList(profileLink: profileLink)
-                        
                     }
                     .padding(.bottom, maxHeightOffset)
                 }
@@ -197,49 +193,46 @@ struct ProfileView: View {
                     GeometryReader { geometry in
                         BackgroundSpheres()
                         Rectangle()
-                            .fill(bgColor)
+                            .fill(Custom.darkGray)
                             .mask(RoundedRectangle(cornerRadius: 40))
                             .offset(y: geometry.size.height * 0.4)
                     }
                     VStack {
                         VStack {
-                            ProfileImage(diverID: diverId)
-                                .frame(width: 200, height: 150)
-                                .padding()
-                            VStack {
-                                VStack(alignment: .leading) {
-                                    HStack(alignment: .firstTextBaseline) {
+                            BackgroundBubble(vPadding: 40, hPadding: 60) {
+                                VStack() {
+                                    HStack (alignment: .firstTextBaseline) {
                                         if infoSafe, let name = name {
                                             Text(name)
-                                                .font(.title)
-                                                .foregroundColor(.white)
+                                                .font(.title3).fontWeight(.semibold)
                                         } else {
                                             Text("")
                                         }
                                     }
-                                    WhiteDivider()
-                                    HStack(alignment: .firstTextBaseline) {
-                                        Image(systemName: "house.fill")
-                                        if infoSafe, let cityState = cityState,
-                                           let country = country {
-                                            Text(cityState + ", " + country)
-                                        } else {
-                                            Text("")
-                                        }
+                                    if currentMode == .light {
+                                        Divider()
+                                    } else {
+                                        WhiteDivider()
                                     }
-                                    .font(.subheadline).foregroundColor(.white)
                                     HStack (alignment: .firstTextBaseline) {
-                                        Image(systemName: "person.circle")
-                                        if infoSafe, let gender = gender {
-                                            Text("Gender: " + gender)
-                                        } else {
-                                            Text("")
+                                        HStack {
+                                            Image(systemName: "mappin.and.ellipse")
+                                            if infoSafe,
+                                               let cityState = cityState,
+                                               let country = country {
+                                                Text(cityState)
+                                            } else {
+                                                Text("")
+                                            }
+                                        }
+                                        HStack {
+                                            Image(systemName: "figure.pool.swim")
+                                            Text(diverId)
                                         }
                                     }
-                                    .font(.subheadline)
-                                    .foregroundColor(.white)
                                     .padding([.leading], 2)
                                 }
+                                .frame(width: screenWidth * 0.8)
                             }
                             .padding()
                             if !diverTab {
@@ -302,6 +295,8 @@ struct ProfileView: View {
                             }
                             if let judging = parser.profileData.judging {
                                 JudgedList(data: judging)
+                                    .frame(height: screenHeight * 0.4)
+                                    .offset(y: screenHeight * 0.1)
                             }
                         }
                     }
@@ -401,7 +396,7 @@ struct JudgedList: View {
                     ForEach(data, id: \.self) { meet in
                         ZStack {
                             RoundedRectangle(cornerRadius: 30)
-                                .fill(Custom.darkGray)
+                                .fill(Custom.specialGray)
                                 .shadow(radius: 5)
                             DisclosureGroup(
                                 content: {
