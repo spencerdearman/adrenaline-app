@@ -330,3 +330,12 @@ struct BackgroundSpheres: View {
         }
     }
 }
+
+struct WhiteDivider: View{
+    var body: some View {
+        Rectangle()
+            .frame(height: 1)
+            .foregroundColor(.white)
+            .padding([.leading, .trailing], 3)
+    }
+}
