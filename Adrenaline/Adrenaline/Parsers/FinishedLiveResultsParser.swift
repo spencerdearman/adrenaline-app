@@ -35,38 +35,68 @@ class FinishedLiveResultsParser: ObservableObject {
                         .replacingOccurrences(of: "Unofficial Statistics", with: "")
                         .trimmingCharacters(in: .whitespacesAndNewlines)
                 } else if i > 3 {
+                    var result: [String] = []
                     let text = try row.text()
                     let links = try row.getElementsByTag("a")
-                    assert(links.count == 2)
                     
                     let firstComps = text.split(separator: " ", maxSplits: 1)
                     guard let place = firstComps.first else { return }
+                    result.append(String(place))
                     
                     let comps = String(firstComps.last ?? "").split(separator: " ", maxSplits: 1)
                     guard let score = comps.first else { return }
                     
-                    guard let nextComps = comps.last?.split(separator: "(", maxSplits: 1)
+                    var eventAvgScore: String = ""
+                    var avgRoundScore: String = ""
+                    
+                    guard let partnersComps = comps.last?.split(separator: " / ", maxSplits: 1)
                     else { return }
-                    guard let name = nextComps.first?.trimmingCharacters(in: .whitespacesAndNewlines)
-                    else { return }
-                    let nameSplit = name.split(separator: " ")
-                    guard let last = nameSplit.last else { return }
-                    let first = nameSplit.dropLast().joined(separator: " ")
                     
-                    guard let finalComps = nextComps.last?.split(separator: " ") else { return }
+                    for (i, diver) in partnersComps.enumerated() {
+                        // Removes potential starting (A) or (B) from name
+                        var diverComps: [String.SubSequence] = []
+                        if diver.filter({ $0 == ")" }).count > 1 {
+                            diverComps = diver.split(separator: ") ", maxSplits: 1)
+                        } else {
+                            diverComps = [diver]
+                        }
+                        
+                        guard let nextComps = diverComps.last?
+                            .split(separator: "(", maxSplits: 1) else { return }
+                        
+                        guard let name = nextComps.first?
+                            .trimmingCharacters(in: .whitespacesAndNewlines) else { return }
+                        let nameSplit = name.split(separator: " ")
+                        guard let last = nameSplit.last else { return }
+                        let first = nameSplit.dropLast().joined(separator: " ")
+                        
+                        guard let finalComps = nextComps.last?
+                            .split(separator: " ") else { return }
+                        
+                        if finalComps.count == 0 { return }
+                        else if finalComps.count == 3 {
+                            eventAvgScore = String(finalComps[1])
+                            guard let last = finalComps.last else { return }
+                            avgRoundScore = String(last)
+                        }
+                        
+                        guard var team = finalComps.first else { return }
+                        team.removeLast()
+                        
+                        result += [first, String(last),
+                                   try leadingLink + links[i + 1].attr("href"),
+                                   String(team)]
+                        
+                        if i == 0 {
+                            result += [String(score), try leadingLink + links[0].attr("href")]
+                        }
+                        if i == partnersComps.count - 1 {
+                            result.insert(eventAvgScore, at: 7)
+                            result.insert(avgRoundScore, at: 8)
+                        }
+                    }
                     
-                    if finalComps.count < 3 { return }
-                    guard var team = finalComps.first else { return }
-                    team.removeLast()
-                    
-                    let eventAvgScore = String(finalComps[1])
-                    guard let avgRoundScore = finalComps.last else { return }
-                    
-                    resultsRecords.append([String(place), first, String(last),
-                                           try leadingLink + links[1].attr("href"),
-                                           String(team), String(score),
-                                           try leadingLink + links[0].attr("href"),
-                                           eventAvgScore, String(avgRoundScore)])
+                    resultsRecords.append(result)
                 }
             }
         } catch {
