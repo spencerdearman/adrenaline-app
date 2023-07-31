@@ -27,10 +27,11 @@ struct EventResultPage: View {
                 .padding()
                 .multilineTextAlignment(.center)
             Divider()
-            ScalingScrollView(records: resultData, bgColor: .clear, rowSpacing: 10, shadowRadius: 8) { (elem) in
+            ScalingScrollView(records: resultData, bgColor: .clear, rowSpacing: 10,
+                              shadowRadius: 8) { (elem) in
                 PersonBubbleView(elements: elem, eventTitle: eventTitle)
             }
-            .padding(.bottom, maxHeightOffset)
+                              .padding(.bottom, maxHeightOffset)
         }
         .onAppear {
             if !alreadyParsed {
@@ -60,7 +61,8 @@ struct PersonBubbleView: View {
     private var bubbleColor: Color {
         currentMode == .light ? .white : .black
     }
-    //  (Place, Name, NameLink, Team, TeamLink, Score, ScoreLink, Score Diff., MeetName, SynchroName, SynchroLink, SynchroTeam, SynchroTeamLink)
+    //  (Place, Name, NameLink, Team, TeamLink, Score, ScoreLink, Score Diff., MeetName, SynchroName,
+    //   SynchroLink, SynchroTeam, SynchroTeamLink)
     private var elements: [String]
     private var eventTitle: String
     @State var navStatus: Bool = false
@@ -93,6 +95,7 @@ struct PersonBubbleView: View {
                                         ProfileView(profileLink: elements[10])
                                     } label: {
                                         Text(elements[9])
+                                            .foregroundColor(.primary)
                                     }
                                 }
                             }
@@ -107,8 +110,8 @@ struct PersonBubbleView: View {
                         (elemCount > 12
                          ? Text(elements[3] + " / " + elements[11])
                          : Text(elements[3]))
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                         Spacer()
                     }
                     Spacer()

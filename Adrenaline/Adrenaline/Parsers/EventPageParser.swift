@@ -9,7 +9,8 @@ import SwiftUI
 import SwiftSoup
 
 final class EventPageHTMLParser: ObservableObject {
-    //  Place  Name   NameLink  Team  TeamLink Score ScoreLink Score Diff. SynchroName SynchroNameLink SynchroTeam SynchroTeamLink
+    //  Place  Name   NameLink  Team  TeamLink Score ScoreLink Score Diff. SynchroName SynchroNameLink
+    //  SynchroTeam SynchroTeamLink
     @Published var eventPageData = [[String]]()
     @Published var parsingPageData = [[String]]()
     
@@ -64,7 +65,7 @@ final class EventPageHTMLParser: ObservableObject {
                    let teamLink = synchroTeamLink {
                     items += [name, link, team, teamLink]
                 }
-                print(items)
+                
                 await MainActor.run { [items] in
                     parsingPageData.append(items)
                 }
