@@ -12,7 +12,8 @@ struct Event: View {
     
     var isFirstNav: Bool
     var meet: MeetEvent
-    @State var diverData : (String, String, String, Double, Double, Double, String) = ("", "", "", 0.0, 0.0, 0.0, "")
+    @State var diverData : (String, String, String, Double, Double, Double, String) =
+    ("", "", "", 0.0, 0.0, 0.0, "")
     @State var diverTableData: [Int: (String, String, String, Double, Double, Double, String)] = [:]
     @State var scoreDictionary: [String: String] = [:]
     @State var isExpanded: Bool = false
@@ -32,11 +33,14 @@ struct Event: View {
     
     var body: some View {
         VStack {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .center, spacing: 10) {
                 Text(meet.name)
                     .font(.title3)
                     .fontWeight(.bold)
                     .padding()
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.center)
                 
                 ZStack {
                     Rectangle()
