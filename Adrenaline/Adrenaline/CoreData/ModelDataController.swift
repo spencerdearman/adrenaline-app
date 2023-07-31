@@ -431,6 +431,37 @@ class ModelDataController: ObservableObject {
         return resultData[0]
     }
     
+    func getUserByFirstName(firstName: String) -> [User]? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        fetchRequest.predicate = NSPredicate(format: "firstName == %@", firstName)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [User]
+        if resultData.count == 0 {
+            print("Failed to get User list, result returned invalid number of results")
+            return nil
+        }
+        
+        return resultData
+    }
+    
+    func getUserByLastName(lastName: String) -> [User]? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
+        fetchRequest.predicate = NSPredicate(format: "lastName == %@", lastName)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [User]
+        if resultData.count == 0 {
+            print("Failed to get User list, result returned invalid number of results")
+            return nil
+        }
+        
+        return resultData
+    }
+    
+    
     func getAthlete(email: String) -> Athlete? {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Athlete")

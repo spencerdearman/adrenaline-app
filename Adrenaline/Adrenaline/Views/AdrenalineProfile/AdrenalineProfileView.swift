@@ -14,10 +14,8 @@ struct AdrenalineProfileView: View {
     var firstSignIn: Bool = false
     var loggedIn: Bool = false
     @State private var offSet: CGFloat = 0
-    //@Binding var diveMeetsID: String
-    @Binding var user: User
-    //@Binding var signupData: SignupData
     @State var athlete: Athlete = Athlete()
+    @Binding var user: User
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
