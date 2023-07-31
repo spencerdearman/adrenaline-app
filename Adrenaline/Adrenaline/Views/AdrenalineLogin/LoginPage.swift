@@ -149,7 +149,7 @@ struct LoginContent: View {
                     }
                     VStack {
                         if loginSuccessful {
-                            AdrenalineProfileView(loggedIn: true, user: $user)
+                            AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful)
                             .zIndex(1)
                             .onAppear {
                                 withAnimation {

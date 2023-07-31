@@ -44,6 +44,7 @@ struct AthleteRecruitingView: View {
     @State private var gradYear: String = ""
     @State private var highSchool: String = ""
     @State private var hometown: String = ""
+    @State private var loginSuccessful: Bool = false
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
@@ -375,7 +376,7 @@ struct AthleteRecruitingView: View {
                         Spacer()
                         
                         HStack {
-                            NavigationLink(destination: AdrenalineProfileView(user: $user)) {
+                            NavigationLink(destination: AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful)) {
                                 Text("Skip")
                                     .bold()
                             }
@@ -388,7 +389,7 @@ struct AthleteRecruitingView: View {
                                 }
                             }))
                             
-                            NavigationLink(destination: AdrenalineProfileView(user: $user)) {
+                            NavigationLink(destination: AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful)) {
                                 Text("Next")
                                     .bold()
                             }
