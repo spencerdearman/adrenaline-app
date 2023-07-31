@@ -287,6 +287,7 @@ struct ParseLoaderView: View {
                 guard let body = document.body() else { throw error }
                 let table = try body.getElementById("Results")
                 guard let rows = try table?.getElementsByTag("tr") else { throw error }
+                if rows.count < 2 { throw error }
                 if (try rows[1].text().suffix(3) == "Brd") {
                     let _ = parseABBoardResults(rows: rows)
                     //Title
