@@ -374,6 +374,7 @@ struct SearchInputView: View {
                     } else {
                         DiverSearchView(selection: $profileSelection, firstName: $firstName,
                                         lastName: $lastName, focusedField: $focusedField)
+                        .frame(width: screenWidth * 0.85)
                         .offset(y: -screenHeight * 0.15)
                     }
                     
@@ -405,6 +406,8 @@ struct SearchInputView: View {
                                     showError = true
                                 }
                             } else {
+                                results = []
+                                adrenalineFormattedResults = [:]
                                 showError = false
                                 showResults = false
                                 if firstName != "" && lastName == "" {
@@ -461,6 +464,7 @@ struct SearchInputView: View {
                             ProgressView()
                         }
                     }
+                    .frame(width: screenWidth * 0.85)
                     .ignoresSafeArea(.keyboard)
                     .offset(y: selection == .person ? -screenHeight * 0.188 : isIndexingMeets ? -screenHeight * 0.38 : -screenHeight * 0.24)
                     if showError {
@@ -773,13 +777,13 @@ struct DiverSearchView: View {
                                 .focused(focusedField, equals: .lastName)
                             
                         }
-                        .padding(.bottom)
+                        .padding(.bottom, 40)
                     }
                 }
             }
             .dynamicTypeSize(.xSmall ... .xxxLarge)
             .offset(y: -screenHeight * 0.03)
-            .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
+            .frame(width: screenWidth * 0.85, height: screenHeight * 0.3)
     }
 }
 

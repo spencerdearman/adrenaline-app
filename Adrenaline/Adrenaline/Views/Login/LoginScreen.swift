@@ -388,6 +388,7 @@ struct LoginPageSearchView: View {
             .frame(width: screenWidth * 0.75)
             .padding(.bottom, maxHeightOffset)
         }
+        .frame(width: screenWidth * 0.85)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

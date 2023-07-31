@@ -43,7 +43,7 @@ struct DiverView: View {
 
 struct ProfileContent: View {
     @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
-    @State var selectedPage: Int = 1
+    @State var selectedPage: Int = 0
     @Binding var user: User
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
