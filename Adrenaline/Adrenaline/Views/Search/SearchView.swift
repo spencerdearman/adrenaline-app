@@ -101,10 +101,10 @@ private func checkFields(selection: SearchType, firstName: String = "",
                          lastName: String = "", meetName: String = "",
                          orgName: String = "", meetYear: String = "") -> Bool {
     switch selection {
-        case .person:
-            return firstName != "" || lastName != ""
-        case .meet:
-            return meetName != "" || orgName != "" || meetYear != ""
+    case .person:
+        return firstName != "" || lastName != ""
+    case .meet:
+        return meetName != "" || orgName != "" || meetYear != ""
     }
 }
 
@@ -231,11 +231,21 @@ struct SearchView: View {
 struct SearchInputView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.isIndexingMeets) var isIndexingMeets
+    @Environment(\.getUserByFirstName) private var getUserByFirstName
+    @Environment(\.getUserByLastName) private var getUserByLastName
     
     @State private var debounceWorkItem: DispatchWorkItem?
     @State private var showError: Bool = false
     @State var fullScreenResults: Bool = false
     @State var resultSelected: Bool = false
+    @State var profileSelection: DiveMeetsAdrenaline = .adrenaline
+    @State var firstNameUsers: [User]? = []
+    @State var lastNameUsers: [User]? = []
+    @State var firstLastUsers: [User]? = []
+    @State var results: [User]? = []
+    @State var showResults: Bool = false
+    @State var showAdrenalineError: Bool = false
+    @State var adrenalineFormattedResults: [String: User?] = [:]
     // Tracks if the user is inside of a text field to determine when to show the keyboard
     @FocusState private var focusedField: SearchField?
     @Binding fileprivate var selection: SearchType
@@ -275,17 +285,17 @@ struct SearchInputView: View {
         get {
             let descriptors: [NSSortDescriptor]
             switch(filterType) {
-                case .name:
-                    descriptors = [NSSortDescriptor(key: "name", ascending: isSortedAscending)]
-                    break
-                case .startDate:
-                    descriptors = [NSSortDescriptor(key: "startDate", ascending: isSortedAscending),
-                                   NSSortDescriptor(key: "name", ascending: true)]
-                    break
-                case .state:
-                    descriptors = [NSSortDescriptor(key: "state", ascending: isSortedAscending),
-                                   NSSortDescriptor(key: "name", ascending: true)]
-                    break
+            case .name:
+                descriptors = [NSSortDescriptor(key: "name", ascending: isSortedAscending)]
+                break
+            case .startDate:
+                descriptors = [NSSortDescriptor(key: "startDate", ascending: isSortedAscending),
+                               NSSortDescriptor(key: "name", ascending: true)]
+                break
+            case .state:
+                descriptors = [NSSortDescriptor(key: "state", ascending: isSortedAscending),
+                               NSSortDescriptor(key: "name", ascending: true)]
+                break
             }
             
             _items.wrappedValue.nsSortDescriptors = descriptors
@@ -335,6 +345,17 @@ struct SearchInputView: View {
         orgName = orgName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
+    private func formatAdrenalineResults(results: [User]?) -> [String: User?] {
+        var userDictionary: [String: User?] = [:]
+        if let unwrappedResults = results {
+            for u in unwrappedResults {
+                let nameStr = (u.firstName ?? "") + " " + (u.lastName ?? "")
+                userDictionary[nameStr] = u
+            }
+        }
+        return userDictionary
+    }
+    
     var body: some View {
         
         NavigationView{
@@ -351,36 +372,82 @@ struct SearchInputView: View {
                                        focusedField: $focusedField)
                         .offset(y: -screenHeight * 0.15)
                     } else {
-                        DiverSearchView(firstName: $firstName, lastName: $lastName,
-                                        focusedField: $focusedField)
+                        DiverSearchView(selection: $profileSelection, firstName: $firstName,
+                                        lastName: $lastName, focusedField: $focusedField)
                         .offset(y: -screenHeight * 0.15)
                     }
                     
                     VStack {
                         Button(action: {
-                            // Need to initially set search to false so webView gets recreated
-                            searchSubmitted = false
-                            
-                            // Resets focusedField so keyboard disappears
-                            focusedField = nil
-                            
-                            // Only submits a search if one of the relevant fields is filled,
-                            // otherwise toggles error
-                            if checkFields(selection: selection, firstName: firstName,
-                                           lastName: lastName, meetName: meetName,
-                                           orgName: orgName, meetYear: meetYear) {
-                                clearStateFlags()
-                                trimFields()
+                            if profileSelection == .diveMeets {
+                                // Need to initially set search to false so webView gets recreated
+                                searchSubmitted = false
                                 
-                                searchSubmitted = true
+                                // Resets focusedField so keyboard disappears
+                                focusedField = nil
                                 
-                                if selection == .meet {
-                                    predicate = getPredicate(name: meetName, org: orgName,
-                                                             year: meetYear)
+                                // Only submits a search if one of the relevant fields is filled,
+                                // otherwise toggles error
+                                if checkFields(selection: selection, firstName: firstName,
+                                               lastName: lastName, meetName: meetName,
+                                               orgName: orgName, meetYear: meetYear) {
+                                    clearStateFlags()
+                                    trimFields()
+                                    
+                                    searchSubmitted = true
+                                    
+                                    if selection == .meet {
+                                        predicate = getPredicate(name: meetName, org: orgName,
+                                                                 year: meetYear)
+                                    }
+                                } else {
+                                    clearStateFlags()
+                                    showError = true
                                 }
                             } else {
-                                clearStateFlags()
-                                showError = true
+                                showError = false
+                                showResults = false
+                                if firstName != "" && lastName == "" {
+                                    if let users = getUserByFirstName(firstName) {
+                                        firstNameUsers = users
+                                        results = firstNameUsers
+                                    } else {
+                                        print("First Name search not found")
+                                    }
+                                } else if firstName == "" && lastName != "" {
+                                    if let lastUsers = getUserByLastName(lastName) {
+                                        lastNameUsers = lastUsers
+                                        results = lastNameUsers
+                                    } else {
+                                        print("Last Name search not found")
+                                    }
+                                } else {
+                                    if let users = getUserByFirstName(firstName) {
+                                        firstNameUsers = users
+                                    } else {
+                                        print("First Name search not found")
+                                    }
+                                    
+                                    if let lastUsers = getUserByLastName(lastName) {
+                                        lastNameUsers = lastUsers
+                                    } else {
+                                        print("Last Name search not found")
+                                    }
+                                    if let firstNameUsers = firstNameUsers, let lastNameUsers = lastNameUsers {
+                                        for u in firstNameUsers {
+                                            if lastNameUsers.contains(u) {
+                                                firstLastUsers?.append(u)
+                                            }
+                                        }
+                                    }
+                                    results = firstLastUsers
+                                }
+                                if results == [] {
+                                    showAdrenalineError = true
+                                } else {
+                                    showResults = true
+                                }
+                                adrenalineFormattedResults = formatAdrenalineResults(results: results)
                             }
                         }, label: {
                             Text("Submit")
@@ -395,7 +462,7 @@ struct SearchInputView: View {
                         }
                     }
                     .ignoresSafeArea(.keyboard)
-                    .offset(y: selection == .person ? -screenHeight * 0.27 : isIndexingMeets ? -screenHeight * 0.38 : -screenHeight * 0.24)
+                    .offset(y: selection == .person ? -screenHeight * 0.188 : isIndexingMeets ? -screenHeight * 0.38 : -screenHeight * 0.24)
                     if showError {
                         Text("You must enter at least one field to search")
                             .foregroundColor(Color.red)
@@ -464,12 +531,62 @@ struct SearchInputView: View {
                 }
                 .ignoresSafeArea(.keyboard)
                 
+                if showResults {
+                    ZStack (alignment: .topLeading) {
+                        (RecordList(records: $parsedLinks, adrenalineRecords: $adrenalineFormattedResults,
+                                              resultSelected: $resultSelected,
+                                              fullScreenResults: $fullScreenResults,
+                                              selectionType: $profileSelection))
+                        .onAppear {
+                            fullScreenResults = true
+                            resultSelected = false
+                        }
+                        HStack {
+                            if !resultSelected {
+                                Button(action: { () -> () in fullScreenResults.toggle() }) {
+                                    Image(systemName: "chevron.down")
+                                }
+                                .rotationEffect(.degrees(fullScreenResults ? 0: -180))
+                                .frame(width: resultsIconSize, height: resultsIconSize)
+                                .clipShape(Rectangle())
+                            }
+                            
+                            Spacer()
+                            if meetResultsReady {
+                                Menu {
+                                    Picker("", selection: $filterType) {
+                                        ForEach(FilterType.allCases, id: \.self) {
+                                            Text($0.rawValue)
+                                                .tag($0)
+                                        }
+                                    }
+                                    Button(action: { isSortedAscending.toggle() }) {
+                                        Label("Sort: \(isSortedAscending ? "Ascending" : "Descending")",
+                                              systemImage: "arrow.up.arrow.down")
+                                    }
+                                } label: {
+                                    Image(systemName: "line.3.horizontal.decrease.circle")
+                                }
+                            }
+                        }
+                        .offset(y: 15)
+                        .padding(EdgeInsets(top: 5, leading: 18, bottom: 10, trailing: 18))
+                        .foregroundColor(.primary)
+                        .font(.title)
+                    }
+                    .cornerRadius(30)
+                    .shadow(radius: 10)
+                    .offset(y: fullScreenResults ? screenHeight * 0.05 : resultsOffset)
+                    .animation(.linear(duration: 0.2), value: fullScreenResults)
+                }
+                
                 if personResultsReady || meetResultsReady {
                     ZStack (alignment: .topLeading) {
                         (selection == .person
-                         ? AnyView(RecordList(records: $parsedLinks,
+                         ? AnyView(RecordList(records: $parsedLinks, adrenalineRecords: $adrenalineFormattedResults,
                                               resultSelected: $resultSelected,
-                                              fullScreenResults: $fullScreenResults))
+                                              fullScreenResults: $fullScreenResults,
+                                              selectionType: $profileSelection))
                          : AnyView(MeetResultsView(records: filteredItems)))
                         .onAppear {
                             fullScreenResults = true
@@ -614,6 +731,8 @@ struct IndexingCounterView: View {
 }
 
 struct DiverSearchView: View {
+    //false means diveMeets
+    @Binding var selection: DiveMeetsAdrenaline
     @Binding var firstName: String
     @Binding var lastName: String
     private let screenWidth = UIScreen.main.bounds.width
@@ -621,46 +740,46 @@ struct DiverSearchView: View {
     fileprivate var focusedField: FocusState<SearchField?>.Binding
     
     var body: some View {
-        ZStack {
-            Rectangle()
-                .mask(RoundedRectangle(cornerRadius: 50))
-                .foregroundColor(Custom.grayThinMaterial)
-                .shadow(radius: 10)
-                .frame(width: screenWidth * 0.9, height: screenHeight * 0.24)
             VStack {
-                HStack {
-                    Text("First Name:")
-                        .padding([.leading, .bottom, .top])
-                    TextField("First Name", text: $firstName)
-                        .modifier(TextFieldClearButton(text: $firstName,
-                                                       fieldType: .firstName,
-                                                       focusedField: focusedField))
-                        .multilineTextAlignment(.leading)
-                        .disableAutocorrection(true)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.trailing)
-                        .focused(focusedField, equals: .firstName)
+                DiveMeetsAdrenalineSelection(selection: $selection)
+                    .padding(.top, screenHeight * 0.1)
+                    .padding(.bottom, screenHeight * 0.03)
+                BackgroundBubble(vPadding: 80) {
+                    VStack {
+                        HStack {
+                            Text("First Name:")
+                                .padding([.leading, .bottom, .top])
+                            TextField("First Name", text: $firstName)
+                                .modifier(TextFieldClearButton(text: $firstName,
+                                                               fieldType: .firstName,
+                                                               focusedField: focusedField))
+                                .multilineTextAlignment(.leading)
+                                .disableAutocorrection(true)
+                                .textFieldStyle(.roundedBorder)
+                                .padding(.trailing)
+                                .focused(focusedField, equals: .firstName)
+                        }
+                        HStack {
+                            Text("Last Name:")
+                                .padding([.leading])
+                            TextField("Last Name", text: $lastName)
+                                .modifier(TextFieldClearButton(text: $lastName,
+                                                               fieldType: .lastName,
+                                                               focusedField: focusedField))
+                                .multilineTextAlignment(.leading)
+                                .textFieldStyle(.roundedBorder)
+                                .disableAutocorrection(true)
+                                .padding(.trailing)
+                                .focused(focusedField, equals: .lastName)
+                            
+                        }
+                        .padding(.bottom)
+                    }
                 }
-                HStack {
-                    Text("Last Name:")
-                        .padding([.leading])
-                    TextField("Last Name", text: $lastName)
-                        .modifier(TextFieldClearButton(text: $lastName,
-                                                       fieldType: .lastName,
-                                                       focusedField: focusedField))
-                        .multilineTextAlignment(.leading)
-                        .textFieldStyle(.roundedBorder)
-                        .disableAutocorrection(true)
-                        .padding(.trailing)
-                        .focused(focusedField, equals: .lastName)
-                    
-                }
-                .padding(.bottom)
             }
             .dynamicTypeSize(.xSmall ... .xxxLarge)
             .offset(y: -screenHeight * 0.03)
             .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
-        }
     }
 }
 
@@ -845,10 +964,68 @@ struct MeetResultsView : View {
                             }
                         }
                     }
-                    .padding(.bottom, maxHeightOffset)
+                                      .padding(.bottom, maxHeightOffset)
                 }
                 Spacer()
             }
         }
+    }
+}
+
+enum DiveMeetsAdrenaline: String, CaseIterable {
+    case diveMeets = "DiveMeets"
+    case adrenaline = "Adrenaline"
+}
+
+struct DiveMeetsAdrenalineSelection: View {
+    @Binding var selection: DiveMeetsAdrenaline
+    
+    private let cornerRadius: CGFloat = 30
+    private let selectedGray = Color(red: 0.85, green: 0.85, blue: 0.85, opacity: 0.4)
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .fill(Custom.darkGray)
+                .shadow(radius: 10)
+            HStack(spacing: 0) {
+                ForEach(DiveMeetsAdrenaline.allCases, id: \.self) { s in
+                    ZStack {
+                        // Weird padding stuff to have end options rounded on the outside edge
+                        // only when selected
+                        // https://stackoverflow.com/a/72435691/22068672
+                        Rectangle()
+                            .fill(selection == s ? selectedGray : .clear)
+                            .padding(.trailing, s == DiveMeetsAdrenaline.allCases.first
+                                     ? cornerRadius
+                                     : 0)
+                            .padding(.leading, s == DiveMeetsAdrenaline.allCases.last
+                                     ? cornerRadius
+                                     : 0)
+                            .cornerRadius(s == DiveMeetsAdrenaline.allCases.first ||
+                                          s == DiveMeetsAdrenaline.allCases.last
+                                          ? cornerRadius
+                                          : 0)
+                            .padding(.trailing, s == DiveMeetsAdrenaline.allCases.first
+                                     ? -cornerRadius
+                                     : 0)
+                            .padding(.leading, s == DiveMeetsAdrenaline.allCases.last
+                                     ? -cornerRadius
+                                     : 0)
+                        Text(s.rawValue)
+                    }
+                    .dynamicTypeSize(.xSmall ... .xxxLarge)
+                    .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
+                    .onTapGesture {
+                        selection = s
+                    }
+                    if s != DiveMeetsAdrenaline.allCases.last {
+                        Divider()
+                    }
+                }
+            }
+        }
+        .frame(height: 50)
+        .padding([.leading, .trailing])
     }
 }
