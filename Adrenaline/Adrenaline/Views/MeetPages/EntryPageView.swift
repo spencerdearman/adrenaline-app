@@ -193,7 +193,8 @@ struct EntryView: View {
                             .foregroundColor(.primary)
                             .padding([.leading, .trailing])
                             .padding([.top, .bottom], 5)
-                            .background(RoundedRectangle(cornerRadius: 30).fill(Custom.specialGray))
+                            .background(RoundedRectangle(cornerRadius: 30)
+                                .fill(Custom.grayThinMaterial))
                     }
                 }
             },
