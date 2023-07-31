@@ -63,7 +63,7 @@ struct EventResultPage: View {
                         }
                     }
                     let timeoutTask = Task {
-                        try await Task.sleep(nanoseconds: UInt64(1) * NSEC_PER_SEC)
+                        try await Task.sleep(nanoseconds: UInt64(timeoutInterval) * NSEC_PER_SEC)
                         parseTask.cancel()
                         timedOut = true
                     }

@@ -202,9 +202,12 @@ struct MeetPageView: View {
                     MeetResultsPageView(meetResultsData: meetResultsData)
                     Spacer()
                 } else if meetLink != "" && !timedOut {
-                    VStack {
-                        Text("Getting meet information...")
-                        ProgressView()
+                    BackgroundBubble() {
+                        VStack {
+                            Text("Getting meet information...")
+                            ProgressView()
+                        }
+                        .padding()
                     }
                 } else if timedOut {
                     Text("Unable to get meet page, network timed out")
