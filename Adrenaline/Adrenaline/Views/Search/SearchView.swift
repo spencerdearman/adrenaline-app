@@ -370,11 +370,13 @@ struct SearchInputView: View {
                                        meetYear: $meetYear,
                                        focusedField: $focusedField)
                         .offset(y: -screenHeight * 0.15)
+                        .ignoresSafeArea(.keyboard)
                     } else {
                         DiverSearchView(selection: $profileSelection, firstName: $firstName,
                                         lastName: $lastName, focusedField: $focusedField)
                         .frame(width: screenWidth * 0.85)
                         .offset(y: -screenHeight * 0.15)
+                        .ignoresSafeArea(.keyboard)
                     }
                     
                     VStack {
@@ -710,11 +712,15 @@ struct DiverSearchView: View {
     
     var body: some View {
         VStack {
-            DiveMeetsAdrenalineSelection(selection: $selection)
-                .padding(.top, screenHeight * 0.1)
-                .padding(.bottom, screenHeight * 0.03)
-            BackgroundBubble(vPadding: 80) {
+            ZStack {
+                Rectangle()
+                    .foregroundColor(Custom.darkGray)
+                    .frame(width: screenWidth * 0.85, height: screenHeight * 0.3)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 6)
                 VStack {
+                    DiveMeetsAdrenalineSelection(selection: $selection)
+                        .scaleEffect(0.8)
                     HStack {
                         Text("First Name:")
                             .padding([.leading, .bottom, .top])
@@ -745,7 +751,9 @@ struct DiverSearchView: View {
                     .padding(.bottom, 40)
                 }
             }
+            .offset(y: screenHeight * 0.06)
         }
+        .ignoresSafeArea(.keyboard)
         .dynamicTypeSize(.xSmall ... .xxxLarge)
         .offset(y: -screenHeight * 0.03)
         .frame(width: screenWidth * 0.85, height: screenHeight * 0.3)
@@ -787,7 +795,7 @@ struct MeetSearchView: View {
         ZStack {
             Rectangle()
                 .mask(RoundedRectangle(cornerRadius: 50))
-                .foregroundColor(Custom.grayThinMaterial)
+                .foregroundColor(Custom.darkGray)
                 .shadow(radius: 10)
                 .frame(width: screenWidth * 0.9, height: isIndexingMeets ? screenHeight * 0.6 : screenHeight * 0.31)
                 .offset(y: isPhone ? (isIndexingMeets ? screenWidth * 0.33 : screenWidth * 0.015) : isIndexingMeets ? screenHeight * 0.15 : screenWidth * 0.015)
@@ -956,7 +964,7 @@ struct DiveMeetsAdrenalineSelection: View {
         ZStack {
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(Custom.darkGray)
-                .shadow(radius: 10)
+                .shadow(radius: 2)
             HStack(spacing: 0) {
                 ForEach(SearchDiveMeetsOrAdrenaline.allCases, id: \.self) { s in
                     ZStack {
@@ -964,7 +972,7 @@ struct DiveMeetsAdrenalineSelection: View {
                         // only when selected
                         // https://stackoverflow.com/a/72435691/22068672
                         Rectangle()
-                            .fill(selection == s ? selectedGray : .clear)
+                            .fill(selection == s ? .clear : selectedGray)
                             .padding(.trailing, s == SearchDiveMeetsOrAdrenaline.allCases.first
                                      ? cornerRadius
                                      : 0)
