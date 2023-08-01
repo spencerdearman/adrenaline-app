@@ -508,7 +508,8 @@ struct MeetResultsPageView: View {
                 
                 if let liveResults = liveResults {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: liveResultsToRecords(liveResults), bgColor: .clear, shadowRadius: 3) { (elems) in
+                        ScalingScrollView(records: liveResultsToRecords(liveResults),
+                                          bgColor: .clear, shadowRadius: 3) { (elems) in
                             LiveResultsListView(elements: elems)
                         }
                         .frame(height: 300)

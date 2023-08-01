@@ -14,6 +14,8 @@ struct FinishedLiveResultsView: View {
     @State private var html: String = ""
     @State private var elements: [[String]]?
     @State private var eventTitle: String?
+    @State private var finishedParsing: Bool = false
+    @State private var timedOut: Bool = false
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
@@ -32,7 +34,7 @@ struct FinishedLiveResultsView: View {
             
             currentMode == .light ? Color.white.ignoresSafeArea() : Color.black.ignoresSafeArea()
             
-            if let eventTitle = eventTitle,
+            if finishedParsing, !timedOut, let eventTitle = eventTitle,
                let elements = elements {
                 VStack {
                     Text(eventTitle)
@@ -46,14 +48,42 @@ struct FinishedLiveResultsView: View {
                     }
                     .padding(.bottom, maxHeightOffset)
                 }
+            } else if timedOut {
+                BackgroundBubble() {
+                    Text("Unable to get live results, network timed out")
+                        .padding()
+                }
+            } else {
+                BackgroundBubble() {
+                    VStack {
+                        Text("Getting live results...")
+                        ProgressView()
+                    }
+                    .padding()
+                }
             }
         }
         .onChange(of: html) { _ in
-            Task {
-                await parser.getFinishedLiveResultsRecords(html: html)
-                elements = parser.resultsRecords
-                eventTitle = parser.eventTitle
-            }
+                Task {
+                    let parseTask = Task {
+                        await parser.getFinishedLiveResultsRecords(html: html)
+                        elements = parser.resultsRecords
+                        eventTitle = parser.eventTitle
+                        // Resets both bools in each Task since this will run as html changes
+                        finishedParsing = true
+                        timedOut = false
+                    }
+                    let timeoutTask = Task {
+                        try await Task.sleep(nanoseconds: UInt64(timeoutInterval) * NSEC_PER_SEC)
+                        parseTask.cancel()
+                        // Resets both bools in each Task since this will run as html changes
+                        finishedParsing = false
+                        timedOut = true
+                    }
+                    
+                    await parseTask.value
+                    timeoutTask.cancel()
+                }
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
