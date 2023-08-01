@@ -47,7 +47,6 @@
 		00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FEF7B82A2A972800AAFC7C /* EntriesParser.swift */; };
 		00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FEF7BA2A2A990900AAFC7C /* EntryPageView.swift */; };
 		00FFDAE82A66FBE10090727B /* AthleteRecruitingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */; };
-		4D09308529D3A1B7003AAA90 /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D09308429D3A1B7003AAA90 /* LoginScreen.swift */; };
 		4D0A01762A73781B00615326 /* LoginPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A01752A73781B00615326 /* LoginPage.swift */; };
 		4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */; };
 		4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */; };
@@ -128,7 +127,6 @@
 		00FEF7B82A2A972800AAFC7C /* EntriesParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntriesParser.swift; sourceTree = "<group>"; };
 		00FEF7BA2A2A990900AAFC7C /* EntryPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryPageView.swift; sourceTree = "<group>"; };
 		00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteRecruitingView.swift; sourceTree = "<group>"; };
-		4D09308429D3A1B7003AAA90 /* LoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; };
 		4D0A01752A73781B00615326 /* LoginPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPage.swift; sourceTree = "<group>"; };
 		4D1177C729F88B7000850D18 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUIWebView.swift; sourceTree = "<group>"; };
@@ -360,7 +358,6 @@
 		4D8B9C1129F898D5002B53AD /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				4D09308429D3A1B7003AAA90 /* LoginScreen.swift */,
 				00E0D4992A042A8D00B01D98 /* LoginTextFieldClearButton.swift */,
 				4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */,
 				4D74FEA429AE7C2B00401178 /* ProfileImage.swift */,
@@ -544,7 +541,6 @@
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
 				002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */,
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,
-				4D09308529D3A1B7003AAA90 /* LoginScreen.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,

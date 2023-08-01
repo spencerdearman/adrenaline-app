@@ -8,6 +8,11 @@
 
 import SwiftUI
 
+enum LoginField: Int, Hashable, CaseIterable {
+    case diveMeetsId
+    case passwd
+}
+
 struct LoginTextFieldClearButton: ViewModifier {
     @Binding var text: String
     var fieldType: LoginField
