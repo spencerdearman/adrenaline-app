@@ -552,7 +552,7 @@ struct LastDiverView: View
     var body: some View {
         ZStack {
             Rectangle()
-                .foregroundColor(Custom.specialGray)
+                .foregroundColor(Custom.darkGray)
                 .cornerRadius(50)
                 .shadow(radius: 20)
             
@@ -587,7 +587,7 @@ struct LastDiverView: View
                 
                 ZStack {
                     Rectangle()
-                        .foregroundColor(Custom.darkGray)
+                        .foregroundColor(Custom.accentThinMaterial)
                         .frame(height: screenHeight * 0.1)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
@@ -650,7 +650,7 @@ struct NextDiverView: View
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(Custom.specialGray)
+                .fill(Custom.darkGray)
                 .cornerRadius(50)
                 .shadow(radius: 20)
             
@@ -688,7 +688,7 @@ struct NextDiverView: View
                 ZStack {
                     Rectangle()
                         .frame(height: screenHeight * 0.1)
-                        .foregroundColor(Custom.darkGray)
+                        .foregroundColor(Custom.accentThinMaterial)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
                         Text(nextInfo.5.prefix(5))

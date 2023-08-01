@@ -157,6 +157,7 @@ struct ClosedTileView: View {
                                 .matchedGeometryEffect(id: "previous", in: namespace)
                         } else {
                             Text("Board: " + bubbleData[11])
+                                .foregroundColor(.primary)
                                 .font(.footnote.weight(.semibold))
                                 .matchedGeometryEffect(id: "board", in: namespace)
                         }
@@ -218,6 +219,7 @@ struct OpenTileView: View {
                             .matchedGeometryEffect(id: "currentScore", in: namespace)
                         if abBoardEvent {
                             Text("Board: " + bubbleData[11])
+                                .foregroundColor(.primary)
                                 .font(.footnote.weight(.semibold))
                                 .matchedGeometryEffect(id: "board", in: namespace)
                         }

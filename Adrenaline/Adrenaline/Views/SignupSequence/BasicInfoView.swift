@@ -34,7 +34,6 @@ struct BasicInfoView: View {
     @State private var repeatPassword: String = ""
     @State private var isPasswordVisible: Bool = false
     @State var user: User = User()
-    @State var athlete: Athlete = Athlete()
     @Binding var signupData: SignupData
     @Binding var showSplash: Bool
     @FocusState private var focusedField: BasicInfoField?
@@ -228,12 +227,6 @@ struct BasicInfoView: View {
                                     user = u
                                 } else {
                                     print("User could not be loaded")
-                                }
-                                if let a = getAthlete(signupData.email ?? "") {
-                                    print(a.firstName)
-                                    athlete = a
-                                } else {
-                                    print("Athlete could not be loaded")
                                 }
                             })
                             .buttonStyle(.bordered)
