@@ -49,6 +49,7 @@ struct LiveResultsView: View {
 }
 
 struct ParseLoaderView: View {
+    @Environment(\.colorScheme) var currentMode
     var request: String
     @State var html: String = ""
     @State var rows: [[String: String]] = []
@@ -80,6 +81,10 @@ struct ParseLoaderView: View {
     
     let screenFrame = Color(.systemBackground)
     private let linkHead = "https://secure.meetcontrol.com/divemeets/system/"
+    
+    private var bgColor: Color {
+        currentMode == .light ? .white : .black
+    }
     
     private func parseLastDiverData(table: Element) -> Bool {
         do {
@@ -291,6 +296,7 @@ struct ParseLoaderView: View {
                 guard let body = document.body() else { throw error }
                 let table = try body.getElementById("Results")
                 guard let rows = try table?.getElementsByTag("tr") else { throw error }
+                if rows.count < 2 { throw error }
                 if (try rows[1].text().suffix(3) == "Brd") {
                     let _ = parseABBoardResults(rows: rows)
                     //Title
@@ -361,6 +367,8 @@ struct ParseLoaderView: View {
                 }
             }
             
+            bgColor.ignoresSafeArea()
+            
             // Loading completed successfully
             if loadedSuccessfully {
                 LoadedView(lastDiverInformation: $lastDiverInformation, nextDiverInformation:
@@ -399,7 +407,7 @@ struct LoadedView: View {
     @Environment(\.colorScheme) var currentMode
     var screenWidth = UIScreen.main.bounds.width
     var screenHeight = UIScreen.main.bounds.height
-    //    @State var titleReady: Bool = false
+    @State var titleReady: Bool = false
     @Binding var lastDiverInformation:
     (String, String, Int, Double, Int, Int, Double, String, String, Double, Double, String)
     @Binding var nextDiverInformation:
@@ -433,24 +441,24 @@ struct LoadedView: View {
         }
     }
     
-    //    func titleTimer() {
-    //        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
-    //            titleReady.toggle()
-    //        }
-    //    }
+    func titleTimer() {
+        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
+            titleReady.toggle()
+        }
+    }
     
     var body: some View {
         bgColor.ignoresSafeArea()
         ZStack {
             ColorfulView()
-            //                .onAppear{
-            //                    titleTimer()
-            //                }
+                .onAppear {
+                    titleTimer()
+                }
             GeometryReader { geometry in
                 VStack(spacing: 0.5) {
                     if !starSelected {
                         VStack {
-                            if abBoardEvent {
+                            if abBoardEvent && titleReady {
                                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                                     VStack {
                                         Text(title)
@@ -462,7 +470,7 @@ struct LoadedView: View {
                                             .bold()
                                     }
                                 }
-                            } else {
+                            } else if titleReady {
                                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                                     VStack {
                                         Text(title)
