@@ -14,7 +14,7 @@ struct RecordList: View {
     @Binding var adrenalineRecords: [String: User?]
     @Binding var resultSelected: Bool
     @Binding var fullScreenResults: Bool
-    @Binding var selectionType: DiveMeetsAdrenaline
+    @Binding var selectionType: SearchDiveMeetsOrAdrenaline
     
     // Style adjustments for elements of list
     private let cornerRadius: CGFloat = 30
