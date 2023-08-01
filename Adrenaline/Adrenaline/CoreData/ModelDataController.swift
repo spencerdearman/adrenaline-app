@@ -431,10 +431,34 @@ class ModelDataController: ObservableObject {
         return resultData[0]
     }
     
-    func getUserByFirstName(firstName: String) -> [User]? {
+    func getUsers(firstName: String? = nil, lastName: String? = nil) -> [User]? {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
-        fetchRequest.predicate = NSPredicate(format: "firstName == %@", firstName)
+        
+        var predicates: [NSPredicate] = []
+        
+        if let firstName = firstName {
+            let firstNamePredicate = NSPredicate(format: "firstName == %@", firstName)
+            predicates.append(firstNamePredicate)
+        }
+        
+        if let lastName = lastName {
+            let lastNamePredicate = NSPredicate(format: "lastName == %@", lastName)
+            predicates.append(lastNamePredicate)
+        }
+        
+        if firstName != ""  && lastName != "" {
+            let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+            fetchRequest.predicate = compoundPredicate
+        } else if firstName != "" {
+            if let firstName = firstName {
+                fetchRequest.predicate = NSPredicate(format: "firstName == %@", firstName)
+            }
+        } else {
+            if let lastName = lastName {
+                fetchRequest.predicate = NSPredicate(format: "lastName == %@", lastName)
+            }
+        }
         
         guard let result = try? moc.fetch(fetchRequest) else { return nil }
         let resultData = result as! [User]
@@ -445,22 +469,6 @@ class ModelDataController: ObservableObject {
         
         return resultData
     }
-    
-    func getUserByLastName(lastName: String) -> [User]? {
-        let moc = container.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "User")
-        fetchRequest.predicate = NSPredicate(format: "lastName == %@", lastName)
-        
-        guard let result = try? moc.fetch(fetchRequest) else { return nil }
-        let resultData = result as! [User]
-        if resultData.count == 0 {
-            print("Failed to get User list, result returned invalid number of results")
-            return nil
-        }
-        
-        return resultData
-    }
-    
     
     func getAthlete(email: String) -> Athlete? {
         let moc = container.viewContext

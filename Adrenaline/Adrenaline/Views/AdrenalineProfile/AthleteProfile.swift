@@ -89,7 +89,6 @@ struct MetricsView: View {
     var body: some View {
         let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (user.diveMeetsID ?? "00000")
         SkillsGraph(profileLink: profileLink)
-        //            .frame(height: 300)
     }
 }
 

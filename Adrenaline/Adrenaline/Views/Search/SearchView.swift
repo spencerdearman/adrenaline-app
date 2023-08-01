@@ -233,6 +233,7 @@ struct SearchInputView: View {
     @Environment(\.isIndexingMeets) var isIndexingMeets
     @Environment(\.getUserByFirstName) private var getUserByFirstName
     @Environment(\.getUserByLastName) private var getUserByLastName
+    @Environment(\.getUsers) private var getUsers
     
     @State private var debounceWorkItem: DispatchWorkItem?
     @State private var showError: Bool = false
@@ -410,41 +411,7 @@ struct SearchInputView: View {
                                 adrenalineFormattedResults = [:]
                                 showError = false
                                 showResults = false
-                                if firstName != "" && lastName == "" {
-                                    if let users = getUserByFirstName(firstName) {
-                                        firstNameUsers = users
-                                        results = firstNameUsers
-                                    } else {
-                                        print("First Name search not found")
-                                    }
-                                } else if firstName == "" && lastName != "" {
-                                    if let lastUsers = getUserByLastName(lastName) {
-                                        lastNameUsers = lastUsers
-                                        results = lastNameUsers
-                                    } else {
-                                        print("Last Name search not found")
-                                    }
-                                } else {
-                                    if let users = getUserByFirstName(firstName) {
-                                        firstNameUsers = users
-                                    } else {
-                                        print("First Name search not found")
-                                    }
-                                    
-                                    if let lastUsers = getUserByLastName(lastName) {
-                                        lastNameUsers = lastUsers
-                                    } else {
-                                        print("Last Name search not found")
-                                    }
-                                    if let firstNameUsers = firstNameUsers, let lastNameUsers = lastNameUsers {
-                                        for u in firstNameUsers {
-                                            if lastNameUsers.contains(u) {
-                                                firstLastUsers?.append(u)
-                                            }
-                                        }
-                                    }
-                                    results = firstLastUsers
-                                }
+                                results = getUsers(firstName, lastName)
                                 if results == [] {
                                     showAdrenalineError = true
                                 } else {
