@@ -33,7 +33,8 @@ struct HomeBubbleView: View{
             ScrollView {
                 LazyVGrid(columns: gridItems, spacing: 5) {
                     ForEach(diveTable, id: \.self) { elem in
-                        HomeView(bubbleData: elem, starSelected: $starSelected, expandedIndex: $expandedIndex, abBoardEvent: $abBoardEvent)
+                        HomeView(bubbleData: elem, starSelected: $starSelected,
+                                 expandedIndex: $expandedIndex, abBoardEvent: $abBoardEvent)
                     }
                 }
                 .padding(20)
@@ -51,7 +52,8 @@ struct HomeView: View {
     @Binding var expandedIndex: String
     @Binding var abBoardEvent: Bool
     
-    init(bubbleData: [String], starSelected: Binding<Bool>, expandedIndex: Binding<String>, abBoardEvent: Binding<Bool>) {
+    init(bubbleData: [String], starSelected: Binding<Bool>, expandedIndex: Binding<String>,
+         abBoardEvent: Binding<Bool>) {
         self.bubbleData = bubbleData
         self._starSelected = starSelected
         self._expandedIndex = expandedIndex
@@ -60,7 +62,8 @@ struct HomeView: View {
     
     var body: some View{
         if show {
-            OpenTileView(namespace: namespace, show: $show, bubbleData: $bubbleData, abBoardEvent: $abBoardEvent)
+            OpenTileView(namespace: namespace, show: $show, bubbleData: $bubbleData,
+                         abBoardEvent: $abBoardEvent)
                 .onTapGesture {
                     if expandedIndex == (abBoardEvent ? bubbleData[3] : bubbleData[1]){
                         expandedIndex = "-1"
@@ -72,7 +75,8 @@ struct HomeView: View {
                 }
                 .shadow(radius: 5)
         } else {
-            ClosedTileView(namespace: namespace, show: $show, bubbleData: $bubbleData, abBoardEvent: $abBoardEvent)
+            ClosedTileView(namespace: namespace, show: $show, bubbleData: $bubbleData,
+                           abBoardEvent: $abBoardEvent)
                 .onTapGesture {
                     if expandedIndex == "-1"{
                         expandedIndex = abBoardEvent ? bubbleData[3] : bubbleData[1]
@@ -116,12 +120,16 @@ struct ClosedTileView: View {
         .shadow(radius: 5)
         .overlay(
             ZStack {
-                VStack(alignment: .leading, spacing: 12){
+                VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        VStack(alignment: .leading){
-                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").first ?? "")
+                        VStack(alignment: .leading) {
+                            Text(abBoardEvent
+                                 ? bubbleData[3].components(separatedBy: " ").first ?? ""
+                                 : bubbleData[6].components(separatedBy: " ").first ?? "")
                                 .matchedGeometryEffect(id: "firstname", in: namespace)
-                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").last ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
+                            Text(abBoardEvent
+                                 ? bubbleData[3].components(separatedBy: " ").last ?? ""
+                                 : bubbleData[6].components(separatedBy: " ").last ?? "")
                                 .matchedGeometryEffect(id: "lastname", in: namespace)
                         }
                         .lineLimit(2)
@@ -193,9 +201,13 @@ struct OpenTileView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         VStack(alignment: .leading) {
-                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").first ?? "" : bubbleData[6].components(separatedBy: " ").first ?? "")
+                            Text(abBoardEvent
+                                 ? bubbleData[3].components(separatedBy: " ").first ?? ""
+                                 : bubbleData[6].components(separatedBy: " ").first ?? "")
                                 .matchedGeometryEffect(id: "firstname", in: namespace)
-                            Text(abBoardEvent ? bubbleData[3].components(separatedBy: " ").last ?? "" : bubbleData[6].components(separatedBy: " ").last ?? "")
+                            Text(abBoardEvent
+                                 ? bubbleData[3].components(separatedBy: " ").last ?? ""
+                                 : bubbleData[6].components(separatedBy: " ").last ?? "")
                                 .matchedGeometryEffect(id: "lastname", in: namespace)
                         }
                         .font(.largeTitle)
@@ -225,7 +237,10 @@ struct OpenTileView: View {
                     NavigationLink {
                         ProfileView(profileLink: abBoardEvent ? bubbleData[4] : bubbleData[7])
                     } label: {
-                        MiniProfileImage(diverID: abBoardEvent ? String(bubbleData[4].components(separatedBy: "=").last ?? "") : String(bubbleData[7].components(separatedBy: "=").last ?? ""), width: 150, height: 200)
+                        MiniProfileImage(diverID: abBoardEvent
+                                         ? String(bubbleData[4].components(separatedBy: "=").last ?? "")
+                                         : String(bubbleData[7].components(separatedBy: "=").last ?? ""),
+                                         width: 150, height: 200)
                             .scaledToFit()
                             .padding(.horizontal)
                             .shadow(radius: 10)
