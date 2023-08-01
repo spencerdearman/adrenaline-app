@@ -119,6 +119,24 @@ struct WebView: UIViewRepresentable {
             return result
         }
         
+        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+            webView.reload()
+//            print("reloading")
+        }
+        
+        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+            let error = error as NSError
+//            print(error.code)
+//            print("failed")
+            switch(error.code) {
+                case NSURLErrorCancelled:
+//                    print("cancelled")
+                    webView.reload()
+                default:
+                    break
+            }
+        }
+        
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             let js = "document.getElementById('first').value = '\(firstName)';"
             + "document.getElementById('last').value = '\(lastName)'"
