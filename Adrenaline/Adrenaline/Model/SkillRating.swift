@@ -327,7 +327,11 @@ final class SkillRating {
         guard let max = ratings.max() else { return [] }
         
         for value in ratings {
-            result.append((value - min) / (max - min) * 100.0)
+            if max - min == 0.0 {
+                result.append(0.0)
+            } else {
+                result.append((value - min) / (max - min) * 100.0)
+            }
         }
         
         return result
