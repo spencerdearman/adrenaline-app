@@ -231,15 +231,13 @@ struct SearchView: View {
 struct SearchInputView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.isIndexingMeets) var isIndexingMeets
-    @Environment(\.getUserByFirstName) private var getUserByFirstName
-    @Environment(\.getUserByLastName) private var getUserByLastName
     @Environment(\.getUsers) private var getUsers
     
     @State private var debounceWorkItem: DispatchWorkItem?
     @State private var showError: Bool = false
     @State var fullScreenResults: Bool = false
     @State var resultSelected: Bool = false
-    @State var profileSelection: DiveMeetsAdrenaline = .adrenaline
+    @State var profileSelection: SearchDiveMeetsOrAdrenaline = .adrenaline
     @State var firstNameUsers: [User]? = []
     @State var lastNameUsers: [User]? = []
     @State var firstLastUsers: [User]? = []
@@ -703,7 +701,7 @@ struct IndexingCounterView: View {
 
 struct DiverSearchView: View {
     //false means diveMeets
-    @Binding var selection: DiveMeetsAdrenaline
+    @Binding var selection: SearchDiveMeetsOrAdrenaline
     @Binding var firstName: String
     @Binding var lastName: String
     private let screenWidth = UIScreen.main.bounds.width
@@ -943,13 +941,13 @@ struct MeetResultsView : View {
     }
 }
 
-enum DiveMeetsAdrenaline: String, CaseIterable {
+enum SearchDiveMeetsOrAdrenaline: String, CaseIterable {
     case diveMeets = "DiveMeets"
     case adrenaline = "Adrenaline"
 }
 
 struct DiveMeetsAdrenalineSelection: View {
-    @Binding var selection: DiveMeetsAdrenaline
+    @Binding var selection: SearchDiveMeetsOrAdrenaline
     
     private let cornerRadius: CGFloat = 30
     private let selectedGray = Color(red: 0.85, green: 0.85, blue: 0.85, opacity: 0.4)
@@ -960,27 +958,27 @@ struct DiveMeetsAdrenalineSelection: View {
                 .fill(Custom.darkGray)
                 .shadow(radius: 10)
             HStack(spacing: 0) {
-                ForEach(DiveMeetsAdrenaline.allCases, id: \.self) { s in
+                ForEach(SearchDiveMeetsOrAdrenaline.allCases, id: \.self) { s in
                     ZStack {
                         // Weird padding stuff to have end options rounded on the outside edge
                         // only when selected
                         // https://stackoverflow.com/a/72435691/22068672
                         Rectangle()
                             .fill(selection == s ? selectedGray : .clear)
-                            .padding(.trailing, s == DiveMeetsAdrenaline.allCases.first
+                            .padding(.trailing, s == SearchDiveMeetsOrAdrenaline.allCases.first
                                      ? cornerRadius
                                      : 0)
-                            .padding(.leading, s == DiveMeetsAdrenaline.allCases.last
+                            .padding(.leading, s == SearchDiveMeetsOrAdrenaline.allCases.last
                                      ? cornerRadius
                                      : 0)
-                            .cornerRadius(s == DiveMeetsAdrenaline.allCases.first ||
-                                          s == DiveMeetsAdrenaline.allCases.last
+                            .cornerRadius(s == SearchDiveMeetsOrAdrenaline.allCases.first ||
+                                          s == SearchDiveMeetsOrAdrenaline.allCases.last
                                           ? cornerRadius
                                           : 0)
-                            .padding(.trailing, s == DiveMeetsAdrenaline.allCases.first
+                            .padding(.trailing, s == SearchDiveMeetsOrAdrenaline.allCases.first
                                      ? -cornerRadius
                                      : 0)
-                            .padding(.leading, s == DiveMeetsAdrenaline.allCases.last
+                            .padding(.leading, s == SearchDiveMeetsOrAdrenaline.allCases.last
                                      ? -cornerRadius
                                      : 0)
                         Text(s.rawValue)
@@ -990,7 +988,7 @@ struct DiveMeetsAdrenalineSelection: View {
                     .onTapGesture {
                         selection = s
                     }
-                    if s != DiveMeetsAdrenaline.allCases.last {
+                    if s != SearchDiveMeetsOrAdrenaline.allCases.last {
                         Divider()
                     }
                 }
