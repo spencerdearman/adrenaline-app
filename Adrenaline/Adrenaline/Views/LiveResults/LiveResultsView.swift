@@ -407,7 +407,7 @@ struct LoadedView: View {
     @Environment(\.colorScheme) var currentMode
     var screenWidth = UIScreen.main.bounds.width
     var screenHeight = UIScreen.main.bounds.height
-    @State var titleReady: Bool = false
+    //    @State var titleReady: Bool = false
     @Binding var lastDiverInformation:
     (String, String, Int, Double, Int, Int, Double, String, String, Double, Double, String)
     @Binding var nextDiverInformation:
@@ -441,24 +441,24 @@ struct LoadedView: View {
         }
     }
     
-    func titleTimer() {
-        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
-            titleReady.toggle()
-        }
-    }
+    //    func titleTimer() {
+    //        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
+    //            titleReady.toggle()
+    //        }
+    //    }
     
     var body: some View {
         bgColor.ignoresSafeArea()
         ZStack {
             ColorfulView()
-                .onAppear {
-                    titleTimer()
-                }
+            //                .onAppear {
+            //                    titleTimer()
+            //                }
             GeometryReader { geometry in
                 VStack(spacing: 0.5) {
                     if !starSelected {
                         VStack {
-                            if abBoardEvent && titleReady {
+                            if abBoardEvent {
                                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                                     VStack {
                                         Text(title)
@@ -470,7 +470,7 @@ struct LoadedView: View {
                                             .bold()
                                     }
                                 }
-                            } else if titleReady {
+                            } else {
                                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                                     VStack {
                                         Text(title)
@@ -508,6 +508,7 @@ struct LoadedView: View {
                             }
                         }
                     }
+                    
                     HomeBubbleView(diveTable: abBoardEvent ? $boardDiveTable : $diveTable,
                                    starSelected: $starSelected, abBoardEvent: $abBoardEvent)
                     .offset(y: abBoardEvent ? screenWidth * 0.03 : screenWidth * 0.1)
