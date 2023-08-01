@@ -25,6 +25,7 @@ struct MeetList: View {
     @State var navStatus: Bool = true
     var nameShowing: Bool = true
     @StateObject private var parser = EventHTMLParser()
+    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 170
     
     // Style adjustments for elements of list
     private let frameWidth: CGFloat = 350
@@ -33,6 +34,10 @@ struct MeetList: View {
     private let rowSpacing: CGFloat = 10
     private let fontSize: CGFloat = 20
     var screenHeight = UIScreen.main.bounds.height
+    
+    private var maxHeightOffset: CGFloat {
+        max(160, min(maxHeightOffsetScaled, 185))
+    }
     
     private var customGray: Color {
         let gray = currentMode == .light ? 0.95 : 0.1
@@ -152,6 +157,7 @@ struct MeetList: View {
                                     .padding(.bottom, meet == meets.last ? rowSpacing : 0)
                                 }
                             }
+                            .padding(.bottom, maxHeightOffset)
                         }
                     }
                 }

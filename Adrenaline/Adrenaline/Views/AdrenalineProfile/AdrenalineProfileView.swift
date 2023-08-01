@@ -24,7 +24,7 @@ struct AdrenalineProfileView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    func formatLocationString(_ input: String) -> String {
+    private func formatLocationString(_ input: String) -> String {
         var formattedString = input
         
         if let spaceIndex = input.lastIndex(of: " ") {
@@ -38,7 +38,7 @@ struct AdrenalineProfileView: View {
     }
     
     var body: some View {
-        ZStack{
+        ZStack {
             // Universal Base View
             BackgroundSpheres()
                 .ignoresSafeArea()
@@ -101,7 +101,7 @@ struct AdrenalineProfileView: View {
                 .scaleEffect(1.4)
             }
             .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
-            ZStack{
+            ZStack {
                 Rectangle()
                     .foregroundColor(Custom.darkGray)
                     .cornerRadius(50)
