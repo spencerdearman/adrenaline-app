@@ -15,6 +15,8 @@ enum AccountType: String, CaseIterable {
 
 struct AccountTypeSelectView: View {
     @Environment(\.dismiss) private var dismiss
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     @State var selectedOption: AccountType? = nil
     @Binding var signupData: SignupData
     @Binding var showSplash: Bool

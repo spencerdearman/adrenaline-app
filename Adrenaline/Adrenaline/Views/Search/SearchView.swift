@@ -797,7 +797,7 @@ struct MeetSearchView: View {
                 .mask(RoundedRectangle(cornerRadius: 50))
                 .foregroundColor(Custom.darkGray)
                 .shadow(radius: 10)
-                .frame(width: screenWidth * 0.9, height: isIndexingMeets ? screenHeight * 0.6 : screenHeight * 0.31)
+                .frame(width: screenWidth * 0.85, height: isIndexingMeets ? screenHeight * 0.6 : screenHeight * 0.31)
                 .offset(y: isPhone ? (isIndexingMeets ? screenWidth * 0.33 : screenWidth * 0.015) : isIndexingMeets ? screenHeight * 0.15 : screenWidth * 0.015)
             VStack {
                 Spacer()
@@ -855,7 +855,7 @@ struct MeetSearchView: View {
                 Spacer()
             }
             .dynamicTypeSize(.xSmall ... .xxxLarge)
-            .frame(width: screenWidth * 0.9, height: screenHeight * 0.3)
+            .frame(width: screenWidth * 0.85, height: screenHeight * 0.3)
             .offset(y: isIndexingMeets ? screenHeight * 0.04: -screenHeight * 0.02)
             .padding([.top, .leading, .trailing])
             .onAppear {

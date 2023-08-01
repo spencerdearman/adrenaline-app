@@ -209,7 +209,7 @@ struct BasicInfoView: View {
                         NavigationLink(destination: DiveMeetsConnectorView(
                             searchSubmitted: $searchSubmitted, firstName: $firstName,
                             lastName: $lastName, signupData: $signupData,
-                            showSplash: $showSplash, user: $user, athlete: $athlete)) {
+                            showSplash: $showSplash, user: $user)) {
                                 Text("Next")
                                     .bold()
                             }
