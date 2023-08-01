@@ -12,14 +12,17 @@ import SwiftSoup
 
 //  name, link, last round place, last round total, order, place, total, dive, height, dd,
 //score total, [judges scores]
-typealias LastDiverInfo = (String, String, Int, Double, Int, Int, Double, String, String, Double, Double, String)
+typealias LastDiverInfo = (String, String, Int, Double, Int, Int, Double, String, String, Double,
+                           Double, String)
 
 //nextDiverName, nextDiverProfileLink, lastRoundPlace, lastRoundTotalScore, order, nextDive,
 //height, dd, avgScore, maxScore, forFirstPlace
-typealias NextDiverInfo = (String, String, Int, Double, Int, String, String, Double, Double, Double, Double)
+typealias NextDiverInfo = (String, String, Int, Double, Int, String, String, Double, Double,
+                           Double, Double)
 
 //                    [[Left to dive, order, last round place, last round score, current place,
-//                      current score, name, link, last dive average, event average score, avg round score]]
+//                      current score, name, link, last dive average, event average score,
+//                      avg round score]]
 typealias DiveTable = [[String]]
 
 typealias BoardDiveTable = [[String]]
@@ -68,7 +71,8 @@ struct ParseLoaderView: View {
     @State var nextDiverInformation: NextDiverInfo = ("", "", 0, 0.0, 0, "", "", 0.0, 0.0, 0.0, 0.0)
     @State var diveTable: DiveTable = []
     @State var boardDiveTable: BoardDiveTable = []
-    @State var loaded: Bool = true
+    @State var loadedSuccessfully: Bool = false
+    @State private var attemptedLoad: Bool = false
     
     // Shows debug dataset, sets to true if "debug" is request string
     @State private var debugMode: Bool = false
@@ -342,28 +346,37 @@ struct ParseLoaderView: View {
                     LRWebView(request: request, html: $html)
                         .onChange(of: html) { newValue in
                             Task {
-                                loaded = await parseLiveResultsData(newValue: newValue)
+                                loadedSuccessfully = await parseLiveResultsData(newValue: newValue)
+                                attemptedLoad = true
                             }
                         }
                 } else {
                     LRWebView(request: request, html: $html)
                         .onChange(of: html) { newValue in
                             Task {
-                                loaded = await parseLiveResultsData(newValue: newValue)
+                                loadedSuccessfully = await parseLiveResultsData(newValue: newValue)
+                                attemptedLoad = true
                             }
                         }
                 }
             }
             
-            if loaded {
+            // Loading completed successfully
+            if loadedSuccessfully {
                 LoadedView(lastDiverInformation: $lastDiverInformation, nextDiverInformation:
-                            $nextDiverInformation, diveTable: $diveTable, boardDiveTable: $boardDiveTable, focusViewList: $focusViewList,
+                            $nextDiverInformation, diveTable: $diveTable,
+                           boardDiveTable: $boardDiveTable, focusViewList: $focusViewList,
                            starSelected: $starSelected, shiftingBool: $shiftingBool, title: $title,
                            roundString: $roundString, abBoardEvent: $abBoardEvent)
+                // Loading timed out
             } else if timedOut {
                 TimedOutView()
-            } else {
+                // Attempted load without timing out, but it failed
+            } else if attemptedLoad {
                 ErrorView()
+                // Loading still in progress
+            } else {
+                LoadingView()
             }
         }
         .onAppear {
@@ -386,7 +399,7 @@ struct LoadedView: View {
     @Environment(\.colorScheme) var currentMode
     var screenWidth = UIScreen.main.bounds.width
     var screenHeight = UIScreen.main.bounds.height
-    @State var titleReady: Bool = false
+    //    @State var titleReady: Bool = false
     @Binding var lastDiverInformation:
     (String, String, Int, Double, Int, Int, Double, String, String, Double, Double, String)
     @Binding var nextDiverInformation:
@@ -420,24 +433,24 @@ struct LoadedView: View {
         }
     }
     
-    func titleTimer() {
-        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
-            titleReady.toggle()
-        }
-    }
+    //    func titleTimer() {
+    //        Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { _ in
+    //            titleReady.toggle()
+    //        }
+    //    }
     
     var body: some View {
         bgColor.ignoresSafeArea()
         ZStack {
             ColorfulView()
-                .onAppear{
-                    titleTimer()
-                }
+            //                .onAppear{
+            //                    titleTimer()
+            //                }
             GeometryReader { geometry in
                 VStack(spacing: 0.5) {
                     if !starSelected {
                         VStack {
-                            if abBoardEvent && titleReady{
+                            if abBoardEvent {
                                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                                     VStack {
                                         Text(title)
@@ -449,33 +462,37 @@ struct LoadedView: View {
                                             .bold()
                                     }
                                 }
-                            } else if titleReady {
+                            } else {
                                 BackgroundBubble(vPadding: 20, hPadding: 20) {
-                                VStack {
-                                    Text(title)
-                                        .bold()
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .lineLimit(2)
-                                        .multilineTextAlignment(.center)
+                                    VStack {
+                                        Text(title)
+                                            .bold()
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .lineLimit(2)
+                                            .multilineTextAlignment(.center)
                                         Text(roundString)
                                     }
                                 }
                             }
+                            
                             if !abBoardEvent {
                                 if isPhone {
-                                    TileSwapView(topView: LastDiverView(lastInfo: $lastDiverInformation),
-                                                 bottomView: NextDiverView(nextInfo: $nextDiverInformation),
-                                                 width: screenWidth * 0.95,
-                                                 height: screenHeight * 0.28)
+                                    TileSwapView(
+                                        topView: LastDiverView(lastInfo: $lastDiverInformation),
+                                        bottomView: NextDiverView(nextInfo: $nextDiverInformation),
+                                        width: screenWidth * 0.95,
+                                        height: screenHeight * 0.28)
                                     .dynamicTypeSize(.xSmall ... .xxxLarge)
                                 } else {
                                     HStack {
                                         Spacer()
                                         LastDiverView(lastInfo: $lastDiverInformation)
-                                            .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
+                                            .frame(width: screenWidth * 0.45,
+                                                   height: screenHeight * 0.2)
                                         Spacer()
                                         NextDiverView(nextInfo: $nextDiverInformation)
-                                            .frame(width: screenWidth * 0.45, height: screenHeight * 0.2)
+                                            .frame(width: screenWidth * 0.45,
+                                                   height: screenHeight * 0.2)
                                         Spacer()
                                     }
                                     .offset(y: screenWidth * 0.05)
@@ -483,8 +500,9 @@ struct LoadedView: View {
                             }
                         }
                     }
-                    HomeBubbleView(diveTable: abBoardEvent ? $boardDiveTable : $diveTable, starSelected: $starSelected, abBoardEvent: $abBoardEvent)
-                        .offset(y: abBoardEvent ? screenWidth * 0.03 : screenWidth * 0.1)
+                    HomeBubbleView(diveTable: abBoardEvent ? $boardDiveTable : $diveTable,
+                                   starSelected: $starSelected, abBoardEvent: $abBoardEvent)
+                    .offset(y: abBoardEvent ? screenWidth * 0.03 : screenWidth * 0.1)
                 }
                 .padding(.bottom, maxHeightOffset)
                 .padding(.top)
@@ -498,26 +516,32 @@ struct LoadedView: View {
 }
 
 struct TimedOutView: View {
-    @Environment(\.colorScheme) var currentMode
-    private var bgColor: Color {
-        currentMode == .light ? .white : .black
-    }
-    
     var body: some View {
-        bgColor.ignoresSafeArea()
-        Text("Unable to load live results, network timed out")
+        BackgroundBubble() {
+            Text("Unable to load live results, network timed out")
+                .padding()
+        }
     }
 }
 
 struct ErrorView: View {
-    @Environment(\.colorScheme) var currentMode
-    private var bgColor: Color {
-        currentMode == .light ? .white : .black
-    }
-    
     var body: some View {
-        bgColor.ignoresSafeArea()
-        Text("Error with LiveResults, Event may have ended already")
+        BackgroundBubble() {
+            Text("Error loading live results")
+                .padding()
+        }
+    }
+}
+
+struct LoadingView: View {
+    var body: some View {
+        BackgroundBubble() {
+            VStack {
+                Text("Getting live results...")
+                ProgressView()
+            }
+            .padding()
+        }
     }
 }
 
@@ -558,8 +582,10 @@ struct LastDiverView: View
                     NavigationLink {
                         ProfileView(profileLink: lastInfo.1)
                     } label: {
-                        MiniProfileImage(diverID: String(lastInfo.1.components(separatedBy: "=").last ?? ""))
-                            .scaledToFit()
+                        MiniProfileImage(
+                            diverID: String(lastInfo.1.components(separatedBy: "=").last ?? "")
+                        )
+                        .scaledToFit()
                     }
                 }
                 .dynamicTypeSize(.xSmall ... .xxxLarge)
@@ -657,8 +683,10 @@ struct NextDiverView: View
                     NavigationLink {
                         ProfileView(profileLink: nextInfo.1)
                     } label: {
-                        MiniProfileImage(diverID: String(nextInfo.1.components(separatedBy: "=").last ?? ""))
-                            .scaledToFit()
+                        MiniProfileImage(
+                            diverID: String(nextInfo.1.components(separatedBy: "=").last ?? "")
+                        )
+                        .scaledToFit()
                     }
                 }
                 .dynamicTypeSize(.xSmall ... .xxxLarge)
@@ -750,7 +778,7 @@ struct DebugDataset {
 }
 
 
-struct ColorfulView: View{
+struct ColorfulView: View {
     @Environment(\.colorScheme) var currentMode
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -766,9 +794,9 @@ struct ColorfulView: View{
     }
     
     
-    var body: some View{
+    var body: some View {
         GeometryReader { geometry in
-            ZStack{
+            ZStack {
                 Circle()
                     .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
@@ -782,9 +810,18 @@ struct ColorfulView: View{
                     .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
             }
-            .offset(x: isPhone ? screenWidth / 1.9 : !isLandscape ? screenWidth / 1.9 : screenWidth * 0.5, y: isPhone ? -screenHeight / 10 : !isLandscape ? screenHeight * 0.4 : screenHeight * 0.3)
+            .offset(x: isPhone
+                    ? screenWidth / 1.9
+                    : (!isLandscape
+                       ? screenWidth / 1.9
+                       : screenWidth * 0.5),
+                    y: isPhone
+                    ? -screenHeight / 10
+                    : (!isLandscape
+                       ? screenHeight * 0.4
+                       : screenHeight * 0.3))
             
-            ZStack{
+            ZStack {
                 Circle()
                     .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
@@ -798,7 +835,16 @@ struct ColorfulView: View{
                     .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
             }
-            .offset(x: isPhone ? -screenWidth / 2 : !isLandscape ? -screenWidth / 2 : -screenWidth / 2, y: isPhone ? -screenHeight / 2.5 : !isLandscape ? -screenHeight * 0.3 : -screenHeight * 0.8 )
+            .offset(x: isPhone
+                    ? -screenWidth / 2
+                    : (!isLandscape
+                       ? -screenWidth / 2
+                       : -screenWidth / 2),
+                    y: isPhone
+                    ? -screenHeight / 2.5
+                    : (!isLandscape
+                       ? -screenHeight * 0.3
+                       : -screenHeight * 0.8))
         }
     }
 }
