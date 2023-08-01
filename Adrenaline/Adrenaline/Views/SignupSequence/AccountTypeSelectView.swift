@@ -82,6 +82,7 @@ struct OptionView: View {
     var selectedColor: Color = .gray
     
     private let screenWidth = UIScreen.main.bounds.width
+    
     private var showBorder: Bool {
         selectedOption == optionType
     }
@@ -98,14 +99,16 @@ struct OptionView: View {
                 Text(optionDescription)
                     .font(.subheadline)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(2)
             }
             .padding()
+            .frame(width: screenWidth * 0.93, height: 110)
         }
         .overlay(
             RoundedRectangle(cornerRadius: 40)
                 .stroke(selectedColor, lineWidth: showBorder ? 2 : 0)
         )
-        .frame(width: screenWidth * 0.95, height: 125)
     }
 }
 
