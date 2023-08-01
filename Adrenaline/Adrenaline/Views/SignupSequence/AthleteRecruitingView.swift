@@ -49,7 +49,6 @@ struct AthleteRecruitingView: View {
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
     @Binding var user: User
-    @Binding var athlete: Athlete
     @FocusState private var focusedField: RecruitingInfoField?
     @ScaledMetric var pickerFontSize: CGFloat = 18
     // Parsing information
