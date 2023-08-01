@@ -57,26 +57,7 @@ struct RecordList: View {
                         ForEach(getSortedRecords(records), id: \.1) { record in
                             let (key, value) = record
                             NavigationLink(destination: ProfileView(profileLink: value)) {
-                                HStack {
-                                    Text(key)
-                                        .foregroundColor(textColor)
-                                        .font(.title3)
-                                        .padding()
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(Color.gray)
-                                        .padding()
-                                }
-                                .background(Custom.darkGray)
-                                .cornerRadius(cornerRadius)
-                                .onDisappear {
-                                    resultSelected = true
-                                }
-                                .onAppear{
-                                    resultSelected = false
-                                }
+                                InnerRecordListContent(key: key, resultSelected: $resultSelected)
                             }
                             .shadow(radius: 5)
                             .padding([.leading, .trailing])
@@ -95,26 +76,7 @@ struct RecordList: View {
                         ForEach(Array(adrenalineRecords), id: \.key) { record in // Convert dictionary to array with 'Array(adrenalineRecords)'
                             if let value = record.value { // Unwrap the optional User value
                                 NavigationLink(destination: AdrenalineProfileView(showBackButton: true, user: Binding(get: { value }, set: { newValue in }), loginSuccessful: $loginSuccessful)) {
-                                    HStack {
-                                        Text(record.key) // 'record.key' is the String key
-                                            .foregroundColor(textColor)
-                                            .font(.title3)
-                                            .padding()
-                                        
-                                        Spacer()
-                                        
-                                        Image(systemName: "chevron.right")
-                                            .foregroundColor(Color.gray)
-                                            .padding()
-                                    }
-                                    .background(Custom.darkGray)
-                                    .cornerRadius(cornerRadius)
-                                    .onDisappear {
-                                        resultSelected = true
-                                    }
-                                    .onAppear {
-                                        resultSelected = false
-                                    }
+                                    InnerRecordListContent(key: record.key, resultSelected: $resultSelected)
                                 }
                                 .shadow(radius: 5)
                                 .padding([.leading, .trailing])
@@ -125,6 +87,34 @@ struct RecordList: View {
                 }
                 .padding(.bottom, viewPadding)
             }
+        }
+    }
+}
+
+struct InnerRecordListContent: View {
+    var key: String
+    private let textColor: Color = Color.primary
+    @Binding var resultSelected: Bool
+    var body: some View {
+        HStack {
+            Text(key)
+                .foregroundColor(textColor)
+                .font(.title3)
+                .padding()
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .foregroundColor(Color.gray)
+                .padding()
+        }
+        .background(Custom.darkGray)
+        .cornerRadius(30)
+        .onDisappear {
+            resultSelected = true
+        }
+        .onAppear{
+            resultSelected = false
         }
     }
 }
