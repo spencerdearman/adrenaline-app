@@ -34,7 +34,7 @@ struct Event: View {
     
     var body: some View {
         ZStack {
-            if finishedParsing {
+            if finishedParsing && !timedOut {
                 VStack {
                     VStack(alignment: .leading, spacing: 10) {
                         Text(meet.name)
@@ -127,7 +127,9 @@ struct Event: View {
             } else if timedOut {
                 BackgroundBubble() {
                     Text("Unable to get event data, network timed out")
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                         .padding()
+                        .multilineTextAlignment(.center)
                 }
             } else {
                 BackgroundBubble() {
