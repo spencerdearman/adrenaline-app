@@ -90,7 +90,7 @@ final class EventPageHTMLParser: ObservableObject {
                 print("Error parsing HTML: \(error)")
             }
         } else {
-            print("Could not fetch text")
+            print("EventPageHTMLParser: Could not fetch text")
         }
     }
     

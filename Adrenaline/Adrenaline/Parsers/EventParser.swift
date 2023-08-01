@@ -214,7 +214,7 @@ final class EventHTMLParser: ObservableObject {
                 print("Error parsing HTML: \(error)")
             }
         } else {
-            print("Could not fetch text")
+            print("EventHTMLParser: Could not fetch text")
         }
     }
     
@@ -234,7 +234,7 @@ final class EventHTMLParser: ObservableObject {
                 print("Error parsing HTML: \(error)")
             }
         } else {
-            print("Could not fetch text")
+            print("EventHTMLParser: Could not fetch event text")
         }
     }
     
@@ -254,7 +254,7 @@ final class EventHTMLParser: ObservableObject {
                 print("Error parsing HTML: \(error)")
             }
         } else {
-            print("Could not fetch text")
+            print("EventHTMLParser: Could not fetch table text")
         }
     }
 }

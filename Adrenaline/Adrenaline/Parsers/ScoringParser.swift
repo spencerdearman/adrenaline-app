@@ -38,7 +38,7 @@ final class ScoreHTMLParser: ObservableObject {
                 print("Error parsing HTML: \(error)")
             }
         } else {
-            print("Could not fetch text")
+            print("ScoreHTMLParser: Could not fetch text")
         }
         return ""
     }
