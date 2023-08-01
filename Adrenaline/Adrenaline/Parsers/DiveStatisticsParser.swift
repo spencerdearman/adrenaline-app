@@ -55,7 +55,7 @@ final class DiveStatisticsParser: ObservableObject {
                 print("Error parsing HTML: \(error)")
             }
         } else {
-            print("Could not fetch text")
+            print("DiveStatisticsParser: Could not fetch text")
         }
     }
 }

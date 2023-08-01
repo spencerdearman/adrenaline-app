@@ -82,7 +82,7 @@ final class HTMLParser: ObservableObject {
                 print("Error parsing HTML: \(error)")
             }
         } else {
-            print("Could not fetch text")
+            print("HTMLParser: Could not fetch text")
         }
     }
     

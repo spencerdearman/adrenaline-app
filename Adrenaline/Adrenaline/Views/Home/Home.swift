@@ -373,6 +373,7 @@ struct CurrentMeetsView: View {
             BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
                 VStack(alignment: .center) {
                     Text("Unable to get current meets, network timed out")
+                        .dynamicTypeSize(.xSmall ... .xxxLarge)
                         .padding()
                         .multilineTextAlignment(.center)
                 }
