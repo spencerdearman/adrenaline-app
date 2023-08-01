@@ -149,6 +149,7 @@ struct EntryView: View {
             content: {
                 VStack(alignment: .leading) {
                     Text(entry.board != nil ? "Board: " + entry.board! : "")
+                        .foregroundColor(.primary)
                     HStack(alignment: .top) {
                         VStack {
                             Text("Number")
