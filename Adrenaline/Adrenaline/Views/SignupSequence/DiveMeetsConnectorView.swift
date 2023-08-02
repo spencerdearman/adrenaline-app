@@ -139,11 +139,14 @@ struct IsThisYouView: View {
                             NavigationLink(destination: signupData.accountType == .athlete
                                            ? AnyView(AthleteRecruitingView(signupData: $signupData,
                                                                            diveMeetsID: $diveMeetsID,
-                                                                           showSplash: $showSplash, user: $user))
-                                           : AnyView(AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful))) {
+                                                                           showSplash: $showSplash,
+                                                                           user: $user))
+                                           : AnyView(AdrenalineProfileView(user: $user,
+                                                                           loginSuccessful: $loginSuccessful))) {
                                 HStack {
                                     Spacer()
-                                    ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))
+                                    ProfileImage(
+                                        diverID: String(value.components(separatedBy: "=").last ?? ""))
                                         .scaleEffect(0.4)
                                         .frame(width: 100, height: 100)
                                     Text(key)

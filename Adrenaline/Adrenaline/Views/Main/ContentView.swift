@@ -68,7 +68,7 @@ struct ContentView: View {
                             case .magnifyingglass:
                                 SearchView()
                             case .person:
-                                AdrenalineSearchView(showSplash: $showSplash)
+                                AdrenalineLoginView(showSplash: $showSplash)
                                 //  LoginSearchView(showSplash: $showSplash)
                                 //  AppLaunchSequence()
                             }

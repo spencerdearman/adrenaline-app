@@ -8,12 +8,11 @@
 import SwiftUI
 import LocalAuthentication
 
-private func checkFields(divemeetsID: String = "",
-                         password: String = "") -> Bool {
+private func checkFields(divemeetsID: String = "", password: String = "") -> Bool {
     return divemeetsID != "" && password != ""
 }
 
-struct AdrenalineSearchView: View {
+struct AdrenalineLoginView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.getUser) private var getUser
     @Environment(\.validatePassword) private var validatePassword
@@ -24,7 +23,6 @@ struct AdrenalineSearchView: View {
     @State var email: String = ""
     @State var password: String = ""
     @State var user: User = User()
-    @State var athlete: Athlete = Athlete()
     @State var loginSuccessful: Bool = false
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -40,10 +38,15 @@ struct AdrenalineSearchView: View {
     
     var body: some View {
         if showBackButton {
-            LoginContent(showError: $showError, isPasswordVisible: $isPasswordVisible, email: $email, password: $password, user: $user, athlete: $athlete, loginSuccessful: $loginSuccessful, showSplash: $showSplash, showBackButton: true)
+            LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
+                         email: $email, password: $password, user: $user,
+                         loginSuccessful: $loginSuccessful, showSplash: $showSplash,
+                         showBackButton: true)
         } else {
             NavigationView {
-                LoginContent(showError: $showError, isPasswordVisible: $isPasswordVisible, email: $email, password: $password, user: $user, athlete: $athlete, loginSuccessful: $loginSuccessful, showSplash: $showSplash)
+                LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
+                             email: $email, password: $password, user: $user,
+                             loginSuccessful: $loginSuccessful, showSplash: $showSplash)
             }
             // Bless the person that figured this out:
             // https://developer.apple.com/forums/thread/693137
@@ -52,7 +55,7 @@ struct AdrenalineSearchView: View {
     }
 }
 
-struct LoginContent: View {
+struct LoginPage: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.getUser) private var getUser
     @Environment(\.validatePassword) private var validatePassword
@@ -63,7 +66,6 @@ struct LoginContent: View {
     @Binding var email: String
     @Binding var password: String
     @Binding var user: User
-    @Binding var athlete: Athlete
     @Binding var loginSuccessful: Bool
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -127,7 +129,9 @@ struct LoginContent: View {
                                               ? -geometry.size.width * 0.75
                                               : -geometry.size.width * 0.55)
                                     .shadow(radius: 15)
-                                    .frame(height: loginSuccessful ? geometry.size.height * 0.7 : geometry.size.height)
+                                    .frame(height: loginSuccessful
+                                           ? geometry.size.height * 0.7
+                                           : geometry.size.height)
                                     .clipped().ignoresSafeArea()
                                 Circle()
                                 // Circle color
@@ -161,11 +165,12 @@ struct LoginContent: View {
                             }
                         } else {
                             if showBackButton {
-                                LoginPage(email: $email, password: $password, user: $user,
+                                LoginContent(email: $email, password: $password, user: $user,
                                           loginSuccessful: $loginSuccessful,
-                                          showSplash: $showSplash, showBackButton: true, focusedField: $focusedField)
+                                          showSplash: $showSplash, showBackButton: true,
+                                             focusedField: $focusedField)
                             } else {
-                                LoginPage(email: $email, password: $password, user: $user,
+                                LoginContent(email: $email, password: $password, user: $user,
                                           loginSuccessful: $loginSuccessful,
                                           showSplash: $showSplash, focusedField: $focusedField)
                             }
@@ -181,7 +186,7 @@ struct LoginContent: View {
 }
 
 
-struct LoginPage: View {
+struct LoginContent: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.getUser) private var getUser
     @Environment(\.validatePassword) private var validatePassword
@@ -312,10 +317,3 @@ struct LoginPage: View {
         .ignoresSafeArea(.keyboard)
     }
 }
-
-
-//struct LoginPage_Previews: PreviewProvider {
-//    static var previews: some View {
-//        LoginPage()
-//    }
-//}

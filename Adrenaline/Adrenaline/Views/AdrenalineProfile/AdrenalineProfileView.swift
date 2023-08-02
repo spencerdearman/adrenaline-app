@@ -14,7 +14,7 @@ struct AdrenalineProfileView: View {
     @Environment(\.getAthlete) private var getAthlete
     var firstSignIn: Bool = false
     var showBackButton: Bool = false
-    @State private var offSet: CGFloat = 0
+    @State private var offset: CGFloat = 0
     @State var athlete: Athlete = Athlete()
     @Binding var user: User
     @Binding var loginSuccessful: Bool
@@ -33,13 +33,15 @@ struct AdrenalineProfileView: View {
         }
         if formattedString.count >= 2 {
             let lastTwo = formattedString.suffix(2).uppercased()
-            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex, offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
+            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex,
+                                                                  offsetBy: -2)..<formattedString.endIndex,
+                                            with: lastTwo)
         }
         return formattedString
     }
     
     var body: some View {
-        ZStack{
+        ZStack {
             // Universal Base View
             if !loginSuccessful {
                 BackgroundSpheres()
@@ -52,11 +54,11 @@ struct AdrenalineProfileView: View {
                     .padding(.top, 50)
                     .padding(.bottom, 30)
                     .onAppear {
-                        offSet = screenHeight * 0.45
+                        offset = screenHeight * 0.45
                     }
                 VStack {
                     BackgroundBubble(vPadding: 20, hPadding: 60) {
-                        VStack() {
+                        VStack {
                             HStack (alignment: .firstTextBaseline) {
                                 Text((user.firstName ?? "") + " " + (user.lastName
                                                                      ?? "")) .font(.title3).fontWeight(.semibold)
@@ -154,13 +156,13 @@ struct AdrenalineProfileView: View {
                     }
                 }
             }
-            .offset(y: offSet)
+            .offset(y: offset)
             .onSwipeGesture(trigger: .onEnded) { direction in
                 withAnimation(.easeInOut(duration: 0.25)) {
                     if direction == .up {
-                        offSet = screenHeight * 0.13
+                        offset = screenHeight * 0.13
                     } else if direction == .down {
-                        offSet = screenHeight * 0.45
+                        offset = screenHeight * 0.45
                     }
                 }
             }

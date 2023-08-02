@@ -81,7 +81,7 @@ struct AppLaunchSequence: View {
                 
                 if options {
                     HStack {
-                        NavigationLink(destination: AdrenalineSearchView(showSplash: $showSplash, showBackButton: true)) {
+                        NavigationLink(destination: AdrenalineLoginView(showSplash: $showSplash, showBackButton: true)) {
                             Text("Login")
                         }
                         .buttonStyle(.bordered)
