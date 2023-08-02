@@ -381,12 +381,12 @@ struct SearchInputView: View {
                     
                     VStack {
                         Button(action: {
+                            // Resets focusedField so keyboard disappears
+                            focusedField = nil
+                            
                             if profileSelection == .diveMeets {
                                 // Need to initially set search to false so webView gets recreated
                                 searchSubmitted = false
-                                
-                                // Resets focusedField so keyboard disappears
-                                focusedField = nil
                                 
                                 // Only submits a search if one of the relevant fields is filled,
                                 // otherwise toggles error
