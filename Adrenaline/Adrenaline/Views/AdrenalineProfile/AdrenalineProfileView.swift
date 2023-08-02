@@ -34,9 +34,9 @@ struct AdrenalineProfileView: View {
         }
         if formattedString.count >= 2 {
             let lastTwo = formattedString.suffix(2).uppercased()
-            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex,
-                                                                  offsetBy: -2)..<formattedString.endIndex,
-                                            with: lastTwo)
+            formattedString.replaceSubrange(
+                formattedString.index(formattedString.endIndex,
+                                      offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
         }
         return formattedString
     }
@@ -120,24 +120,23 @@ struct AdrenalineProfileView: View {
                 }
             }
         }
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                if showBackButton {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            NavigationViewBackButton()
-                        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            if showBackButton {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        NavigationViewBackButton()
                     }
                 }
-        }
-            .onAppear {
-                guard let storedUser = getUser(userEmail) else { return }
-                user = storedUser
-                print("User:", user)
-                userViewData = userEntityToViewData(user: storedUser)
             }
+        }
+        .onAppear {
+            guard let storedUser = getUser(userEmail) else { return }
+            user = storedUser
+            userViewData = userEntityToViewData(user: storedUser)
+        }
     }
 }
 
@@ -157,9 +156,9 @@ struct PersonalInfoView: View {
         }
         if formattedString.count >= 2 {
             let lastTwo = formattedString.suffix(2).uppercased()
-            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex,
-                                                                  offsetBy: -2)..<formattedString.endIndex,
-                                            with: lastTwo)
+            formattedString.replaceSubrange(
+                formattedString.index(formattedString.endIndex,
+                                      offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
         }
         return formattedString
     }
@@ -169,8 +168,8 @@ struct PersonalInfoView: View {
             BackgroundBubble(vPadding: 20, hPadding: 60) {
                 VStack {
                     HStack (alignment: .firstTextBaseline) {
-                        Text((userViewData.firstName ?? "") + " " + (userViewData.lastName
-                                                             ?? "")) .font(.title3).fontWeight(.semibold)
+                        Text((userViewData.firstName ?? "") + " " +
+                             (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
                         Text(userViewData.accountType ?? "")
                             .foregroundColor(.secondary)
                     }
@@ -367,7 +366,7 @@ struct BackgroundSpheres: View {
     }
 }
 
-struct WhiteDivider: View{
+struct WhiteDivider: View {
     var body: some View {
         Rectangle()
             .frame(height: 1)
