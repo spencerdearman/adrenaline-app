@@ -62,9 +62,9 @@ struct ContentView: View {
                                 //.navigationViewStyle(StackNavigationViewStyle())
                                 //                                    ToolsMenu()
                                 //SearchColorfulView()
-//                                RankingsView()
+                                RankingsView()
                                 //                                AppLaunchSequence(showSplash: $showSplash)
-                                                                                                            UsersDBTestView()
+//                                                                                                            UsersDBTestView()
                             case .magnifyingglass:
                                 SearchView()
                             case .person:
