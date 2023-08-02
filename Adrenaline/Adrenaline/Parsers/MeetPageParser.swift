@@ -159,14 +159,25 @@ class MeetPageParser: ObservableObject {
                        e == first,
                        !containsDayOfWeek(text) { return nil }
                     
+                    // Assigns date text
                     if date == "" || containsDayOfWeek(text) {
                         date = text
                         continue
                     }
+                    
+                    // Sets event number for Event titles
                     if number == 0 || text.starts(with: "Event") {
-                        number = Int(text.components(separatedBy: " ").last ?? "0") ?? 0
+                        let split = text.components(separatedBy: " ")
+                        if split.count < 2 { return nil }
+                        
+                        let num = split[1].trimmingCharacters(in: .whitespacesAndNewlines)
+                        number = Int(String(num)) ?? 0
                         continue
                     }
+                    
+                    // Skips anything not otherwise specified above if it does not contain links
+                    // (lines with links are event information lines, otherwise not needed)
+                    if try e.getElementsByTag("a").count == 0 { continue }
                     
                     let html = try e.html()
                         .replacingOccurrences(of: "&nbsp;", with: "***")
