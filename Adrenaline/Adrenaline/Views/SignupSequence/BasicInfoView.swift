@@ -47,7 +47,6 @@ struct BasicInfoView: View {
     @State private var password: String = ""
     @State private var repeatPassword: String = ""
     @State private var isPasswordVisible: Bool = false
-    @State var userViewData: UserViewData = UserViewData()
     @Binding var signupData: SignupData
     @Binding var showSplash: Bool
     @FocusState private var focusedField: BasicInfoField?
@@ -222,7 +221,7 @@ struct BasicInfoView: View {
                         NavigationLink(destination: DiveMeetsConnectorView(
                             searchSubmitted: $searchSubmitted, firstName: $firstName,
                             lastName: $lastName, signupData: $signupData,
-                            showSplash: $showSplash, userViewData: $userViewData)) {
+                            showSplash: $showSplash)) {
                                 Text("Next")
                                     .bold()
                             }
@@ -236,11 +235,6 @@ struct BasicInfoView: View {
                                 } else if let accountType = signupData.accountType {
                                     addUser(firstName, lastName,
                                             email, phone, password, accountType.rawValue)
-                                }
-                                if let u = getUser(signupData.email ?? "") {
-                                    userViewData = userEntityToViewData(user: u)
-                                } else {
-                                    print("User could not be loaded")
                                 }
                             })
                             .buttonStyle(.bordered)

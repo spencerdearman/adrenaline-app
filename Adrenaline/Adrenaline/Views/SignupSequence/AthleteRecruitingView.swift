@@ -48,7 +48,6 @@ struct AthleteRecruitingView: View {
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
-    @Binding var userViewData: UserViewData
     @FocusState private var focusedField: RecruitingInfoField?
     @ScaledMetric var pickerFontSize: CGFloat = 18
     // Parsing information
@@ -181,7 +180,8 @@ struct AthleteRecruitingView: View {
                                         let label = UILabel()
                                         let (_, ft, inches) = heightStrings[i]
                                         let string = "\(ft)\' \(inches)\""
-                                        label.attributedText = NSMutableAttributedString(string: string)
+                                        label.attributedText = NSMutableAttributedString(
+                                            string: string)
                                         label.font = UIFont.systemFont(ofSize: pickerFontSize)
                                         label.sizeToFit()
                                         label.layer.masksToBounds = true
@@ -282,7 +282,8 @@ struct AthleteRecruitingView: View {
                                                       rowCount: ageRange.count) { i in
                                             let label = UILabel()
                                             let age = ageRange[i]
-                                            label.attributedText = NSMutableAttributedString(string: String(age))
+                                            label.attributedText = NSMutableAttributedString(
+                                                string: String(age))
                                             label.font = UIFont.systemFont(ofSize: pickerFontSize)
                                             label.sizeToFit()
                                             label.layer.masksToBounds = true
@@ -376,48 +377,52 @@ struct AthleteRecruitingView: View {
                         
                         HStack {
                             NavigationLink(destination: AdrenalineProfileView(
-                                userEmail: userViewData.email ?? "", loginSuccessful: $loginSuccessful)) {
-                                Text("Skip")
-                                    .bold()
-                            }
-                            .buttonStyle(.bordered)
-                            .cornerRadius(40)
-                            .foregroundColor(.secondary)
-                            .simultaneousGesture(TapGesture().onEnded({
-                                withAnimation {
-                                    showSplash = false
+                                userEmail: signupData.email ?? "",
+                                loginSuccessful: $loginSuccessful)) {
+                                    Text("Skip")
+                                        .bold()
                                 }
-                            }))
+                                .buttonStyle(.bordered)
+                                .cornerRadius(40)
+                                .foregroundColor(.secondary)
+                                .simultaneousGesture(TapGesture().onEnded({
+                                    withAnimation {
+                                        showSplash = false
+                                    }
+                                }))
                             
                             NavigationLink(destination: AdrenalineProfileView(
-                                userEmail: userViewData.email ?? "", loginSuccessful: $loginSuccessful)) {
-                                Text("Next")
-                                    .bold()
-                            }
-                            .buttonStyle(.bordered)
-                            .cornerRadius(40)
-                            .foregroundColor(.primary)
-                            .opacity(!requiredFieldsFilledIn ? 0.3 : 1.0)
-                            .disabled(!requiredFieldsFilledIn)
-                            .simultaneousGesture(TapGesture().onEnded {
-                                setAthleteRecruitingFields()
-                                guard let stats = parser.profileData.diveStatistics else { return }
-                                let skill = SkillRating(diveStatistics: stats)
-                                Task {
-                                    let (springboard, platform, _) =
-                                    await skill.getSkillRating(stats: stats,
-                                                               metric: skill.computeMetric1)
-                                    print(springboard, " - ", platform)
-                                    guard let email = signupData.email else { return }
-                                    updateAthleteSkillRating(email, springboard, platform)
-                                    
-                                    await MainActor.run {
-                                        withAnimation {
-                                            showSplash = false
+                                userEmail: signupData.email ?? "",
+                                loginSuccessful: $loginSuccessful)) {
+                                    Text("Next")
+                                        .bold()
+                                }
+                                .buttonStyle(.bordered)
+                                .cornerRadius(40)
+                                .foregroundColor(.primary)
+                                .opacity(!requiredFieldsFilledIn ? 0.3 : 1.0)
+                                .disabled(!requiredFieldsFilledIn)
+                                .simultaneousGesture(TapGesture().onEnded {
+                                    setAthleteRecruitingFields()
+                                    guard let stats = parser.profileData.diveStatistics else {
+                                        return
+                                    }
+                                    let skill = SkillRating(diveStatistics: stats)
+                                    Task {
+                                        let (springboard, platform, _) =
+                                        await skill.getSkillRating(stats: stats,
+                                                                   metric: skill.computeMetric1)
+                                        print(springboard, " - ", platform)
+                                        guard let email = signupData.email else { return }
+                                        updateAthleteSkillRating(email, springboard, platform)
+                                        
+                                        await MainActor.run {
+                                            withAnimation {
+                                                showSplash = false
+                                            }
                                         }
                                     }
-                                }
-                            })
+                                })
                         }
                     }
                     .padding()
@@ -450,7 +455,9 @@ struct AthleteRecruitingView: View {
         .onAppear {
             Task {
                 if diveMeetsID != "" && parser.profileData.info == nil {
-                    if await !parser.parseProfile(link: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID) {
+                    if await !parser.parseProfile(
+                        link: "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
+                        + diveMeetsID) {
                         print("Failed to parse profile")
                     } else {
                         let info = parser.profileData.info
