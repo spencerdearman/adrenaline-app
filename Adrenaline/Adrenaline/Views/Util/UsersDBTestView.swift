@@ -60,6 +60,12 @@ struct UsersDBTestView: View {
             
             List(users) { user in
                 HStack {
+                    if let firstName = user.firstName {
+                        Text(firstName)
+                    }
+                    if let lastName = user.lastName {
+                        Text(lastName)
+                    }
                     if let email = user.email {
                         Text(email)
                     }

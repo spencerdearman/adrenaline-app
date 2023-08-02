@@ -22,7 +22,6 @@ struct AdrenalineLoginView: View {
     @State var isPasswordVisible: Bool = false
     @State var email: String = ""
     @State var password: String = ""
-    @State var userViewData: UserViewData = UserViewData()
     @State var loginSuccessful: Bool = false
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -39,14 +38,13 @@ struct AdrenalineLoginView: View {
     var body: some View {
         if showBackButton {
             LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
-                         email: $email, password: $password, userViewData: $userViewData,
-                         loginSuccessful: $loginSuccessful, showSplash: $showSplash,
-                         showBackButton: true)
+                      email: $email, password: $password, loginSuccessful: $loginSuccessful,
+                      showSplash: $showSplash, showBackButton: true)
         } else {
             NavigationView {
                 LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
-                             email: $email, password: $password, userViewData: $userViewData,
-                             loginSuccessful: $loginSuccessful, showSplash: $showSplash)
+                          email: $email, password: $password, loginSuccessful: $loginSuccessful,
+                          showSplash: $showSplash)
             }
             // Bless the person that figured this out:
             // https://developer.apple.com/forums/thread/693137
@@ -65,7 +63,6 @@ struct LoginPage: View {
     @Binding var isPasswordVisible: Bool
     @Binding var email: String
     @Binding var password: String
-    @Binding var userViewData: UserViewData
     @Binding var loginSuccessful: Bool
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -80,108 +77,108 @@ struct LoginPage: View {
     }
     
     var body: some View {
+        ZStack {
+            (currentMode == .light ? Color.white : Color.black)
+                .ignoresSafeArea()
+            // Allows the user to hide the keyboard when clicking on the background of the page
+                .onTapGesture {
+                    focusedField = nil
+                }
+            
             ZStack {
-                (currentMode == .light ? Color.white : Color.black)
-                    .ignoresSafeArea()
-                // Allows the user to hide the keyboard when clicking on the background of the page
-                    .onTapGesture {
-                        focusedField = nil
-                    }
-                
-                ZStack {
-                    GeometryReader { geometry in
-                        VStack {
-                            ZStack{
-                                Circle()
-                                // Circle color
-                                    .fill(Custom.darkBlue)
-                                // Adjust the size of the circle as desired
-                                    .frame(width: geometry.size.width * 2.5,
-                                           height: geometry.size.width * 2.5)
-                                // Center the circle
-                                    .position(x: loginSuccessful
-                                              ? geometry.size.width
-                                              : geometry.size.width / 2,
-                                              y: loginSuccessful || isPhone || !isLandscape
-                                              ? -geometry.size.width * 0.55
-                                              : -geometry.size.width * 0.85)
-                                    .shadow(radius: 15)
-                                    .frame(height: loginSuccessful ? geometry.size.height * 0.7 :
-                                            geometry.size.height)
-                                    .clipped().ignoresSafeArea()
-                                Circle()
-                                // Circle color
-                                    .fill(Custom.coolBlue)
-                                    .frame(width: loginSuccessful
-                                           ? geometry.size.width * 1.3
-                                           : geometry.size.width * 2.0,
-                                           height: loginSuccessful
-                                           ? geometry.size.width * 1.3
-                                           : geometry.size.width * 2.0)
-                                    .position(x: loginSuccessful
-                                              ? geometry.size.width
-                                              : geometry.size.width / 2,
-                                              y: loginSuccessful
-                                              ? geometry.size.width * 0.7
-                                              : isPhone
-                                              ? -geometry.size.width * 0.55
-                                              : isLandscape
-                                              ? -geometry.size.width * 0.75
-                                              : -geometry.size.width * 0.55)
-                                    .shadow(radius: 15)
-                                    .frame(height: loginSuccessful
-                                           ? geometry.size.height * 0.7
-                                           : geometry.size.height)
-                                    .clipped().ignoresSafeArea()
-                                Circle()
-                                // Circle color
-                                    .fill(Custom.medBlue)
-                                    .frame(width: loginSuccessful
-                                           ? geometry.size.width * 1.1
-                                           : geometry.size.width * 1.5,
-                                           height: loginSuccessful
-                                           ? geometry.size.width * 1.1
-                                           : geometry.size.width * 1.5)
-                                    .position(x: loginSuccessful ? 0 : geometry.size.width / 2,
-                                              y: loginSuccessful || (!isPhone && isLandscape)
-                                              ? geometry.size.width * 0.7
-                                              : -geometry.size.width * 0.55)
-                                    .shadow(radius: 15)
-                                    .frame(height: loginSuccessful
-                                           ? geometry.size.height * 0.7
-                                           : geometry.size.height)
-                                    .clipped().ignoresSafeArea()
-                            }
-                        }
-                    }
+                GeometryReader { geometry in
                     VStack {
-                        if loginSuccessful {
-                            AdrenalineProfileView(userEmail: userViewData.email ?? "",
-                                                  loginSuccessful: $loginSuccessful)
-                            .zIndex(1)
-                            .onAppear {
-                                withAnimation {
-                                    showSplash = false
-                                }
-                            }
-                        } else {
-                            if showBackButton {
-                                LoginContent(email: $email, password: $password, userViewData: $userViewData,
-                                          loginSuccessful: $loginSuccessful,
-                                          showSplash: $showSplash, showBackButton: true,
-                                             focusedField: $focusedField)
-                            } else {
-                                LoginContent(email: $email, password: $password, userViewData: $userViewData,
-                                          loginSuccessful: $loginSuccessful,
-                                          showSplash: $showSplash, focusedField: $focusedField)
-                            }
+                        ZStack{
+                            Circle()
+                            // Circle color
+                                .fill(Custom.darkBlue)
+                            // Adjust the size of the circle as desired
+                                .frame(width: geometry.size.width * 2.5,
+                                       height: geometry.size.width * 2.5)
+                            // Center the circle
+                                .position(x: loginSuccessful
+                                          ? geometry.size.width
+                                          : geometry.size.width / 2,
+                                          y: loginSuccessful || isPhone || !isLandscape
+                                          ? -geometry.size.width * 0.55
+                                          : -geometry.size.width * 0.85)
+                                .shadow(radius: 15)
+                                .frame(height: loginSuccessful ? geometry.size.height * 0.7 :
+                                        geometry.size.height)
+                                .clipped().ignoresSafeArea()
+                            Circle()
+                            // Circle color
+                                .fill(Custom.coolBlue)
+                                .frame(width: loginSuccessful
+                                       ? geometry.size.width * 1.3
+                                       : geometry.size.width * 2.0,
+                                       height: loginSuccessful
+                                       ? geometry.size.width * 1.3
+                                       : geometry.size.width * 2.0)
+                                .position(x: loginSuccessful
+                                          ? geometry.size.width
+                                          : geometry.size.width / 2,
+                                          y: loginSuccessful
+                                          ? geometry.size.width * 0.7
+                                          : isPhone
+                                          ? -geometry.size.width * 0.55
+                                          : isLandscape
+                                          ? -geometry.size.width * 0.75
+                                          : -geometry.size.width * 0.55)
+                                .shadow(radius: 15)
+                                .frame(height: loginSuccessful
+                                       ? geometry.size.height * 0.7
+                                       : geometry.size.height)
+                                .clipped().ignoresSafeArea()
+                            Circle()
+                            // Circle color
+                                .fill(Custom.medBlue)
+                                .frame(width: loginSuccessful
+                                       ? geometry.size.width * 1.1
+                                       : geometry.size.width * 1.5,
+                                       height: loginSuccessful
+                                       ? geometry.size.width * 1.1
+                                       : geometry.size.width * 1.5)
+                                .position(x: loginSuccessful ? 0 : geometry.size.width / 2,
+                                          y: loginSuccessful || (!isPhone && isLandscape)
+                                          ? geometry.size.width * 0.7
+                                          : -geometry.size.width * 0.55)
+                                .shadow(radius: 15)
+                                .frame(height: loginSuccessful
+                                       ? geometry.size.height * 0.7
+                                       : geometry.size.height)
+                                .clipped().ignoresSafeArea()
                         }
                     }
                 }
-                .dynamicTypeSize(.xSmall ... .xxxLarge)
+                VStack {
+                    if loginSuccessful {
+                        AdrenalineProfileView(userEmail: email,
+                                              loginSuccessful: $loginSuccessful)
+                        .zIndex(1)
+                        .onAppear {
+                            withAnimation {
+                                showSplash = false
+                            }
+                        }
+                    } else {
+                        if showBackButton {
+                            LoginContent(email: $email, password: $password,
+                                         loginSuccessful: $loginSuccessful,
+                                         showSplash: $showSplash, showBackButton: true,
+                                         focusedField: $focusedField)
+                        } else {
+                            LoginContent(email: $email, password: $password,
+                                         loginSuccessful: $loginSuccessful,
+                                         showSplash: $showSplash, focusedField: $focusedField)
+                        }
+                    }
+                }
             }
-            .onAppear {
-                showError = false
+            .dynamicTypeSize(.xSmall ... .xxxLarge)
+        }
+        .onAppear {
+            showError = false
         }
     }
 }
@@ -196,7 +193,6 @@ struct LoginContent: View {
     @State var signupData: SignupData = SignupData()
     @Binding var email: String
     @Binding var password: String
-    @Binding var userViewData: UserViewData
     @Binding var loginSuccessful: Bool
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -280,15 +276,12 @@ struct LoginContent: View {
                 
                 Button(action: {
                     loginSuccessful = false
-                    if emailInDatabase(email: email) {
-                        if let u = getUser(email) {
-                            userViewData = userEntityToViewData(user: u)
-                        } else {
-                            userViewData = UserViewData()
-                        }
+                    if let _ = getUser(email), validatePassword(email, password) {
                         withAnimation {
                             loginSuccessful = true
                         }
+                    } else {
+                        print("Failed to log in")
                     }
                 }, label: {
                     Text("Submit")
@@ -301,8 +294,8 @@ struct LoginContent: View {
                                                                   showSplash: $showSplash)) {
                     Text("Create an account")
                 }
-                .cornerRadius(40)
-                .foregroundColor(Custom.medBlue)
+                                                                  .cornerRadius(40)
+                                                                  .foregroundColor(Custom.medBlue)
             }
             .frame(width: screenWidth * 0.75)
             .padding(.bottom, maxHeightOffset)
