@@ -191,51 +191,23 @@ struct MeetPageView: View {
         cachedMeetData.removeValue(forKey: meetLink)
     }
     
-    // Gets refresh button HStack
-    private func getRefreshButton() -> HStack<TupleView<(Spacer, some View)>> {
-        HStack {
-            Spacer()
-            Button(action: {
-                clearMeetDataCache()
-                Task {
-                    try await getMeetData(info: meetInfoData, results: meetResultsData)
-                }
-            }, label: {
-                ZStack {
-                    Circle()
-                        .foregroundColor(Custom.grayThinMaterial)
-                        .shadow(radius: 6)
-                        .frame(width: buttonHeight, height: buttonHeight)
-                    Image(systemName: "arrow.clockwise")
-                        .foregroundColor(.primary)
-                        .font(.title2)
-                }
-            })
-        }
-    }
-    
     var body: some View {
         ZStack {
             bgColor.ignoresSafeArea()
             VStack {
                 if let meetInfoData = meetInfoData {
-//                    getRefreshButton()
-//                        .padding([.leading, .trailing])
-                    
                     MeetInfoPageView(meetInfoData: meetInfoData)
-                    
                     Spacer()
                 } else if let meetResultsData = meetResultsData {
-//                    getRefreshButton()
-//                        .padding([.leading, .trailing])
-                    
                     MeetResultsPageView(meetResultsData: meetResultsData)
-                    
                     Spacer()
                 } else if meetLink != "" && !timedOut {
-                    VStack {
-                        Text("Getting meet information...")
-                        ProgressView()
+                    BackgroundBubble() {
+                        VStack {
+                            Text("Getting meet information...")
+                            ProgressView()
+                        }
+                        .padding()
                     }
                 } else if timedOut {
                     Text("Unable to get meet page, network timed out")

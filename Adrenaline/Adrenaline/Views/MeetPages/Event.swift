@@ -12,7 +12,8 @@ struct Event: View {
     
     var isFirstNav: Bool
     var meet: MeetEvent
-    @State var diverData : (String, String, String, Double, Double, Double, String) = ("", "", "", 0.0, 0.0, 0.0, "")
+    @State var diverData : (String, String, String, Double, Double, Double, String) =
+    ("", "", "", 0.0, 0.0, 0.0, "")
     @State var diverTableData: [Int: (String, String, String, Double, Double, Double, String)] = [:]
     @State var scoreDictionary: [String: String] = [:]
     @State var isExpanded: Bool = false
@@ -41,6 +42,9 @@ struct Event: View {
                             .font(.title3)
                             .fontWeight(.bold)
                             .padding()
+                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
                         
                         ZStack {
                             Rectangle()
@@ -108,11 +112,6 @@ struct Event: View {
                                     .frame(maxWidth: screenWidth * 0.85)
                                     .padding()
                                     .foregroundColor(.primary)
-                                    //                            .onAppear{
-                                    //                                Task {
-                                    //                                    scoreDictionary[value.0] = await scoreParser.parse(urlString: value.6)
-                                    //                                }
-                                    //                            }
                                 }
                                 .padding(.bottom)
                             }

@@ -418,6 +418,7 @@ struct CurrentMeetsPageView: View {
                             .frame(width: typeBubbleWidth * 2 + 5,
                                    height: typeBGWidth)
                             .foregroundColor(Custom.grayThinMaterial)
+                            .shadow(radius: 4)
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .frame(width: typeBubbleWidth,
                                    height: typeBubbleHeight)
@@ -454,6 +455,7 @@ struct CurrentMeetsPageView: View {
                         }
                     }
                     .zIndex(2)
+                    .padding(.top)
                     Spacer()
                 }
                 
