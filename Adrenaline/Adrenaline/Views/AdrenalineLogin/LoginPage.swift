@@ -45,6 +45,9 @@ struct AdrenalineSearchView: View {
             NavigationView {
                 LoginContent(showError: $showError, isPasswordVisible: $isPasswordVisible, email: $email, password: $password, user: $user, athlete: $athlete, loginSuccessful: $loginSuccessful, showSplash: $showSplash)
             }
+            // Bless the person that figured this out:
+            // https://developer.apple.com/forums/thread/693137
+            .navigationViewStyle(.stack)
         }
     }
 }

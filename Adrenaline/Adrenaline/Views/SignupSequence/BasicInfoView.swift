@@ -22,7 +22,6 @@ struct BasicInfoView: View {
     @Environment(\.getUser) private var getUser
     @Environment(\.addUser) private var addUser
     @Environment(\.addAthlete) private var addAthlete
-    @Environment(\.getAthlete) private var getAthlete
     @State private var firstName: String = ""
     @State private var lastName: String = ""
     @State private var email: String = ""
