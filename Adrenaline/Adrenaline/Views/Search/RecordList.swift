@@ -11,7 +11,7 @@ struct RecordList: View {
     @Environment(\.colorScheme) var currentMode
     @State var loginSuccessful: Bool = false
     @Binding var records: DiverProfileRecords
-    @Binding var adrenalineRecords: [String: User?]
+    @Binding var adrenalineRecords: [String: UserViewData?]
     @Binding var resultSelected: Bool
     @Binding var fullScreenResults: Bool
     @Binding var selectionType: SearchDiveMeetsOrAdrenaline
@@ -75,7 +75,10 @@ struct RecordList: View {
                         Spacer()
                         ForEach(Array(adrenalineRecords), id: \.key) { record in // Convert dictionary to array with 'Array(adrenalineRecords)'
                             if let value = record.value { // Unwrap the optional User value
-                                NavigationLink(destination: AdrenalineProfileView(showBackButton: true, user: Binding(get: { value }, set: { newValue in }), loginSuccessful: $loginSuccessful)) {
+                                NavigationLink(
+                                    destination: AdrenalineProfileView(
+                                        showBackButton: true, userEmail: value.email ?? "",
+                                        loginSuccessful: $loginSuccessful)) {
                                     InnerRecordListContent(key: record.key, resultSelected: $resultSelected)
                                 }
                                 .shadow(radius: 5)

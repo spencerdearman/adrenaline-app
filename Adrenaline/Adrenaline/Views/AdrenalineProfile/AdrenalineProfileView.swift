@@ -14,9 +14,10 @@ struct AdrenalineProfileView: View {
     @Environment(\.getAthlete) private var getAthlete
     var firstSignIn: Bool = false
     var showBackButton: Bool = false
+    var userEmail: String
     @State private var offset: CGFloat = 0
-    @State var athlete: Athlete = Athlete()
-    @Binding var user: User
+    @State var user: User?
+    @State var userViewData: UserViewData = UserViewData()
     @Binding var loginSuccessful: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -42,141 +43,177 @@ struct AdrenalineProfileView: View {
     
     var body: some View {
         ZStack {
-            // Universal Base View
-            if !loginSuccessful {
-                BackgroundSpheres()
-                    .ignoresSafeArea()
-            }
-            VStack {
-                ProfileImage(diverID: (user.diveMeetsID ?? ""))
-                    .frame(width: 200, height: 150)
-                    .scaleEffect(0.9)
-                    .padding(.top, 50)
-                    .padding(.bottom, 30)
-                    .onAppear {
-                        offset = screenHeight * 0.45
-                    }
+            if let user = user {
+                // Universal Base View
+                if !loginSuccessful {
+                    BackgroundSpheres()
+                        .ignoresSafeArea()
+                }
                 VStack {
-                    BackgroundBubble(vPadding: 20, hPadding: 60) {
-                        VStack {
-                            HStack (alignment: .firstTextBaseline) {
-                                Text((user.firstName ?? "") + " " + (user.lastName
-                                                                     ?? "")) .font(.title3).fontWeight(.semibold)
-                                Text(user.accountType ?? "")
-                                    .foregroundColor(.secondary)
-                            }
-                            if user.accountType != "Spectator" {
-                                if currentMode == .light {
-                                    Divider()
-                                } else {
-                                    WhiteDivider()
-                                }
-                                HStack (alignment: .firstTextBaseline) {
-                                    if user.accountType == "Athlete" {
-                                        let a = getAthlete(user.email ?? "")
-                                        HStack {
-                                            Image(systemName: "mappin.and.ellipse")
-                                            if let hometown = a?.hometown, !hometown.isEmpty {
-                                                Text(formatLocationString(hometown))
-                                            } else {
-                                                Text("?")
-                                            }
-                                        }
-                                        HStack {
-                                            Image(systemName: "person.fill")
-                                            if let age = a?.age {
-                                                Text(String(age))
-                                            } else {
-                                                Text("?")
-                                            }
-                                        }
-                                    }
-                                    if user.diveMeetsID != "" {
-                                        HStack {
-                                            Image(systemName: "figure.pool.swim")
-                                            if let diveMeetsID = user.diveMeetsID {
-                                                Text(diveMeetsID)
-                                            } else {
-                                                Text("?")
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                    ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                        .frame(width: 200, height: 150)
+                        .scaleEffect(0.9)
+                        .padding(.top, 50)
+                        .padding(.bottom, 30)
+                        .onAppear {
+                            offset = screenHeight * 0.45
                         }
-                        .frame(width: screenWidth * 0.8)
-                    }
+                    PersonalInfoView(userViewData: $userViewData)
                 }
-            }
-            .offset(y: -screenHeight * 0.3)
-            .padding([.leading, .trailing, .top])
-            .frame(width: screenWidth * 0.9)
-            .overlay{
-                if loginSuccessful {
-                    BackgroundBubble(vPadding: 20, hPadding: 35) {
-                        Text("Logout")
-                            .onTapGesture{
-                                withAnimation {
-                                    loginSuccessful = false
+                .offset(y: -screenHeight * 0.3)
+                .padding([.leading, .trailing, .top])
+                .frame(width: screenWidth * 0.9)
+                .overlay{
+                    if loginSuccessful {
+                        BackgroundBubble(vPadding: 20, hPadding: 35) {
+                            Text("Logout")
+                                .onTapGesture{
+                                    withAnimation {
+                                        loginSuccessful = false
+                                    }
                                 }
+                        }
+                        .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.42)
+                    }
+                    BackgroundBubble() {
+                        NavigationLink {
+                            SettingsPage(userViewData: $userViewData)
+                        } label: {
+                            Image(systemName: "gear")
+                                .foregroundColor(.primary)
+                        }
+                    }
+                    .offset(x: screenWidth * 0.26, y: -screenHeight * 0.3)
+                    .scaleEffect(1.4)
+                }
+                ZStack{
+                    Rectangle()
+                        .foregroundColor(Custom.darkGray)
+                        .cornerRadius(50)
+                        .shadow(radius: 10)
+                        .frame(width: screenWidth, height: screenHeight * 1.05)
+                    VStack {
+                        if let type = user.accountType {
+                            if type == AccountType.athlete.rawValue {
+                                DiverView(userViewData: $userViewData)
+                            } else if type == AccountType.coach.rawValue {
+                                CoachView(userViewData: $userViewData)
+                            } else if type == AccountType.spectator.rawValue {
+                                Text("This is a spectator profile")
+                            } else {
+                                Text("The account type has not been specified")
                             }
-                    }
-                    .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.42)
-                }
-                BackgroundBubble() {
-                    NavigationLink {
-                        SettingsPage(user: $user)
-                    } label: {
-                        Image(systemName: "gear")
-                            .foregroundColor(.primary)
-                    }
-                }
-                .offset(x: screenWidth * 0.26, y: -screenHeight * 0.3)
-                .scaleEffect(1.4)
-            }
-            ZStack{
-                Rectangle()
-                    .foregroundColor(Custom.darkGray)
-                    .cornerRadius(50)
-                    .shadow(radius: 10)
-                    .frame(width: screenWidth, height: screenHeight * 1.05)
-                VStack {
-                    if let type = user.accountType {
-                        if type == AccountType.athlete.rawValue {
-                            DiverView(user: $user)
-                        } else if type == AccountType.coach.rawValue {
-                            CoachView(user: $user)
-                        } else if type == AccountType.spectator.rawValue {
-                            Text("This is a spectator profile")
                         } else {
-                            Text("The account type has not been specified")
+                            Text("Account type not selected")
                         }
-                    } else {
-                        Text("Account type not selected")
                     }
                 }
-            }
-            .offset(y: offset)
-            .onSwipeGesture(trigger: .onEnded) { direction in
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    if direction == .up {
-                        offset = screenHeight * 0.13
-                    } else if direction == .down {
-                        offset = screenHeight * 0.45
+                .offset(y: offset)
+                .onSwipeGesture(trigger: .onEnded) { direction in
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        if direction == .up {
+                            offset = screenHeight * 0.13
+                        } else if direction == .down {
+                            offset = screenHeight * 0.45
+                        }
                     }
                 }
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            if showBackButton {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        NavigationViewBackButton()
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                if showBackButton {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            NavigationViewBackButton()
+                        }
                     }
                 }
+        }
+            .onAppear {
+                guard let storedUser = getUser(userEmail) else { return }
+                user = storedUser
+                print("User:", user)
+                userViewData = userEntityToViewData(user: storedUser)
+            }
+    }
+}
+
+struct PersonalInfoView: View {
+    @Environment(\.colorScheme) var currentMode
+    @Environment(\.getUser) var getUser
+    @Environment(\.getAthlete) var getAthlete
+    @Binding var userViewData: UserViewData
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
+    func formatLocationString(_ input: String) -> String {
+        var formattedString = input
+        
+        if let spaceIndex = input.lastIndex(of: " ") {
+            formattedString.insert(",", at: spaceIndex)
+        }
+        if formattedString.count >= 2 {
+            let lastTwo = formattedString.suffix(2).uppercased()
+            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex,
+                                                                  offsetBy: -2)..<formattedString.endIndex,
+                                            with: lastTwo)
+        }
+        return formattedString
+    }
+    
+    var body: some View {
+        VStack {
+            BackgroundBubble(vPadding: 20, hPadding: 60) {
+                VStack {
+                    HStack (alignment: .firstTextBaseline) {
+                        Text((userViewData.firstName ?? "") + " " + (userViewData.lastName
+                                                             ?? "")) .font(.title3).fontWeight(.semibold)
+                        Text(userViewData.accountType ?? "")
+                            .foregroundColor(.secondary)
+                    }
+                    if userViewData.accountType != "Spectator" {
+                        if currentMode == .light {
+                            Divider()
+                        } else {
+                            WhiteDivider()
+                        }
+                        HStack (alignment: .firstTextBaseline) {
+                            if userViewData.accountType == "Athlete" {
+                                let a = getAthlete(userViewData.email ?? "")
+                                HStack {
+                                    Image(systemName: "mappin.and.ellipse")
+                                    if let hometown = a?.hometown, !hometown.isEmpty {
+                                        Text(formatLocationString(hometown))
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                    if let age = a?.age {
+                                        Text(String(age))
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                            }
+                            if userViewData.diveMeetsID != "" {
+                                HStack {
+                                    Image(systemName: "figure.pool.swim")
+                                    if let diveMeetsID = userViewData.diveMeetsID {
+                                        Text(diveMeetsID)
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .frame(width: screenWidth * 0.8)
             }
         }
     }
@@ -184,10 +221,7 @@ struct AdrenalineProfileView: View {
 
 struct SettingsPage: View {
     @Environment(\.dismiss) private var dismiss
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var phoneNumber: String = ""
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
@@ -198,14 +232,14 @@ struct SettingsPage: View {
                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                     Text("Settings").font(.title2).fontWeight(.semibold)
                 }
-                ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                ProfileImage(diverID: (userViewData.diveMeetsID ?? ""))
                     .scaleEffect(0.75)
                     .frame(width: 160, height: 160)
-                Text((user.firstName ?? "") + " " + (user.lastName ?? ""))
+                Text((userViewData.firstName ?? "") + " " + (userViewData.lastName ?? ""))
                     .font(.title3).fontWeight(.semibold)
-                Text(user.email ?? "")
+                Text(userViewData.email ?? "")
                     .foregroundColor(.secondary)
-                if let phoneNum = user.phone {
+                if let phoneNum = userViewData.phone {
                     Text(phoneNum)
                         .foregroundColor(.secondary)
                 }
@@ -255,7 +289,7 @@ struct EditProfile: View {
 
 struct DiveMeetsLink: View {
     @Environment(\.presentationMode) var presentationMode
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     @State var diveMeetsID: String = ""
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
@@ -273,7 +307,7 @@ struct DiveMeetsLink: View {
                         .textContentType(.telephoneNumber)
                         .keyboardType(.numberPad)
                         .onChange(of: diveMeetsID) { _ in
-                            user.diveMeetsID = diveMeetsID
+                            userViewData.diveMeetsID = diveMeetsID
                         }
                     .frame(width: textFieldWidth) }
             }

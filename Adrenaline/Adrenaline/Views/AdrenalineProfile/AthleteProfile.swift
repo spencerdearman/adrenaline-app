@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DiverView: View {
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -18,10 +18,10 @@ struct DiverView: View {
         VStack {
             Spacer()
             // Showing DiveMeets Linking Screen
-            if user.diveMeetsID == "" {
+            if userViewData.diveMeetsID == "" {
                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                     NavigationLink(destination: {
-                        DiveMeetsLink(user: $user)
+                        DiveMeetsLink(userViewData: $userViewData)
                     }, label: {
                         Text("Link DiveMeets Account")
                             .foregroundColor(.primary)
@@ -29,7 +29,7 @@ struct DiverView: View {
                     })
                 }
             } else {
-                ProfileContent(user: $user)
+                ProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)
             }
             Spacer()
@@ -44,7 +44,7 @@ struct DiverView: View {
 struct ProfileContent: View {
     @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
     @State var selectedPage: Int = 0
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -66,10 +66,10 @@ struct ProfileContent: View {
         case 0:
             MeetList(profileLink:
                         "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     (user.diveMeetsID ?? "00000"), nameShowing: false)
+                     (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
             .offset(y: -screenHeight * 0.05)
         case 1:
-            MetricsView(user: $user)
+            MetricsView(userViewData: $userViewData)
         case 2:
             RecruitingView()
         case 3:
@@ -79,15 +79,15 @@ struct ProfileContent: View {
         default:
             MeetList(profileLink:
                         "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     (user.diveMeetsID ?? "00000"), nameShowing: false)
+                     (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
         }
     }
 }
 
 struct MetricsView: View {
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     var body: some View {
-        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (user.diveMeetsID ?? "00000")
+        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (userViewData.diveMeetsID ?? "00000")
         SkillsGraph(profileLink: profileLink)
     }
 }

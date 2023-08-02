@@ -244,7 +244,7 @@ struct SearchInputView: View {
     @State var results: [User]? = []
     @State var showResults: Bool = false
     @State var showAdrenalineError: Bool = false
-    @State var adrenalineFormattedResults: [String: User?] = [:]
+    @State var adrenalineFormattedResults: [String: UserViewData?] = [:]
     // Tracks if the user is inside of a text field to determine when to show the keyboard
     @FocusState private var focusedField: SearchField?
     @Binding fileprivate var selection: SearchType
@@ -344,12 +344,12 @@ struct SearchInputView: View {
         orgName = orgName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
-    private func formatAdrenalineResults(results: [User]?) -> [String: User?] {
-        var userDictionary: [String: User?] = [:]
+    private func formatAdrenalineResults(results: [User]?) -> [String: UserViewData?] {
+        var userDictionary: [String: UserViewData?] = [:]
         if let unwrappedResults = results {
             for u in unwrappedResults {
                 let nameStr = (u.firstName ?? "") + " " + (u.lastName ?? "")
-                userDictionary[nameStr] = u
+                userDictionary[nameStr] = userEntityToViewData(user: u)
             }
         }
         return userDictionary
@@ -504,10 +504,11 @@ struct SearchInputView: View {
                 
                 if showResults {
                     ZStack (alignment: .topLeading) {
-                        (RecordList(records: $parsedLinks, adrenalineRecords: $adrenalineFormattedResults,
+                        RecordList(records: $parsedLinks,
+                                   adrenalineRecords: $adrenalineFormattedResults,
                                     resultSelected: $resultSelected,
                                     fullScreenResults: $fullScreenResults,
-                                    selectionType: $profileSelection))
+                                    selectionType: $profileSelection)
                         .onAppear {
                             fullScreenResults = true
                             resultSelected = false

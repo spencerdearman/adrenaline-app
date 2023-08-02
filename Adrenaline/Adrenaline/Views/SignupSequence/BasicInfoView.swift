@@ -16,6 +16,21 @@ enum BasicInfoField: Int, Hashable, CaseIterable {
     case repeatPassword
 }
 
+struct UserViewData {
+    var firstName: String?
+    var lastName: String?
+    var email: String?
+    var phone: String?
+    var diveMeetsID: String?
+    var accountType: String?
+}
+
+func userEntityToViewData(user: User) -> UserViewData {
+    return UserViewData(firstName: user.firstName, lastName: user.lastName, email: user.email,
+                        phone: user.phone, diveMeetsID: user.diveMeetsID,
+                        accountType: user.accountType)
+}
+
 struct BasicInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
@@ -32,7 +47,7 @@ struct BasicInfoView: View {
     @State private var password: String = ""
     @State private var repeatPassword: String = ""
     @State private var isPasswordVisible: Bool = false
-    @State var user: User = User()
+    @State var userViewData: UserViewData = UserViewData()
     @Binding var signupData: SignupData
     @Binding var showSplash: Bool
     @FocusState private var focusedField: BasicInfoField?
@@ -207,7 +222,7 @@ struct BasicInfoView: View {
                         NavigationLink(destination: DiveMeetsConnectorView(
                             searchSubmitted: $searchSubmitted, firstName: $firstName,
                             lastName: $lastName, signupData: $signupData,
-                            showSplash: $showSplash, user: $user)) {
+                            showSplash: $showSplash, userViewData: $userViewData)) {
                                 Text("Next")
                                     .bold()
                             }
@@ -223,7 +238,7 @@ struct BasicInfoView: View {
                                             email, phone, password, accountType.rawValue)
                                 }
                                 if let u = getUser(signupData.email ?? "") {
-                                    user = u
+                                    userViewData = userEntityToViewData(user: u)
                                 } else {
                                     print("User could not be loaded")
                                 }
