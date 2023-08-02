@@ -42,6 +42,9 @@ struct Event: View {
                             .font(.title3)
                             .fontWeight(.bold)
                             .padding()
+                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.center)
                         
                         ZStack {
                             Rectangle()
@@ -109,11 +112,6 @@ struct Event: View {
                                     .frame(maxWidth: screenWidth * 0.85)
                                     .padding()
                                     .foregroundColor(.primary)
-                                    //                            .onAppear{
-                                    //                                Task {
-                                    //                                    scoreDictionary[value.0] = await scoreParser.parse(urlString: value.6)
-                                    //                                }
-                                    //                            }
                                 }
                                 .padding(.bottom)
                             }
