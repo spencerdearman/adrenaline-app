@@ -22,7 +22,7 @@ struct AdrenalineLoginView: View {
     @State var isPasswordVisible: Bool = false
     @State var email: String = ""
     @State var password: String = ""
-    @State var user: User = User()
+    @State var userViewData: UserViewData = UserViewData()
     @State var loginSuccessful: Bool = false
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -39,13 +39,13 @@ struct AdrenalineLoginView: View {
     var body: some View {
         if showBackButton {
             LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
-                         email: $email, password: $password, user: $user,
+                         email: $email, password: $password, userViewData: $userViewData,
                          loginSuccessful: $loginSuccessful, showSplash: $showSplash,
                          showBackButton: true)
         } else {
             NavigationView {
                 LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
-                             email: $email, password: $password, user: $user,
+                             email: $email, password: $password, userViewData: $userViewData,
                              loginSuccessful: $loginSuccessful, showSplash: $showSplash)
             }
             // Bless the person that figured this out:
@@ -65,7 +65,7 @@ struct LoginPage: View {
     @Binding var isPasswordVisible: Bool
     @Binding var email: String
     @Binding var password: String
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     @Binding var loginSuccessful: Bool
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -156,7 +156,8 @@ struct LoginPage: View {
                     }
                     VStack {
                         if loginSuccessful {
-                            AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful)
+                            AdrenalineProfileView(userEmail: userViewData.email ?? "",
+                                                  loginSuccessful: $loginSuccessful)
                             .zIndex(1)
                             .onAppear {
                                 withAnimation {
@@ -165,12 +166,12 @@ struct LoginPage: View {
                             }
                         } else {
                             if showBackButton {
-                                LoginContent(email: $email, password: $password, user: $user,
+                                LoginContent(email: $email, password: $password, userViewData: $userViewData,
                                           loginSuccessful: $loginSuccessful,
                                           showSplash: $showSplash, showBackButton: true,
                                              focusedField: $focusedField)
                             } else {
-                                LoginContent(email: $email, password: $password, user: $user,
+                                LoginContent(email: $email, password: $password, userViewData: $userViewData,
                                           loginSuccessful: $loginSuccessful,
                                           showSplash: $showSplash, focusedField: $focusedField)
                             }
@@ -195,7 +196,7 @@ struct LoginContent: View {
     @State var signupData: SignupData = SignupData()
     @Binding var email: String
     @Binding var password: String
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     @Binding var loginSuccessful: Bool
     @Binding var showSplash: Bool
     var showBackButton: Bool = false
@@ -280,8 +281,11 @@ struct LoginContent: View {
                 Button(action: {
                     loginSuccessful = false
                     if emailInDatabase(email: email) {
-                        let u = getUser(email)
-                        user = u ?? User()
+                        if let u = getUser(email) {
+                            userViewData = userEntityToViewData(user: u)
+                        } else {
+                            userViewData = UserViewData()
+                        }
                         withAnimation {
                             loginSuccessful = true
                         }

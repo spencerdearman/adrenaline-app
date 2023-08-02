@@ -22,7 +22,7 @@ struct DiveMeetsConnectorView: View {
     @State private var personTimedOut: Bool = false
     @State private var diveMeetsID: String = ""
     @Binding var showSplash: Bool
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -39,7 +39,7 @@ struct DiveMeetsConnectorView: View {
                 ZStack() {
                     IsThisYouView(records: $parsedLinks, signupData: $signupData,
                                   diveMeetsID: $diveMeetsID, showSplash: $showSplash,
-                                  user: $user)
+                                  userViewData: $userViewData)
                 }
             } else {
                 ZStack{
@@ -87,7 +87,7 @@ struct IsThisYouView: View {
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -119,7 +119,8 @@ struct IsThisYouView: View {
                         Text("No DiveMeets Profile Found")
                             .font(.title).fontWeight(.semibold)
                         NavigationLink {
-                            AdrenalineProfileView(user: $user, loginSuccessful: $loginSuccessful)
+                            AdrenalineProfileView(userEmail: userViewData.email ?? "",
+                                                  loginSuccessful: $loginSuccessful)
                         } label: {
                             Text("Next")
                         }
@@ -140,9 +141,10 @@ struct IsThisYouView: View {
                                            ? AnyView(AthleteRecruitingView(signupData: $signupData,
                                                                            diveMeetsID: $diveMeetsID,
                                                                            showSplash: $showSplash,
-                                                                           user: $user))
-                                           : AnyView(AdrenalineProfileView(user: $user,
-                                                                           loginSuccessful: $loginSuccessful))) {
+                                                                           userViewData: $userViewData))
+                                           : AnyView(AdrenalineProfileView(
+                                            userEmail: userViewData.email ?? "",
+                                            loginSuccessful: $loginSuccessful))) {
                                 HStack {
                                     Spacer()
                                     ProfileImage(
@@ -163,7 +165,8 @@ struct IsThisYouView: View {
                                 .cornerRadius(50)
                             }
                                            .simultaneousGesture(TapGesture().onEnded{
-                                               diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                                               diveMeetsID =
+                                               String(value.components(separatedBy: "=").last ?? "")
                                                guard let email = signupData.email else { return }
                                                updateUserField(email, "diveMeetsID", diveMeetsID)
                                                

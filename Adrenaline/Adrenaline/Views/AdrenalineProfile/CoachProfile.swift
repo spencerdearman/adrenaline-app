@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CoachView: View {
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     private let linkHead: String =
     "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     private let screenWidth = UIScreen.main.bounds.width
@@ -17,10 +17,10 @@ struct CoachView: View {
         VStack {
             Spacer()
             // Showing DiveMeets Linking Screen
-            if user.diveMeetsID == "" {
+            if userViewData.diveMeetsID == "" {
                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                     NavigationLink(destination: {
-                        DiveMeetsLink(user: $user)
+                        DiveMeetsLink(userViewData: $userViewData)
                     }, label: {
                         Text("Link DiveMeets Account")
                             .foregroundColor(.primary)
@@ -28,7 +28,7 @@ struct CoachView: View {
                     })
                 }
             } else {
-                CoachProfileContent(user: $user)
+                CoachProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)
             }
             Spacer()
@@ -46,7 +46,7 @@ struct CoachProfileContent: View {
     @State var scoreValues: [String] = ["Judging", "Divers", "Metrics", "Recruiting", "Statistics"]
     @State var selectedPage: Int = 1
     @State var profileLink: String = ""
-    @Binding var user: User
+    @Binding var userViewData: UserViewData
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -64,7 +64,7 @@ struct CoachProfileContent: View {
         .scrollScale(0.7)
         .frame(height: 40)
         .onAppear {
-            profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (user.diveMeetsID ?? "")
+            profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (userViewData.diveMeetsID ?? "")
             Task {
                 if parser.profileData.info == nil {
                     if await !parser.parseProfile(link: profileLink) {
