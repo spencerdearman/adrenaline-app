@@ -438,12 +438,12 @@ class ModelDataController: ObservableObject {
         var predicates: [NSPredicate] = []
         
         if let firstName = firstName {
-            let firstNamePredicate = NSPredicate(format: "firstName == %@", firstName)
+            let firstNamePredicate = NSPredicate(format: "firstName BEGINSWITH[cd] %@", firstName)
             predicates.append(firstNamePredicate)
         }
         
         if let lastName = lastName {
-            let lastNamePredicate = NSPredicate(format: "lastName == %@", lastName)
+            let lastNamePredicate = NSPredicate(format: "lastName BEGINSWITH[cd] %@", lastName)
             predicates.append(lastNamePredicate)
         }
         
@@ -452,11 +452,11 @@ class ModelDataController: ObservableObject {
             fetchRequest.predicate = compoundPredicate
         } else if firstName != "" {
             if let firstName = firstName {
-                fetchRequest.predicate = NSPredicate(format: "firstName == %@", firstName)
+                fetchRequest.predicate = NSPredicate(format: "firstName BEGINSWITH[cd] %@", firstName)
             }
         } else {
             if let lastName = lastName {
-                fetchRequest.predicate = NSPredicate(format: "lastName == %@", lastName)
+                fetchRequest.predicate = NSPredicate(format: "lastName BEGINSWITH[cd] %@", lastName)
             }
         }
         
