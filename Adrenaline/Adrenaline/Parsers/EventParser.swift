@@ -111,7 +111,8 @@ final class EventHTMLParser: ObservableObject {
     
     
     
-    func parseEvent(html: String) async throws -> (String, String, String, Double, Double, Double, String) {
+    func parseEvent(html: String) async throws ->
+    (String, String, String, Double, Double, Double, String) {
         let document: Document = try SwiftSoup.parse(html)
         guard let body = document.body() else {
             return ("", "", "", 0.0, 0.0, 0.0, "")
