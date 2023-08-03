@@ -52,44 +52,57 @@ struct SkillsGraph: View {
             SkillGraphSelectView(selection: $selection)
                 .scaleEffect(0.8)
             ZStack {
-                Graph()
-                    .scaleEffect(0.5)
-                    .rotationEffect(.degrees(-17.4))
-                switch selection {
-                    case .overall:
-                        Polygon(metrics: overallMetrics)
-                            .fill(Custom.medBlue.opacity(0.5))
-                            .scaleEffect(0.5)
-                            .rotationEffect(.degrees(-17.4))
-                    case .one:
-                        Polygon(metrics: oneMetrics)
-                            .fill(Custom.medBlue.opacity(0.5))
-                            .scaleEffect(0.5)
-                            .rotationEffect(.degrees(-17.4))
-                    case .three:
-                        Polygon(metrics: threeMetrics)
-                            .fill(Custom.medBlue.opacity(0.5))
-                            .scaleEffect(0.5)
-                            .rotationEffect(.degrees(-17.4))
-                    case .platform:
-                        Polygon(metrics: platformMetrics)
-                            .fill(Custom.medBlue.opacity(0.5))
-                            .scaleEffect(0.5)
-                            .rotationEffect(.degrees(-17.4))
+                ZStack {
+                    Graph()
+                        .scaleEffect(0.5)
+                        .rotationEffect(.degrees(-17.4))
+                    switch selection {
+                        case .overall:
+                            Polygon(metrics: overallMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                        case .one:
+                            Polygon(metrics: oneMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                        case .three:
+                            Polygon(metrics: threeMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                        case .platform:
+                            Polygon(metrics: platformMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                    }
+                    Group {
+                        Text("Front")
+                            .offset(x: screenWidth * 0.34, y: -screenHeight * 0.04)
+                        Text("Back")
+                            .offset(x: screenWidth * 0.22, y: screenHeight * 0.115)
+                        Text("Reverse")
+                            .offset(x: -screenWidth * 0.22, y: screenHeight * 0.115)
+                        Text("Inward")
+                            .offset(x: -screenWidth * 0.34, y: -screenHeight * 0.04)
+                        Text("Twister")
+                            .offset(y: -screenHeight * 0.14)
+                    }
+                    
                 }
-                Group {
-                    Text("Front")
-                        .offset(x: screenWidth * 0.34, y: -screenHeight * 0.04)
-                    Text("Back")
-                        .offset(x: screenWidth * 0.22, y: screenHeight * 0.115)
-                    Text("Reverse")
-                        .offset(x: -screenWidth * 0.22, y: screenHeight * 0.115)
-                    Text("Inward")
-                        .offset(x: -screenWidth * 0.34, y: -screenHeight * 0.04)
-                    Text("Twister")
-                        .offset(y: -screenHeight * 0.14)
-                }
+                .opacity(!cachedMetrics.keys.contains(diveMeetsID) ? 0.3 : 1.0)
                 
+                if !cachedMetrics.keys.contains(diveMeetsID) {
+                    BackgroundBubble() {
+                        VStack {
+                            Text("Getting skill graph data...")
+                            ProgressView()
+                        }
+                        .padding()
+                    }
+                }
             }
         }
         .frame(height: screenHeight * 0.4)
