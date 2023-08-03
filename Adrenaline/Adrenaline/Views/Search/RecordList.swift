@@ -79,10 +79,13 @@ struct RecordList: View {
                                     destination: AdrenalineProfileView(
                                         showBackButton: true, userEmail: value.email ?? "",
                                         loginSuccessful: $loginSuccessful)) {
-                                    InnerRecordListContent(key: record.key, resultSelected: $resultSelected)
-                                }
-                                .shadow(radius: 5)
-                                .padding([.leading, .trailing])
+                                            InnerRecordListContent(key: record.key, resultSelected: $resultSelected)
+                                        }
+                                        .simultaneousGesture(TapGesture().onEnded {
+                                            resultSelected = true
+                                        })
+                                        .shadow(radius: 5)
+                                        .padding([.leading, .trailing])
                             }
                         }
                     }
@@ -113,9 +116,9 @@ struct InnerRecordListContent: View {
         }
         .background(Custom.darkGray)
         .cornerRadius(30)
-//        .onDisappear {
-//            resultSelected = true
-//        }
+        //        .onDisappear {
+        //            resultSelected = true
+        //        }
         .onAppear{
             resultSelected = false
         }

@@ -387,6 +387,7 @@ struct SearchInputView: View {
                             if profileSelection == .diveMeets {
                                 // Need to initially set search to false so webView gets recreated
                                 searchSubmitted = false
+                                resultSelected = true
                                 
                                 // Only submits a search if one of the relevant fields is filled,
                                 // otherwise toggles error
@@ -407,6 +408,7 @@ struct SearchInputView: View {
                                     showError = true
                                 }
                             } else {
+                                resultSelected = true
                                 results = []
                                 adrenalineFormattedResults = [:]
                                 showError = false
@@ -415,6 +417,7 @@ struct SearchInputView: View {
                                 if results == [] {
                                     showAdrenalineError = true
                                 } else {
+                                    resultSelected = false
                                     showResults = true
                                 }
                                 adrenalineFormattedResults = formatAdrenalineResults(results: results)
@@ -716,7 +719,7 @@ struct DiverSearchView: View {
             ZStack {
                 Rectangle()
                     .foregroundColor(Custom.darkGray)
-                    .frame(width: screenWidth * 0.85, height: screenHeight * 0.3)
+                    .frame(width: screenWidth * 0.85, height: screenHeight * 0.35)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 6)
                 VStack {
