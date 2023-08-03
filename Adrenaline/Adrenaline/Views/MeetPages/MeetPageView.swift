@@ -292,6 +292,13 @@ struct MeetInfoPageView: View {
             return data
         }
     
+    private func getDisplayDateString(start: String, end: String) -> String {
+        if start == end { return start }
+        else {
+            return start + " - " + end
+        }
+    }
+    
     
     var body: some View {
         let info = meetInfoData.0
@@ -308,7 +315,7 @@ struct MeetInfoPageView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .lineLimit(2)
                 .multilineTextAlignment(.center)
-            Text(info["Start Date"]! + " - " + info["End Date"]!)
+            Text(getDisplayDateString(start: info["Start Date"]!, end: info["End Date"]!))
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .multilineTextAlignment(.trailing)
@@ -484,8 +491,8 @@ struct MeetResultsPageView: View {
                                           bgColor: .clear, shadowRadius: 3) { (elems) in
                             LiveResultsListView(elements: elems)
                         }
-                        .frame(height: 300)
-                        .padding(.top)
+                                          .frame(height: 300)
+                                          .padding(.top)
                         
                     }, label: {
                         Text("Live Results")
