@@ -41,19 +41,38 @@ struct AdrenalineLoginView: View {
     }
     
     var body: some View {
-        if showBackButton {
-            LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
-                      email: $email, password: $password, loginSuccessful: $loginSuccessful,
-                      showSplash: $showSplash, showBackButton: true)
-        } else {
-            NavigationView {
+        Group {
+            if showBackButton {
                 LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
                           email: $email, password: $password, loginSuccessful: $loginSuccessful,
-                          showSplash: $showSplash)
+                          showSplash: $showSplash, showBackButton: true)
+            } else {
+                NavigationView {
+                    LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
+                              email: $email, password: $password, loginSuccessful: $loginSuccessful,
+                              showSplash: $showSplash)
+                }
+                // Bless the person that figured this out:
+                // https://developer.apple.com/forums/thread/693137
+                .navigationViewStyle(.stack)
             }
-            // Bless the person that figured this out:
-            // https://developer.apple.com/forums/thread/693137
-            .navigationViewStyle(.stack)
+        }
+        // Clears email and password on Logout press back to this page
+        .onChange(of: loginSuccessful) { newValue in
+            if !loginSuccessful {
+                email = ""
+                password = ""
+            }
+        }
+        // Gets stored credentials and automatically signs in the user
+        .onAppear {
+            if let creds = getStoredCredentials() {
+                print(creds)
+                withAnimation {
+                    loginSuccessful = true
+                    email = creds.0
+                }
+            }
         }
     }
 }
@@ -236,8 +255,8 @@ struct LoginContent: View {
                         .padding(.leading)
                     TextField("Email", text: $email)
                         .modifier(TextFieldClearButton<LoginField>(text: $email,
-                                                            fieldType: .email,
-                                                            focusedField: focusedField))
+                                                                   fieldType: .email,
+                                                                   focusedField: focusedField))
                         .textContentType(.emailAddress)
                         .keyboardType(.emailAddress)
                         .autocapitalization(.none)
@@ -254,8 +273,8 @@ struct LoginContent: View {
                     if isPasswordVisible {
                         TextField("Password", text: $password)
                             .modifier(TextFieldClearButton<LoginField>(text: $password,
-                                                                fieldType: .passwd,
-                                                                focusedField: focusedField))
+                                                                       fieldType: .passwd,
+                                                                       focusedField: focusedField))
                             .textContentType(.password)
                             .autocapitalization(.none)
                             .disableAutocorrection(true)
@@ -265,8 +284,8 @@ struct LoginContent: View {
                     } else {
                         SecureField("Password", text: $password)
                             .modifier(TextFieldClearButton<LoginField>(text: $password,
-                                                                fieldType: .passwd,
-                                                                focusedField: focusedField))
+                                                                       fieldType: .passwd,
+                                                                       focusedField: focusedField))
                             .textFieldStyle(.roundedBorder)
                             .disableAutocorrection(true)
                             .autocapitalization(.none)
@@ -286,6 +305,7 @@ struct LoginContent: View {
                     if let _ = getUser(email), validatePassword(email, password) {
                         withAnimation {
                             loginSuccessful = true
+                            saveCredentials(email: email, password: password)
                         }
                     } else {
                         print("Failed to log in")
