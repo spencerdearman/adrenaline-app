@@ -113,9 +113,9 @@ struct InnerRecordListContent: View {
         }
         .background(Custom.darkGray)
         .cornerRadius(30)
-        .onDisappear {
-            resultSelected = true
-        }
+//        .onDisappear {
+//            resultSelected = true
+//        }
         .onAppear{
             resultSelected = false
         }

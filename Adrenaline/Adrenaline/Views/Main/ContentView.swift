@@ -60,17 +60,16 @@ struct ContentView: View {
                                 //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
                                 //}
                                 //.navigationViewStyle(StackNavigationViewStyle())
-                                //                                    ToolsMenu()
+                                //ToolsMenu()
                                 //SearchColorfulView()
                                 RankingsView()
-                                //                                AppLaunchSequence(showSplash: $showSplash)
-//                                                                                                            UsersDBTestView()
+                                //AppLaunchSequence(showSplash: $showSplash)
+                                //UsersDBTestView()
                             case .magnifyingglass:
                                 SearchView()
                             case .person:
                                 AdrenalineLoginView(showSplash: $showSplash)
-                                //  LoginSearchView(showSplash: $showSplash)
-                                //  AppLaunchSequence()
+                                //LoginSearchView(showSplash: $showSplash)
                             }
                         }
                         .tag(tab)
