@@ -48,10 +48,11 @@ struct SkillsGraph: View {
     }
     
     var body: some View {
-        VStack {
-            SkillGraphSelectView(selection: $selection)
-                .scaleEffect(0.8)
-            ZStack {
+        ZStack {
+            VStack {
+                SkillGraphSelectView(selection: $selection)
+                    .scaleEffect(0.8)
+                    .disabled(!cachedMetrics.keys.contains(diveMeetsID))
                 ZStack {
                     Graph()
                         .scaleEffect(0.5)
@@ -91,17 +92,18 @@ struct SkillsGraph: View {
                             .offset(y: -screenHeight * 0.14)
                     }
                     
+                    
                 }
-                .opacity(!cachedMetrics.keys.contains(diveMeetsID) ? 0.3 : 1.0)
-                
-                if !cachedMetrics.keys.contains(diveMeetsID) {
-                    BackgroundBubble() {
-                        VStack {
-                            Text("Getting skill graph data...")
-                            ProgressView()
-                        }
-                        .padding()
+            }
+            .opacity(!cachedMetrics.keys.contains(diveMeetsID) ? 0.3 : 1.0)
+            
+            if !cachedMetrics.keys.contains(diveMeetsID) {
+                BackgroundBubble() {
+                    VStack {
+                        Text("Getting skill graph data...")
+                        ProgressView()
                     }
+                    .padding()
                 }
             }
         }
