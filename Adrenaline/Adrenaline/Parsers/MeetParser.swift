@@ -428,6 +428,12 @@ final class MeetParser: ObservableObject {
         return nil
     }
     
+    private func waitForNetworkAccess() async throws {
+        while blockingNetwork {
+            try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
+        }
+    }
+    
     // Counts all of the meets to be parsed from the meet parse on launch to provide an accurate
     // indexing progress bar
     private func countParsedMeets(
@@ -438,9 +444,8 @@ final class MeetParser: ObservableObject {
                 guard let menu = try body.getElementById("dm_menu_centered") else { return }
                 let menuTabs = try menu.getElementsByTag("ul")[0].getElementsByTag("li")
                 for tab in menuTabs {
-                    if slowMeetParsing {
-                        try await Task.sleep(nanoseconds: sleepDelaySeconds * NSEC_PER_SEC)
-                    }
+                    try await waitForNetworkAccess()
+                    
                     // tabElem is one of the links from the tabs in the menu bar
                     let tabElem = try tab.getElementsByAttribute("href")[0]
                     if try tabElem.text() == "Find" {
@@ -634,9 +639,8 @@ final class MeetParser: ObservableObject {
                 let menu = try body.getElementById("dm_menu_centered")
                 guard let menuTabs = try menu?.getElementsByTag("ul")[0].getElementsByTag("li") else { return }
                 for tab in menuTabs {
-                    if slowMeetParsing {
-                        try await Task.sleep(nanoseconds: sleepDelaySeconds * NSEC_PER_SEC)
-                    }
+                    try await waitForNetworkAccess()
+                    
                     // tabElem is one of the links from the tabs in the menu bar
                     let tabElem = try tab.getElementsByAttribute("href")[0]
                     if try tabElem.text() == "Find" {
