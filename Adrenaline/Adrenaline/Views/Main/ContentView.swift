@@ -91,5 +91,20 @@ struct ContentView: View {
             //                }
             //            }
         }
+        .onAppear {
+            let loader = ConcurrentImageLoader()
+            guard let colleges = getCollegeLogoData() else { return }
+            let links = colleges.values
+            var urls: [URL] = []
+            for link in links {
+                if let url = URL(string: link) {
+                    urls.append(url)
+                }
+            }
+            
+            Task {
+                let images = try await loader.loadImages(from: urls)
+            }
+        }
     }
 }
