@@ -78,14 +78,12 @@ func deleteFromKeychain(for key: String?) throws {
     
     let query: [String: AnyObject] = [
         kSecClass as String: kSecClassGenericPassword,
-        kSecAttrAccount as String: key as AnyObject,
-        kSecMatchLimit as String: kSecMatchLimitOne,
-        kSecReturnAttributes as String: kCFBooleanTrue,
-        kSecReturnData as String: kCFBooleanTrue
+        kSecAttrAccount as String: key as AnyObject
     ]
     
     let status = SecItemDelete(query as CFDictionary)
     guard status == errSecSuccess || status == errSecItemNotFound else {
+        print(status)
         throw KeychainError.unhandledError(status: status)
     }
 }
