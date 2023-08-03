@@ -145,6 +145,45 @@ class MeetPageParser: ObservableObject {
         return nil
     }
     
+    // Removes parentheses in a meet event name that contain signup/dive sheet close times
+    private func removeExtraneousParenthesesText(_ text: String) -> String {
+        do {
+            var result: String = text
+            // Pattern matches sets of parentheses that don't contain any nested parentheses
+            // e.g. "(Hello World) (Hi World)" matches "(Hello World)" and "(Hi World)", but not
+            //      "(Hello World) (Hi World)"
+            let pattern = #"\([^\(\)]+\)"#
+            let regex = try NSRegularExpression(pattern: pattern, options: [])
+            let nsrange = NSRange(text.startIndex..<text.endIndex,
+                                  in: text)
+            var seen: Set<Substring> = Set<Substring>()
+            regex.enumerateMatches(in: text, range: nsrange) {
+                (match, _, _) in
+                guard let match = match else { return }
+                
+                for i in 0..<match.numberOfRanges {
+                    if let range = Range(match.range(at: i), in: text) {
+                        let m = text[range]
+                        
+                        if seen.contains(m) {
+                            continue
+                        }
+                        
+                        if m.contains("Signup") {
+                            result = result.replacingOccurrences(of: m, with: "")
+                            seen.insert(m)
+                        }
+                    }
+                }
+            }
+            return result
+        } catch {
+            print("Failed to parse text input to remove extraneous parentheses text")
+        }
+        
+        return ""
+    }
+    
     func getEventData(data: MeetPageData) async -> MeetEventData? {
         var result: MeetEventData = []
         var date: String = ""
@@ -185,7 +224,8 @@ class MeetPageParser: ObservableObject {
                     guard let body = try SwiftSoup.parseBodyFragment(html).body() else { return nil }
                     
                     let comps = try body.text().components(separatedBy: "***")
-                    let name = comps[0].trimmingCharacters(in: .whitespacesAndNewlines)
+                    let name = removeExtraneousParenthesesText(
+                        comps[0].trimmingCharacters(in: .whitespacesAndNewlines))
                     
                     guard let ruleLinkTail = try body.getElementsByTag("a").first()?.attr("href")
                     else { return nil }
