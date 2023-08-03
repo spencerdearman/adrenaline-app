@@ -224,7 +224,6 @@ struct SearchView: View {
         .onDisappear {
             searchSubmitted = false
         }
-        
     }
 }
 
@@ -357,7 +356,7 @@ struct SearchInputView: View {
     
     var body: some View {
         
-        NavigationView{
+        NavigationView {
             ZStack {
                 SearchColorfulView()
                     .ignoresSafeArea(.keyboard)
@@ -373,7 +372,8 @@ struct SearchInputView: View {
                         .ignoresSafeArea(.keyboard)
                     } else {
                         DiverSearchView(selection: $profileSelection, firstName: $firstName,
-                                        lastName: $lastName, focusedField: $focusedField)
+                                        lastName: $lastName, showResults: $showResults,
+                                        focusedField: $focusedField)
                         .frame(width: screenWidth * 0.85)
                         .offset(y: -screenHeight * 0.15)
                         .ignoresSafeArea(.keyboard)
@@ -383,11 +383,12 @@ struct SearchInputView: View {
                         Button(action: {
                             // Resets focusedField so keyboard disappears
                             focusedField = nil
+                            resultSelected = true
                             
-                            if profileSelection == .diveMeets {
+                            // Doing meet search or person DiveMeets search
+                            if selection == .meet || profileSelection == .diveMeets {
                                 // Need to initially set search to false so webView gets recreated
                                 searchSubmitted = false
-                                resultSelected = true
                                 
                                 // Only submits a search if one of the relevant fields is filled,
                                 // otherwise toggles error
@@ -407,8 +408,8 @@ struct SearchInputView: View {
                                     clearStateFlags()
                                     showError = true
                                 }
-                            } else {
-                                resultSelected = true
+                                // Doing Adrenaline person search
+                            } else if selection == .person {
                                 results = []
                                 adrenalineFormattedResults = [:]
                                 showError = false
@@ -555,7 +556,7 @@ struct SearchInputView: View {
                     .animation(.linear(duration: 0.2), value: fullScreenResults)
                 }
                 
-                if personResultsReady || meetResultsReady {
+                if (personResultsReady || meetResultsReady) && showResults {
                     ZStack (alignment: .topLeading) {
                         (selection == .person
                          ? AnyView(RecordList(records: $parsedLinks, adrenalineRecords: $adrenalineFormattedResults,
@@ -641,6 +642,17 @@ struct SearchInputView: View {
         }
         .ignoresSafeArea(.keyboard)
         .navigationViewStyle(StackNavigationViewStyle())
+        // Don't love these onChange modifiers, but needed to update showResults
+        .onChange(of: linksParsed) { newValue in
+            if newValue {
+                showResults = true
+            }
+        }
+        .onChange(of: predicate) { newValue in
+            if predicate != nil {
+                showResults = true
+            }
+        }
     }
     
     private func debounceTabSelection(_ newSelection: SearchType) {
@@ -648,6 +660,7 @@ struct SearchInputView: View {
         
         let workItem = DispatchWorkItem { [self] in
             self.selection = newSelection
+            self.showResults = false
         }
         
         debounceWorkItem = workItem
@@ -710,6 +723,7 @@ struct DiverSearchView: View {
     @Binding var selection: SearchDiveMeetsOrAdrenaline
     @Binding var firstName: String
     @Binding var lastName: String
+    @Binding var showResults: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     fileprivate var focusedField: FocusState<SearchField?>.Binding
@@ -723,7 +737,7 @@ struct DiverSearchView: View {
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 6)
                 VStack {
-                    DiveMeetsAdrenalineSelection(selection: $selection)
+                    DiveMeetsAdrenalineSelection(selection: $selection, showResults: $showResults)
                         .scaleEffect(0.8)
                     HStack {
                         Text("First Name:")
@@ -960,6 +974,7 @@ enum SearchDiveMeetsOrAdrenaline: String, CaseIterable {
 
 struct DiveMeetsAdrenalineSelection: View {
     @Binding var selection: SearchDiveMeetsOrAdrenaline
+    @Binding var showResults: Bool
     
     private let cornerRadius: CGFloat = 30
     private let selectedGray = Color(red: 0.85, green: 0.85, blue: 0.85, opacity: 0.4)
@@ -998,7 +1013,10 @@ struct DiveMeetsAdrenalineSelection: View {
                     .dynamicTypeSize(.xSmall ... .xxxLarge)
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
                     .onTapGesture {
-                        selection = s
+                        if selection != s {
+                            selection = s
+                            showResults = false
+                        }
                     }
                     if s != SearchDiveMeetsOrAdrenaline.allCases.last {
                         Divider()
