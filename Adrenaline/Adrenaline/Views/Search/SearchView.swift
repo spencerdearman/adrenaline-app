@@ -743,7 +743,7 @@ struct DiverSearchView: View {
                         Text("First Name:")
                             .padding([.leading, .bottom, .top])
                         TextField("First Name", text: $firstName)
-                            .modifier(TextFieldClearButton(text: $firstName,
+                            .modifier(TextFieldClearButton<SearchField>(text: $firstName,
                                                            fieldType: .firstName,
                                                            focusedField: focusedField))
                             .multilineTextAlignment(.leading)
@@ -756,7 +756,7 @@ struct DiverSearchView: View {
                         Text("Last Name:")
                             .padding([.leading])
                         TextField("Last Name", text: $lastName)
-                            .modifier(TextFieldClearButton(text: $lastName,
+                            .modifier(TextFieldClearButton<SearchField>(text: $lastName,
                                                            fieldType: .lastName,
                                                            focusedField: focusedField))
                             .multilineTextAlignment(.leading)
@@ -824,7 +824,7 @@ struct MeetSearchView: View {
                         .padding(.leading)
                     TextField("Meet Name", text: $meetName)
                         .disableAutocorrection(true)
-                        .modifier(TextFieldClearButton(text: $meetName,
+                        .modifier(TextFieldClearButton<SearchField>(text: $meetName,
                                                        fieldType: .meetName,
                                                        focusedField: focusedField))
                         .multilineTextAlignment(.leading)
@@ -838,7 +838,7 @@ struct MeetSearchView: View {
                         .padding(.leading)
                     TextField("Organization Name", text: $orgName)
                         .disableAutocorrection(true)
-                        .modifier(TextFieldClearButton(text: $orgName,
+                        .modifier(TextFieldClearButton<SearchField>(text: $orgName,
                                                        fieldType: .meetOrg,
                                                        focusedField: focusedField))
                         .multilineTextAlignment(.leading)

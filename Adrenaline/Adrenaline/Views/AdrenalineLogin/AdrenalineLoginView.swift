@@ -8,6 +8,11 @@
 import SwiftUI
 import LocalAuthentication
 
+enum LoginField: Int, Hashable, CaseIterable {
+    case email
+    case passwd
+}
+
 private func checkFields(divemeetsID: String = "", password: String = "") -> Bool {
     return divemeetsID != "" && password != ""
 }
@@ -230,13 +235,15 @@ struct LoginContent: View {
                     Text("Email:")
                         .padding(.leading)
                     TextField("Email", text: $email)
-                        .modifier(LoginTextFieldClearButton(text: $email,
-                                                            fieldType: .diveMeetsId,
+                        .modifier(TextFieldClearButton<LoginField>(text: $email,
+                                                            fieldType: .email,
                                                             focusedField: focusedField))
-                        .textContentType(.username)
-                        .keyboardType(.numberPad)
+                        .textContentType(.emailAddress)
+                        .keyboardType(.emailAddress)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
                         .textFieldStyle(.roundedBorder)
-                        .focused(focusedField, equals: .diveMeetsId)
+                        .focused(focusedField, equals: .email)
                     Image(systemName: "eye.circle")
                         .opacity(0.0)
                         .padding(.trailing)
@@ -246,7 +253,7 @@ struct LoginContent: View {
                         .padding(.leading)
                     if isPasswordVisible {
                         TextField("Password", text: $password)
-                            .modifier(LoginTextFieldClearButton(text: $password,
+                            .modifier(TextFieldClearButton<LoginField>(text: $password,
                                                                 fieldType: .passwd,
                                                                 focusedField: focusedField))
                             .textContentType(.password)
@@ -257,7 +264,7 @@ struct LoginContent: View {
                             .focused(focusedField, equals: .passwd)
                     } else {
                         SecureField("Password", text: $password)
-                            .modifier(LoginTextFieldClearButton(text: $password,
+                            .modifier(TextFieldClearButton<LoginField>(text: $password,
                                                                 fieldType: .passwd,
                                                                 focusedField: focusedField))
                             .textFieldStyle(.roundedBorder)
