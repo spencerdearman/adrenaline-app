@@ -50,7 +50,7 @@ func parseCollegeLogos() async -> [String: String]? {
     return nil
 }
 
-func saveCollegesToDevice() async throws {
+private func saveCollegesToDevice() async throws {
     let folderUrls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     let fileURL = folderUrls[0].appendingPathComponent("collegeLogos.json")
     
@@ -59,7 +59,7 @@ func saveCollegesToDevice() async throws {
     try writeData.write(to: fileURL)
 }
 
-func loadCollegesFromDevice() -> [String: String] {
+private func loadCollegesFromDevice() -> [String: String] {
     do {
         let folderUrls = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let fileURL = folderUrls[0].appendingPathComponent("collegeLogos.json")
@@ -73,4 +73,20 @@ func loadCollegesFromDevice() -> [String: String] {
         
         return loadCollegesFromDevice()
     }
+}
+
+// Convenience function, above functions were used for generation
+func getCollegeLogoData() -> [String: String]? {
+    if let url = Bundle.main.url(forResource: "collegeLogos", withExtension: "json") {
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            
+            return try decoder.decode([String: String].self, from: data)
+        } catch {
+            print("Error decoding JSON object: \(error)")
+        }
+    }
+    
+    return nil
 }
