@@ -385,7 +385,8 @@ struct SearchInputView: View {
                             focusedField = nil
                             resultSelected = true
                             
-                            if profileSelection == .diveMeets {
+                            // Doing meet search or person DiveMeets search
+                            if selection == .meet || profileSelection == .diveMeets {
                                 // Need to initially set search to false so webView gets recreated
                                 searchSubmitted = false
                                 
@@ -407,7 +408,8 @@ struct SearchInputView: View {
                                     clearStateFlags()
                                     showError = true
                                 }
-                            } else {
+                                // Doing Adrenaline person search
+                            } else if selection == .person {
                                 results = []
                                 adrenalineFormattedResults = [:]
                                 showError = false
@@ -640,8 +642,14 @@ struct SearchInputView: View {
         }
         .ignoresSafeArea(.keyboard)
         .navigationViewStyle(StackNavigationViewStyle())
+        // Don't love these onChange modifiers, but needed to update showResults
         .onChange(of: linksParsed) { newValue in
             if newValue {
+                showResults = true
+            }
+        }
+        .onChange(of: predicate) { newValue in
+            if predicate != nil {
                 showResults = true
             }
         }
