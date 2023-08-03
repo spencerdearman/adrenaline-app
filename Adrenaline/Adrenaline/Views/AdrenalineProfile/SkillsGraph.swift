@@ -111,7 +111,6 @@ struct SkillsGraph: View {
         .onAppear {
             Task {
                 if !cachedStats.keys.contains(diveMeetsID) {
-                    print("reparsing")
                     if await !parser.parseProfile(link: profileLink) {
                         print("Failed to parse profile")
                     }
@@ -120,10 +119,8 @@ struct SkillsGraph: View {
                 
                 if cachedMetrics.keys.contains(diveMeetsID),
                    let result = cachedMetrics[diveMeetsID] {
-                    print("cached")
                     (oneMetrics, threeMetrics, platformMetrics, overallMetrics) = result
                 } else {
-                    print("not cached")
                     if let stats = cachedStats[diveMeetsID] {
                         let skill = SkillRating(diveStatistics: stats)
                         let divesByCategory = skill.getDiverStatsByCategory()
