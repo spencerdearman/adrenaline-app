@@ -23,6 +23,7 @@
 		006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */; };
 		0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5A92A426D9E0040600E /* TileSwapView.swift */; };
 		0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5AB2A4377920040600E /* SwipeModifier.swift */; };
+		006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006651322A7C466300A373F6 /* CollegeLogoParser.swift */; };
 		0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */; };
 		007EAFED2A4B639600061113 /* MovingSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007EAFEC2A4B639600061113 /* MovingSplashView.swift */; };
 		0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */; };
@@ -103,6 +104,7 @@
 		006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
 		0065C5A92A426D9E0040600E /* TileSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSwapView.swift; sourceTree = "<group>"; };
 		0065C5AB2A4377920040600E /* SwipeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeModifier.swift; sourceTree = "<group>"; };
+		006651322A7C466300A373F6 /* CollegeLogoParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CollegeLogoParser.swift; path = Adrenaline/Model/CollegeLogoParser.swift; sourceTree = SOURCE_ROOT; };
 		0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalingScrollView.swift; sourceTree = "<group>"; };
 		007EAFEC2A4B639600061113 /* MovingSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovingSplashView.swift; sourceTree = "<group>"; };
 		0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingsView.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 		4D50E7722A24050E009BFBFA /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
+				006651322A7C466300A373F6 /* CollegeLogoParser.swift */,
 				4D50E7952A293DEC009BFBFA /* DiveStatisticsParser.swift */,
 				00FEF7B82A2A972800AAFC7C /* EntriesParser.swift */,
 				4D753DE22A2158370029138B /* EventPageParser.swift */,
@@ -563,6 +566,7 @@
 				0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */,
 				009F41BA2A6AC51A00348C68 /* UsersDBTestView.swift in Sources */,
 				4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */,
+				006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */,
 				0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */,
 				00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */,
 				0037877A29D4F40900D3CD59 /* ProfileMeetCache.swift in Sources */,
