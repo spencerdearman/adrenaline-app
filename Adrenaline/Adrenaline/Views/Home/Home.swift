@@ -265,6 +265,8 @@ struct UpcomingMeetsView: View {
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     
+    private let screenWidth = UIScreen.main.bounds.width
+    
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
@@ -307,11 +309,12 @@ struct UpcomingMeetsView: View {
                 }
             }
         } else {
-            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
+            BackgroundBubble(cornerRadius: 30) {
                 Text("Unable to get upcoming meets, network timed out")
                     .dynamicTypeSize(.xSmall ... .xxxLarge)
                     .padding()
                     .multilineTextAlignment(.center)
+                    .frame(width: screenWidth * 0.9)
             }
         }
     }
@@ -324,6 +327,8 @@ struct CurrentMeetsView: View {
     @Binding var timedOut: Bool
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    
+    private let screenWidth = UIScreen.main.bounds.width
     
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
@@ -370,12 +375,13 @@ struct CurrentMeetsView: View {
                 }
             }
         } else {
-            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
+            BackgroundBubble(cornerRadius: 30) {
                 VStack(alignment: .center) {
                     Text("Unable to get current meets, network timed out")
                         .dynamicTypeSize(.xSmall ... .xxxLarge)
                         .padding()
                         .multilineTextAlignment(.center)
+                        .frame(width: screenWidth * 0.9)
                 }
             }
         }
