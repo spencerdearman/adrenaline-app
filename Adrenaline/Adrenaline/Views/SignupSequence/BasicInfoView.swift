@@ -121,6 +121,8 @@ struct BasicInfoView: View {
                             .textContentType(.givenName)
                             .multilineTextAlignment(.center)
                             .focused($focusedField, equals: .first)
+                            .modifier(TextFieldClearButton<BasicInfoField>(
+                                text: $firstName, fieldType: .first, focusedField: $focusedField))
                             .onChange(of: firstName) { _ in
                                 signupData.firstName = firstName
                             }
@@ -131,6 +133,8 @@ struct BasicInfoView: View {
                             .textContentType(.familyName)
                             .multilineTextAlignment(.center)
                             .focused($focusedField, equals: .last)
+                            .modifier(TextFieldClearButton<BasicInfoField>(
+                                text: $lastName, fieldType: .last, focusedField: $focusedField))
                             .onChange(of: lastName) { _ in
                                 signupData.lastName = lastName
                             }
@@ -144,6 +148,8 @@ struct BasicInfoView: View {
                                 .keyboardType(.emailAddress)
                                 .multilineTextAlignment(.center)
                                 .focused($focusedField, equals: .email)
+                                .modifier(TextFieldClearButton<BasicInfoField>(
+                                    text: $email, fieldType: .email, focusedField: $focusedField))
                                 .onChange(of: email) { _ in
                                     signupData.email = email
                                 }
@@ -170,6 +176,8 @@ struct BasicInfoView: View {
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.center)
                             .focused($focusedField, equals: .phone)
+                            .modifier(TextFieldClearButton<BasicInfoField>(
+                                text: $phone, fieldType: .phone, focusedField: $focusedField))
                             .onChange(of: phone) { _ in
                                 phone = formatPhoneString(string: phone)
                                 signupData.phone = removePhoneFormatting(string: phone)
@@ -188,6 +196,9 @@ struct BasicInfoView: View {
                                 .textContentType(.newPassword)
                                 .multilineTextAlignment(.center)
                                 .focused($focusedField, equals: .password)
+                                .modifier(TextFieldClearButton<BasicInfoField>(
+                                    text: $password, fieldType: .password,
+                                    focusedField: $focusedField))
                                 .onChange(of: password) { _ in
                                     signupData.password = password
                                 }
@@ -211,6 +222,9 @@ struct BasicInfoView: View {
                                 .textContentType(.newPassword)
                                 .multilineTextAlignment(.center)
                                 .focused($focusedField, equals: .repeatPassword)
+                                .modifier(TextFieldClearButton<BasicInfoField>(
+                                    text: $repeatPassword, fieldType: .repeatPassword,
+                                    focusedField: $focusedField))
                                 Image(systemName: "eye.circle")
                                     .opacity(0.0)
                             }
@@ -225,8 +239,7 @@ struct BasicInfoView: View {
                                 Text("Next")
                                     .bold()
                             }
-                            .simultaneousGesture(TapGesture().onEnded{
-                                print("Coming in here")
+                            .simultaneousGesture(TapGesture().onEnded {
                                 focusedField = nil
                                 searchSubmitted = true
                                 if signupData.accountType == .athlete {
