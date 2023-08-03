@@ -16,9 +16,9 @@ struct DiverView: View {
     "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     var body: some View {
         VStack {
-            Spacer()
             // Showing DiveMeets Linking Screen
             if userViewData.diveMeetsID == "" {
+                Spacer()
                 BackgroundBubble(vPadding: 20, hPadding: 20) {
                     NavigationLink(destination: {
                         DiveMeetsLink(userViewData: $userViewData)
@@ -28,14 +28,13 @@ struct DiverView: View {
                             .font(.title2).fontWeight(.semibold)
                     })
                 }
+                Spacer()
+                Spacer()
+                Spacer()
             } else {
                 ProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)
             }
-            Spacer()
-            Spacer()
-            Spacer()
-            Spacer()
             Spacer()
         }
     }
@@ -55,6 +54,10 @@ struct ProfileContent: View {
                     .font(.title2).fontWeight(.semibold)
                     .frame(width: g.size.width, height: g.size.height,
                            alignment: .center)
+            }
+            .onTapGesture {
+                guard let idx = scoreValues.firstIndex(of: value) else { return }
+                selectedPage = idx
             }
         }
         .scrollAlpha(0.3)
