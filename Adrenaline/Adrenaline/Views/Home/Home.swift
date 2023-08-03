@@ -549,7 +549,8 @@ struct MeetBubbleView: View {
                                        : getPadTextSizeForAccessibility())
                                 .mask(RoundedRectangle(cornerRadius: 30))
                                 .shadow(radius: 3)
-                            Text(elements[4] + " - " + elements[5]) // startDate - endDate
+                            // startDate - endDate
+                            Text(getDisplayDateString(start: elements[4], end: elements[5]))
                                 .padding([.leading, .trailing], 5)
                         }
                         .padding(.trailing)
