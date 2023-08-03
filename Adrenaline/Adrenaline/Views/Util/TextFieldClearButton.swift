@@ -1,17 +1,19 @@
 //
 //  TextFieldClearButton.swift
-//  DiveMeets
+//  Adrenaline
 //
-//  Created by Logan Sherwin on 5/3/23.
-// Modified from https://sanzaru84.medium.com/swiftui-how-to-add-a-clear-button-to-a-textfield-9323c48ba61c
+//  Created by Logan Sherwin on 8/3/23.
+//  Modified from
+//  https://sanzaru84.medium.com/swiftui-how-to-add-a-clear-button-to-a-textfield-9323c48ba61c
 //
 
 import SwiftUI
 
-struct TextFieldClearButton: ViewModifier {
+// Works with any hashable enum type for focus states
+struct TextFieldClearButton<E: Hashable>: ViewModifier {
     @Binding var text: String
-    var fieldType: SearchField
-    var focusedField: FocusState<SearchField?>.Binding
+    var fieldType: E
+    var focusedField: FocusState<E?>.Binding
     
     func body(content: Content) -> some View {
         ZStack(alignment: .trailing) {
