@@ -16,28 +16,14 @@ struct SignupData: Hashable {
     var password: String?
     var recruiting: RecruitingData?
     
-    private let defaults = UserDefaults.standard
-    
     func save() {
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(email)  {
-            defaults.set(encoded, forKey: "username")
-        }
-        
-        do {
-            try saveToKeychain(value: password, for: email)
-        } catch {
-            print("Unable to save password to keychain")
-        }
+        guard let email = email, let password = password else { print("empty"); return }
+        saveCredentials(email: email, password: password)
     }
     
     func clear() {
-        defaults.removeObject(forKey: "username")
-        do {
-            try deleteFromKeychain(for: email)
-        } catch {
-            print("Unable to delete password from keychain")
-        }
+        guard let email = email else { return }
+        clearCredentials(email: email)
     }
 }
 
@@ -46,14 +32,9 @@ struct LoginData: Hashable {
     var password: String?
     
     mutating func loadStoredCredentials() {
-        let defaults = UserDefaults.standard
-        let decoder = JSONDecoder()
-        if let data = defaults.data(forKey: "username") {
-            let username = try? decoder.decode(String.self, from: data)
-            self.username = username
-        }
-        
-        self.password = try? readFromKeychain(for: username)
+        guard let (username, password) = getStoredCredentials() else { return }
+        self.username = username
+        self.password = password
     }
 }
 
@@ -75,4 +56,47 @@ struct Height: Hashable {
 struct Weight: Hashable {
     var weight: Int
     var unit: WeightUnit
+}
+
+func saveCredentials(email: String, password: String, defaults: UserDefaults = .standard) {
+    let encoder = JSONEncoder()
+    if let encoded = try? encoder.encode(email)  {
+        defaults.set(encoded, forKey: "username")
+    }
+    
+    do {
+        try saveToKeychain(value: password, for: email)
+    } catch {
+        print("Unable to save password to keychain")
+    }
+}
+
+func clearCredentials(email: String, defaults: UserDefaults = .standard) {
+    defaults.removeObject(forKey: "username")
+    do {
+        try deleteFromKeychain(for: email)
+    } catch {
+        print("Unable to delete password from keychain")
+    }
+}
+
+func getStoredCredentials(defaults: UserDefaults = .standard) -> (String, String)? {
+    var username: String = ""
+    var password: String = ""
+    let decoder = JSONDecoder()
+    if let data = defaults.data(forKey: "username") {
+        guard let email = try? decoder.decode(String.self, from: data) else { return nil }
+        username = email
+    } else {
+        return nil
+    }
+    
+    do {
+        password = try readFromKeychain(for: username)
+    } catch {
+        print("Failed to get password from keychain")
+        return nil
+    }
+    
+    return (username, password)
 }
