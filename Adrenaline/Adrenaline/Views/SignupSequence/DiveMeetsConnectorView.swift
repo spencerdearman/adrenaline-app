@@ -115,10 +115,13 @@ struct IsThisYouView: View {
                     Spacer()
                     Text("No DiveMeets Profile Found")
                         .font(.title).fontWeight(.semibold)
-                    NavigationLink {
-                        AdrenalineProfileView(userEmail: signupData.email ?? "",
-                                              loginSuccessful: $loginSuccessful)
-                    } label: {
+                    NavigationLink(destination: signupData.accountType == .athlete
+                                   ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                                   diveMeetsID: $diveMeetsID,
+                                                                   showSplash: $showSplash))
+                                   : AnyView(AdrenalineProfileView(
+                                    userEmail: signupData.email ?? "",
+                                    loginSuccessful: $loginSuccessful))) {
                         Text("Next")
                     }
                     Spacer()
