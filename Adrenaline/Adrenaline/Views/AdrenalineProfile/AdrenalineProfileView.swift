@@ -244,16 +244,17 @@ struct SettingsPage: View {
                         .foregroundColor(.secondary)
                 }
                 NavigationLink {
-                    EditProfile()
+                    EditProfile(userViewData: $userViewData)
                 } label: {
-                    HStack {
+                    BackgroundBubble(shadow: 5) {
                         HStack {
                             Text("Edit Profile")
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                                 .fontWeight(.semibold)
                             Image(systemName: "chevron.right")
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                         }
+                        .padding()
                     }
                 }
             }
@@ -271,21 +272,152 @@ struct SettingsPage: View {
 
 struct EditProfile: View {
     @Environment(\.dismiss) private var dismiss
+    @Binding var userViewData: UserViewData
+    
     var body: some View {
-        Text("This is where you will edit your account")
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        NavigationViewBackButton()
-                    }
+        VStack {
+            Text("This is where you will edit your account")
+            NavigationLink(destination: CommittedCollegeView(userViewData: $userViewData)) {
+                BackgroundBubble() {
+                    Text("Choose College")
+                        .foregroundColor(.primary)
+                        .padding()
                 }
             }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
 }
 
+struct CommittedCollegeView: View {
+    @State var college: String = ""
+    @Binding var userViewData: UserViewData
+    
+    var body: some View {
+        VStack {
+            VStack {
+                Text("Have you committed to dive in college?")
+                    .font(.title)
+                    .bold()
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom)
+                Text("Start typing below to display your college on your profile")
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+            }
+            Spacer()
+            SuggestionsTextField(userViewData: $userViewData)
+            Spacer()
+            Spacer()
+        }
+        .padding()
+    }
+}
+
+struct SuggestionsTextField: View {
+    @Environment(\.updateAthleteField) var updateAthleteField
+    @Environment(\.getAthlete) var getAthlete
+    @State var college: String = ""
+    @State var suggestions: [String] = []
+    @State var showSuggestions: Bool = false
+    @State var selectedCollege: String = ""
+    @Binding var userViewData: UserViewData
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
+    var body: some View {
+        VStack {
+            TextField("Start typing your college...", text: $college)
+                .onChange(of: college) { newValue in
+                    if newValue != selectedCollege {
+                        showSuggestions = true
+                        selectedCollege = ""
+                    }
+                }
+                .textFieldStyle(.roundedBorder)
+                .frame(width: screenWidth * 0.9)
+            
+            if selectedCollege != "" {
+                Spacer()
+                
+                VStack {
+                    Text("Current College")
+                        .font(.title)
+                        .bold()
+                        .padding(.bottom)
+                    BackgroundBubble() {
+                        HStack {
+                            Image(systemName: "gearshape")
+                            Spacer()
+                            Text(selectedCollege)
+                            Spacer()
+                            Spacer()
+                        }
+                        .foregroundColor(.primary)
+                        .frame(width: 300)
+                        .padding()
+                    }
+                }
+                
+                Spacer()
+                Spacer()
+            }
+            
+            if showSuggestions && !college.isEmpty {
+                ScrollView {
+                    LazyVStack(alignment: .center) {
+                        ForEach(suggestions.filter({ $0.localizedCaseInsensitiveContains(college) }),
+                                id: \.self) { suggestion in
+                            ZStack {
+                                Button(action: {
+                                    selectedCollege = suggestion
+                                    college = selectedCollege
+                                    showSuggestions = false
+                                }) {
+                                    BackgroundBubble() {
+                                        HStack {
+                                            Image(systemName: "gearshape")
+                                            Spacer()
+                                            Text(suggestion)
+                                            Spacer()
+                                            Spacer()
+                                        }
+                                        .foregroundColor(.primary)
+                                        .frame(width: 200)
+                                        .padding()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.top)
+                }
+            }
+        }
+        .onAppear {
+            guard let colleges = getCollegeLogoData() else { return }
+            suggestions = Array(colleges.keys)
+            guard let email = userViewData.email else { return }
+            print(getAthlete(email))
+        }
+        .onDisappear {
+            if selectedCollege != "" {
+                guard let email = userViewData.email else { return }
+                updateAthleteField(email, "committedCollege", selectedCollege)
+                print(getAthlete(email))
+            }
+        }
+    }
+}
 
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
