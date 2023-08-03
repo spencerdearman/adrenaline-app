@@ -12,6 +12,13 @@ import SwiftUI
 //                  [meetLink: meetData]
 var cachedMeetData: [String: (MeetInfoJointData?, MeetResultsData?)] = [:]
 
+func getDisplayDateString(start: String, end: String) -> String {
+    if start == end { return start }
+    else {
+        return start + " - " + end
+    }
+}
+
 struct MeetPageView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
@@ -291,14 +298,6 @@ struct MeetInfoPageView: View {
             
             return data
         }
-    
-    private func getDisplayDateString(start: String, end: String) -> String {
-        if start == end { return start }
-        else {
-            return start + " - " + end
-        }
-    }
-    
     
     var body: some View {
         let info = meetInfoData.0
