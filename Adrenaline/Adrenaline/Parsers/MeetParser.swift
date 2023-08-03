@@ -438,6 +438,9 @@ final class MeetParser: ObservableObject {
                 guard let menu = try body.getElementById("dm_menu_centered") else { return }
                 let menuTabs = try menu.getElementsByTag("ul")[0].getElementsByTag("li")
                 for tab in menuTabs {
+                    if slowMeetParsing {
+                        try await Task.sleep(nanoseconds: sleepDelaySeconds * NSEC_PER_SEC)
+                    }
                     // tabElem is one of the links from the tabs in the menu bar
                     let tabElem = try tab.getElementsByAttribute("href")[0]
                     if try tabElem.text() == "Find" {
@@ -631,6 +634,9 @@ final class MeetParser: ObservableObject {
                 let menu = try body.getElementById("dm_menu_centered")
                 guard let menuTabs = try menu?.getElementsByTag("ul")[0].getElementsByTag("li") else { return }
                 for tab in menuTabs {
+                    if slowMeetParsing {
+                        try await Task.sleep(nanoseconds: sleepDelaySeconds * NSEC_PER_SEC)
+                    }
                     // tabElem is one of the links from the tabs in the menu bar
                     let tabElem = try tab.getElementsByAttribute("href")[0]
                     if try tabElem.text() == "Find" {

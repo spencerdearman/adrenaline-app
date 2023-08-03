@@ -183,6 +183,7 @@ struct IsThisYouView: View {
         }
         .onAppear {
             sortedRecords = getSortedRecords(records)
+            slowMeetParsing = false
         }
     }
 }

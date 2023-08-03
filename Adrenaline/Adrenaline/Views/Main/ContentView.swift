@@ -10,6 +10,11 @@ import SwiftUI
 // Global timeoutInterval to use for online loading pages
 let timeoutInterval: TimeInterval = 30
 
+// Global "lock"/delay on meet parser to allow time for SwiftUIWebView to access network
+// (DiveMeetsConnectorView)
+var slowMeetParsing: Bool = false
+let sleepDelaySeconds: UInt64 = 2
+
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase

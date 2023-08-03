@@ -229,6 +229,7 @@ struct BasicInfoView: View {
                                 print("Coming in here")
                                 focusedField = nil
                                 searchSubmitted = true
+                                slowMeetParsing = true
                                 if signupData.accountType == .athlete {
                                     addAthlete(firstName, lastName,
                                                email, phone, password)
@@ -265,6 +266,10 @@ struct BasicInfoView: View {
                 
                 Spacer()
             }
+        }
+        // Sets slowMeetParsing to false to keep parsing from slowing if user backs up in navigation
+        .onAppear {
+            slowMeetParsing = false
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
