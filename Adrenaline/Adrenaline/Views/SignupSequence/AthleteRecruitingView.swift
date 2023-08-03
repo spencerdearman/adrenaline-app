@@ -211,6 +211,9 @@ struct AthleteRecruitingView: View {
                                     .keyboardType(.numberPad)
                                     .multilineTextAlignment(.center)
                                     .focused($focusedField, equals: .weight)
+                                    .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                        text: $weight, fieldType: .weight,
+                                        focusedField: $focusedField))
                                     .onChange(of: weight) { _ in
                                         weight = String(weight.prefix(6))
                                         
@@ -323,6 +326,9 @@ struct AthleteRecruitingView: View {
                                         .keyboardType(.numberPad)
                                         .multilineTextAlignment(.center)
                                         .focused($focusedField, equals: .gradYear)
+                                        .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                            text: $gradYear, fieldType: .gradYear,
+                                            focusedField: $focusedField))
                                         .onChange(of: gradYear) { _ in
                                             gradYear = String(gradYear.prefix(4))
                                             
@@ -342,6 +348,9 @@ struct AthleteRecruitingView: View {
                                 .frame(width: textFieldWidth)
                                 .multilineTextAlignment(.center)
                                 .focused($focusedField, equals: .highSchool)
+                                .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                    text: $highSchool, fieldType: .highSchool,
+                                    focusedField: $focusedField))
                                 .onChange(of: highSchool) { _ in
                                     if signupData.recruiting == nil {
                                         signupData.recruiting = RecruitingData()
@@ -364,6 +373,9 @@ struct AthleteRecruitingView: View {
                                     .frame(width: textFieldWidth)
                                     .multilineTextAlignment(.center)
                                     .focused($focusedField, equals: .hometown)
+                                    .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                        text: $hometown, fieldType: .hometown,
+                                        focusedField: $focusedField))
                                     .onChange(of: hometown) { _ in
                                         if signupData.recruiting == nil {
                                             signupData.recruiting = RecruitingData()
