@@ -10,6 +10,24 @@
 import SwiftUI
 import SwiftSoup
 
+extension String {
+    func slice(from: String, to: String) -> String? {
+        guard let rangeFrom = range(of: from)?.upperBound else { return nil }
+        guard let rangeTo = self[rangeFrom...].range(of: to)?.lowerBound else { return nil }
+        return String(self[rangeFrom..<rangeTo])
+    }
+
+    func slice(from: String) -> String? {
+        guard let rangeFrom = range(of: from)?.upperBound else { return nil }
+        return String(self[rangeFrom...])
+    }
+
+    func slice(to: String) -> String? {
+        guard let rangeTo = self.range(of: to)?.lowerBound else { return nil }
+        return String(self[..<rangeTo])
+    }
+}
+
 //  name, link, last round place, last round total, order, place, total, dive, height, dd,
 //score total, [judges scores]
 typealias LastDiverInfo = (String, String, Int, Double, Int, Int, Double, String, String, Double,
@@ -567,7 +585,7 @@ struct LastDiverView: View
     var body: some View {
         ZStack {
             Rectangle()
-                .foregroundColor(Custom.specialGray)
+                .foregroundColor(Custom.darkGray)
                 .cornerRadius(50)
                 .shadow(radius: 20)
             
@@ -604,7 +622,7 @@ struct LastDiverView: View
                 
                 ZStack {
                     Rectangle()
-                        .foregroundColor(Custom.darkGray)
+                        .foregroundColor(Custom.accentThinMaterial)
                         .frame(height: screenHeight * 0.1)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
@@ -667,7 +685,7 @@ struct NextDiverView: View
     var body: some View {
         ZStack {
             Rectangle()
-                .fill(Custom.specialGray)
+                .fill(Custom.darkGray)
                 .cornerRadius(50)
                 .shadow(radius: 20)
             
@@ -707,7 +725,7 @@ struct NextDiverView: View
                 ZStack {
                     Rectangle()
                         .frame(height: screenHeight * 0.1)
-                        .foregroundColor(Custom.darkGray)
+                        .foregroundColor(Custom.accentThinMaterial)
                         .mask(RoundedRectangle(cornerRadius: 50))
                     HStack {
                         Text(nextInfo.5.prefix(5))

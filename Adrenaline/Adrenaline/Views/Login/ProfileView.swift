@@ -74,7 +74,7 @@ struct ProfileView: View {
             let finaAge = info?.finaAge
             
             if !isLoginProfile {
-                bgColor.ignoresSafeArea()
+                Custom.darkGray.ignoresSafeArea()
                 GeometryReader { geometry in
                     BackgroundSpheres()
                 }
@@ -87,59 +87,51 @@ struct ProfileView: View {
                     VStack {
                         ProfileImage(diverID: diverId)
                             .frame(width: 200, height: 150)
+                            .scaleEffect(0.9)
                             .padding(.top)
                             .padding()
                         VStack {
-                            VStack(alignment: .leading) {
-                                
-                                HStack (alignment: .firstTextBaseline) {
-                                    if infoSafe, let name = name {
-                                        Text(name)
-                                            .font(.title)
-                                            .foregroundColor(.white)
-                                    } else {
-                                        Text("")
+                            BackgroundBubble(vPadding: 40, hPadding: 60) {
+                                VStack() {
+                                    HStack (alignment: .firstTextBaseline) {
+                                        if infoSafe, let name = name {
+                                            Text(name)
+                                                .font(.title3).fontWeight(.semibold)
+                                        } else {
+                                            Text("")
+                                        }
                                     }
-                                    
-                                    Text(diverId)
-                                        .font(.subheadline).foregroundColor(Custom.secondaryColor)
+                                    Divider()
+                                    HStack (alignment: .firstTextBaseline) {
+                                        HStack {
+                                            Image(systemName: "mappin.and.ellipse")
+                                            if infoSafe,
+                                               let cityState = cityState,
+                                               let country = country {
+                                                Text(cityState)
+                                            } else {
+                                                Text("")
+                                            }
+                                        }
+                                        HStack {
+                                            Image(systemName: "person.fill")
+                                            if infoSafe, let age = age {
+                                                Text("Age: " + String(age))
+                                            } else {
+                                                Text("")
+                                            }
+                                        }
+                                        HStack {
+                                            Image(systemName: "figure.pool.swim")
+                                            Text(diverId)
+                                        }
+                                    }
+                                    .padding([.leading], 2)
                                 }
-                                WhiteDivider()
-                                HStack (alignment: .firstTextBaseline) {
-                                    Image(systemName: "house.fill")
-                                    if infoSafe,
-                                       let cityState = cityState,
-                                       let country = country {
-                                        Text(cityState + ", " + country)
-                                    } else {
-                                        Text("")
-                                    }
-                                }
-                                .font(.subheadline).foregroundColor(.white)
-                                HStack (alignment: .firstTextBaseline) {
-                                    Image(systemName: "person.circle")
-                                    if infoSafe, let gender = gender {
-                                        Text("Gender: " + gender)
-                                    } else {
-                                        Text("")
-                                    }
-                                    
-                                    if infoSafe, let age = age {
-                                        Text("Age: " + String(age))
-                                    } else {
-                                        Text("")
-                                    }
-                                    
-                                    if infoSafe, let finaAge = finaAge {
-                                        Text("FINA Age: " + String(finaAge))
-                                    } else {
-                                        Text("")
-                                    }
-                                }
-                                .font(.subheadline).foregroundColor(.white)
-                                .padding([.leading], 2)
+                                .frame(width: screenWidth * 0.8)
                             }
                         }
+                        .frame(width: screenWidth * 0.8)
                         .padding([.leading, .trailing, .top])
                         
                         if let upcomingMeets = parser.profileData.upcomingMeets {
@@ -189,15 +181,10 @@ struct ProfileView: View {
                                 .padding(.bottom, 5)
                             }
                             .padding([.leading, .trailing])
-                            
                             Spacer()
                         }
-                        
                         Spacer()
-                        
-                        
                         MeetList(profileLink: profileLink)
-                        
                     }
                     .padding(.bottom, maxHeightOffset)
                 }
@@ -206,53 +193,46 @@ struct ProfileView: View {
                     GeometryReader { geometry in
                         BackgroundSpheres()
                         Rectangle()
-                            .fill(bgColor)
+                            .fill(Custom.darkGray)
                             .mask(RoundedRectangle(cornerRadius: 40))
                             .offset(y: geometry.size.height * 0.4)
                     }
                     VStack {
                         VStack {
-                            ProfileImage(diverID: diverId)
-                                .frame(width: 200, height: 150)
-                                .padding()
-                            VStack {
-                                VStack(alignment: .leading) {
-                                    HStack(alignment: .firstTextBaseline) {
+                            BackgroundBubble(vPadding: 40, hPadding: 60) {
+                                VStack() {
+                                    HStack (alignment: .firstTextBaseline) {
                                         if infoSafe, let name = name {
                                             Text(name)
-                                                .font(.title)
-                                                .foregroundColor(.white)
-                                        } else {
-                                            Text("")
-                                        }
-                                        
-                                        Text(diverId)
-                                            .font(.subheadline)
-                                            .foregroundColor(Custom.secondaryColor)
-                                    }
-                                    WhiteDivider()
-                                    HStack(alignment: .firstTextBaseline) {
-                                        Image(systemName: "house.fill")
-                                        if infoSafe, let cityState = cityState,
-                                           let country = country {
-                                            Text(cityState + ", " + country)
+                                                .font(.title3).fontWeight(.semibold)
                                         } else {
                                             Text("")
                                         }
                                     }
-                                    .font(.subheadline).foregroundColor(.white)
+                                    if currentMode == .light {
+                                        Divider()
+                                    } else {
+                                        WhiteDivider()
+                                    }
                                     HStack (alignment: .firstTextBaseline) {
-                                        Image(systemName: "person.circle")
-                                        if infoSafe, let gender = gender {
-                                            Text("Gender: " + gender)
-                                        } else {
-                                            Text("")
+                                        HStack {
+                                            Image(systemName: "mappin.and.ellipse")
+                                            if infoSafe,
+                                               let cityState = cityState,
+                                               let country = country {
+                                                Text(cityState)
+                                            } else {
+                                                Text("")
+                                            }
+                                        }
+                                        HStack {
+                                            Image(systemName: "figure.pool.swim")
+                                            Text(diverId)
                                         }
                                     }
-                                    .font(.subheadline)
-                                    .foregroundColor(.white)
                                     .padding([.leading], 2)
                                 }
+                                .frame(width: screenWidth * 0.8)
                             }
                             .padding()
                             if !diverTab {
@@ -315,6 +295,8 @@ struct ProfileView: View {
                             }
                             if let judging = parser.profileData.judging {
                                 JudgedList(data: judging)
+                                    .frame(height: screenHeight * 0.4)
+                                    .offset(y: screenHeight * 0.1)
                             }
                         }
                     }
@@ -409,15 +391,12 @@ struct JudgedList: View {
     var body: some View {
         
         VStack {
-            Text("Judging History")
-                .font(.title2).fontWeight(.semibold)
-                .padding(.top)
             ScrollView(showsIndicators: false) {
                 VStack(spacing: rowSpacing) {
                     ForEach(data, id: \.self) { meet in
                         ZStack {
                             RoundedRectangle(cornerRadius: 30)
-                                .fill(Custom.darkGray)
+                                .fill(Custom.specialGray)
                                 .shadow(radius: 5)
                             DisclosureGroup(
                                 content: {
@@ -461,53 +440,6 @@ struct JudgedList: View {
                     }
                 }
                 .padding([.top, .bottom], rowSpacing)
-            }
-        }
-    }
-}
-
-struct BackgroundSpheres: View {
-    @State var width: CGFloat = 0
-    @State var height: CGFloat = 0
-    
-    var body: some View {
-        GeometryReader { geometry in
-            ZStack{}
-                .onAppear {
-                    width = geometry.size.width
-                    height = geometry.size.height
-                }
-            VStack {
-                ZStack {
-                    Circle()
-                    // Circle color
-                        .fill(Custom.darkBlue)
-                    // Adjust the size of the circle as desired
-                        .frame(width: geometry.size.width * 2.5,
-                               height: geometry.size.width * 2.5)
-                    // Center the circle
-                        .position(x: geometry.size.width, y: -geometry.size.width * 0.55)
-                        .shadow(radius: 15)
-                        .frame(height: geometry.size.height * 0.7)
-                        .clipped().ignoresSafeArea()
-                        .ignoresSafeArea()
-                    Circle()
-                        .fill(Custom.coolBlue) // Circle color
-                        .frame(width:geometry.size.width * 1.3, height:geometry.size.width * 1.3)
-                        .position(x: geometry.size.width, y: geometry.size.width * 0.7)
-                        .shadow(radius: 15)
-                        .frame(height: geometry.size.height * 0.7)
-                        .clipped().ignoresSafeArea()
-                        .ignoresSafeArea()
-                    Circle()
-                        .fill(Custom.medBlue) // Circle color
-                        .frame(width: geometry.size.width * 1.1, height: geometry.size.width * 1.1)
-                        .position(x: 0, y: geometry.size.width * 0.7)
-                        .shadow(radius: 15)
-                        .frame(height: geometry.size.height * 0.7)
-                        .clipped().ignoresSafeArea()
-                        .ignoresSafeArea()
-                }
             }
         }
     }

@@ -35,7 +35,7 @@ struct DiveMeetsConnectorView: View {
                                linksParsed: $linksParsed, timedOut: $personTimedOut)
             }
             if linksParsed || personTimedOut {
-                ZStack (alignment: .topLeading) {
+                ZStack() {
                     IsThisYouView(records: $parsedLinks, signupData: $signupData,
                                   diveMeetsID: $diveMeetsID, showSplash: $showSplash)
                 }
@@ -78,7 +78,9 @@ struct DiveMeetsConnectorView: View {
 struct IsThisYouView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.updateUserField) private var updateUserField
+    @Environment(\.getUser) private var getUser
     @State var sortedRecords: [(String, String)] = []
+    @State var loginSuccessful: Bool = false
     @Binding var records: DiverProfileRecords
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
@@ -100,76 +102,87 @@ struct IsThisYouView: View {
     
     var body: some View {
         bgColor.ignoresSafeArea()
-        ScrollView {
-            VStack {
-                Spacer()
-                if sortedRecords.count == 1 {
-                    Text("Is this you?")
-                        .font(.title).fontWeight(.semibold)
-                } else if sortedRecords.count > 1 {
-                    Text("Are you one of these profiles?")
-                        .font(.title).fontWeight(.semibold)
-                } else {
+        VStack {
+            Spacer()
+            if sortedRecords.count == 1 {
+                Text("Is this you?")
+                    .font(.title).fontWeight(.semibold)
+            } else if sortedRecords.count > 1 {
+                Text("Are you one of these profiles?")
+                    .font(.title).fontWeight(.semibold)
+            } else {
+                VStack(alignment: .center) {
+                    Spacer()
                     Text("No DiveMeets Profile Found")
                         .font(.title).fontWeight(.semibold)
                     NavigationLink {
-                        AdrenalineProfileView(diveMeetsID: $diveMeetsID, signupData: $signupData)
+                        AdrenalineProfileView(userEmail: signupData.email ?? "",
+                                              loginSuccessful: $loginSuccessful)
                     } label: {
-                        BackgroundBubble() {
-                            Text("Next")
-                        }
+                        Text("Next")
                     }
-                    .simultaneousGesture(TapGesture().onEnded({
-                        withAnimation {
-                            showSplash = false
-                        }
-                    }))
+                    Spacer()
                 }
-                ForEach(sortedRecords, id: \.1) { record in
-                    let (key, value) = record
-                    
-                    NavigationLink(destination: signupData.accountType == .athlete
-                                   ? AnyView(AthleteRecruitingView(signupData: $signupData,
-                                                                   diveMeetsID: $diveMeetsID,
-                                                                   showSplash: $showSplash))
-                                   : AnyView(ProfileView(profileLink: ""))) {
-                        HStack {
-                            Spacer()
-                            ProfileImage(diverID: String(value.components(separatedBy: "=").last ?? ""))
-                                .scaleEffect(0.4)
-                                .frame(width: 100, height: 100)
-                            Text(key)
-                                .foregroundColor(.primary)
-                                .font(.title2).fontWeight(.semibold)
-                                .padding()
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(Color.gray)
-                                .padding()
-                            
-                        }
-                        .background(Custom.darkGray)
-                        .cornerRadius(50)
+                .simultaneousGesture(TapGesture().onEnded({
+                    withAnimation {
+                        showSplash = false
                     }
-                                   .simultaneousGesture(TapGesture().onEnded{
-                                       diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
-                                       guard let email = signupData.email else { return }
-                                       updateUserField(email, "diveMeetsID", diveMeetsID)
-                                       
-                                       if signupData.accountType != .athlete {
-                                           withAnimation {
-                                               showSplash = false
-                                           }
-                                       }
-                                   })
-                                   .shadow(radius: 5)
-                                   .padding([.leading, .trailing])
+                }))
+            }
+            if sortedRecords.count >= 1 {
+                ScrollView {
+                    ForEach(sortedRecords, id: \.1) { record in
+                        let (key, value) = record
+                        
+                        NavigationLink(destination: signupData.accountType == .athlete
+                                       ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                                       diveMeetsID: $diveMeetsID,
+                                                                       showSplash: $showSplash))
+                                       : AnyView(AdrenalineProfileView(
+                                        userEmail: signupData.email ?? "",
+                                        loginSuccessful: $loginSuccessful))) {
+                                            HStack {
+                                                Spacer()
+                                                ProfileImage(
+                                                    diverID: String(value
+                                                        .components(separatedBy: "=").last ?? ""))
+                                                .scaleEffect(0.4)
+                                                .frame(width: 100, height: 100)
+                                                Text(key)
+                                                    .foregroundColor(.primary)
+                                                    .font(.title2).fontWeight(.semibold)
+                                                    .padding()
+                                                Spacer()
+                                                Image(systemName: "chevron.right")
+                                                    .foregroundColor(Color.gray)
+                                                    .padding()
+                                                
+                                            }
+                                            .background(Custom.darkGray)
+                                            .cornerRadius(50)
+                                        }
+                                        .simultaneousGesture(TapGesture().onEnded{
+                                            diveMeetsID =
+                                            String(value.components(separatedBy: "=").last ?? "")
+                                            guard let email = signupData.email else { return }
+                                            updateUserField(email, "diveMeetsID", diveMeetsID)
+                                            
+                                            if signupData.accountType != .athlete {
+                                                withAnimation {
+                                                    showSplash = false
+                                                }
+                                            }
+                                        })
+                                        .shadow(radius: 5)
+                                        .padding([.leading, .trailing])
+                    }
+                    .padding()
+                    Spacer()
                 }
-                Spacer()
             }
-            .onAppear {
-                sortedRecords = getSortedRecords(records)
-            }
+        }
+        .onAppear {
+            sortedRecords = getSortedRecords(records)
         }
     }
 }

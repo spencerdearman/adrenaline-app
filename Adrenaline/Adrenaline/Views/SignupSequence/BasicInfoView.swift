@@ -16,6 +16,21 @@ enum BasicInfoField: Int, Hashable, CaseIterable {
     case repeatPassword
 }
 
+struct UserViewData {
+    var firstName: String?
+    var lastName: String?
+    var email: String?
+    var phone: String?
+    var diveMeetsID: String?
+    var accountType: String?
+}
+
+func userEntityToViewData(user: User) -> UserViewData {
+    return UserViewData(firstName: user.firstName, lastName: user.lastName, email: user.email,
+                        phone: user.phone, diveMeetsID: user.diveMeetsID,
+                        accountType: user.accountType)
+}
+
 struct BasicInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss

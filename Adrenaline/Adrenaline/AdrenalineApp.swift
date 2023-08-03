@@ -60,6 +60,14 @@ private struct GetUserKey: EnvironmentKey {
     static let defaultValue: (String) -> User? = { _ in return nil }
 }
 
+private struct GetUsersKey: EnvironmentKey {
+    static let defaultValue: (String?, String?) -> [User]? = { _, _ in return nil }
+}
+
+private struct GetAthleteKey: EnvironmentKey {
+    static let defaultValue: (String) -> Athlete? = { _ in return nil }
+}
+
 private struct AddUserKey: EnvironmentKey {
     static let defaultValue: (String, String, String, String?, String, String) -> () = {
         _, _, _, _, _, _ in }
@@ -87,6 +95,10 @@ private struct UpdateAthleteSkillRatingKey: EnvironmentKey {
 
 private struct DictToTupleKey: EnvironmentKey {
     static let defaultValue: (MeetDict) -> [MeetRecord] = { _ in [] }
+}
+
+private struct ValidatePasswordKey: EnvironmentKey {
+    static let defaultValue: (String, String) -> Bool = { _, _ in return false }
 }
 
 extension EnvironmentValues {
@@ -150,6 +162,16 @@ extension EnvironmentValues {
         set { self[GetUserKey.self] = newValue }
     }
     
+    var getUsers: (String?, String?) -> [User]? {
+        get { self[GetUsersKey.self] }
+        set { self[GetUsersKey.self] = newValue }
+    }
+    
+    var getAthlete: (String) -> Athlete? {
+        get { self[GetAthleteKey.self] }
+        set { self[GetAthleteKey.self] = newValue }
+    }
+    
     var addUser: (String, String, String, String?, String, String) -> () {
         get { self[AddUserKey.self] }
         set { self[AddUserKey.self] = newValue }
@@ -184,6 +206,11 @@ extension EnvironmentValues {
         get { self[DictToTupleKey.self] }
         set { self[DictToTupleKey.self] = newValue }
     }
+    
+    var validatePassword: (String, String) -> Bool {
+        get { self[ValidatePasswordKey.self] }
+        set { self[ValidatePasswordKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -217,6 +244,8 @@ struct AdrenalineApp: App {
                 .environment(\.getMaleAthletes, modelDataController.getMaleAthletes)
                 .environment(\.getFemaleAthletes, modelDataController.getFemaleAthletes)
                 .environment(\.getUser, modelDataController.getUser)
+                .environment(\.getUsers, modelDataController.getUsers)
+                .environment(\.getAthlete, modelDataController.getAthlete)
                 .environment(\.addUser, modelDataController.addUser)
                 .environment(\.addAthlete, modelDataController.addAthlete)
                 .environment(\.updateUserField, modelDataController.updateUserField)
@@ -224,6 +253,7 @@ struct AdrenalineApp: App {
                 .environment(\.updateAthleteField, modelDataController.updateAthleteField)
                 .environment(\.updateAthleteSkillRating, modelDataController.updateAthleteSkillRating)
                 .environment(\.dictToTuple, modelDataController.dictToTuple)
+                .environment(\.validatePassword, modelDataController.validatePassword)
                 .onAppear {
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without

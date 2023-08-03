@@ -7,24 +7,26 @@
 
 import SwiftUI
 
-struct DiverCoachAccounts: Hashable {
-    var diveMeetsID: String?
-    var usaDivingID: String?
-    var aauDivingID: String?
-    var ncaaID: String?
-}
-
 struct AdrenalineProfileView: View {
+    @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.getUser) private var getUser
+    @Environment(\.getAthlete) private var getAthlete
     var firstSignIn: Bool = false
-    @State private var personalAccount: DiverCoachAccounts? = nil
-    @State private var offSet: CGFloat = 0
-    @Binding var diveMeetsID: String
-    @Binding var signupData: SignupData
+    var showBackButton: Bool = false
+    var userEmail: String
+    @State private var offset: CGFloat = 0
+    @State var user: User?
+    @State var userViewData: UserViewData = UserViewData()
+    @Binding var loginSuccessful: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    private func formatLocationString(_ input: String) -> String {
+    private var bgColor: Color {
+        currentMode == .light ? .white : .black
+    }
+    
+    func formatLocationString(_ input: String) -> String {
         var formattedString = input
         
         if let spaceIndex = input.lastIndex(of: " ") {
@@ -32,120 +34,191 @@ struct AdrenalineProfileView: View {
         }
         if formattedString.count >= 2 {
             let lastTwo = formattedString.suffix(2).uppercased()
-            formattedString.replaceSubrange(formattedString.index(formattedString.endIndex, offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
+            formattedString.replaceSubrange(
+                formattedString.index(formattedString.endIndex,
+                                      offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
         }
         return formattedString
     }
     
     var body: some View {
         ZStack {
-            // Universal Base View
-            BackgroundSpheres()
-                .ignoresSafeArea()
-                .onAppear {
-                    offSet = screenHeight * 0.48
+            if let user = user {
+                // Universal Base View
+                if !loginSuccessful {
+                    BackgroundSpheres()
+                        .ignoresSafeArea()
                 }
-            
-            VStack {
-                HStack{
-                    Spacer()
-                    ProfileImage(diverID: diveMeetsID)
-                        .scaleEffect(0.9)
-                    Spacer()
-                    VStack {
-                        BackgroundBubble(vPadding: 20, hPadding: 20) {
-                            VStack {
-                                Text((signupData.firstName ?? "") + " " + (signupData.lastName
-                                                    ?? "")) .font(.title3).fontWeight(.semibold)
-                                Text(signupData.accountType?.rawValue ?? "")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        BackgroundBubble() {
-                            HStack {
-                                HStack{
-                                    Image(systemName: "mappin.and.ellipse")
-                                    if signupData.recruiting == nil {
-                                        Text("?")
-                                    } else {
-                                        Text(formatLocationString(signupData.recruiting!.hometown ?? " "))
-                                    }
-                                }
-                                HStack {
-                                    Image(systemName: "person.fill")
-                                    if signupData.recruiting == nil {
-                                        Text("?")
-                                    } else {
-                                        Text(String(signupData.recruiting!.age ?? 0))
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                    Spacer()
-                }
-                .padding([.leading, .trailing])
-            }
-            .frame(width: screenWidth * 0.9)
-            .overlay{
-                BackgroundBubble() {
-                    NavigationLink {
-                        SettingsPage(signupData: $signupData, diveMeetsID: $diveMeetsID)
-                    } label: {
-                        Image(systemName: "gear")
-                            .foregroundColor(.primary)
-                    }
-                }
-                .offset(x: screenWidth * 0.26, y: -screenHeight * 0.11)
-                .scaleEffect(1.4)
-            }
-            .offset(y: firstSignIn ? -screenHeight * 0.14 : -screenHeight * 0.25)
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.darkGray)
-                    .cornerRadius(50)
-                    .shadow(radius: 10)
-                    .frame(width: screenWidth, height: screenHeight * 1.05)
                 VStack {
-                    if let type = signupData.accountType?.rawValue {
-                        if type == AccountType.athlete.rawValue {
-                            DiverView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                        } else if type == AccountType.coach.rawValue {
-                            Text("This is a coaching profile")
-                            CoachView(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                        } else if type == AccountType.spectator.rawValue {
-                            Text("This is a spectator profile")
-                        } else {
-                            Text("The account type has not been specified")
+                    ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                        .frame(width: 200, height: 150)
+                        .scaleEffect(0.9)
+                        .padding(.top, 50)
+                        .padding(.bottom, 30)
+                        .onAppear {
+                            offset = screenHeight * 0.45
                         }
-                    } else {
-                        Text("Account type not selected")
+                    PersonalInfoView(userViewData: $userViewData)
+                }
+                .offset(y: -screenHeight * 0.3)
+                .padding([.leading, .trailing, .top])
+                .frame(width: screenWidth * 0.9)
+                .overlay{
+                    if loginSuccessful {
+                        BackgroundBubble(vPadding: 20, hPadding: 35) {
+                            Text("Logout")
+                                .onTapGesture{
+                                    withAnimation {
+                                        loginSuccessful = false
+                                    }
+                                }
+                        }
+                        .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.42)
+                    }
+                    BackgroundBubble() {
+                        NavigationLink {
+                            SettingsPage(userViewData: $userViewData)
+                        } label: {
+                            Image(systemName: "gear")
+                                .foregroundColor(.primary)
+                        }
+                    }
+                    .offset(x: screenWidth * 0.26, y: -screenHeight * 0.3)
+                    .scaleEffect(1.4)
+                }
+                ZStack{
+                    Rectangle()
+                        .foregroundColor(Custom.darkGray)
+                        .cornerRadius(50)
+                        .shadow(radius: 10)
+                        .frame(width: screenWidth, height: screenHeight * 1.05)
+                    VStack {
+                        if let type = user.accountType {
+                            if type == AccountType.athlete.rawValue {
+                                DiverView(userViewData: $userViewData)
+                            } else if type == AccountType.coach.rawValue {
+                                CoachView(userViewData: $userViewData)
+                            } else if type == AccountType.spectator.rawValue {
+                                Text("This is a spectator profile")
+                            } else {
+                                Text("The account type has not been specified")
+                            }
+                        }
                     }
                 }
-            }
-            .offset(y: offSet)
-            .onSwipeGesture(trigger: .onEnded) { direction in
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    if direction == .up {
-                        offSet = screenHeight * 0.13
-                    } else if direction == .down {
-                        offSet = screenHeight * 0.48
+                .offset(y: offset)
+                .onSwipeGesture(trigger: .onEnded) { direction in
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        if direction == .up {
+                            offset = screenHeight * 0.13
+                        } else if direction == .down {
+                            offset = screenHeight * 0.45
+                        }
                     }
                 }
             }
         }
         .navigationBarBackButtonHidden(true)
+        .toolbar {
+            if showBackButton {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        NavigationViewBackButton()
+                    }
+                }
+            }
+        }
+        .onAppear {
+            guard let storedUser = getUser(userEmail) else { return }
+            user = storedUser
+            userViewData = userEntityToViewData(user: storedUser)
+        }
+    }
+}
+
+struct PersonalInfoView: View {
+    @Environment(\.colorScheme) var currentMode
+    @Environment(\.getUser) var getUser
+    @Environment(\.getAthlete) var getAthlete
+    @Binding var userViewData: UserViewData
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
+    func formatLocationString(_ input: String) -> String {
+        var formattedString = input
+        
+        if let spaceIndex = input.lastIndex(of: " ") {
+            formattedString.insert(",", at: spaceIndex)
+        }
+        if formattedString.count >= 2 {
+            let lastTwo = formattedString.suffix(2).uppercased()
+            formattedString.replaceSubrange(
+                formattedString.index(formattedString.endIndex,
+                                      offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
+        }
+        return formattedString
+    }
+    
+    var body: some View {
+        VStack {
+            BackgroundBubble(vPadding: 20, hPadding: 60) {
+                VStack {
+                    HStack (alignment: .firstTextBaseline) {
+                        Text((userViewData.firstName ?? "") + " " +
+                             (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
+                        Text(userViewData.accountType ?? "")
+                            .foregroundColor(.secondary)
+                    }
+                    if userViewData.accountType != "Spectator" {
+                        if currentMode == .light {
+                            Divider()
+                        } else {
+                            WhiteDivider()
+                        }
+                        HStack (alignment: .firstTextBaseline) {
+                            if userViewData.accountType == "Athlete" {
+                                let a = getAthlete(userViewData.email ?? "")
+                                HStack {
+                                    Image(systemName: "mappin.and.ellipse")
+                                    if let hometown = a?.hometown, !hometown.isEmpty {
+                                        Text(formatLocationString(hometown))
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                    if let age = a?.age {
+                                        Text(String(age))
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                            }
+                            if userViewData.diveMeetsID != "" {
+                                HStack {
+                                    Image(systemName: "figure.pool.swim")
+                                    if let diveMeetsID = userViewData.diveMeetsID {
+                                        Text(diveMeetsID)
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .frame(width: screenWidth * 0.8)
+            }
+        }
     }
 }
 
 struct SettingsPage: View {
     @Environment(\.dismiss) private var dismiss
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var phoneNumber: String = ""
-    @Binding var signupData: SignupData
-    @Binding var diveMeetsID: String
+    @Binding var userViewData: UserViewData
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
@@ -153,66 +226,32 @@ struct SettingsPage: View {
     var body: some View {
         ScrollView {
             VStack {
-                Group {
-                    BackgroundBubble(vPadding: 20, hPadding: 20) {
-                        Text("Settings").font(.title2).fontWeight(.semibold)
-                    }
-                    ProfileImage(diverID: diveMeetsID)
-                        .scaleEffect(0.75)
-                        .frame(width: 150, height: 160)
-                    Text((signupData.firstName ?? "") + " " + (signupData.lastName ?? ""))
-                        .font(.title3).fontWeight(.semibold)
-                    Text(signupData.email ?? "")
+                BackgroundBubble(vPadding: 20, hPadding: 20) {
+                    Text("Settings").font(.title2).fontWeight(.semibold)
+                }
+                ProfileImage(diverID: (userViewData.diveMeetsID ?? ""))
+                    .scaleEffect(0.75)
+                    .frame(width: 160, height: 160)
+                Text((userViewData.firstName ?? "") + " " + (userViewData.lastName ?? ""))
+                    .font(.title3).fontWeight(.semibold)
+                Text(userViewData.email ?? "")
+                    .foregroundColor(.secondary)
+                if let phoneNum = userViewData.phone {
+                    Text(phoneNum)
                         .foregroundColor(.secondary)
-                    if let phoneNum = signupData.phone {
-                        Text(phoneNum)
-                            .foregroundColor(.secondary)
-                    }
                 }
-                Group {
-                    NavigationLink {
-                        EditProfile()
-                    } label: {
+                NavigationLink {
+                    EditProfile()
+                } label: {
+                    HStack {
                         HStack {
-                            BackgroundBubble(color: Custom.coolBlue, vPadding: 20, hPadding: 20) {
-                                HStack {
-                                    Text("Edit Profile")
-                                        .foregroundColor(.white)
-                                        .fontWeight(.semibold)
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.white)
-                                }
-                            }
+                            Text("Edit Profile")
+                                .foregroundColor(.white)
+                                .fontWeight(.semibold)
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.white)
                         }
                     }
-                }
-                Group {
-                    Text("Profile Information")
-                    Divider()
-                    Text("Update Email")
-                    TextField("Email", text: $email)
-                        .autocapitalization(.none)
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: textFieldWidth)
-                        .textContentType(.emailAddress)
-                        .keyboardType(.emailAddress)
-                        .onChange(of: email) { _ in
-                            signupData.email = email
-                        }
-                    Text("Update Password")
-                    //NEED PASSWORD FIELD
-                    Text("Update Phone Number")
-                    TextField("Phone", text: $phoneNumber)
-                        .textFieldStyle(.roundedBorder)
-                        .textContentType(.telephoneNumber)
-                        .keyboardType(.numberPad)
-                        .frame(width: textFieldWidth)
-                        .onChange(of: phoneNumber) { _ in
-                            signupData.phone = phoneNumber
-                        }
-                    Divider()
-                    Text("Preferences")
-                    Divider()
                 }
             }
         }
@@ -228,107 +267,27 @@ struct SettingsPage: View {
 }
 
 struct EditProfile: View {
+    @Environment(\.dismiss) private var dismiss
     var body: some View {
         Text("This is where you will edit your account")
-    }
-}
-
-struct DiverView: View {
-    @Binding var diveMeetsID: String
-    @Binding var personalAccount: DiverCoachAccounts?
-    
-    private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
-    private let linkHead: String =
-    "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
-    var body: some View {
-        VStack {
-            Spacer()
-            // Showing DiveMeets Linking Screen
-            if diveMeetsID == "" {
-                BackgroundBubble(vPadding: 20, hPadding: 20) {
-                    NavigationLink(destination: {
-                        DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-                    }, label: {
-                        Text("Link DiveMeets Account")
-                            .foregroundColor(.primary)
-                            .font(.title2).fontWeight(.semibold)
-                    })
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        NavigationViewBackButton()
+                    }
                 }
-            } else {
-                ProfileContent(diveMeetsID: $diveMeetsID)
-                    .padding(.top, screenHeight * 0.05)
             }
-            Spacer()
-            Spacer()
-            Spacer()
-            Spacer()
-            Spacer()
-        }
     }
 }
 
-struct CoachView: View {
-    @Binding var diveMeetsID: String
-    @Binding var personalAccount: DiverCoachAccounts?
-    private let linkHead: String =
-    "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
-    var body: some View {
-        BackgroundBubble() {
-            NavigationLink(destination: {
-                DiveMeetsLink(diveMeetsID: $diveMeetsID, personalAccount: $personalAccount)
-            }, label: { Text("Link to your DiveMeets Account") })
-        }
-    }
-}
-
-struct ProfileContent: View {
-    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
-    @State var selectedPage: Int = 1
-    @Binding var diveMeetsID: String
-    @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
-    private let screenHeight = UIScreen.main.bounds.height
-    
-    var body: some View {
-        SwiftUIWheelPicker($selectedPage, items: scoreValues) { value in
-            GeometryReader { g in
-                Text(value)
-                    .font(.title2).fontWeight(.semibold)
-                    .frame(width: g.size.width, height: g.size.height,
-                           alignment: .center)
-            }
-        }
-        .scrollAlpha(0.3)
-        .width(.Fixed(115))
-        .scrollScale(0.7)
-        .frame(height: 40)
-        
-        switch selectedPage {
-        case 0:
-            MeetList(profileLink:
-                    "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     diveMeetsID, nameShowing: false)
-                .offset(y: -screenHeight * 0.05)
-        case 1:
-            MetricsView(diveMeetsID: $diveMeetsID)
-        case 2:
-            RecruitingView()
-        case 3:
-            StatisticsView()
-        case 4:
-            VideosView()
-        default:
-            MeetList(profileLink:
-                     "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     diveMeetsID, nameShowing: false)
-        }
-    }
-}
 
 struct DiveMeetsLink: View {
     @Environment(\.presentationMode) var presentationMode
-    @Binding var diveMeetsID: String
-    @Binding var personalAccount: DiverCoachAccounts?
+    @Binding var userViewData: UserViewData
+    @State var diveMeetsID: String = ""
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
@@ -345,7 +304,7 @@ struct DiveMeetsLink: View {
                         .textContentType(.telephoneNumber)
                         .keyboardType(.numberPad)
                         .onChange(of: diveMeetsID) { _ in
-                            personalAccount?.diveMeetsID = diveMeetsID
+                            userViewData.diveMeetsID = diveMeetsID
                         }
                     .frame(width: textFieldWidth) }
             }
@@ -358,36 +317,58 @@ struct DiveMeetsLink: View {
     }
 }
 
-struct MetricsView: View {
-    @Binding var diveMeetsID: String
+struct BackgroundSpheres: View {
+    @State var width: CGFloat = 0
+    @State var height: CGFloat = 0
+    
     var body: some View {
-        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + diveMeetsID
-        SkillsGraph(profileLink: profileLink)
-//            .frame(height: 300)
+        GeometryReader { geometry in
+            ZStack{}
+                .onAppear {
+                    width = geometry.size.width
+                    height = geometry.size.height
+                }
+            VStack {
+                ZStack {
+                    Circle()
+                    // Circle color
+                        .fill(Custom.darkBlue)
+                    // Adjust the size of the circle as desired
+                        .frame(width: geometry.size.width * 2.5,
+                               height: geometry.size.width * 2.5)
+                    // Center the circle
+                        .position(x: geometry.size.width, y: -geometry.size.width * 0.55)
+                        .shadow(radius: 15)
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
+                        .ignoresSafeArea()
+                    Circle()
+                        .fill(Custom.coolBlue) // Circle color
+                        .frame(width:geometry.size.width * 1.3, height:geometry.size.width * 1.3)
+                        .position(x: geometry.size.width, y: geometry.size.width * 0.7)
+                        .shadow(radius: 15)
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
+                        .ignoresSafeArea()
+                    Circle()
+                        .fill(Custom.medBlue) // Circle color
+                        .frame(width: geometry.size.width * 1.1, height: geometry.size.width * 1.1)
+                        .position(x: 0, y: geometry.size.width * 0.7)
+                        .shadow(radius: 15)
+                        .frame(height: geometry.size.height * 0.7)
+                        .clipped().ignoresSafeArea()
+                        .ignoresSafeArea()
+                }
+            }
+        }
     }
 }
 
-struct RecruitingView: View {
+struct WhiteDivider: View {
     var body: some View {
-        Text("Welcome to the Recruiting View")
+        Rectangle()
+            .frame(height: 1)
+            .foregroundColor(.white)
+            .padding([.leading, .trailing], 3)
     }
 }
-
-struct VideosView: View {
-    var body: some View {
-        Text("Welcome to the Videos View")
-    }
-}
-
-struct StatisticsView: View {
-    var body: some View {
-        Text("Welcome to the Statistics View")
-    }
-}
-
-//struct AdrenalineProfileView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        let s  = SignupData(accountType: AccountType(rawValue: "athlete"), firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", phone: "571-758-8292", recruiting: RecruitingData(height: Height(feet: 6, inches: 0), weight: 168, gender: "Male", age: 19, gradYear: 2022, highSchool: "Oakton High School", hometown: "Oakton"))
-//        AdrenalineProfileView(signupData: .constant(s), selectedOption: .constant(nil))
-//    }
-//}

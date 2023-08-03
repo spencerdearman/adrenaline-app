@@ -101,8 +101,10 @@ struct LivePersonBubbleView: View {
     var elements: [String]
     
     // place, first, last, link, team, score, scoreLink, eventAvgScore, avgRoundScore
+    // (synchroFirst, synchroLast, synchroLink, synchroTeam)
     
     var body: some View {
+        let isSynchro = elements.count == 13
         ZStack {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
                 .foregroundColor(Custom.darkGray)
@@ -115,10 +117,20 @@ struct LivePersonBubbleView: View {
                                 Text(elements[1])
                                 Text(elements[2])
                             }
-                            .foregroundColor(.primary)
+                        }
+                        
+                        if isSynchro {
+                            Text("/")
+                            NavigationLink(destination: ProfileView(profileLink: elements[11])) {
+                                VStack(alignment: .leading) {
+                                    Text(elements[9])
+                                    Text(elements[10])
+                                }
+                            }
                         }
                         Spacer()
                     }
+                    .foregroundColor(.primary)
                     .lineLimit(2)
                     .font(.title2)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -141,9 +153,16 @@ struct LivePersonBubbleView: View {
                     Text("Place: " + elements[0])
                         .fontWeight(.semibold)
                     Spacer()
-                    Text(elements[4])
-                        .foregroundColor(.gray)
-                        .font(.title3)
+                    HStack {
+                        Text(elements[4])
+                            
+                        if isSynchro {
+                            Text("/")
+                            Text(elements[12])
+                        }
+                    }
+                    .foregroundColor(.gray)
+                    .font(.title3)
                     Spacer()
                     VStack(alignment: .trailing) {
                         Text("Event Avg Score: " + elements[7])

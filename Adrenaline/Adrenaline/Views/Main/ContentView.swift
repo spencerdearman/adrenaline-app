@@ -15,8 +15,6 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @State private var selectedTab: Tab = .house
     @State var showSplash: Bool = false
-//    @State var firstOpen: Bool = true
-    
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -44,16 +42,6 @@ struct ContentView: View {
         ZStack {
             // Only shows splash screen while bool is true, auto dismisses after splashDuration
             if showSplash {
-//                MovingSplashView(startDelay: splashDuration, moveSeparation: moveSeparation,
-//                                 delayToTop: delayToTop)
-//                .onAppear {
-//                    DispatchQueue.main.asyncAfter(
-//                        deadline: .now() + splashDuration + moveSeparation * 3 + delayToTop + 0.2) {
-//                            withAnimation {
-//                                showSplash = false
-//                            }
-//                        }
-//                }
                 AppLaunchSequence(showSplash: $showSplash)
                     .zIndex(10)
             }
@@ -64,23 +52,24 @@ struct ContentView: View {
                         HStack {
                             // Add different page views here for different tabs
                             switch tab {
-                                case .house:
-                                    Home()
-                                case .wrench:
-                                    //NavigationView {
-                                    //LiveResultsView(request: "debug")
-                                    //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
-                                    //}
-                                    //.navigationViewStyle(StackNavigationViewStyle())
-                                    //                                    ToolsMenu()
-                                    //SearchColorfulView()
-                                    RankingsView()
-                                    //                                        UsersDBTestView()
-                                case .magnifyingglass:
-                                    SearchView()
-                                case .person:
-                                    LoginSearchView(showSplash: $showSplash)
-//                                    AppLaunchSequence()
+                            case .house:
+                                Home()
+                            case .wrench:
+                                //NavigationView {
+                                //LiveResultsView(request: "debug")
+                                //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                                //}
+                                //.navigationViewStyle(StackNavigationViewStyle())
+                                //ToolsMenu()
+                                //SearchColorfulView()
+                                RankingsView()
+                                //AppLaunchSequence(showSplash: $showSplash)
+                                //UsersDBTestView()
+                            case .magnifyingglass:
+                                SearchView()
+                            case .person:
+                                AdrenalineLoginView(showSplash: $showSplash)
+                                //LoginSearchView(showSplash: $showSplash)
                             }
                         }
                         .tag(tab)
