@@ -977,7 +977,7 @@ struct DiveMeetsAdrenalineSelection: View {
                         // only when selected
                         // https://stackoverflow.com/a/72435691/22068672
                         Rectangle()
-                            .fill(selection == s ? (currentMode == .light ? Custom.darkGray : Custom.darkGray) : (currentMode == .dark ? Custom.accentThinMaterial : Custom.grayThinMaterial))
+                            .fill(selection == s ? Custom.darkGray : (currentMode == .dark ? Custom.accentThinMaterial : Custom.grayThinMaterial))
                             .padding(.trailing, s == SearchDiveMeetsOrAdrenaline.allCases.first
                                      ? cornerRadius
                                      : 0)
