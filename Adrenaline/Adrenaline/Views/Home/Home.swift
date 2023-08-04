@@ -541,18 +541,10 @@ struct MeetBubbleView: View {
                         
                         Spacer()
                         
-                        ZStack{
-                            Rectangle()
-                                .fill(Custom.accentThinMaterial)
-                                .frame(width: isPhone
-                                       ? getPhoneTextSizeForAccessibility()
-                                       : getPadTextSizeForAccessibility())
-                                .mask(RoundedRectangle(cornerRadius: 30))
-                                .shadow(radius: 3)
-                            // startDate - endDate
-                            Text(getDisplayDateString(start: elements[4], end: elements[5]))
-                                .padding([.leading, .trailing], 5)
-                        }
+                        BackgroundBubble(vPadding: 8) {
+                                Text(getDisplayDateString(start: elements[4], end: elements[5]))
+                                    .padding([.leading, .trailing], 5)
+                            }
                         .padding(.trailing)
                     }
                     .font(.subheadline)
@@ -562,48 +554,6 @@ struct MeetBubbleView: View {
                 }
                 .padding()
             }
-        }
-    }
-    
-    func getPhoneTextSizeForAccessibility() -> CGFloat {
-        switch dynamicTypeSize {
-        case .xSmall:
-            return 170
-        case .small:
-            return 180
-        case .medium:
-            return 190
-        case .large:
-            return 200
-        case .xLarge:
-            return 215
-        case .xxLarge:
-            return 225
-        case .xxxLarge:
-            return 235
-        default:
-            return 190
-        }
-    }
-    
-    func getPadTextSizeForAccessibility() -> CGFloat {
-        switch dynamicTypeSize {
-        case .xSmall:
-            return 180
-        case .small:
-            return 190
-        case .medium:
-            return 200
-        case .large:
-            return 210
-        case .xLarge:
-            return 220
-        case .xxLarge:
-            return 240
-        case .xxxLarge:
-            return 265
-        default:
-            return 190
         }
     }
 }
