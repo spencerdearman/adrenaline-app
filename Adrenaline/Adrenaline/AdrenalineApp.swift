@@ -219,6 +219,13 @@ extension View {
     }
 }
 
+extension UINavigationController {
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        interactivePopGestureRecognizer?.delegate = nil
+    }
+}
+
 @main
 struct AdrenalineApp: App {
     // Only one of these should exist, add @Environment to use variable in views
