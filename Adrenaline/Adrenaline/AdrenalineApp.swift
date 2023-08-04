@@ -265,45 +265,45 @@ struct AdrenalineApp: App {
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without
                     //     starting over)
-                    if !isIndexingMeets {
-                        isIndexingMeets = true
-                        
-                        // Runs this task asynchronously so rest of app can function while this finishes
-                        Task.detached(priority: .background) {
-                            // await SkillRating(diveStatistics: nil).testMetrics(0)
-                            // await SkillRating(diveStatistics: nil)
-                            //     .testMetrics(0, includePlatform: false)
-                            // await SkillRating(diveStatistics: nil)
-                            //     .testMetrics(0, onlyPlatform: true)
-                            let moc = await modelDataController.container.viewContext
-                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
-                                entityName: "DivingMeet")
-                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
-                            
-                            try await meetParser.parseMeets(storedMeets: meets)
-                            
-                            // Check that each set of meets is not nil and add each to the database
-                            if let upcoming = await meetParser.upcomingMeets {
-                                await modelDataController.addRecords(
-                                    records: modelDataController.dictToTuple(dict: upcoming),
-                                    type: .upcoming)
-                            }
-                            if let current = await meetParser.currentMeets {
-                                await modelDataController.addRecords(
-                                    records: modelDataController.dictToTuple(dict: current),
-                                    type: .current)
-                            }
-                            if let past = await meetParser.pastMeets {
-                                await modelDataController.addRecords(
-                                    records: modelDataController.dictToTuple(dict: past),
-                                    type: .past)
-                            }
-                            
-                            await MainActor.run {
-                                isIndexingMeets = false
-                            }
-                        }
-                    }
+//                    if !isIndexingMeets {
+//                        isIndexingMeets = true
+//
+//                        // Runs this task asynchronously so rest of app can function while this finishes
+//                        Task.detached(priority: .background) {
+//                            // await SkillRating(diveStatistics: nil).testMetrics(0)
+//                            // await SkillRating(diveStatistics: nil)
+//                            //     .testMetrics(0, includePlatform: false)
+//                            // await SkillRating(diveStatistics: nil)
+//                            //     .testMetrics(0, onlyPlatform: true)
+//                            let moc = await modelDataController.container.viewContext
+//                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
+//                                entityName: "DivingMeet")
+//                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
+//
+//                            try await meetParser.parseMeets(storedMeets: meets)
+//
+//                            // Check that each set of meets is not nil and add each to the database
+//                            if let upcoming = await meetParser.upcomingMeets {
+//                                await modelDataController.addRecords(
+//                                    records: modelDataController.dictToTuple(dict: upcoming),
+//                                    type: .upcoming)
+//                            }
+//                            if let current = await meetParser.currentMeets {
+//                                await modelDataController.addRecords(
+//                                    records: modelDataController.dictToTuple(dict: current),
+//                                    type: .current)
+//                            }
+//                            if let past = await meetParser.pastMeets {
+//                                await modelDataController.addRecords(
+//                                    records: modelDataController.dictToTuple(dict: past),
+//                                    type: .past)
+//                            }
+//
+//                            await MainActor.run {
+//                                isIndexingMeets = false
+//                            }
+//                        }
+//                    }
                 }
         }
     }
