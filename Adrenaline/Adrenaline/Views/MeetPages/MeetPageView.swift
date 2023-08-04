@@ -12,6 +12,13 @@ import SwiftUI
 //                  [meetLink: meetData]
 var cachedMeetData: [String: (MeetInfoJointData?, MeetResultsData?)] = [:]
 
+func getDisplayDateString(start: String, end: String) -> String {
+    if start == end { return start }
+    else {
+        return start + " - " + end
+    }
+}
+
 struct MeetPageView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
@@ -292,7 +299,6 @@ struct MeetInfoPageView: View {
             return data
         }
     
-    
     var body: some View {
         let info = meetInfoData.0
         let time = meetInfoData.1
@@ -308,7 +314,7 @@ struct MeetInfoPageView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .lineLimit(2)
                 .multilineTextAlignment(.center)
-            Text(info["Start Date"]! + " - " + info["End Date"]!)
+            Text(getDisplayDateString(start: info["Start Date"]!, end: info["End Date"]!))
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .multilineTextAlignment(.trailing)
@@ -484,8 +490,8 @@ struct MeetResultsPageView: View {
                                           bgColor: .clear, shadowRadius: 3) { (elems) in
                             LiveResultsListView(elements: elems)
                         }
-                        .frame(height: 300)
-                        .padding(.top)
+                                          .frame(height: 300)
+                                          .padding(.top)
                         
                     }, label: {
                         Text("Live Results")
