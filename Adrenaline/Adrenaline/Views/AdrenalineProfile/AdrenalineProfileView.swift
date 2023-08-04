@@ -320,6 +320,7 @@ struct CommittedCollegeView: View {
     }
 }
 
+// https://stackoverflow.com/questions/76389104/how-to-create-autocomplete-textfield-in-swiftui
 struct SuggestionsTextField: View {
     @Environment(\.updateAthleteField) var updateAthleteField
     @Environment(\.getAthlete) var getAthlete
