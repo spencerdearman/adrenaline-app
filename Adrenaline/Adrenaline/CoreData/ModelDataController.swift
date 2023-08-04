@@ -218,18 +218,19 @@ class ModelDataController: ObservableObject {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "DivingMeet")
         
-        let predicate = NSPredicate(format: "meetId == \(meetId == nil ? "%@" : "%d")",
-                                    meetId ?? NSNull())
-        fetchRequest.predicate = predicate
+        if let meetId = meetId {
+            let predicate = NSPredicate(format: "meetId == %d", meetId)
+            fetchRequest.predicate = predicate
+        }
         
-        guard let result = try? moc.fetch(fetchRequest) else { return }
-        let resultData = result as! [DivingMeet]
+        guard let result = try? moc.fetch(fetchRequest) as? [DivingMeet] else { return }
         
+        var objectsToDelete: [DivingMeet] = []
         var latestTypeIdx: Int = -1
         var latestType: Int16 = -1
+        
         if keepLatest {
-            // Finds highest meet type value of the duplicates and saves its index to keep
-            for (i, object) in resultData.enumerated() {
+            for (i, object) in result.enumerated() {
                 if latestType < object.meetType {
                     latestType = object.meetType
                     latestTypeIdx = i
@@ -237,13 +238,18 @@ class ModelDataController: ObservableObject {
             }
         }
         
-        for (i, object) in resultData.enumerated() {
+        for (i, object) in result.enumerated() {
             if keepLatest && i == latestTypeIdx { continue }
+            objectsToDelete.append(object)
+        }
+        
+        for object in objectsToDelete {
             moc.delete(object)
         }
         
         try? moc.save()
     }
+
     
     // Drops all records from the database
     func dropAllMeetRecords() {
