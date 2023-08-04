@@ -310,7 +310,7 @@ struct CommittedCollegeView: View {
                     .bold()
                     .multilineTextAlignment(.center)
                     .padding(.bottom)
-                Text("Start typing below to display your college on your profile")
+                Text("Start typing below to choose a college to display on your profile")
                     .font(.title2)
                     .multilineTextAlignment(.center)
             }
@@ -328,11 +328,33 @@ struct SuggestionsTextField: View {
     @Environment(\.getAthlete) var getAthlete
     @State var college: String = ""
     @State var suggestions: [String] = []
+    @State var suggestionsImages: [URL: UIImage] = [:]
     @State var showSuggestions: Bool = false
     @State var selectedCollege: String = ""
+    @State var selectedCollegeImage: Image? = nil
     @Binding var userViewData: UserViewData
     
+    private let colleges: [String: String]? = getCollegeLogoData()
     private let screenWidth = UIScreen.main.bounds.width
+    
+    private func getSuggestionsImages() -> [URL: UIImage] {
+        var result: [URL: UIImage] = [:]
+        var links: [URL] = []
+        let keys = suggestions.filter({ $0.localizedCaseInsensitiveContains(college) })
+        for key in keys {
+            if let colleges = colleges,
+               let value = colleges[key],
+               let url = URL(string: value) {
+                links.append(url)
+            }
+        }
+        
+        Task { [links, result] in
+            result = try await ConcurrentImageLoader().loadImages(from: links)
+        }
+        
+        return result
+    }
     
     var body: some View {
         VStack {
@@ -356,7 +378,11 @@ struct SuggestionsTextField: View {
                         .padding(.bottom)
                     BackgroundBubble() {
                         HStack {
-                            Image(systemName: "gearshape")
+                            if let image = selectedCollegeImage {
+                                image
+                            } else {
+                                ProgressView()
+                            }
                             Spacer()
                             Text(selectedCollege)
                             Spacer()
@@ -380,12 +406,28 @@ struct SuggestionsTextField: View {
                             ZStack {
                                 Button(action: {
                                     selectedCollege = suggestion
+                                    Task {
+                                        guard let colleges = colleges,
+                                              let key = colleges[selectedCollege],
+                                              let url = URL(string: key) else { return }
+                                        
+                                        selectedCollegeImage =
+                                        try await Image(uiImage: ConcurrentImageLoader()
+                                            .loadImage(url))
+                                    }
                                     college = selectedCollege
                                     showSuggestions = false
                                 }) {
                                     BackgroundBubble() {
                                         HStack {
-                                            Image(systemName: "gearshape")
+                                            if let colleges = colleges,
+                                               let value = colleges[suggestion],
+                                               let url = URL(string: value),
+                                               suggestionsImages.keys.contains(url) {
+                                                Image(uiImage: suggestionsImages[url]!)
+                                            } else {
+                                                ProgressView()
+                                            }
                                             Spacer()
                                             Text(suggestion)
                                             Spacer()
@@ -404,8 +446,9 @@ struct SuggestionsTextField: View {
             }
         }
         .onAppear {
-            guard let colleges = getCollegeLogoData() else { return }
+            guard let colleges = colleges else { return }
             suggestions = Array(colleges.keys)
+            suggestionsImages = getSuggestionsImages()
             guard let email = userViewData.email else { return }
             print(getAthlete(email))
         }
