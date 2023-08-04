@@ -13,13 +13,13 @@ import Foundation
 final class ConcurrentImageLoader {
     private var images: [URLRequest: LoaderStatus] = [:]
     
-    func loadImage(_ url: URL) async throws -> UIImage {
+    func loadImage(_ url: URL) async throws -> UIImage? {
         let request = URLRequest(url: url)
         return try await fetch(request)
     }
     
     func loadImages(from urls: [URL]) async throws -> [URL: UIImage] {
-        try await withThrowingTaskGroup(of: (URL, UIImage).self) { group in
+        try await withThrowingTaskGroup(of: (URL, UIImage?).self) { group in
             for url in urls {
                 group.addTask {
                     let image = try await self.loadImage(url)
@@ -42,9 +42,16 @@ final class ConcurrentImageLoader {
             assertionFailure("Unable to generate a local path for \(urlRequest)")
             return nil
         }
+        print("Pulling \(url.absoluteString) from file system")
+        do {
+            let data = try Data(contentsOf: url)
+            print("returning")
+            return UIImage(data: data)
+        } catch {
+            print("Could not read data from URL")
+        }
         
-        let data = try Data(contentsOf: url)
-        return UIImage(data: data)
+        return nil
     }
     
     private func fileName(for urlRequest: URLRequest) -> URL? {
@@ -58,31 +65,39 @@ final class ConcurrentImageLoader {
         return applicationSupport.appendingPathComponent(fileName)
     }
     
-    func fetch(_ urlRequest: URLRequest) async throws -> UIImage {
+    func fetch(_ urlRequest: URLRequest) async throws -> UIImage? {
         if let status = images[urlRequest] {
             switch status {
                 case .fetched(let image):
+                    print("fetcheed")
                     return image
                 case .inProgress(let task):
+                    print("in progress")
                     return try await task.value
             }
+        } else {
+            print("not in dictionary")
         }
         
         if let image = try self.imageFromFileSystem(for: urlRequest) {
+            print("in file system")
             images[urlRequest] = .fetched(image)
             return image
+        } else {
+            print("not in file system")
         }
         
-        let task: Task<UIImage, Error> = Task {
+//        print("Pulling \(String(describing: urlRequest.url?.absoluteString)) from network")
+        let task: Task<UIImage?, Error> = Task {
             let (imageData, _) = try await URLSession.shared.data(for: urlRequest)
-            let image = UIImage(data: imageData)!
+            guard let image = UIImage(data: imageData) else { return nil }
             try self.persistImage(image, for: urlRequest)
             return image
         }
         
         images[urlRequest] = .inProgress(task)
         
-        let image = try await task.value
+        guard let image = try await task.value else { return nil }
         
         images[urlRequest] = .fetched(image)
         
@@ -91,16 +106,21 @@ final class ConcurrentImageLoader {
     
     private func persistImage(_ image: UIImage, for urlRequest: URLRequest) throws {
         guard let url = fileName(for: urlRequest),
-              let data = image.jpegData(compressionQuality: 0.8) else {
+              let data = try? Data(contentsOf: url) else {
             assertionFailure("Unable to generate a local path for \(urlRequest)")
             return
         }
-        
-        try data.write(to: url)
+        print("Persisting image \(String(describing: urlRequest.url?.absoluteString)) to disk")
+        do {
+            try data.write(to: url)
+            print("succeeded")
+        } catch {
+            print("failed")
+        }
     }
     
     private enum LoaderStatus {
-        case inProgress(Task<UIImage, Error>)
+        case inProgress(Task<UIImage?, Error>)
         case fetched(UIImage)
     }
 }

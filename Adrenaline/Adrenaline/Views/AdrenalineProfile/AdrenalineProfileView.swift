@@ -335,8 +335,9 @@ struct SuggestionsTextField: View {
     private let colleges: [String: String]? = getCollegeLogoData()
     private let screenWidth = UIScreen.main.bounds.width
     
-    private func getSuggestionsImages() -> [URL: UIImage] {
-        var result: [URL: UIImage] = [:]
+    // Fetches suggestions images to persist them in device storage so they can be quickly looked
+    // up later, but not pulled from device storage unless they are appearing in the search
+    private func fetchSuggestionsImages() {
         var links: [URL] = []
         let keys = suggestions.filter({ $0.localizedCaseInsensitiveContains(college) })
         for key in keys {
@@ -347,11 +348,20 @@ struct SuggestionsTextField: View {
             }
         }
         
-        Task { [links, result] in
-            result = try await ConcurrentImageLoader().loadImages(from: links)
+        Task { [links] in
+            try await ConcurrentImageLoader().loadImages(from: links)
+        }
+    }
+    
+    private func getSuggestionImage(url: URL) -> UIImage? {
+        if !suggestionsImages.keys.contains(url) {
+            Task {
+                suggestionsImages[url] = try await ConcurrentImageLoader()
+                    .loadImage(url)
+            }
         }
         
-        return result
+        return suggestionsImages[url]
     }
     
     var body: some View {
@@ -407,11 +417,11 @@ struct SuggestionsTextField: View {
                                     Task {
                                         guard let colleges = colleges,
                                               let key = colleges[selectedCollege],
-                                              let url = URL(string: key) else { return }
+                                              let url = URL(string: key),
+                                              let img = getSuggestionImage(url: url)
+                                        else { return }
                                         
-                                        selectedCollegeImage =
-                                        try await Image(uiImage: ConcurrentImageLoader()
-                                            .loadImage(url))
+                                        selectedCollegeImage = Image(uiImage: img)
                                     }
                                     college = selectedCollege
                                     showSuggestions = false
@@ -421,8 +431,8 @@ struct SuggestionsTextField: View {
                                             if let colleges = colleges,
                                                let value = colleges[suggestion],
                                                let url = URL(string: value),
-                                               suggestionsImages.keys.contains(url) {
-                                                Image(uiImage: suggestionsImages[url]!)
+                                               let img = getSuggestionImage(url: url) {
+                                                Image(uiImage: img)
                                             } else {
                                                 ProgressView()
                                             }
@@ -446,7 +456,7 @@ struct SuggestionsTextField: View {
         .onAppear {
             guard let colleges = colleges else { return }
             suggestions = Array(colleges.keys)
-            suggestionsImages = getSuggestionsImages()
+//            fetchSuggestionsImages()
             guard let email = userViewData.email else { return }
             print(getAthlete(email))
         }

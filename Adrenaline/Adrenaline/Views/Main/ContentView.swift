@@ -101,9 +101,13 @@ struct ContentView: View {
                     urls.append(url)
                 }
             }
-            
+
             Task {
-                let images = try await loader.loadImages(from: urls)
+                guard let url = URL(string: "https://web2.ncaa.org/ncaa_style/img/All_Logos/sm/674.gif") else { return }
+//                let images = try await loader.loadImages(from: urls)
+                let image = try await loader.loadImage(url)
+                
+                print(image)
             }
         }
     }
