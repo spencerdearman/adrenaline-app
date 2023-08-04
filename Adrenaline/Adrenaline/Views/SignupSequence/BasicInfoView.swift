@@ -242,6 +242,8 @@ struct BasicInfoView: View {
                             .simultaneousGesture(TapGesture().onEnded {
                                 focusedField = nil
                                 searchSubmitted = true
+                                blockingNetwork = true
+                                
                                 if signupData.accountType == .athlete {
                                     addAthlete(firstName, lastName,
                                                email, phone, password)
@@ -278,6 +280,11 @@ struct BasicInfoView: View {
                 
                 Spacer()
             }
+        }
+        // Sets blockingNetwork to false to keep parsing from stopping if user backs up in the
+        // navigation sequence
+        .onAppear {
+            blockingNetwork = false
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {

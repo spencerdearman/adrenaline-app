@@ -10,6 +10,10 @@ import SwiftUI
 // Global timeoutInterval to use for online loading pages
 let timeoutInterval: TimeInterval = 30
 
+// Global lock/delay on meet parser to allow time for SwiftUIWebView to access network
+// (DiveMeetsConnectorView)
+var blockingNetwork: Bool = false
+
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
@@ -52,24 +56,24 @@ struct ContentView: View {
                         HStack {
                             // Add different page views here for different tabs
                             switch tab {
-                            case .house:
-                                Home()
-                            case .wrench:
-                                //NavigationView {
-                                //LiveResultsView(request: "debug")
-                                //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
-                                //}
-                                //.navigationViewStyle(StackNavigationViewStyle())
-                                //ToolsMenu()
-                                //SearchColorfulView()
-                                RankingsView()
-                                //AppLaunchSequence(showSplash: $showSplash)
-                                //UsersDBTestView()
-                            case .magnifyingglass:
-                                SearchView()
-                            case .person:
-                                AdrenalineLoginView(showSplash: $showSplash)
-                                //LoginSearchView(showSplash: $showSplash)
+                                case .house:
+                                    Home()
+                                case .wrench:
+                                    //NavigationView {
+                                    //LiveResultsView(request: "debug")
+                                    //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                                    //}
+                                    //.navigationViewStyle(StackNavigationViewStyle())
+                                    //ToolsMenu()
+                                    //SearchColorfulView()
+                                    RankingsView()
+                                    //AppLaunchSequence(showSplash: $showSplash)
+                                    //UsersDBTestView()
+                                case .magnifyingglass:
+                                    SearchView()
+                                case .person:
+                                    AdrenalineLoginView(showSplash: $showSplash)
+                                    //LoginSearchView(showSplash: $showSplash)
                             }
                         }
                         .tag(tab)
@@ -82,14 +86,6 @@ struct ContentView: View {
                     .dynamicTypeSize(.medium ... .xxxLarge)
             }
             .ignoresSafeArea(.keyboard)
-            // Executes when other views are opened (notification center, control center, swiped up)
-            //            .onChange(of: scenePhase) { newPhase in
-            //                if newPhase == .active {
-            //                    GlobalCaches.loadAllCaches()
-            //                } else if scenePhase == .active && newPhase == .inactive {
-            //                    GlobalCaches.saveAllCaches()
-            //                }
-            //            }
         }
     }
 }

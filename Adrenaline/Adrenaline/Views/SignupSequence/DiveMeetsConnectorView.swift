@@ -186,6 +186,7 @@ struct IsThisYouView: View {
         }
         .onAppear {
             sortedRecords = getSortedRecords(records)
+            blockingNetwork = false
         }
     }
 }
