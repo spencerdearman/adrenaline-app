@@ -67,8 +67,9 @@ struct AdrenalineProfileView: View {
                     if loginSuccessful {
                         BackgroundBubble(vPadding: 20, hPadding: 35) {
                             Text("Logout")
-                                .onTapGesture{
+                                .onTapGesture {
                                     withAnimation {
+                                        clearCredentials(email: userEmail)
                                         loginSuccessful = false
                                     }
                                 }
