@@ -732,7 +732,7 @@ struct DiverSearchView: View {
         VStack {
             ZStack {
                 Rectangle()
-                    .foregroundColor(Custom.darkGray)
+                    .foregroundColor(Custom.grayThinMaterial)
                     .frame(width: screenWidth * 0.85, height: screenHeight * 0.35)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 6)
@@ -813,7 +813,7 @@ struct MeetSearchView: View {
         ZStack {
             Rectangle()
                 .mask(RoundedRectangle(cornerRadius: 50))
-                .foregroundColor(Custom.darkGray)
+                .foregroundColor(Custom.grayThinMaterial)
                 .shadow(radius: 10)
                 .frame(width: screenWidth * 0.85, height: isIndexingMeets ? screenHeight * 0.6 : screenHeight * 0.31)
                 .offset(y: isPhone ? (isIndexingMeets ? screenWidth * 0.33 : screenWidth * 0.015) : isIndexingMeets ? screenHeight * 0.15 : screenWidth * 0.015)
@@ -973,6 +973,7 @@ enum SearchDiveMeetsOrAdrenaline: String, CaseIterable {
 }
 
 struct DiveMeetsAdrenalineSelection: View {
+    @Environment(\.colorScheme) var currentMode
     @Binding var selection: SearchDiveMeetsOrAdrenaline
     @Binding var showResults: Bool
     
@@ -991,7 +992,7 @@ struct DiveMeetsAdrenalineSelection: View {
                         // only when selected
                         // https://stackoverflow.com/a/72435691/22068672
                         Rectangle()
-                            .fill(selection == s ? .clear : selectedGray)
+                            .fill(selection == s ? Custom.darkGray : (currentMode == .dark ? Custom.accentThinMaterial : Custom.grayThinMaterial))
                             .padding(.trailing, s == SearchDiveMeetsOrAdrenaline.allCases.first
                                      ? cornerRadius
                                      : 0)
