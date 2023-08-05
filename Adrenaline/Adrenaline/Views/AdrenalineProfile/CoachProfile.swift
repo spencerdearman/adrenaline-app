@@ -93,12 +93,11 @@ struct CoachProfileContent: View {
             if let judging = cachedJudging[diveMeetsID] {
                 JudgedList(data: judging)
             } else {
-                    BackgroundBubble() {
+                    BackgroundBubble(vPadding: 40, hPadding: 40) {
                         VStack {
                             Text("Getting judging data...")
                             ProgressView()
                         }
-                        .padding()
                     }
                 }
         case 1:
@@ -106,12 +105,11 @@ struct CoachProfileContent: View {
                 DiversList(divers: divers)
                     .offset(y: -20)
             } else {
-                BackgroundBubble() {
+                BackgroundBubble(vPadding: 40, hPadding: 40) {
                     VStack {
                         Text("Getting coach divers list...")
                         ProgressView()
                     }
-                    .padding()
                 }
             }
         case 2:
