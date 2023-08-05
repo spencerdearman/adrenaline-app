@@ -8,6 +8,11 @@
 
 import SwiftUI
 
+//               [diveMeetsID: StatsData]
+var cachedStats: [String: ProfileDiveStatisticsData] = [:]
+//                 [diveMeetsID: ([one], [three], [platform], [overall])]
+var cachedMetrics: [String: ([Double], [Double], [Double], [Double])] = [:]
+
 enum EventType: Int, CaseIterable {
     case one = 1
     case three = 3
@@ -35,81 +40,114 @@ struct SkillsGraph: View {
     @State var platformMetrics: [Double] = []
     @State var overallMetrics: [Double] = []
     @State var selection: SkillGraph = .overall
-    let diveTableData: [String: DiveData]? = getDiveTableData()
+    private let diveTableData: [String: DiveData]? = getDiveTableData()
+    
+    private var diveMeetsID: String {
+        guard let nums = profileLink.split(separator: "=", maxSplits: 1).last else { return "" }
+        return String(nums)
+    }
+    
     var body: some View {
-        VStack {
-            SkillGraphSelectView(selection: $selection)
-                .scaleEffect(0.8)
-            ZStack {
-                Graph()
-                    .scaleEffect(0.5)
-                    .rotationEffect(.degrees(-17.4))
-                switch selection {
-                case .overall:
-                    Polygon(metrics: overallMetrics)
-                        .fill(Custom.medBlue.opacity(0.5))
+        ZStack {
+            VStack {
+                SkillGraphSelectView(selection: $selection)
+                    .scaleEffect(0.8)
+                    .disabled(!cachedMetrics.keys.contains(diveMeetsID))
+                ZStack {
+                    Graph()
                         .scaleEffect(0.5)
                         .rotationEffect(.degrees(-17.4))
-                case .one:
-                    Polygon(metrics: oneMetrics)
-                        .fill(Custom.medBlue.opacity(0.5))
-                        .scaleEffect(0.5)
-                        .rotationEffect(.degrees(-17.4))
-                case .three:
-                    Polygon(metrics: threeMetrics)
-                        .fill(Custom.medBlue.opacity(0.5))
-                        .scaleEffect(0.5)
-                        .rotationEffect(.degrees(-17.4))
-                case .platform:
-                    Polygon(metrics: platformMetrics)
-                        .fill(Custom.medBlue.opacity(0.5))
-                        .scaleEffect(0.5)
-                        .rotationEffect(.degrees(-17.4))
+                    switch selection {
+                        case .overall:
+                            Polygon(metrics: overallMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                        case .one:
+                            Polygon(metrics: oneMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                        case .three:
+                            Polygon(metrics: threeMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                        case .platform:
+                            Polygon(metrics: platformMetrics)
+                                .fill(Custom.medBlue.opacity(0.5))
+                                .scaleEffect(0.5)
+                                .rotationEffect(.degrees(-17.4))
+                    }
+                    Group {
+                        Text("Front")
+                            .offset(x: screenWidth * 0.34, y: -screenHeight * 0.04)
+                        Text("Back")
+                            .offset(x: screenWidth * 0.22, y: screenHeight * 0.115)
+                        Text("Reverse")
+                            .offset(x: -screenWidth * 0.22, y: screenHeight * 0.115)
+                        Text("Inward")
+                            .offset(x: -screenWidth * 0.34, y: -screenHeight * 0.04)
+                        Text("Twister")
+                            .offset(y: -screenHeight * 0.14)
+                    }
+                    
+                    
                 }
-                Group {
-                    Text("Front")
-                        .offset(x: screenWidth * 0.34, y: -screenHeight * 0.04)
-                    Text("Back")
-                        .offset(x: screenWidth * 0.22, y: screenHeight * 0.115)
-                    Text("Reverse")
-                        .offset(x: -screenWidth * 0.22, y: screenHeight * 0.115)
-                    Text("Inward")
-                        .offset(x: -screenWidth * 0.34, y: -screenHeight * 0.04)
-                    Text("Twister")
-                        .offset(y: -screenHeight * 0.14)
+            }
+            .opacity(!cachedMetrics.keys.contains(diveMeetsID) ? 0.3 : 1.0)
+            
+            if !cachedMetrics.keys.contains(diveMeetsID) {
+                BackgroundBubble() {
+                    VStack {
+                        Text("Getting skill graph data...")
+                        ProgressView()
+                    }
+                    .padding()
                 }
-                
             }
         }
         .frame(height: screenHeight * 0.4)
         .onAppear {
             Task {
-                if parser.profileData.info == nil {
+                if !cachedStats.keys.contains(diveMeetsID) {
                     if await !parser.parseProfile(link: profileLink) {
                         print("Failed to parse profile")
                     }
+                    cachedStats[diveMeetsID] = parser.profileData.diveStatistics
                 }
-                if let stats = parser.profileData.diveStatistics {
-                    let skill = SkillRating(diveStatistics: stats)
-                    let divesByCategory = skill.getDiverStatsByCategory()
-                    oneMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.one)
-                    threeMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.three)
-                    platformDict = skillGraphMetrics(d: divesByCategory, height: EventType.platform)
-                    for i in 1..<6 {
-                        var divisor = 3.0
-                        if platformDict[i] == 0.0 {
-                            divisor = 2.0
+                
+                if cachedMetrics.keys.contains(diveMeetsID),
+                   let result = cachedMetrics[diveMeetsID] {
+                    (oneMetrics, threeMetrics, platformMetrics, overallMetrics) = result
+                } else {
+                    if let stats = cachedStats[diveMeetsID] {
+                        let skill = SkillRating(diveStatistics: stats)
+                        let divesByCategory = skill.getDiverStatsByCategory()
+                        oneMeterDict = skillGraphMetrics(d: divesByCategory, height: EventType.one)
+                        threeMeterDict = skillGraphMetrics(d: divesByCategory,
+                                                           height: EventType.three)
+                        platformDict = skillGraphMetrics(d: divesByCategory,
+                                                         height: EventType.platform)
+                        for i in 1..<6 {
+                            var divisor = 3.0
+                            if platformDict[i] == 0.0 {
+                                divisor = 2.0
+                            }
+                            let oneMScaled = oneMeterDict[i] ?? 0.0
+                            let threeMScaled = threeMeterDict[i] ?? 0.0
+                            let platformScaled = platformDict[i] ?? 0.0
+                            let total = oneMScaled + threeMScaled + platformScaled
+                            overallDict[i] = total / divisor
                         }
-                        let oneMScaled = oneMeterDict[i] ?? 0.0
-                        let threeMScaled = threeMeterDict[i] ?? 0.0
-                        let platformScaled = platformDict[i] ?? 0.0
-                        let total = oneMScaled + threeMScaled + platformScaled
-                        overallDict[i] = total / divisor
+                        oneMetrics = diveDictToOrderedList(d: oneMeterDict)
+                        threeMetrics = diveDictToOrderedList(d: threeMeterDict)
+                        platformMetrics = diveDictToOrderedList(d: platformDict)
+                        overallMetrics = diveDictToOrderedList(d: overallDict)
+                        
+                        cachedMetrics[diveMeetsID] =
+                        (oneMetrics, threeMetrics, platformMetrics, overallMetrics)
                     }
-                    oneMetrics = diveDictToOrderedList(d: oneMeterDict)
-                    threeMetrics = diveDictToOrderedList(d: threeMeterDict)
-                    platformMetrics = diveDictToOrderedList(d: platformDict)
-                    overallMetrics = diveDictToOrderedList(d: overallDict)
                 }
             }
         }
@@ -135,7 +173,8 @@ struct SkillsGraph: View {
                     ddFixedScore = dive.avgScore / dd
                     judgeScore = ddFixedScore / 3
                     if (height.rawValue == 5 && dive.height >= 5.0) || (dive.height == Double(height.rawValue)) {
-                        total += judgeScore //Adding each individual judge score to the running total
+                        // Adding each individual judge score to the running total
+                        total += judgeScore
                         counter += 1
                     }
                 }
@@ -221,8 +260,10 @@ struct Polygon: Shape {
         
         for side in 0 ..< metrics.count {
             
-            let x = center.x + CGFloat(cos(Double(side) * angle)) * CGFloat (radius * (metrics[side] / 5.0))
-            let y = center.y + CGFloat(sin(Double(side) * angle)) * CGFloat(radius * (metrics[side] / 5.0))
+            let x = center.x + CGFloat(cos(Double(side) * angle)) *
+            CGFloat (radius * (metrics[side] / 5.0))
+            let y = center.y + CGFloat(sin(Double(side) * angle)) *
+            CGFloat(radius * (metrics[side] / 5.0))
             
             let vertexPoint = CGPoint( x: x, y: y)
             

@@ -10,6 +10,8 @@ import SwiftUI
 // Global that keeps main meet links for each diverID
 //                        [diverId:[meetName: meetLink]]
 var profileMainMeetLinks: [String: [String: String]] = [:]
+//               [diveMeetsID: [MeetEvent]]
+var cachedMeets: [String: [MeetEvent]] = [:]
 
 // Global that tracks the expansion states of each MeetEvent when navigating through NavigationLinks
 var lastExpanded: [String: Bool] = [:]
@@ -21,7 +23,6 @@ struct MeetList: View {
     @State var offset: CGFloat = 0
     @State var lastOffset: CGFloat = 0
     @State var meets: [MeetEvent] = []
-    @State private var createdMeets: Bool = false
     @State var navStatus: Bool = true
     var nameShowing: Bool = true
     @StateObject private var parser = EventHTMLParser()
@@ -46,6 +47,15 @@ struct MeetList: View {
     
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
+    }
+    
+    private var diveMeetsID: String {
+        guard let nums = profileLink.split(separator: "=", maxSplits: 1).last else { return "" }
+        return String(nums)
+    }
+    
+    private var createdMeets: Bool {
+        cachedMeets.keys.contains(diveMeetsID)
     }
     
     func createMeets(data: [Int:[String:[String:(String, Double, String, String)]]]) -> [MeetEvent]? {
@@ -163,7 +173,6 @@ struct MeetList: View {
                 }
                 // Waiting for parse results to finish
             } else if !createdMeets {
-                
                 ZStack {
                     Rectangle()
                         .fill(Custom.darkGray)
@@ -204,8 +213,10 @@ struct MeetList: View {
                     diverData = parser.myData
                     
                     meets = createMeets(data: diverData) ?? []
-                    createdMeets = true
+                    cachedMeets[diveMeetsID] = meets
                 }
+            } else {
+                meets = cachedMeets[diveMeetsID] ?? []
             }
         }
     }

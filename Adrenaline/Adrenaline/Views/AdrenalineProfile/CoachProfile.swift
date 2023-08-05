@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+//                 [diveMeetsID: JudgingData]
+var cachedJudging: [String: ProfileJudgingData] = [:]
+//                [diveMeetsID: DiversData]
+var cachedDivers: [String: ProfileCoachDiversData] = [:]
+
 struct CoachView: View {
     @Binding var userViewData: UserViewData
     private let linkHead: String =
@@ -50,6 +55,11 @@ struct CoachProfileContent: View {
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
     
+    private var diveMeetsID: String {
+        guard let nums = profileLink.split(separator: "=", maxSplits: 1).last else { return "" }
+        return String(nums)
+    }
+    
     var body: some View {
         SwiftUIWheelPicker($selectedPage, items: scoreValues) { value in
             GeometryReader { g in
@@ -66,23 +76,41 @@ struct CoachProfileContent: View {
         .onAppear {
             profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (userViewData.diveMeetsID ?? "")
             Task {
-                if parser.profileData.info == nil {
+                if !cachedJudging.keys.contains(diveMeetsID) ||
+                    !cachedDivers.keys.contains(diveMeetsID) {
                     if await !parser.parseProfile(link: profileLink) {
                         print("Failed to parse profile")
                     }
+                    
+                    cachedJudging[diveMeetsID] = parser.profileData.judging
+                    cachedDivers[diveMeetsID] = parser.profileData.coachDivers
                 }
             }
         }
         
         switch selectedPage {
         case 0:
-            if let judging = parser.profileData.judging {
+            if let judging = cachedJudging[diveMeetsID] {
                 JudgedList(data: judging)
-            }
+            } else {
+                    BackgroundBubble(vPadding: 40, hPadding: 40) {
+                        VStack {
+                            Text("Getting judging data...")
+                            ProgressView()
+                        }
+                    }
+                }
         case 1:
-            if let divers = parser.profileData.coachDivers {
+            if let divers = cachedDivers[diveMeetsID] {
                 DiversList(divers: divers)
                     .offset(y: -20)
+            } else {
+                BackgroundBubble(vPadding: 40, hPadding: 40) {
+                    VStack {
+                        Text("Getting coach divers list...")
+                        ProgressView()
+                    }
+                }
             }
         case 2:
             CoachMetricsView()
@@ -91,10 +119,11 @@ struct CoachProfileContent: View {
         case 4:
             CoachStatisticsView()
         default:
-            if let judging = parser.profileData.judging {
+            if let judging = cachedJudging[diveMeetsID] {
                 JudgedList(data: judging)
             }
         }
+        Spacer()
     }
 }
 
