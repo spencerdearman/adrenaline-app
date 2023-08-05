@@ -84,109 +84,111 @@ struct ProfileView: View {
             
             if profileType == "Diver" {
                 ZStack {
-                    VStack {
-                        ProfileImage(diverID: diverId)
-                            .frame(width: 200, height: 150)
-                            .scaleEffect(0.9)
-                            .padding(.top)
-                            .padding()
+                    if infoSafe {
                         VStack {
-                            BackgroundBubble(vPadding: 40, hPadding: 60) {
-                                VStack() {
-                                    HStack (alignment: .firstTextBaseline) {
-                                        if infoSafe, let name = name {
-                                            Text(name)
-                                                .font(.title3).fontWeight(.semibold)
-                                        } else {
-                                            Text("")
-                                        }
-                                    }
-                                    Divider()
-                                    HStack (alignment: .firstTextBaseline) {
-                                        HStack {
-                                            Image(systemName: "mappin.and.ellipse")
-                                            if infoSafe,
-                                               let cityState = cityState,
-                                               let country = country {
-                                                Text(cityState)
+                            ProfileImage(diverID: diverId)
+                                .frame(width: 200, height: 150)
+                                .scaleEffect(0.9)
+                                .padding(.top)
+                                .padding()
+                            VStack {
+                                BackgroundBubble(vPadding: 40, hPadding: 60) {
+                                    VStack() {
+                                        HStack (alignment: .firstTextBaseline) {
+                                            if infoSafe, let name = name {
+                                                Text(name)
+                                                    .font(.title3).fontWeight(.semibold)
                                             } else {
                                                 Text("")
                                             }
                                         }
-                                        HStack {
-                                            Image(systemName: "person.fill")
-                                            if infoSafe, let age = age {
-                                                Text("Age: " + String(age))
-                                            } else {
-                                                Text("")
+                                        Divider()
+                                        HStack (alignment: .firstTextBaseline) {
+                                            HStack {
+                                                Image(systemName: "mappin.and.ellipse")
+                                                if infoSafe,
+                                                   let cityState = cityState,
+                                                   let country = country {
+                                                    Text(cityState)
+                                                } else {
+                                                    Text("")
+                                                }
+                                            }
+                                            HStack {
+                                                Image(systemName: "person.fill")
+                                                if infoSafe, let age = age {
+                                                    Text("Age: " + String(age))
+                                                } else {
+                                                    Text("")
+                                                }
+                                            }
+                                            HStack {
+                                                Image(systemName: "figure.pool.swim")
+                                                Text(diverId)
                                             }
                                         }
-                                        HStack {
-                                            Image(systemName: "figure.pool.swim")
-                                            Text(diverId)
-                                        }
+                                        .padding([.leading], 2)
                                     }
-                                    .padding([.leading], 2)
+                                    .frame(width: screenWidth * 0.8)
                                 }
-                                .frame(width: screenWidth * 0.8)
                             }
-                        }
-                        .frame(width: screenWidth * 0.8)
-                        .padding([.leading, .trailing, .top])
-                        
-                        if let upcomingMeets = parser.profileData.upcomingMeets {
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 50)
-                                    .fill(.white)
-                                    .shadow(radius: 5)
-                                
-                                DisclosureGroup(isExpanded: $isExpanded) {
-                                    ForEach(upcomingMeets.sorted(by: { $0.name < $1.name }),
-                                            id: \.self) { meet in
-                                        VStack(alignment: .leading, spacing: 0) {
-                                            Text(meet.name)
-                                                .font(.title3)
-                                                .bold()
-                                            VStack(spacing: 5) {
-                                                ForEach(meet.events.sorted(by: {
-                                                    $0.name < $1.name
-                                                }), id: \.self) { event in
-                                                    let html = getEntriesHtml(link: event.link)
-                                                    if let name = name,
-                                                       let entry = ep.parseNamedEntry(
-                                                        html: html,
-                                                        searchName: name) {
-                                                        EntryView(entry: entry) {
-                                                            Text(event.name)
-                                                                .font(.headline)
-                                                                .bold()
-                                                                .foregroundColor(Color.primary)
+                            .frame(width: screenWidth * 0.8)
+                            .padding([.leading, .trailing, .top])
+                            
+                            if let upcomingMeets = parser.profileData.upcomingMeets {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 50)
+                                        .fill(.white)
+                                        .shadow(radius: 5)
+                                    
+                                    DisclosureGroup(isExpanded: $isExpanded) {
+                                        ForEach(upcomingMeets.sorted(by: { $0.name < $1.name }),
+                                                id: \.self) { meet in
+                                            VStack(alignment: .leading, spacing: 0) {
+                                                Text(meet.name)
+                                                    .font(.title3)
+                                                    .bold()
+                                                VStack(spacing: 5) {
+                                                    ForEach(meet.events.sorted(by: {
+                                                        $0.name < $1.name
+                                                    }), id: \.self) { event in
+                                                        let html = getEntriesHtml(link: event.link)
+                                                        if let name = name,
+                                                           let entry = ep.parseNamedEntry(
+                                                            html: html,
+                                                            searchName: name) {
+                                                            EntryView(entry: entry) {
+                                                                Text(event.name)
+                                                                    .font(.headline)
+                                                                    .bold()
+                                                                    .foregroundColor(Color.primary)
+                                                            }
                                                         }
                                                     }
                                                 }
+                                                .padding(.leading)
+                                                .padding(.top, 5)
                                             }
-                                            .padding(.leading)
                                             .padding(.top, 5)
                                         }
-                                        .padding(.top, 5)
+                                                .padding()
+                                    } label: {
+                                        Text("Upcoming Meets")
+                                            .font(.title2)
+                                            .bold()
+                                            .foregroundColor(Color.primary)
                                     }
-                                            .padding()
-                                } label: {
-                                    Text("Upcoming Meets")
-                                        .font(.title2)
-                                        .bold()
-                                        .foregroundColor(Color.primary)
+                                    .padding([.leading, .trailing])
+                                    .padding(.bottom, 5)
                                 }
                                 .padding([.leading, .trailing])
-                                .padding(.bottom, 5)
+                                Spacer()
                             }
-                            .padding([.leading, .trailing])
                             Spacer()
+                            MeetList(profileLink: profileLink)
                         }
-                        Spacer()
-                        MeetList(profileLink: profileLink)
+                        .padding(.bottom, maxHeightOffset)
                     }
-                    .padding(.bottom, maxHeightOffset)
                 }
             } else {
                 ZStack {
@@ -198,6 +200,11 @@ struct ProfileView: View {
                             .offset(y: geometry.size.height * 0.4)
                     }
                     VStack {
+                        ProfileImage(diverID: diverId)
+                            .frame(width: 200, height: 150)
+                            .scaleEffect(0.9)
+                            .padding(.top)
+                            .padding()
                         VStack {
                             BackgroundBubble(vPadding: 40, hPadding: 60) {
                                 VStack() {
