@@ -388,7 +388,7 @@ struct ParseLoaderView: View {
             bgColor.ignoresSafeArea()
             
             // Loading completed successfully
-            if loadedSuccessfully {
+            if loadedSuccessfully || debugMode {
                 LoadedView(lastDiverInformation: $lastDiverInformation, nextDiverInformation:
                             $nextDiverInformation, diveTable: $diveTable,
                            boardDiveTable: $boardDiveTable, focusViewList: $focusViewList,
@@ -615,6 +615,7 @@ struct LastDiverView: View
                         .scaledToFit()
                     }
                 }
+                .padding(.top, 20)
                 .dynamicTypeSize(.xSmall ... .xxxLarge)
                 .padding([.leading, .trailing])
                 
@@ -658,6 +659,7 @@ struct LastDiverView: View
                     .scaledToFit()
                     .padding()
                 }
+                .offset(y: screenHeight * 0.012)
                 .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -716,6 +718,7 @@ struct NextDiverView: View
                         .scaledToFit()
                     }
                 }
+                .padding(.top, 20)
                 .dynamicTypeSize(.xSmall ... .xxxLarge)
                 .padding([.leading, .trailing])
                 
@@ -759,6 +762,7 @@ struct NextDiverView: View
                     .scaledToFit()
                     .padding()
                 }
+                .offset(y: screenHeight * 0.012)
                 .fixedSize(horizontal: false, vertical: true)
             }
         }
