@@ -95,21 +95,21 @@ private extension SearchInputView {
     }
 }
 
-// Checks that for a given SearchType, at least one of the relevant fields has a value, and returns true if so.
-// If all relevant fields are empty, returns false
+// Checks that for a given SearchType, at least one of the relevant fields has a value, and returns
+// true if so. If all relevant fields are empty, returns false
 private func checkFields(selection: SearchType, firstName: String = "",
                          lastName: String = "", meetName: String = "",
                          orgName: String = "", meetYear: String = "") -> Bool {
     switch selection {
-    case .person:
-        return firstName != "" || lastName != ""
-    case .meet:
-        return meetName != "" || orgName != "" || meetYear != ""
+        case .person:
+            return firstName != "" || lastName != ""
+        case .meet:
+            return meetName != "" || orgName != "" || meetYear != ""
     }
 }
 
-// Converts the arguments passed into getPredicate into the list of unpacked parameters necessary to init
-// NSPredicate; returns nil if all fields are empty
+// Converts the arguments passed into getPredicate into the list of unpacked parameters necessary
+// to init NSPredicate; returns nil if all fields are empty
 private func argsToPredParams(
     pred: String, name: String, org: String, year: String) -> NSPredicate? {
         let haveName = name != ""
@@ -150,8 +150,8 @@ private func argsToPredParams(
         return nil
     }
 
-// Produces Optional NSPredicate string based on which values are filled or not filled, returns nil if all fields
-// are empty
+// Produces Optional NSPredicate string based on which values are filled or not filled, returns nil
+// if all fields are empty
 private func getPredicate(name: String, org: String, year: String) -> NSPredicate? {
     if name == "" && org == "" && year == "" {
         return nil
@@ -185,6 +185,7 @@ private func getPredicate(name: String, org: String, year: String) -> NSPredicat
 }
 
 struct SearchView: View {
+    @Environment(\.networkIsConnected) private var networkIsConnected
     @State private var selection: SearchType = .person
     @State private var firstName: String = ""
     @State private var lastName: String = ""
@@ -206,23 +207,27 @@ struct SearchView: View {
     
     @ViewBuilder
     var body: some View {
-        ZStack {
-            if personSearchSubmitted && !personTimedOut {
-                SwiftUIWebView(firstName: $firstName, lastName: $lastName,
-                               parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
-                               linksParsed: $linksParsed, timedOut: $personTimedOut)
+        if networkIsConnected {
+            ZStack {
+                if personSearchSubmitted && !personTimedOut {
+                    SwiftUIWebView(firstName: $firstName, lastName: $lastName,
+                                   parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
+                                   linksParsed: $linksParsed, timedOut: $personTimedOut)
+                }
+                
+                SearchInputView(selection: $selection, firstName: $firstName, lastName: $lastName,
+                                meetName: $meetName, orgName: $orgName, meetYear: $meetYear,
+                                searchSubmitted: $searchSubmitted, parsedLinks: $parsedLinks,
+                                dmSearchSubmitted: $dmSearchSubmitted, linksParsed: $linksParsed,
+                                personTimedOut: $personTimedOut)
             }
-            
-            SearchInputView(selection: $selection, firstName: $firstName, lastName: $lastName,
-                            meetName: $meetName, orgName: $orgName, meetYear: $meetYear,
-                            searchSubmitted: $searchSubmitted, parsedLinks: $parsedLinks,
-                            dmSearchSubmitted: $dmSearchSubmitted, linksParsed: $linksParsed,
-                            personTimedOut: $personTimedOut)
-        }
-        .ignoresSafeArea(.keyboard)
-        .dynamicTypeSize(.xSmall ... .xxxLarge)
-        .onDisappear {
-            searchSubmitted = false
+            .ignoresSafeArea(.keyboard)
+            .dynamicTypeSize(.xSmall ... .xxxLarge)
+            .onDisappear {
+                searchSubmitted = false
+            }
+        } else {
+            NotConnectedView()
         }
     }
 }
@@ -283,17 +288,17 @@ struct SearchInputView: View {
         get {
             let descriptors: [NSSortDescriptor]
             switch(filterType) {
-            case .name:
-                descriptors = [NSSortDescriptor(key: "name", ascending: isSortedAscending)]
-                break
-            case .startDate:
-                descriptors = [NSSortDescriptor(key: "startDate", ascending: isSortedAscending),
-                               NSSortDescriptor(key: "name", ascending: true)]
-                break
-            case .state:
-                descriptors = [NSSortDescriptor(key: "state", ascending: isSortedAscending),
-                               NSSortDescriptor(key: "name", ascending: true)]
-                break
+                case .name:
+                    descriptors = [NSSortDescriptor(key: "name", ascending: isSortedAscending)]
+                    break
+                case .startDate:
+                    descriptors = [NSSortDescriptor(key: "startDate", ascending: isSortedAscending),
+                                   NSSortDescriptor(key: "name", ascending: true)]
+                    break
+                case .state:
+                    descriptors = [NSSortDescriptor(key: "state", ascending: isSortedAscending),
+                                   NSSortDescriptor(key: "name", ascending: true)]
+                    break
             }
             
             _items.wrappedValue.nsSortDescriptors = descriptors
@@ -355,7 +360,6 @@ struct SearchInputView: View {
     }
     
     var body: some View {
-        
         NavigationView {
             ZStack {
                 SearchColorfulView()
@@ -437,7 +441,11 @@ struct SearchInputView: View {
                     }
                     .frame(width: screenWidth * 0.85)
                     .ignoresSafeArea(.keyboard)
-                    .offset(y: selection == .person ? -screenHeight * 0.188 : isIndexingMeets ? -screenHeight * 0.38 : -screenHeight * 0.24)
+                    .offset(y: selection == .person
+                            ? -screenHeight * 0.188
+                            : (isIndexingMeets
+                               ? -screenHeight * 0.38
+                               : -screenHeight * 0.24))
                     if showError {
                         Text("You must enter at least one field to search")
                             .foregroundColor(Color.red)
@@ -510,9 +518,9 @@ struct SearchInputView: View {
                     ZStack (alignment: .topLeading) {
                         RecordList(records: $parsedLinks,
                                    adrenalineRecords: $adrenalineFormattedResults,
-                                    resultSelected: $resultSelected,
-                                    fullScreenResults: $fullScreenResults,
-                                    selectionType: $profileSelection)
+                                   resultSelected: $resultSelected,
+                                   fullScreenResults: $fullScreenResults,
+                                   selectionType: $profileSelection)
                         .onAppear {
                             fullScreenResults = true
                             resultSelected = false
@@ -559,7 +567,8 @@ struct SearchInputView: View {
                 if (personResultsReady || meetResultsReady) && showResults {
                     ZStack (alignment: .topLeading) {
                         (selection == .person
-                         ? AnyView(RecordList(records: $parsedLinks, adrenalineRecords: $adrenalineFormattedResults,
+                         ? AnyView(RecordList(records: $parsedLinks,
+                                              adrenalineRecords: $adrenalineFormattedResults,
                                               resultSelected: $resultSelected,
                                               fullScreenResults: $fullScreenResults,
                                               selectionType: $profileSelection))
@@ -744,8 +753,8 @@ struct DiverSearchView: View {
                             .padding([.leading, .bottom, .top])
                         TextField("First Name", text: $firstName)
                             .modifier(TextFieldClearButton<SearchField>(text: $firstName,
-                                                           fieldType: .firstName,
-                                                           focusedField: focusedField))
+                                                                        fieldType: .firstName,
+                                                                        focusedField: focusedField))
                             .multilineTextAlignment(.leading)
                             .disableAutocorrection(true)
                             .textFieldStyle(.roundedBorder)
@@ -757,8 +766,8 @@ struct DiverSearchView: View {
                             .padding([.leading])
                         TextField("Last Name", text: $lastName)
                             .modifier(TextFieldClearButton<SearchField>(text: $lastName,
-                                                           fieldType: .lastName,
-                                                           focusedField: focusedField))
+                                                                        fieldType: .lastName,
+                                                                        focusedField: focusedField))
                             .multilineTextAlignment(.leading)
                             .textFieldStyle(.roundedBorder)
                             .disableAutocorrection(true)
@@ -815,8 +824,15 @@ struct MeetSearchView: View {
                 .mask(RoundedRectangle(cornerRadius: 50))
                 .foregroundColor(Custom.grayThinMaterial)
                 .shadow(radius: 10)
-                .frame(width: screenWidth * 0.85, height: isIndexingMeets ? screenHeight * 0.6 : screenHeight * 0.31)
-                .offset(y: isPhone ? (isIndexingMeets ? screenWidth * 0.33 : screenWidth * 0.015) : isIndexingMeets ? screenHeight * 0.15 : screenWidth * 0.015)
+                .frame(width: screenWidth * 0.85,
+                       height: isIndexingMeets ? screenHeight * 0.6 : screenHeight * 0.31)
+                .offset(y: isPhone
+                        ? (isIndexingMeets
+                           ? screenWidth * 0.33
+                           : screenWidth * 0.015)
+                        : (isIndexingMeets
+                           ? screenHeight * 0.15
+                           : screenWidth * 0.015))
             VStack {
                 Spacer()
                 HStack {
@@ -825,8 +841,8 @@ struct MeetSearchView: View {
                     TextField("Meet Name", text: $meetName)
                         .disableAutocorrection(true)
                         .modifier(TextFieldClearButton<SearchField>(text: $meetName,
-                                                       fieldType: .meetName,
-                                                       focusedField: focusedField))
+                                                                    fieldType: .meetName,
+                                                                    focusedField: focusedField))
                         .multilineTextAlignment(.leading)
                         .textFieldStyle(.roundedBorder)
                         .padding(.trailing)
@@ -839,8 +855,8 @@ struct MeetSearchView: View {
                     TextField("Organization Name", text: $orgName)
                         .disableAutocorrection(true)
                         .modifier(TextFieldClearButton<SearchField>(text: $orgName,
-                                                       fieldType: .meetOrg,
-                                                       focusedField: focusedField))
+                                                                    fieldType: .meetOrg,
+                                                                    focusedField: focusedField))
                         .multilineTextAlignment(.leading)
                         .textFieldStyle(.roundedBorder)
                         .padding(.trailing)
@@ -852,7 +868,8 @@ struct MeetSearchView: View {
                     NoStickPicker(selection: $meetYearIndex,
                                   rowCount: (2004...currentYear).count + 1) { r in
                         let label = UILabel()
-                        label.attributedText = NSMutableAttributedString(string: meetIndexToString(r))
+                        label.attributedText = NSMutableAttributedString(
+                            string: meetIndexToString(r))
                         label.font = UIFont.systemFont(ofSize: pickerFontSize)
                         label.sizeToFit()
                         label.layer.masksToBounds = true
