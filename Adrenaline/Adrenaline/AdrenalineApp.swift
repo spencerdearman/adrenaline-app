@@ -269,7 +269,7 @@ struct AdrenalineApp: App {
                         isIndexingMeets = true
                         
                         // Runs this task asynchronously so rest of app can function while this finishes
-                        Task.detached(priority: .background) {
+                        Task {
                             // await SkillRating(diveStatistics: nil).testMetrics(0)
                             // await SkillRating(diveStatistics: nil)
                             //     .testMetrics(0, includePlatform: false)
