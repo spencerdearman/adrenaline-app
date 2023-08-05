@@ -60,13 +60,13 @@ struct ContentView: View {
                                     Home()
                                 case .wrench:
                                     //NavigationView {
-                                    LiveResultsView(request: "debug")
+//                                    LiveResultsView(request: "debug")
                                     //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
                                     //}
                                     //.navigationViewStyle(StackNavigationViewStyle())
                                     //ToolsMenu()
                                     //SearchColorfulView()
-//                                    RankingsView()
+                                    RankingsView()
                                     //AppLaunchSequence(showSplash: $showSplash)
                                     //UsersDBTestView()
                                 case .magnifyingglass:
