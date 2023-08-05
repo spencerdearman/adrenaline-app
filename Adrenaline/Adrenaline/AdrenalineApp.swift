@@ -275,7 +275,7 @@ struct AdrenalineApp: App {
                             //     .testMetrics(0, includePlatform: false)
                             // await SkillRating(diveStatistics: nil)
                             //     .testMetrics(0, onlyPlatform: true)
-                            let moc = await modelDataController.container.viewContext
+                            let moc = modelDataController.container.viewContext
                             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
                                 entityName: "DivingMeet")
                             let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
@@ -283,18 +283,18 @@ struct AdrenalineApp: App {
                             try await meetParser.parseMeets(storedMeets: meets)
                             
                             // Check that each set of meets is not nil and add each to the database
-                            if let upcoming = await meetParser.upcomingMeets {
-                                await modelDataController.addRecords(
+                            if let upcoming = meetParser.upcomingMeets {
+                                modelDataController.addRecords(
                                     records: modelDataController.dictToTuple(dict: upcoming),
                                     type: .upcoming)
                             }
-                            if let current = await meetParser.currentMeets {
-                                await modelDataController.addRecords(
+                            if let current = meetParser.currentMeets {
+                                modelDataController.addRecords(
                                     records: modelDataController.dictToTuple(dict: current),
                                     type: .current)
                             }
-                            if let past = await meetParser.pastMeets {
-                                await modelDataController.addRecords(
+                            if let past = meetParser.pastMeets {
+                                modelDataController.addRecords(
                                     records: modelDataController.dictToTuple(dict: past),
                                     type: .past)
                             }
