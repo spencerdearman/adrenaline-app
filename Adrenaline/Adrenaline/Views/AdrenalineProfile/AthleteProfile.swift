@@ -55,10 +55,6 @@ struct ProfileContent: View {
                     .frame(width: g.size.width, height: g.size.height,
                            alignment: .center)
             }
-            .onTapGesture {
-                guard let idx = scoreValues.firstIndex(of: value) else { return }
-                selectedPage = idx
-            }
         }
         .scrollAlpha(0.3)
         .width(.Fixed(115))
