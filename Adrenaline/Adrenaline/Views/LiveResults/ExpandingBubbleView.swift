@@ -99,10 +99,6 @@ struct ClosedTileView: View {
     @Binding var bubbleData: [String]
     @Binding var abBoardEvent: Bool
     
-    private var bgColor: Color {
-        currentMode == .light ? Custom.tileColor : Custom.tileColor
-    }
-    
     //(Left to dive, order, last round place, last round score, current place,
     //current score, name, last dive average, event average score, avg round score
     

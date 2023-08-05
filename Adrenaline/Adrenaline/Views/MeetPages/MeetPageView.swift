@@ -727,7 +727,7 @@ struct MeetEventListView: View {
                                                            height: geometry.size.height)
                                                 Text(value[index].2)
                                                     .foregroundColor(value[index].4 == "" ?
-                                                                     Custom.grayThinMaterial
+                                                                     Custom.secondaryColor
                                                                      : .primary)
                                                     .padding()
                                             }

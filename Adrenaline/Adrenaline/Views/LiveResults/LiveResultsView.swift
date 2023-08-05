@@ -831,15 +831,19 @@ struct ColorfulView: View {
                 Circle()
                     .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
+                    .clipped().ignoresSafeArea()
                 Circle()
                     .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth, height: screenWidth)
+                    .clipped().ignoresSafeArea()
                 Circle()
                     .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
+                    .clipped().ignoresSafeArea()
                 Circle()
                     .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
+                    .clipped().ignoresSafeArea()
             }
             .offset(x: isPhone
                     ? screenWidth / 1.9
@@ -856,15 +860,19 @@ struct ColorfulView: View {
                 Circle()
                     .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
+                    .clipped().ignoresSafeArea()
                 Circle()
                     .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth, height: screenWidth)
+                    .clipped().ignoresSafeArea()
                 Circle()
                     .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
+                    .clipped().ignoresSafeArea()
                 Circle()
                     .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
                     .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
+                    .clipped().ignoresSafeArea()
             }
             .offset(x: isPhone
                     ? -screenWidth / 2
