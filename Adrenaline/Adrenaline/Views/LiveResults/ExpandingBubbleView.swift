@@ -66,10 +66,12 @@ struct HomeView: View {
                          abBoardEvent: $abBoardEvent)
                 .onTapGesture {
                     if expandedIndex == (abBoardEvent ? bubbleData[3] : bubbleData[1]){
-                        expandedIndex = "-1"
-                        starSelected = false
-                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                            show.toggle()
+                        if !abBoardEvent {
+                            expandedIndex = "-1"
+                            starSelected = false
+                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                                show.toggle()
+                            }
                         }
                     }
                 }
@@ -78,7 +80,7 @@ struct HomeView: View {
             ClosedTileView(namespace: namespace, show: $show, bubbleData: $bubbleData,
                            abBoardEvent: $abBoardEvent)
                 .onTapGesture {
-                    if expandedIndex == "-1"{
+                    if expandedIndex == "-1" && !abBoardEvent {
                         expandedIndex = abBoardEvent ? bubbleData[3] : bubbleData[1]
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
                             starSelected = true
@@ -127,8 +129,11 @@ struct ClosedTileView: View {
                                  ? bubbleData[3].components(separatedBy: " ").first ?? ""
                                  : bubbleData[6].components(separatedBy: " ").first ?? "")
                                 .matchedGeometryEffect(id: "firstname", in: namespace)
+                            let fullSecondString = bubbleData[3].components(separatedBy: " ").last ?? ""
+                            let lastName = fullSecondString.components(separatedBy: "(").first
+                            let team = fullSecondString.components(separatedBy: "(").last
                             Text(abBoardEvent
-                                 ? bubbleData[3].components(separatedBy: " ").last ?? ""
+                                 ? ((lastName ?? "") + " (" + (team ?? ""))
                                  : bubbleData[6].components(separatedBy: " ").last ?? "")
                                 .matchedGeometryEffect(id: "lastname", in: namespace)
                         }
