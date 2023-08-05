@@ -18,16 +18,16 @@ struct DiverView: View {
         VStack {
             Spacer()
             // Showing DiveMeets Linking Screen
-            if userViewData.diveMeetsID == "" {
-                BackgroundBubble(vPadding: 20, hPadding: 20) {
-                    NavigationLink(destination: {
-                        DiveMeetsLink(userViewData: $userViewData)
-                    }, label: {
+            if userViewData.diveMeetsID == nil || userViewData.diveMeetsID == "" {
+                NavigationLink(destination: {
+                    DiveMeetsLink(userViewData: $userViewData)
+                }, label: {
+                    BackgroundBubble(vPadding: 20, hPadding: 30) {
                         Text("Link DiveMeets Account")
                             .foregroundColor(.primary)
                             .font(.title2).fontWeight(.semibold)
-                    })
-                }
+                    }
+                })
             } else {
                 ProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)
@@ -63,23 +63,23 @@ struct ProfileContent: View {
         .frame(height: 40)
         
         switch selectedPage {
-        case 0:
-            MeetList(profileLink:
-                        "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
-            .offset(y: -screenHeight * 0.05)
-        case 1:
-            MetricsView(userViewData: $userViewData)
-        case 2:
-            RecruitingView()
-        case 3:
-            StatisticsView()
-        case 4:
-            VideosView()
-        default:
-            MeetList(profileLink:
-                        "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                     (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
+            case 0:
+                MeetList(profileLink:
+                            "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+                         (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
+                .offset(y: -screenHeight * 0.05)
+            case 1:
+                MetricsView(userViewData: $userViewData)
+            case 2:
+                RecruitingView()
+            case 3:
+                StatisticsView()
+            case 4:
+                VideosView()
+            default:
+                MeetList(profileLink:
+                            "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+                         (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
         }
     }
 }
@@ -87,7 +87,8 @@ struct ProfileContent: View {
 struct MetricsView: View {
     @Binding var userViewData: UserViewData
     var body: some View {
-        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (userViewData.diveMeetsID ?? "00000")
+        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+        (userViewData.diveMeetsID ?? "00000")
         SkillsGraph(profileLink: profileLink)
     }
 }
