@@ -25,6 +25,7 @@ struct MeetList: View {
     @State var navStatus: Bool = true
     var nameShowing: Bool = true
     @StateObject private var parser = EventHTMLParser()
+    @StateObject private var profileParser = ProfileParser()
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 170
     
     // Style adjustments for elements of list

@@ -152,8 +152,8 @@ struct ClosedTileView: View {
                                 .shadow(radius: 2)
                                 .frame(width: 200, height: 40)
                             Text("Current Score: " + (abBoardEvent ? bubbleData[1] : bubbleData[5]))
+                                .dynamicTypeSize(.xSmall ... .xLarge)
                                 .fontWeight(.semibold)
-                                .scaledToFit()
                                 .matchedGeometryEffect(id: "currentScore", in: namespace)
                         }
                         
