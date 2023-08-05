@@ -403,9 +403,6 @@ struct CurrentMeetsPageView: View {
     @ScaledMetric private var typeBubbleHeight: CGFloat = 35
     @ScaledMetric private var typeBGWidth: CGFloat = 40
     
-    private var typeBGColor: Color {
-        currentMode == .light ? Custom.background : Custom.background
-    }
     private var typeBubbleColor: Color {
         currentMode == .light ? Color.white : Color.black
     }

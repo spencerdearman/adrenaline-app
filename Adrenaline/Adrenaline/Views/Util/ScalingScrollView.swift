@@ -19,9 +19,6 @@ struct ScalingScrollView<T: RandomAccessCollection, U: View>: View where T.Eleme
         : Color(red: grayValueDark, green: grayValueDark, blue: grayValueDark)
     }
     
-    private var shadowColor: Color {
-        currentMode == .light ? Color.gray : Custom.shadowColor
-    }
     
     var records: T
     var bgColor: Color? = nil
@@ -45,7 +42,7 @@ struct ScalingScrollView<T: RandomAccessCollection, U: View>: View where T.Eleme
                         GeometryReader { item in
                             viewGenerator(record)
                                 .cornerRadius(15)
-                                .shadow(color: shadowColor, radius: shadowRadius ?? 0)
+                                .shadow(radius: shadowRadius ?? 0)
                                 .scaleEffect(scaleValue(mainFrame: mainView.frame(in: .global).minY,
                                                         minY: item.frame(in: .global).minY),
                                              anchor: .bottom)

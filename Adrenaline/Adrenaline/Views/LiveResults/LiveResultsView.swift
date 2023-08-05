@@ -539,6 +539,7 @@ struct LoadedView: View {
                 }
             }
         }
+        .clipped()
     }
 }
 
