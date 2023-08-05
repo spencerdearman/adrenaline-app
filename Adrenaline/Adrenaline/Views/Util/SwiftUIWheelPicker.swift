@@ -31,13 +31,15 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
     //private var isInfinite: Bool = false
     private var onValueChanged: ((Item) -> Void)? = nil
     
-    public init(_ position: Binding<Int>, items: Binding<[Item]>, @ViewBuilder content: @escaping (Item) -> Content) {
+    public init(_ position: Binding<Int>, items: Binding<[Item]>,
+                @ViewBuilder content: @escaping (Item) -> Content) {
         self.items = items
         self._position = position
         self.contentBuilder = content
     }
     
-    public init(_ position: Binding<Int>, items: [Item], @ViewBuilder content: @escaping (Item) -> Content) {
+    public init(_ position: Binding<Int>, items: [Item],
+                @ViewBuilder content: @escaping (Item) -> Content) {
         self.items = Binding.constant(items)
         self._position = position
         self.contentBuilder = content
@@ -50,18 +52,21 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
                     ForEach(0..<items.wrappedValue.count, id: \.self) { position in
                         drawContentView(position, geometry: geometry)
                     }
-//                    ForEach(items.wrappedValue.indices) { position in
-//                        drawContentView(position, geometry: geometry)
-//                    }
+                    //                    ForEach(items.wrappedValue.indices) { position in
+                    //                        drawContentView(position, geometry: geometry)
+                    //                    }
                 }
                 .frame(width: geometry.size.width, alignment: .leading)
-                .offset(x: -CGFloat(self.position + 1) * self.calcContentWidth(geometry, option: contentWidthOption))
-                .offset(x: self.translation + (geometry.size.width / 2) + (self.calcContentWidth(geometry, option: contentWidthOption) / 2))
+                .offset(x: -CGFloat(self.position + 1) *
+                        self.calcContentWidth(geometry, option: contentWidthOption))
+                .offset(x: self.translation + (geometry.size.width / 2) +
+                        (self.calcContentWidth(geometry, option: contentWidthOption) / 2))
                 .animation(.interactiveSpring(), value: self.position + 1)
                 .animation(.interactiveSpring(), value: translation)
                 .clipped()
                 if let view = edgeLeftView, let width = edgeLeftWidth {
-                    view.frame(width: calcContentWidth(geometry, option: width), height: geometry.size.height, alignment: .center)
+                    view.frame(width: calcContentWidth(geometry, option: width),
+                               height: geometry.size.height, alignment: .center)
                 }
                 if let view = edgeRightView, let widthOption = edgeRightWidth {
                     let width = calcContentWidth(geometry, option: widthOption)
@@ -82,13 +87,22 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
                 DragGesture().updating(self.$translation) { value, state, _ in
                     state = value.translation.width
                 }
-                .onEnded { value in
-                    let offset = value.translation.width / self.calcContentWidth(geometry, option: contentWidthOption)
-                    let newIndex = (CGFloat(self.position) - offset).rounded()
-                    self.position = min(max(Int(newIndex), 0), self.items.wrappedValue.count - 1)
-                    self.onValueChanged?(items.wrappedValue[self.position])
-                }
+                    .onEnded { value in
+                        let offset = value.translation.width /
+                        self.calcContentWidth(geometry, option: contentWidthOption)
+                        let newIndex = (CGFloat(self.position) - offset).rounded()
+                        self.position = min(max(Int(newIndex), 0), self.items.wrappedValue.count - 1)
+                        self.onValueChanged?(items.wrappedValue[self.position])
+                    }
             )
+            .onTapGesture(coordinateSpace: .local) { location in
+                let midpoint = geometry.size.width / 2
+                let offset = (midpoint - location.x) /
+                self.calcContentWidth(geometry, option: contentWidthOption)
+                let newIndex = (CGFloat(self.position) - offset).rounded()
+                self.position = min(max(Int(newIndex), 0), self.items.wrappedValue.count - 1)
+                self.onValueChanged?(items.wrappedValue[self.position])
+            }
         }
     }
     
@@ -152,7 +166,8 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
             let offset = translation / self.calcContentWidth(geometry, option: contentWidthOption)
             let newIndex = CGFloat(self.position) - offset
             let posGap = CGFloat(position) - newIndex
-            //let posGap = CGFloat(position) - (newIndex.truncatingRemainder(dividingBy: CGFloat(self.items.wrappedValue.count)))
+            //let posGap = CGFloat(position) -
+            // (newIndex.truncatingRemainder(dividingBy: CGFloat(self.items.wrappedValue.count)))
             var per = abs(posGap / maxRange)
             if 1.0 < per {
                 per = 1.0
@@ -175,22 +190,24 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
         return contentBuilder(item)
             .scaleEffect(sizeResult)
             .opacity(alphaResult)
-            .frame(width: self.calcContentWidth(geometry, option: contentWidthOption), alignment: .center)
+            .frame(width: self.calcContentWidth(geometry, option: contentWidthOption),
+                   alignment: .center)
     }
     
     private func maxVisible(_ geometry: GeometryProxy) -> CGFloat {
-        let visibleCount = geometry.size.width / self.calcContentWidth(geometry, option: contentWidthOption)
+        let visibleCount = geometry.size.width /
+        self.calcContentWidth(geometry, option: contentWidthOption)
         return min(visibleCount, CGFloat(self.items.wrappedValue.count))
     }
     
     private func calcContentWidth(_ geometry: GeometryProxy, option: WidthOption) -> CGFloat {
         switch option {
-        case .VisibleCount(let count):
-            return geometry.size.width / CGFloat(count)
-        case .Fixed(let width):
-            return width
-        case .Ratio(let ratio):
-            return geometry.size.width * ratio
+            case .VisibleCount(let count):
+                return geometry.size.width / CGFloat(count)
+            case .Fixed(let width):
+                return width
+            case .Ratio(let ratio):
+                return geometry.size.width * ratio
         }
     }
 }
