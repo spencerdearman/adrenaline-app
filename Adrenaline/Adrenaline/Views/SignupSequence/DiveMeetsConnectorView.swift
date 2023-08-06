@@ -128,7 +128,7 @@ struct IsThisYouView: View {
                                             Rectangle()
                                                 .foregroundColor(Custom.darkGray)
                                                 .frame(width: screenWidth * 0.2,
-                                                       height: screenWidth * 0.9)
+                                                       height: screenWidth * 0.09)
                                                 .mask(RoundedRectangle(cornerRadius: 50))
                                                 .shadow(radius: 6)
                                             Text("Next")
