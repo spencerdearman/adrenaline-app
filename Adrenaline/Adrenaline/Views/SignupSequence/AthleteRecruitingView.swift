@@ -45,6 +45,7 @@ struct AthleteRecruitingView: View {
     @State private var highSchool: String = ""
     @State private var hometown: String = ""
     @State private var loginSuccessful: Bool = false
+    @State private var infoReady: Bool = false
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
@@ -150,270 +151,275 @@ struct AthleteRecruitingView: View {
                 .onTapGesture {
                     focusedField = nil
                 }
-            
-            // Profile Information
-            let infoSafe = parser.profileData.info != nil
-            let info = parser.profileData.info
-            let parsedCityState = info?.cityState
-            let parsedGender = info?.gender
-            let parsedAge = info?.age
-            let parsedGradYear = info?.hsGradYear
-            
-            VStack {
-                Spacer()
-                Spacer()
+            if !infoReady && diveMeetsID != "" {
+                BackgroundBubble(vPadding: 20, hPadding: 30) {
+                    Text("Loading...")
+                }
+            } else {
+                // Profile Information
+                let infoSafe = parser.profileData.info != nil
+                let info = parser.profileData.info
+                let parsedCityState = info?.cityState
+                let parsedGender = info?.gender
+                let parsedAge = info?.age
+                let parsedGradYear = info?.hsGradYear
                 
-                BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
-                    VStack(spacing: 10) {
-                        Text("Recruiting Information")
-                            .font(.title2)
-                            .bold()
-                            .padding()
-                        Spacer()
-                        
-                        VStack(spacing: 5) {
-                            BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
-                                HStack {
-                                    Text("Height:")
-                                    NoStickPicker(selection: $heightIndex,
-                                                  rowCount: heightStrings.count) { i in
-                                        let label = UILabel()
-                                        let (_, ft, inches) = heightStrings[i]
-                                        let string = "\(ft)\' \(inches)\""
-                                        label.attributedText = NSMutableAttributedString(
-                                            string: string)
-                                        label.font = UIFont.systemFont(ofSize: pickerFontSize)
-                                        label.sizeToFit()
-                                        label.layer.masksToBounds = true
-                                        return label
+                VStack {
+                    Spacer()
+                    Spacer()
+                    
+                    BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
+                        VStack(spacing: 10) {
+                            Text("Recruiting Information")
+                                .font(.title2)
+                                .bold()
+                                .padding()
+                            Spacer()
+                            
+                            VStack(spacing: 5) {
+                                BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
+                                    HStack {
+                                        Text("Height:")
+                                        NoStickPicker(selection: $heightIndex,
+                                                      rowCount: heightStrings.count) { i in
+                                            let label = UILabel()
+                                            let (_, ft, inches) = heightStrings[i]
+                                            let string = "\(ft)\' \(inches)\""
+                                            label.attributedText = NSMutableAttributedString(
+                                                string: string)
+                                            label.font = UIFont.systemFont(ofSize: pickerFontSize)
+                                            label.sizeToFit()
+                                            label.layer.masksToBounds = true
+                                            return label
+                                        }
+                                                      .pickerStyle(.wheel)
+                                                      .frame(width: textFieldWidth / 2)
+                                                      .padding(.trailing)
+                                                      .onChange(of: heightIndex) { _ in
+                                                          setHeight()
+                                                      }
+                                                      .onAppear {
+                                                          setHeight()
+                                                      }
                                     }
-                                                  .pickerStyle(.wheel)
-                                                  .frame(width: textFieldWidth / 2)
-                                                  .padding(.trailing)
-                                                  .onChange(of: heightIndex) { _ in
-                                                      setHeight()
-                                                  }
-                                                  .onAppear {
-                                                      setHeight()
-                                                  }
+                                    .padding([.leading, .trailing])
                                 }
-                                .padding([.leading, .trailing])
+                                .frame(height: screenHeight * 0.1)
+                                
+                                Spacer()
+                                
+                                HStack {
+                                    TextField("Weight", text: $weight)
+                                        .disableAutocorrection(true)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: textFieldWidth / 2)
+                                        .keyboardType(.numberPad)
+                                        .multilineTextAlignment(.center)
+                                        .focused($focusedField, equals: .weight)
+                                        .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                            text: $weight, fieldType: .weight,
+                                            focusedField: $focusedField))
+                                        .onChange(of: weight) { _ in
+                                            weight = String(weight.prefix(6))
+                                            
+                                            if signupData.recruiting == nil {
+                                                signupData.recruiting = RecruitingData()
+                                            }
+                                            if let weight = Int(weight) {
+                                                signupData.recruiting!.weight = Weight(weight: weight,
+                                                                                       unit: weightUnit)
+                                            }
+                                        }
+                                    BubbleSelectView(selection: $weightUnit)
+                                        .frame(width: textFieldWidth / 2)
+                                        .onChange(of: weightUnit) { _ in
+                                            if signupData.recruiting == nil {
+                                                signupData.recruiting = RecruitingData()
+                                            }
+                                            if let weight = Int(weight) {
+                                                signupData.recruiting!.weight = Weight(weight: weight,
+                                                                                       unit: weightUnit)
+                                            }
+                                        }
+                                }
+                                
+                                BubbleSelectView(selection: $gender)
+                                    .frame(width: textFieldWidth)
+                                    .onChange(of: gender) { _ in
+                                        setGender()
+                                    }
+                                    .onAppear {
+                                        setGender()
+                                    }
+                                
+                                Spacer()
+                                
+                                BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
+                                    HStack {
+                                        Text("Age:")
+                                        NoStickPicker(selection: $ageIndex,
+                                                      rowCount: ageRange.count) { i in
+                                            let label = UILabel()
+                                            let age = ageRange[i]
+                                            label.attributedText = NSMutableAttributedString(
+                                                string: String(age))
+                                            label.font = UIFont.systemFont(ofSize: pickerFontSize)
+                                            label.sizeToFit()
+                                            label.layer.masksToBounds = true
+                                            return label
+                                        }
+                                                      .pickerStyle(.wheel)
+                                                      .frame(width: textFieldWidth / 2)
+                                                      .padding(.trailing)
+                                                      .onChange(of: ageIndex) { _ in
+                                                          setAge()
+                                                      }
+                                                      .onAppear {
+                                                          setAge()
+                                                      }
+                                    }
+                                    .padding([.leading, .trailing])
+                                }
+                                .frame(height: screenHeight * 0.1)
+                                
+                                Spacer()
+                                
+                                VStack(spacing: 10) {
+                                    TextField("Graduation Year", text: $gradYear)
+                                        .disableAutocorrection(true)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: textFieldWidth * 0.75)
+                                        .keyboardType(.numberPad)
+                                        .multilineTextAlignment(.center)
+                                        .focused($focusedField, equals: .gradYear)
+                                        .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                            text: $gradYear, fieldType: .gradYear,
+                                            focusedField: $focusedField))
+                                        .onAppear {
+                                            if infoSafe, let parsedGradYear = parsedGradYear {
+                                                gradYear = String(parsedGradYear)
+                                                if signupData.recruiting == nil {
+                                                    signupData.recruiting = RecruitingData()
+                                                }
+                                                signupData.recruiting!.gradYear = parsedGradYear
+                                            }
+                                        }
+                                        .onChange(of: gradYear) { _ in
+                                            gradYear = String(gradYear.prefix(4))
+                                            
+                                            if signupData.recruiting == nil {
+                                                signupData.recruiting = RecruitingData()
+                                            }
+                                            if let gradYear = Int(gradYear) {
+                                                signupData.recruiting!.gradYear = gradYear
+                                            }
+                                        }
+                                }
+                                
+                                TextField("High School", text: $highSchool)
+                                    .disableAutocorrection(true)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: textFieldWidth)
+                                    .multilineTextAlignment(.center)
+                                    .focused($focusedField, equals: .highSchool)
+                                    .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                        text: $highSchool, fieldType: .highSchool,
+                                        focusedField: $focusedField))
+                                    .onChange(of: highSchool) { _ in
+                                        if signupData.recruiting == nil {
+                                            signupData.recruiting = RecruitingData()
+                                        }
+                                        signupData.recruiting!.highSchool = highSchool
+                                    }
+                                TextField("Hometown", text: $hometown)
+                                    .disableAutocorrection(true)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: textFieldWidth)
+                                    .multilineTextAlignment(.center)
+                                    .focused($focusedField, equals: .hometown)
+                                    .modifier(TextFieldClearButton<RecruitingInfoField>(
+                                        text: $hometown, fieldType: .hometown,
+                                        focusedField: $focusedField))
+                                    .onAppear {
+                                        if infoSafe, let parsedCityState = parsedCityState {
+                                            hometown = parsedCityState
+                                            if signupData.recruiting == nil {
+                                                signupData.recruiting = RecruitingData()
+                                            }
+                                            signupData.recruiting!.hometown = parsedCityState
+                                        }
+                                    }
+                                    .onChange(of: hometown) { _ in
+                                        if signupData.recruiting == nil {
+                                            signupData.recruiting = RecruitingData()
+                                        }
+                                        signupData.recruiting!.hometown = hometown
+                                    }
                             }
-                            .frame(height: screenHeight * 0.1)
                             
                             Spacer()
                             
                             HStack {
-                                TextField("Weight", text: $weight)
-                                    .disableAutocorrection(true)
-                                    .textFieldStyle(.roundedBorder)
-                                    .frame(width: textFieldWidth / 2)
-                                    .keyboardType(.numberPad)
-                                    .multilineTextAlignment(.center)
-                                    .focused($focusedField, equals: .weight)
-                                    .modifier(TextFieldClearButton<RecruitingInfoField>(
-                                        text: $weight, fieldType: .weight,
-                                        focusedField: $focusedField))
-                                    .onChange(of: weight) { _ in
-                                        weight = String(weight.prefix(6))
-                                        
-                                        if signupData.recruiting == nil {
-                                            signupData.recruiting = RecruitingData()
+                                NavigationLink(destination: AdrenalineProfileView(
+                                    userEmail: signupData.email ?? "",
+                                    loginSuccessful: $loginSuccessful)) {
+                                        Text("Skip")
+                                            .bold()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .cornerRadius(40)
+                                    .foregroundColor(.secondary)
+                                    .simultaneousGesture(TapGesture().onEnded({
+                                        withAnimation {
+                                            showSplash = false
                                         }
-                                        if let weight = Int(weight) {
-                                            signupData.recruiting!.weight = Weight(weight: weight,
-                                                                                   unit: weightUnit)
+                                    }))
+                                
+                                NavigationLink(destination: AdrenalineProfileView(
+                                    userEmail: signupData.email ?? "",
+                                    loginSuccessful: $loginSuccessful)) {
+                                        Text("Next")
+                                            .bold()
+                                    }
+                                    .buttonStyle(.bordered)
+                                    .cornerRadius(40)
+                                    .foregroundColor(.primary)
+                                    .opacity(!requiredFieldsFilledIn ? 0.3 : 1.0)
+                                    .disabled(!requiredFieldsFilledIn)
+                                    .simultaneousGesture(TapGesture().onEnded {
+                                        setAthleteRecruitingFields()
+                                        guard let stats = parser.profileData.diveStatistics else {
+                                            return
                                         }
-                                    }
-                                BubbleSelectView(selection: $weightUnit)
-                                    .frame(width: textFieldWidth / 2)
-                                    .onChange(of: weightUnit) { _ in
-                                        if signupData.recruiting == nil {
-                                            signupData.recruiting = RecruitingData()
-                                        }
-                                        if let weight = Int(weight) {
-                                            signupData.recruiting!.weight = Weight(weight: weight,
-                                                                                   unit: weightUnit)
-                                        }
-                                    }
-                            }
-                            
-                            BubbleSelectView(selection: $gender)
-                                .frame(width: textFieldWidth)
-                                .onChange(of: gender) { _ in
-                                    setGender()
-                                }
-                                .onAppear {
-                                    setGender()
-                                }
-                            
-                            Spacer()
-                            
-                            BackgroundBubble(shadow: 6, onTapGesture: { focusedField = nil }) {
-                                HStack {
-                                    Text("Age:")
-                                    NoStickPicker(selection: $ageIndex,
-                                                  rowCount: ageRange.count) { i in
-                                        let label = UILabel()
-                                        let age = ageRange[i]
-                                        label.attributedText = NSMutableAttributedString(
-                                            string: String(age))
-                                        label.font = UIFont.systemFont(ofSize: pickerFontSize)
-                                        label.sizeToFit()
-                                        label.layer.masksToBounds = true
-                                        return label
-                                    }
-                                                  .pickerStyle(.wheel)
-                                                  .frame(width: textFieldWidth / 2)
-                                                  .padding(.trailing)
-                                                  .onChange(of: ageIndex) { _ in
-                                                      setAge()
-                                                  }
-                                                  .onAppear {
-                                                      setAge()
-                                                  }
-                                }
-                                .padding([.leading, .trailing])
-                            }
-                            .frame(height: screenHeight * 0.1)
-                            
-                            Spacer()
-                            
-                            VStack(spacing: 10) {
-                                TextField("Graduation Year", text: $gradYear)
-                                    .disableAutocorrection(true)
-                                    .textFieldStyle(.roundedBorder)
-                                    .frame(width: textFieldWidth * 0.75)
-                                    .keyboardType(.numberPad)
-                                    .multilineTextAlignment(.center)
-                                    .focused($focusedField, equals: .gradYear)
-                                    .modifier(TextFieldClearButton<RecruitingInfoField>(
-                                        text: $gradYear, fieldType: .gradYear,
-                                        focusedField: $focusedField))
-                                    .onAppear {
-                                        if infoSafe, let parsedGradYear = parsedGradYear {
-                                            gradYear = String(parsedGradYear)
-                                            if signupData.recruiting == nil {
-                                                signupData.recruiting = RecruitingData()
-                                            }
-                                            signupData.recruiting!.gradYear = parsedGradYear
-                                        }
-                                    }
-                                    .onChange(of: gradYear) { _ in
-                                        gradYear = String(gradYear.prefix(4))
-                                        
-                                        if signupData.recruiting == nil {
-                                            signupData.recruiting = RecruitingData()
-                                        }
-                                        if let gradYear = Int(gradYear) {
-                                            signupData.recruiting!.gradYear = gradYear
-                                        }
-                                    }
-                            }
-                            
-                            TextField("High School", text: $highSchool)
-                                .disableAutocorrection(true)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: textFieldWidth)
-                                .multilineTextAlignment(.center)
-                                .focused($focusedField, equals: .highSchool)
-                                .modifier(TextFieldClearButton<RecruitingInfoField>(
-                                    text: $highSchool, fieldType: .highSchool,
-                                    focusedField: $focusedField))
-                                .onChange(of: highSchool) { _ in
-                                    if signupData.recruiting == nil {
-                                        signupData.recruiting = RecruitingData()
-                                    }
-                                    signupData.recruiting!.highSchool = highSchool
-                                }
-                            TextField("Hometown", text: $hometown)
-                                .disableAutocorrection(true)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(width: textFieldWidth)
-                                .multilineTextAlignment(.center)
-                                .focused($focusedField, equals: .hometown)
-                                .modifier(TextFieldClearButton<RecruitingInfoField>(
-                                    text: $hometown, fieldType: .hometown,
-                                    focusedField: $focusedField))
-                                .onAppear {
-                                    if infoSafe, let parsedCityState = parsedCityState {
-                                        hometown = parsedCityState
-                                        if signupData.recruiting == nil {
-                                            signupData.recruiting = RecruitingData()
-                                        }
-                                        signupData.recruiting!.hometown = parsedCityState
-                                    }
-                                }
-                                .onChange(of: hometown) { _ in
-                                    if signupData.recruiting == nil {
-                                        signupData.recruiting = RecruitingData()
-                                    }
-                                    signupData.recruiting!.hometown = hometown
-                                }
-                        }
-                        
-                        Spacer()
-                        
-                        HStack {
-                            NavigationLink(destination: AdrenalineProfileView(
-                                userEmail: signupData.email ?? "",
-                                loginSuccessful: $loginSuccessful)) {
-                                    Text("Skip")
-                                        .bold()
-                                }
-                                .buttonStyle(.bordered)
-                                .cornerRadius(40)
-                                .foregroundColor(.secondary)
-                                .simultaneousGesture(TapGesture().onEnded({
-                                    withAnimation {
-                                        showSplash = false
-                                    }
-                                }))
-                            
-                            NavigationLink(destination: AdrenalineProfileView(
-                                userEmail: signupData.email ?? "",
-                                loginSuccessful: $loginSuccessful)) {
-                                    Text("Next")
-                                        .bold()
-                                }
-                                .buttonStyle(.bordered)
-                                .cornerRadius(40)
-                                .foregroundColor(.primary)
-                                .opacity(!requiredFieldsFilledIn ? 0.3 : 1.0)
-                                .disabled(!requiredFieldsFilledIn)
-                                .simultaneousGesture(TapGesture().onEnded {
-                                    setAthleteRecruitingFields()
-                                    guard let stats = parser.profileData.diveStatistics else {
-                                        return
-                                    }
-                                    let skill = SkillRating(diveStatistics: stats)
-                                    Task {
-                                        let (springboard, platform, _) =
-                                        await skill.getSkillRating(stats: stats,
-                                                                   metric: skill.computeMetric1)
-                                        print(springboard, " - ", platform)
-                                        guard let email = signupData.email else { return }
-                                        updateAthleteSkillRating(email, springboard, platform)
-                                        
-                                        await MainActor.run {
-                                            withAnimation {
-                                                showSplash = false
+                                        let skill = SkillRating(diveStatistics: stats)
+                                        Task {
+                                            let (springboard, platform, _) =
+                                            await skill.getSkillRating(stats: stats,
+                                                                       metric: skill.computeMetric1)
+                                            print(springboard, " - ", platform)
+                                            guard let email = signupData.email else { return }
+                                            updateAthleteSkillRating(email, springboard, platform)
+                                            
+                                            await MainActor.run {
+                                                withAnimation {
+                                                    showSplash = false
+                                                }
                                             }
                                         }
-                                    }
-                                })
+                                    })
+                            }
                         }
+                        .padding()
                     }
-                    .padding()
+                    .frame(height: 300)
+                    .onDisappear {
+                        print(signupData)
+                    }
+                    
+                    Spacer()
+                    Spacer()
+                    Spacer()
                 }
-                .frame(height: 300)
-                .onDisappear {
-                    print(signupData)
-                }
-                
-                Spacer()
-                Spacer()
-                Spacer()
             }
         }
         .dynamicTypeSize(.xSmall ... .accessibility1)
@@ -438,6 +444,7 @@ struct AthleteRecruitingView: View {
                         link: "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
                         + diveMeetsID) {
                         print("Failed to parse profile")
+                        infoReady = true
                     } else {
                         let info = parser.profileData.info
                         guard let g = info?.gender else { return }
@@ -448,6 +455,7 @@ struct AthleteRecruitingView: View {
                         gradYear = String(parsedGradYear)
                         guard let parsedHometown = info?.cityState else { return }
                         hometown = parsedHometown
+                        infoReady = true
                     }
                 }
             }
