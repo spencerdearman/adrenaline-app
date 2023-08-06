@@ -9,6 +9,7 @@
 
 import SwiftUI
 import Foundation
+import UniformTypeIdentifiers
 
 final class ConcurrentImageLoader {
     private var images: [URLRequest: LoaderStatus] = [:]
@@ -87,7 +88,7 @@ final class ConcurrentImageLoader {
             print("not in file system")
         }
         
-//        print("Pulling \(String(describing: urlRequest.url?.absoluteString)) from network")
+        //        print("Pulling \(String(describing: urlRequest.url?.absoluteString)) from network")
         let task: Task<UIImage?, Error> = Task {
             let (imageData, _) = try await URLSession.shared.data(for: urlRequest)
             guard let image = UIImage(data: imageData) else { return nil }
@@ -105,11 +106,22 @@ final class ConcurrentImageLoader {
     }
     
     private func persistImage(_ image: UIImage, for urlRequest: URLRequest) throws {
-        guard let url = fileName(for: urlRequest),
-              let data = try? Data(contentsOf: url) else {
+        guard let url = fileName(for: urlRequest) else {
+            assertionFailure("Unable to get URL for \(urlRequest)")
+            return
+        }
+        var data: Data
+        if let jpeg = image.jpegData(compressionQuality: 0.8) {
+            data = jpeg
+        } else if let png = image.pngData() {
+            data = png
+        } else if let gif = image.toGifData() {
+            data = gif
+        } else {
             assertionFailure("Unable to generate a local path for \(urlRequest)")
             return
         }
+        
         print("Persisting image \(String(describing: urlRequest.url?.absoluteString)) to disk")
         do {
             try data.write(to: url)
@@ -122,5 +134,19 @@ final class ConcurrentImageLoader {
     private enum LoaderStatus {
         case inProgress(Task<UIImage?, Error>)
         case fetched(UIImage)
+    }
+}
+
+extension UIImage {
+    func toGifData(options: NSDictionary? = nil) -> Data? {
+        guard let cgImage = cgImage else { return nil }
+        return autoreleasepool { () -> Data? in
+            let data = NSMutableData()
+            guard let imageDestination = CGImageDestinationCreateWithData(
+                data as CFMutableData, UTType.gif.identifier as CFString, 1, nil) else { return nil }
+            CGImageDestinationAddImage(imageDestination, cgImage, options)
+            CGImageDestinationFinalize(imageDestination)
+            return data as Data
+        }
     }
 }
