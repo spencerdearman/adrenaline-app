@@ -363,15 +363,10 @@ struct CurrentMeetsView: View {
                 }
             }
         } else if meetParser.currentMeets != nil && !timedOut {
-            ZStack{
-                Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .frame(width: 275, height: 75)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 6)
+            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
                 Text("No current meets found")
+                    .dynamicTypeSize(.xSmall ... .xxxLarge)
             }
-            .frame(width: 275, height: 75)
         } else if !timedOut {
             BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
                 VStack {
