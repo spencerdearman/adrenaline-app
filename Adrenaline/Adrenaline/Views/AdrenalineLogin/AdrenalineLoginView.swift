@@ -52,9 +52,9 @@ struct AdrenalineLoginView: View {
                               email: $email, password: $password, loginSuccessful: $loginSuccessful,
                               showSplash: $showSplash)
                 }
+                .navigationViewStyle(StackNavigationViewStyle())
                 // Bless the person that figured this out:
                 // https://developer.apple.com/forums/thread/693137
-                .navigationViewStyle(.stack)
             }
         }
         // Clears email and password on Logout press back to this page
