@@ -605,6 +605,12 @@ final class MeetParser: ObservableObject {
                         }
                     }
                 }
+                // Catches case when there is no "Upcoming" tab in the Meets tab
+                if upcomingMeets == nil {
+                    await MainActor.run {
+                        upcomingMeets = [:]
+                    }
+                }
             }
         } catch {
             print("Parse present meets failed")
