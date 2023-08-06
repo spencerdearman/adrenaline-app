@@ -180,6 +180,18 @@ struct IsThisYouView: View {
                                         .padding([.leading, .trailing])
                     }
                     .padding()
+                    NavigationLink {
+                        signupData.accountType == .athlete
+                                       ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                                       diveMeetsID: $diveMeetsID,
+                                                                       showSplash: $showSplash))
+                                       : AnyView(AdrenalineProfileView(
+                                        userEmail: signupData.email ?? "",
+                                        loginSuccessful: $loginSuccessful))
+                    } label: {
+                        Text("Skip")
+                            .foregroundColor(Custom.medBlue)
+                    }
                     Spacer()
                 }
             }

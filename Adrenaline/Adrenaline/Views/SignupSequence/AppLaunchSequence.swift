@@ -107,6 +107,7 @@ struct AppLaunchSequence: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
     }
     
     private func loadLightData() {

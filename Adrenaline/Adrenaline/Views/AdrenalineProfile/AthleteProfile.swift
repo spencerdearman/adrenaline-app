@@ -22,7 +22,12 @@ struct DiverView: View {
                 NavigationLink(destination: {
                     DiveMeetsLink(userViewData: $userViewData)
                 }, label: {
-                    BackgroundBubble(vPadding: 20, hPadding: 30) {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(Custom.darkGray)
+                            .cornerRadius(50)
+                            .shadow(radius: 10)
+                            .frame(width: screenWidth * 0.7, height: screenHeight * 0.05)
                         Text("Link DiveMeets Account")
                             .foregroundColor(.primary)
                             .font(.title2).fontWeight(.semibold)
