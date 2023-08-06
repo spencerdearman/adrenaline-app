@@ -22,6 +22,7 @@ struct AdrenalineLoginView: View {
     @Environment(\.getUser) private var getUser
     @Environment(\.validatePassword) private var validatePassword
     @Environment(\.getAthlete) private var getAthlete
+    @Environment(\.networkIsConnected) private var networkIsConnected
     @State var showError: Bool = false
     @FocusState private var focusedField: LoginField?
     @State var isPasswordVisible: Bool = false
@@ -41,38 +42,42 @@ struct AdrenalineLoginView: View {
     }
     
     var body: some View {
-        Group {
-            if showBackButton {
-                LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
-                          email: $email, password: $password, loginSuccessful: $loginSuccessful,
-                          showSplash: $showSplash, showBackButton: true)
-            } else {
-                NavigationView {
+        if networkIsConnected {
+            Group {
+                if showBackButton {
                     LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
                               email: $email, password: $password, loginSuccessful: $loginSuccessful,
-                              showSplash: $showSplash)
-                }
-                // Bless the person that figured this out:
-                // https://developer.apple.com/forums/thread/693137
-                .navigationViewStyle(.stack)
-            }
-        }
-        // Clears email and password on Logout press back to this page
-        .onChange(of: loginSuccessful) { newValue in
-            if !loginSuccessful {
-                email = ""
-                password = ""
-            }
-        }
-        // Gets stored credentials and automatically signs in the user
-        .onAppear {
-            if let creds = getStoredCredentials() {
-                print(creds)
-                withAnimation {
-                    loginSuccessful = true
-                    email = creds.0
+                              showSplash: $showSplash, showBackButton: true)
+                } else {
+                    NavigationView {
+                        LoginPage(showError: $showError, isPasswordVisible: $isPasswordVisible,
+                                  email: $email, password: $password, loginSuccessful: $loginSuccessful,
+                                  showSplash: $showSplash)
+                    }
+                    // Bless the person that figured this out:
+                    // https://developer.apple.com/forums/thread/693137
+                    .navigationViewStyle(.stack)
                 }
             }
+            // Clears email and password on Logout press back to this page
+            .onChange(of: loginSuccessful) { newValue in
+                if !loginSuccessful {
+                    email = ""
+                    password = ""
+                }
+            }
+            // Gets stored credentials and automatically signs in the user
+            .onAppear {
+                if let creds = getStoredCredentials() {
+                    print(creds)
+                    withAnimation {
+                        loginSuccessful = true
+                        email = creds.0
+                    }
+                }
+            }
+        } else {
+            NotConnectedView()
         }
     }
 }

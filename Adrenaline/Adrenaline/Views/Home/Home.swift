@@ -88,6 +88,7 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
 
 struct Home: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.networkIsConnected) private var networkIsConnected
     @StateObject var meetParser: MeetParser = MeetParser()
     @State private var meetsParsed: Bool = false
     @State private var timedOut: Bool = false
@@ -156,103 +157,107 @@ struct Home: View {
     
     @ViewBuilder
     var body: some View {
-        NavigationView {
-            ZStack {
-                HomeColorfulView()
-                VStack {
+        if networkIsConnected {
+            NavigationView {
+                ZStack {
+                    HomeColorfulView()
                     VStack {
-                        BackgroundBubble(vPadding: 15, hPadding: 30) {
-                            Text("Home")
-                                .font(.title2).bold()
-                        }
-                        ZStack {
+                        VStack {
+                            BackgroundBubble(vPadding: 15, hPadding: 30) {
+                                Text("Home")
+                                    .font(.title2).bold()
+                            }
                             ZStack {
-                                RoundedRectangle(cornerRadius: cornerRadius)
-                                    .frame(width: typeBubbleWidth * 2 + 5,
-                                           height: typeBGWidth)
-                                    .foregroundColor(Custom.grayThinMaterial)
-                                    .shadow(radius: 5)
-                                RoundedRectangle(cornerRadius: cornerRadius)
-                                    .frame(width: typeBubbleWidth,
-                                           height: typeBubbleHeight)
-                                    .foregroundColor(Custom.darkGray)
-                                    .offset(x: selection == .upcoming
-                                            ? -typeBubbleWidth / 2
-                                            : typeBubbleWidth / 2)
-                                    .animation(.spring(response: 0.2), value: selection)
-                                HStack(spacing: 0) {
-                                    Button(action: {
-                                        if selection == .current {
-                                            selection = .upcoming
-                                        }
-                                    }, label: {
-                                        Text(ViewType.upcoming.rawValue)
-                                            .animation(nil, value: selection)
-                                    })
-                                    .frame(width: typeBubbleWidth,
-                                           height: typeBubbleHeight)
-                                    .foregroundColor(textColor)
-                                    .cornerRadius(cornerRadius)
-                                    Button(action: {
-                                        if selection == .upcoming {
-                                            selection = .current
-                                        }
-                                    }, label: {
-                                        Text(ViewType.current.rawValue)
-                                            .animation(nil, value: selection)
-                                    })
-                                    .frame(width: typeBubbleWidth + 2,
-                                           height: typeBubbleHeight)
-                                    .foregroundColor(textColor)
-                                    .cornerRadius(cornerRadius)
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: cornerRadius)
+                                        .frame(width: typeBubbleWidth * 2 + 5,
+                                               height: typeBGWidth)
+                                        .foregroundColor(Custom.grayThinMaterial)
+                                        .shadow(radius: 5)
+                                    RoundedRectangle(cornerRadius: cornerRadius)
+                                        .frame(width: typeBubbleWidth,
+                                               height: typeBubbleHeight)
+                                        .foregroundColor(Custom.darkGray)
+                                        .offset(x: selection == .upcoming
+                                                ? -typeBubbleWidth / 2
+                                                : typeBubbleWidth / 2)
+                                        .animation(.spring(response: 0.2), value: selection)
+                                    HStack(spacing: 0) {
+                                        Button(action: {
+                                            if selection == .current {
+                                                selection = .upcoming
+                                            }
+                                        }, label: {
+                                            Text(ViewType.upcoming.rawValue)
+                                                .animation(nil, value: selection)
+                                        })
+                                        .frame(width: typeBubbleWidth,
+                                               height: typeBubbleHeight)
+                                        .foregroundColor(textColor)
+                                        .cornerRadius(cornerRadius)
+                                        Button(action: {
+                                            if selection == .upcoming {
+                                                selection = .current
+                                            }
+                                        }, label: {
+                                            Text(ViewType.current.rawValue)
+                                                .animation(nil, value: selection)
+                                        })
+                                        .frame(width: typeBubbleWidth + 2,
+                                               height: typeBubbleHeight)
+                                        .foregroundColor(textColor)
+                                        .cornerRadius(cornerRadius)
+                                    }
                                 }
+                                HStack {
+                                    Spacer()
+                                    Button(action: {
+                                        Task {
+                                            await getPresentMeets()
+                                        }
+                                    }, label: {
+                                        ZStack {
+                                            Circle()
+                                                .foregroundColor(Custom.grayThinMaterial)
+                                                .shadow(radius: 6)
+                                                .frame(width: typeBGWidth, height: typeBGWidth)
+                                            Image(systemName: "arrow.clockwise")
+                                                .foregroundColor(.primary)
+                                                .font(.title2)
+                                        }
+                                    })
+                                }
+                                .padding(.trailing)
                             }
-                            HStack {
-                                Spacer()
-                                Button(action: {
-                                    Task {
-                                        await getPresentMeets()
-                                    }
-                                }, label: {
-                                    ZStack {
-                                        Circle()
-                                            .foregroundColor(Custom.grayThinMaterial)
-                                            .shadow(radius: 6)
-                                            .frame(width: typeBGWidth, height: typeBGWidth)
-                                        Image(systemName: "arrow.clockwise")
-                                            .foregroundColor(.primary)
-                                            .font(.title2)
-                                    }
-                                })
-                            }
-                            .padding(.trailing)
+                            .dynamicTypeSize(.xSmall ... .xLarge)
+                            
                         }
-                        .dynamicTypeSize(.xSmall ... .xLarge)
-                        
+                        Spacer()
+                        if selection == .upcoming {
+                            UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut)
+                        } else {
+                            CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut)
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                    if selection == .upcoming {
-                        UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut)
-                    } else {
-                        CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut)
-                    }
-                    Spacer()
                 }
             }
-        }
-        .navigationViewStyle(StackNavigationViewStyle())
-        .dynamicTypeSize(.xSmall ... .xxxLarge)
-        .onSwipeGesture(trigger: .onEnded) { direction in
-            if direction == .left && selection == .upcoming {
-                selection = .current
-            } else if direction == .right && selection == .current {
-                selection = .upcoming
+            .navigationViewStyle(StackNavigationViewStyle())
+            .dynamicTypeSize(.xSmall ... .xxxLarge)
+            .onSwipeGesture(trigger: .onEnded) { direction in
+                if direction == .left && selection == .upcoming {
+                    selection = .current
+                } else if direction == .right && selection == .current {
+                    selection = .upcoming
+                }
             }
-        }
-        .onAppear {
-            Task {
-                await getPresentMeets()
+            .onAppear {
+                Task {
+                    await getPresentMeets()
+                }
             }
+        } else {
+            NotConnectedView()
         }
     }
 }
@@ -539,9 +544,9 @@ struct MeetBubbleView: View {
                         Spacer()
                         
                         BackgroundBubble(vPadding: 8) {
-                                Text(getDisplayDateString(start: elements[4], end: elements[5]))
-                                    .padding([.leading, .trailing], 5)
-                            }
+                            Text(getDisplayDateString(start: elements[4], end: elements[5]))
+                                .padding([.leading, .trailing], 5)
+                        }
                         .padding(.trailing)
                     }
                     .font(.subheadline)
@@ -555,7 +560,7 @@ struct MeetBubbleView: View {
     }
 }
 
-struct HomeColorfulView: View{
+struct HomeColorfulView: View {
     @Environment(\.colorScheme) var currentMode
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -570,7 +575,7 @@ struct HomeColorfulView: View{
         return deviceOrientation.isLandscape
     }
     
-    var body: some View{
+    var body: some View {
         ZStack{
             bgColor.ignoresSafeArea()
             GeometryReader { geometry in
