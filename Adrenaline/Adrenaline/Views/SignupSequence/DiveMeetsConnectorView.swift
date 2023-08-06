@@ -85,6 +85,8 @@ struct IsThisYouView: View {
     @Binding var signupData: SignupData
     @Binding var diveMeetsID: String
     @Binding var showSplash: Bool
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     private var bgColor: Color {
         currentMode == .light ? Color.white : Color.black
     }
@@ -122,7 +124,16 @@ struct IsThisYouView: View {
                                    : AnyView(AdrenalineProfileView(
                                     userEmail: signupData.email ?? "",
                                     loginSuccessful: $loginSuccessful))) {
-                        Text("Next")
+                                        ZStack {
+                                            Rectangle()
+                                                .foregroundColor(Custom.darkGray)
+                                                .frame(width: screenWidth * 0.2,
+                                                       height: screenWidth * 0.09)
+                                                .mask(RoundedRectangle(cornerRadius: 50))
+                                                .shadow(radius: 6)
+                                            Text("Next")
+                                                .foregroundColor(.primary)
+                                        }
                     }
                     Spacer()
                 }
@@ -180,6 +191,25 @@ struct IsThisYouView: View {
                                         .padding([.leading, .trailing])
                     }
                     .padding()
+                    NavigationLink {
+                        signupData.accountType == .athlete
+                                       ? AnyView(AthleteRecruitingView(signupData: $signupData,
+                                                                       diveMeetsID: $diveMeetsID,
+                                                                       showSplash: $showSplash))
+                                       : AnyView(AdrenalineProfileView(
+                                        userEmail: signupData.email ?? "",
+                                        loginSuccessful: $loginSuccessful))
+                    } label: {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(Custom.darkGray)
+                                .frame(width: screenWidth * 0.2, height: screenWidth * 0.09)
+                                .mask(RoundedRectangle(cornerRadius: 50))
+                                .shadow(radius: 6)
+                            Text("Skip")
+                                .foregroundColor(.primary)
+                        }
+                    }
                     Spacer()
                 }
             }

@@ -71,7 +71,12 @@ struct Event: View {
                             NavigationLink (destination: {
                                 EventResultPage(meetLink: diverData.6)
                             }, label: {
-                                BackgroundBubble(vPadding: 30, hPadding: 30) {
+                                ZStack {
+                                    Rectangle()
+                                        .foregroundColor(Custom.darkGray)
+                                        .frame(width: screenWidth * 0.45, height: screenWidth * 0.1)
+                                        .mask(RoundedRectangle(cornerRadius: 50))
+                                        .shadow(radius: 6)
                                     Text("Full Event Page")
                                         .foregroundColor(.primary)
                                 }

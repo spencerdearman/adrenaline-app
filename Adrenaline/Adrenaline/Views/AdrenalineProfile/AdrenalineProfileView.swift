@@ -286,6 +286,7 @@ struct EditProfile: View {
 
 
 struct DiveMeetsLink: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
     @Binding var userViewData: UserViewData
     @State var diveMeetsID: String = ""
@@ -313,6 +314,14 @@ struct DiveMeetsLink: View {
                 Text("Done")
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
             }
         }
     }
