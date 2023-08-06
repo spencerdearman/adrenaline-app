@@ -28,6 +28,7 @@ struct RankingsView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.getMaleAthletes) var getMaleAthletes
     @Environment(\.getFemaleAthletes) var getFemaleAthletes
+    @Environment(\.networkIsConnected) private var networkIsConnected
     @State private var rankingType: RankingType = .combined
     @State private var gender: Gender = .male
     @State private var maleRatings: GenderRankingList = []
@@ -62,46 +63,50 @@ struct RankingsView: View {
     }
     
     var body: some View {
-        VStack {
-            Text("Rankings")
-                .font(.title)
-                .bold()
-            
-            BubbleSelectView(selection: $rankingType)
-                .padding([.leading, .trailing])
-            
-            BubbleSelectView(selection: $gender)
-                .padding([.leading, .trailing])
-            
-            Divider()
-            
-            RankingListView(rankingType: $rankingType, gender: $gender,
-                            maleRatings: $maleRatings, femaleRatings: $femaleRatings)
-            
-            Spacer()
-        }
-        .onAppear {
-            if let males = getMaleAthletes() {
-                maleRatings = []
-                for male in males {
-                    maleRatings.append((male, male.springboardRating,
-                                        male.platformRating,
-                                        male.totalRating))
+        if networkIsConnected {
+            VStack {
+                Text("Rankings")
+                    .font(.title)
+                    .bold()
+                
+                BubbleSelectView(selection: $rankingType)
+                    .padding([.leading, .trailing])
+                
+                BubbleSelectView(selection: $gender)
+                    .padding([.leading, .trailing])
+                
+                Divider()
+                
+                RankingListView(rankingType: $rankingType, gender: $gender,
+                                maleRatings: $maleRatings, femaleRatings: $femaleRatings)
+                
+                Spacer()
+            }
+            .onAppear {
+                if let males = getMaleAthletes() {
+                    maleRatings = []
+                    for male in males {
+                        maleRatings.append((male, male.springboardRating,
+                                            male.platformRating,
+                                            male.totalRating))
+                    }
+                    
+                    maleRatings = normalizeRatings(ratings: maleRatings)
                 }
                 
-                maleRatings = normalizeRatings(ratings: maleRatings)
-            }
-            
-            if let females = getFemaleAthletes() {
-                femaleRatings = []
-                for female in females {
-                    femaleRatings.append((female, female.springboardRating,
-                                        female.platformRating,
-                                        female.totalRating))
+                if let females = getFemaleAthletes() {
+                    femaleRatings = []
+                    for female in females {
+                        femaleRatings.append((female, female.springboardRating,
+                                              female.platformRating,
+                                              female.totalRating))
+                    }
+                    
+                    femaleRatings = normalizeRatings(ratings: femaleRatings)
                 }
-                
-                femaleRatings = normalizeRatings(ratings: femaleRatings)
             }
+        } else {
+            NotConnectedView()
         }
     }
 }
@@ -128,7 +133,7 @@ struct RankingListView: View {
         return keep.sorted(by: {
             if $0.1 > $1.1 { return true }
             else if $0.1 == $1.1,
-                        let oneLast = $0.0.lastName,
+                    let oneLast = $0.0.lastName,
                     let twoLast = $1.0.lastName,
                     oneLast < twoLast {
                 return true
@@ -154,7 +159,7 @@ struct RankingListView: View {
                 if rating > curRating {
                     throw ParseError("Numbering ranking list failed")
                 }
-
+                
                 // If the rating is strictly less than the previous, then it updates the assigned
                 // number to the next number of the items it has seen (this keeps track of the
                 // total number of items seen so when there are ties, the next stricly lower rating
@@ -166,7 +171,7 @@ struct RankingListView: View {
                 // If the rating is equal to the previous, the current rating need not be updated
                 // and the current index stays the same (this creates multiple of the same ranking
                 // number for ratings that are equal)
-
+                
                 result.append((curIdx, item))
                 
                 everyIdx += 1

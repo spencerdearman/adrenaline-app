@@ -101,6 +101,14 @@ private struct ValidatePasswordKey: EnvironmentKey {
     static let defaultValue: (String, String) -> Bool = { _, _ in return false }
 }
 
+private struct NetworkIsConnectedKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
+private struct NetworkIsCellularKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -211,6 +219,16 @@ extension EnvironmentValues {
         get { self[ValidatePasswordKey.self] }
         set { self[ValidatePasswordKey.self] = newValue }
     }
+    
+    var networkIsConnected: Bool {
+        get { self[NetworkIsConnectedKey.self] }
+        set { self[NetworkIsConnectedKey.self] = newValue }
+    }
+    
+    var networkIsCellular: Bool {
+        get { self[NetworkIsCellularKey.self] }
+        set { self[NetworkIsCellularKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -232,6 +250,7 @@ struct AdrenalineApp: App {
     // instead of creating a new instance of ModelDataController()
     @StateObject var modelDataController = ModelDataController()
     @StateObject var meetParser: MeetParser = MeetParser()
+    @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
     @State var isIndexingMeets: Bool = false
     
     var body: some Scene {
@@ -261,14 +280,19 @@ struct AdrenalineApp: App {
                 .environment(\.updateAthleteSkillRating, modelDataController.updateAthleteSkillRating)
                 .environment(\.dictToTuple, modelDataController.dictToTuple)
                 .environment(\.validatePassword, modelDataController.validatePassword)
+                .environment(\.networkIsConnected, networkMonitor.isConnected)
+                .environment(\.networkIsCellular, networkMonitor.isCellular)
                 .onAppear {
+                    networkMonitor.start()
+                    
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without
                     //     starting over)
                     if !isIndexingMeets {
                         isIndexingMeets = true
                         
-                        // Runs this task asynchronously so rest of app can function while this finishes
+                        // Runs this task asynchronously so rest of app can function while this
+                        // finishes
                         Task {
                             // await SkillRating(diveStatistics: nil).testMetrics(0)
                             // await SkillRating(diveStatistics: nil)
