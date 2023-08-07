@@ -64,6 +64,7 @@ struct CoachProfileContent: View {
         SwiftUIWheelPicker($selectedPage, items: scoreValues) { value in
             GeometryReader { g in
                 Text(value)
+                    .dynamicTypeSize(.xSmall ... .xLarge)
                     .font(.title2).fontWeight(.semibold)
                     .frame(width: g.size.width, height: g.size.height,
                            alignment: .center)
