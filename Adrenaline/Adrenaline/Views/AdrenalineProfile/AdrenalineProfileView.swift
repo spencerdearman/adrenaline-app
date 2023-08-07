@@ -132,9 +132,11 @@ struct AdrenalineProfileView: View {
             }
         }
         .onAppear {
-            guard let storedUser = getUser(userEmail) else { return }
-            user = storedUser
-            userViewData = userEntityToViewData(user: storedUser)
+            if userViewData == UserViewData() {
+                guard let storedUser = getUser(userEmail) else { return }
+                user = storedUser
+                userViewData = userEntityToViewData(user: storedUser)
+            }
         }
     }
 }
@@ -305,12 +307,12 @@ struct DiveMeetsLink: View {
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.telephoneNumber)
                         .keyboardType(.numberPad)
-                        .onChange(of: diveMeetsID) { _ in
-                            userViewData.diveMeetsID = diveMeetsID
-                        }
                     .frame(width: textFieldWidth) }
             }
-            BackgroundBubble(onTapGesture: { presentationMode.wrappedValue.dismiss() }) {
+            BackgroundBubble(onTapGesture: {
+                userViewData.diveMeetsID = diveMeetsID
+                presentationMode.wrappedValue.dismiss()
+            }) {
                 Text("Done")
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
