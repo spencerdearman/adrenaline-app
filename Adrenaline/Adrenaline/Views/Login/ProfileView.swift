@@ -18,6 +18,7 @@ struct ProfileView: View {
     var isLoginProfile: Bool = false
     @Namespace var profilespace
     @State var diverTab: Bool = false
+    @State var starred: Bool = false
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
@@ -101,6 +102,15 @@ struct ProfileView: View {
                                             } else {
                                                 Text("")
                                             }
+                                            Image(systemName: starred ? "star.fill" : "star")
+                                                .foregroundColor(starred
+                                                                 ? Color.yellow
+                                                                 : Color.primary)
+                                                .onTapGesture {
+                                                    withAnimation {
+                                                        starred.toggle()
+                                                    }
+                                                }
                                         }
                                         Divider()
                                         HStack (alignment: .firstTextBaseline) {
