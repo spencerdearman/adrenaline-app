@@ -16,7 +16,7 @@ enum BasicInfoField: Int, Hashable, CaseIterable {
     case repeatPassword
 }
 
-struct UserViewData {
+struct UserViewData: Equatable {
     var firstName: String?
     var lastName: String?
     var email: String?
