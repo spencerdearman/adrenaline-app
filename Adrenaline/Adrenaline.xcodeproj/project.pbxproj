@@ -38,9 +38,9 @@
 		00B6A5D62A6651A700C4DFDA /* AccountTypeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */; };
 		00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */; };
 		00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */; };
-		00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */; };
 		00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */; };
 		00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */ = {isa = PBXBuildFile; fileRef = 00BD0F9A2A7CAC830098E03A /* collegeLogos.json */; };
+		00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */; };
 		00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D1D58B2A3EA477003E7C13 /* ListOptimizer.swift */; };
 		00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1129A2A50EAA900557265 /* MeetScoreCalculator.swift */; };
 		00F1129D2A51C7A100557265 /* JudgeScoreCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1129C2A51C7A100557265 /* JudgeScoreCalculator.swift */; };
@@ -121,9 +121,9 @@
 		00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTypeSelectView.swift; sourceTree = "<group>"; };
 		00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoView.swift; sourceTree = "<group>"; };
 		00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TextFieldClearButton.swift; path = Adrenaline/Views/Util/TextFieldClearButton.swift; sourceTree = SOURCE_ROOT; };
-		00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentImageLoader.swift; sourceTree = "<group>"; };
-		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = collegeLogos.json; path = ../../../../Desktop/collegeLogos.json; sourceTree = "<group>"; };
+		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = collegeLogos.json; sourceTree = "<group>"; };
+		00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		00D1D58B2A3EA477003E7C13 /* ListOptimizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListOptimizer.swift; sourceTree = "<group>"; };
 		00F1129A2A50EAA900557265 /* MeetScoreCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetScoreCalculator.swift; sourceTree = "<group>"; };
 		00F1129C2A51C7A100557265 /* JudgeScoreCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JudgeScoreCalculator.swift; sourceTree = "<group>"; };
