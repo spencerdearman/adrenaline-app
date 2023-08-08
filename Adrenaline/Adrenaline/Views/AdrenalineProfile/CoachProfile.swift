@@ -14,24 +14,38 @@ var cachedDivers: [String: ProfileCoachDiversData] = [:]
 
 struct CoachView: View {
     @Binding var userViewData: UserViewData
+    @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
+    
     private let linkHead: String =
     "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    private var linkButtonWidth: CGFloat {
+        min(linkButtonWidthScaled, screenWidth * 0.8)
+    }
+    
     var body: some View {
         VStack {
             Spacer()
             // Showing DiveMeets Linking Screen
             if userViewData.diveMeetsID == "" {
-                BackgroundBubble(vPadding: 20, hPadding: 20) {
-                    NavigationLink(destination: {
-                        DiveMeetsLink(userViewData: $userViewData)
-                    }, label: {
+                NavigationLink(destination: {
+                    DiveMeetsLink(userViewData: $userViewData)
+                }, label: {
+                    ZStack {
+                        Rectangle()
+                            .foregroundColor(Custom.darkGray)
+                            .cornerRadius(50)
+                            .shadow(radius: 10)
                         Text("Link DiveMeets Account")
                             .foregroundColor(.primary)
-                            .font(.title2).fontWeight(.semibold)
-                    })
-                }
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .padding()
+                    }
+                    .frame(width: linkButtonWidth, height: screenHeight * 0.05)
+                })
             } else {
                 CoachProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)

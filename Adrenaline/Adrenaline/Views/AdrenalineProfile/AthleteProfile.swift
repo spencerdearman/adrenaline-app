@@ -9,11 +9,17 @@ import SwiftUI
 
 struct DiverView: View {
     @Binding var userViewData: UserViewData
+    @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     private let linkHead: String =
     "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
+    
+    private var linkButtonWidth: CGFloat {
+        min(linkButtonWidthScaled, screenWidth * 0.8)
+    }
+    
     var body: some View {
         VStack {
             // Showing DiveMeets Linking Screen
@@ -27,11 +33,13 @@ struct DiverView: View {
                             .foregroundColor(Custom.darkGray)
                             .cornerRadius(50)
                             .shadow(radius: 10)
-                            .frame(width: screenWidth * 0.7, height: screenHeight * 0.05)
                         Text("Link DiveMeets Account")
                             .foregroundColor(.primary)
-                            .font(.title2).fontWeight(.semibold)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .padding()
                     }
+                    .frame(width: linkButtonWidth, height: screenHeight * 0.05)
                 })
                 Spacer()
                 Spacer()

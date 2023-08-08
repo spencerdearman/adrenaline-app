@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+func getCollegeImageFilename(name: String) -> String {
+    return name.replacingOccurrences(of: " ", with: "_")
+}
+
 struct AdrenalineProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
@@ -145,9 +149,15 @@ struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.getUser) var getUser
     @Environment(\.getAthlete) var getAthlete
+    @State var selectedCollege: String = ""
     @Binding var userViewData: UserViewData
+    @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
     
     private let screenWidth = UIScreen.main.bounds.width
+    
+    private var collegeIconPadding: CGFloat {
+        collegeIconPaddingScaled * 2.2
+    }
     
     func formatLocationString(_ input: String) -> String {
         var formattedString = input
@@ -167,53 +177,73 @@ struct PersonalInfoView: View {
     var body: some View {
         VStack {
             BackgroundBubble(vPadding: 20, hPadding: 60) {
-                VStack {
-                    HStack (alignment: .firstTextBaseline) {
-                        Text((userViewData.firstName ?? "") + " " +
-                             (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
-                        Text(userViewData.accountType ?? "")
-                            .foregroundColor(.secondary)
-                    }
-                    if userViewData.accountType != "Spectator" {
-                        if currentMode == .light {
-                            Divider()
-                        } else {
-                            WhiteDivider()
-                        }
+                    VStack {
                         HStack (alignment: .firstTextBaseline) {
-                            if userViewData.accountType == "Athlete" {
-                                let a = getAthlete(userViewData.email ?? "")
-                                HStack {
-                                    Image(systemName: "mappin.and.ellipse")
-                                    if let hometown = a?.hometown, !hometown.isEmpty {
-                                        Text(formatLocationString(hometown))
-                                    } else {
-                                        Text("?")
-                                    }
-                                }
-                                HStack {
-                                    Image(systemName: "person.fill")
-                                    if let age = a?.age {
-                                        Text(String(age))
-                                    } else {
-                                        Text("?")
-                                    }
-                                }
+                            Text((userViewData.firstName ?? "") + " " +
+                                 (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
+                            Text(userViewData.accountType ?? "")
+                                .foregroundColor(.secondary)
+                        }
+                        if userViewData.accountType != "Spectator" {
+                            if currentMode == .light {
+                                Divider()
+                            } else {
+                                WhiteDivider()
                             }
-                            if userViewData.diveMeetsID != "" {
-                                HStack {
-                                    Image(systemName: "figure.pool.swim")
-                                    if let diveMeetsID = userViewData.diveMeetsID {
-                                        Text(diveMeetsID)
-                                    } else {
-                                        Text("?")
+                            HStack (alignment: .firstTextBaseline) {
+                                if userViewData.accountType == "Athlete" {
+                                    let a = getAthlete(userViewData.email ?? "")
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        if let hometown = a?.hometown, !hometown.isEmpty {
+                                            Text(formatLocationString(hometown))
+                                        } else {
+                                            Text("?")
+                                        }
+                                    }
+                                    HStack {
+                                        Image(systemName: "person.fill")
+                                        if let age = a?.age {
+                                            Text(String(age))
+                                        } else {
+                                            Text("?")
+                                        }
+                                    }
+                                }
+                                if userViewData.diveMeetsID != "" {
+                                    HStack {
+                                        Image(systemName: "figure.pool.swim")
+                                        if let diveMeetsID = userViewData.diveMeetsID {
+                                            Text(diveMeetsID)
+                                        } else {
+                                            Text("?")
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    .frame(width: screenWidth * 0.8)
+                    .overlay(selectedCollege == ""
+                             ? AnyView(EmptyView())
+                             : AnyView(
+                                Image(selectedCollege)
+                            .resizable()
+                            .clipShape(Circle())
+                            .aspectRatio(contentMode: .fit)
+                            .padding(.leading, collegeIconPadding)),
+                             alignment: .leading)
+            }
+        }
+        .dynamicTypeSize(.xSmall ... .xxLarge)
+        .onAppear {
+            if userViewData.accountType == "Athlete",
+               let a = getAthlete(userViewData.email ?? "") {
+                if let college = a.committedCollege {
+                    selectedCollege = getCollegeImageFilename(name: college)
+                } else {
+                    selectedCollege = ""
                 }
-                .frame(width: screenWidth * 0.8)
             }
         }
     }
@@ -244,16 +274,17 @@ struct SettingsPage: View {
                         .foregroundColor(.secondary)
                 }
                 NavigationLink {
-                    EditProfile()
+                    EditProfile(userViewData: $userViewData)
                 } label: {
-                    HStack {
+                    BackgroundBubble(shadow: 5) {
                         HStack {
                             Text("Edit Profile")
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                                 .fontWeight(.semibold)
                             Image(systemName: "chevron.right")
-                                .foregroundColor(.white)
+                                .foregroundColor(.primary)
                         }
+                        .padding()
                     }
                 }
             }
@@ -271,21 +302,221 @@ struct SettingsPage: View {
 
 struct EditProfile: View {
     @Environment(\.dismiss) private var dismiss
+    @Binding var userViewData: UserViewData
+    
     var body: some View {
-        Text("This is where you will edit your account")
-            .navigationBarBackButtonHidden(true)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        NavigationViewBackButton()
-                    }
+        VStack {
+            Text("This is where you will edit your account")
+            NavigationLink(destination: CommittedCollegeView(userViewData: $userViewData)) {
+                BackgroundBubble() {
+                    Text("Choose College")
+                        .foregroundColor(.primary)
+                        .padding()
                 }
             }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
 }
 
+struct CommittedCollegeView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State var college: String = ""
+    @Binding var userViewData: UserViewData
+    
+    var body: some View {
+        VStack {
+            VStack {
+                Text("Have you committed to dive in college?")
+                    .font(.title)
+                    .bold()
+                    .multilineTextAlignment(.center)
+                    .padding(.bottom)
+                Text("Start typing below to choose a college to display on your profile")
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+            }
+            Spacer()
+            SuggestionsTextField(userViewData: $userViewData)
+            Spacer()
+            Spacer()
+        }
+        .padding()
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
+    }
+}
+
+// https://stackoverflow.com/questions/76389104/how-to-create-autocomplete-textfield-in-swiftui
+struct SuggestionsTextField: View {
+    @Environment(\.updateAthleteField) var updateAthleteField
+    @Environment(\.getAthlete) var getAthlete
+    @State var college: String = ""
+    @State var suggestions: [String] = []
+    @State var suggestionsImages: [URL: UIImage] = [:]
+    @State var showSuggestions: Bool = false
+    @State var selectedCollege: String = ""
+    @Binding var userViewData: UserViewData
+    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    @ScaledMetric private var imgScaleScaled: CGFloat = 0.7
+    
+    private let colleges: [String: String]? = getCollegeLogoData()
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
+    private var maxHeightOffset: CGFloat {
+        min(maxHeightOffsetScaled, 90)
+    }
+    
+    private var imgScale: CGFloat {
+        min(imgScaleScaled, 1.1)
+    }
+    
+    private var selectedCollegeImage: Image? {
+        selectedCollege != "" ? Image(getCollegeImageFilename(name: selectedCollege)) : nil
+    }
+    
+    var body: some View {
+        VStack {
+            TextField("Start typing your college...", text: $college)
+                .onChange(of: college) { newValue in
+                    if newValue != selectedCollege {
+                        showSuggestions = true
+                        selectedCollege = ""
+                    }
+                }
+                .textFieldStyle(.roundedBorder)
+                .frame(width: screenWidth * 0.9)
+            
+            if selectedCollege != "" {
+                Spacer()
+                
+                VStack {
+                    Text("Current College")
+                        .font(.title)
+                        .bold()
+                        .padding(.bottom)
+                    BackgroundBubble() {
+                        HStack {
+                            if let image = selectedCollegeImage {
+                                image
+                                    .resizable()
+                                    .clipShape(Circle())
+                                    .scaleEffect(imgScale)
+                                    .aspectRatio(contentMode: .fit)
+                            } else {
+                                ProgressView()
+                            }
+                            Spacer()
+                            
+                            Text(selectedCollege)
+                            
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                        }
+                        .foregroundColor(.primary)
+                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.3)
+                        .padding()
+                    }
+                    
+                    if selectedCollege != "" {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(Custom.darkGray)
+                                .cornerRadius(50)
+                                .shadow(radius: 10)
+                            Text("Clear")
+                        }
+                        .frame(width: screenWidth * 0.15, height: screenHeight * 0.05)
+                        .onTapGesture {
+                            selectedCollege = ""
+                        }
+                    }
+                }
+                
+                Spacer()
+                Spacer()
+            }
+            
+            if showSuggestions && !college.isEmpty {
+                ScrollView {
+                    LazyVStack(alignment: .center) {
+                        ForEach(suggestions.filter({ $0.localizedCaseInsensitiveContains(college) }),
+                                id: \.self) { suggestion in
+                            ZStack {
+                                Button(action: {
+                                    selectedCollege = suggestion
+                                    college = selectedCollege
+                                    showSuggestions = false
+                                }) {
+                                    BackgroundBubble() {
+                                        HStack {
+                                            Image(getCollegeImageFilename(name: suggestion))
+                                                .resizable()
+                                                .clipShape(Circle())
+                                                .scaleEffect(min(imgScale, 1.0))
+                                                .aspectRatio(contentMode: .fit)
+                                            
+                                            Spacer()
+                                            
+                                            Text(suggestion)
+                                            
+                                            Spacer()
+                                            Spacer()
+                                        }
+                                        .foregroundColor(.primary)
+                                        .frame(width: screenWidth * 0.80, height: screenWidth * 0.2)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.top)
+                    .padding(.bottom, maxHeightOffset)
+                }
+            }
+        }
+        .dynamicTypeSize(.xSmall ... .xxxLarge)
+        .onAppear {
+            // Gets colleges for suggestions
+            guard let colleges = colleges else { return }
+            suggestions = Array(colleges.keys)
+            
+            // Checks if athlete already has a selected college and updates view if so
+            guard let email = userViewData.email else { return }
+            if let athlete = getAthlete(email),
+               let college = athlete.committedCollege {
+                selectedCollege = college
+            }
+        }
+        .onDisappear {
+            guard let email = userViewData.email else { return }
+            
+            // Saves selected college to athlete entity if it is not empty
+            if selectedCollege != "" {
+                updateAthleteField(email, "committedCollege", selectedCollege)
+            } else {
+                updateAthleteField(email, "committedCollege", nil)
+            }
+        }
+    }
+}
 
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
