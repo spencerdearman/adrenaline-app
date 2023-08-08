@@ -151,7 +151,7 @@ struct PersonalInfoView: View {
     @Environment(\.getAthlete) var getAthlete
     @State var selectedCollege: String = ""
     @Binding var userViewData: UserViewData
-    @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -10.0
+    @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
     
     private let screenWidth = UIScreen.main.bounds.width
     
