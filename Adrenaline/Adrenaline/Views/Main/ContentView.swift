@@ -87,43 +87,5 @@ struct ContentView: View {
             }
             .ignoresSafeArea(.keyboard)
         }
-        .onAppear {
-            let loader = ConcurrentImageLoader()
-            guard let colleges = getCollegeLogoData() else { return }
-            let links = colleges.values
-            var urls: [URL] = []
-            for link in links {
-                if let url = URL(string: link) {
-                    urls.append(url)
-                }
-            }
-
-            Task {
-                guard let url = URL(string: "https://web2.ncaa.org/ncaa_style/img/All_Logos/sm/674.gif") else { return }
-//                let images = try await loader.loadImages(from: urls)
-                let image = try await loader.loadImage(url)
-                
-                print(image)
-            }
-        }
-        .onAppear {
-            let loader = ConcurrentImageLoader()
-            guard let colleges = getCollegeLogoData() else { return }
-            let links = colleges.values
-            var urls: [URL] = []
-            for link in links {
-                if let url = URL(string: link) {
-                    urls.append(url)
-                }
-            }
-
-            Task {
-                guard let url = URL(string: "https://web2.ncaa.org/ncaa_style/img/All_Logos/sm/674.gif") else { return }
-//                let images = try await loader.loadImages(from: urls)
-                let image = try await loader.loadImage(url)
-                
-                print(image)
-            }
-        }
     }
 }

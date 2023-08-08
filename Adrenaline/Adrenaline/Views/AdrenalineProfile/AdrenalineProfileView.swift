@@ -299,6 +299,7 @@ struct EditProfile: View {
 }
 
 struct CommittedCollegeView: View {
+    @Environment(\.dismiss) private var dismiss
     @State var college: String = ""
     @Binding var userViewData: UserViewData
     
@@ -320,6 +321,14 @@ struct CommittedCollegeView: View {
             Spacer()
         }
         .padding()
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
     }
 }
 
@@ -332,39 +341,27 @@ struct SuggestionsTextField: View {
     @State var suggestionsImages: [URL: UIImage] = [:]
     @State var showSuggestions: Bool = false
     @State var selectedCollege: String = ""
-    @State var selectedCollegeImage: Image? = nil
     @Binding var userViewData: UserViewData
+    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    @ScaledMetric private var imgScaleScaled: CGFloat = 0.7
     
     private let colleges: [String: String]? = getCollegeLogoData()
     private let screenWidth = UIScreen.main.bounds.width
     
-    // Fetches suggestions images to persist them in device storage so they can be quickly looked
-    // up later, but not pulled from device storage unless they are appearing in the search
-    private func fetchSuggestionsImages() {
-        var links: [URL] = []
-        let keys = suggestions.filter({ $0.localizedCaseInsensitiveContains(college) })
-        for key in keys {
-            if let colleges = colleges,
-               let value = colleges[key],
-               let url = URL(string: value) {
-                links.append(url)
-            }
-        }
-        
-        Task { [links] in
-            try await ConcurrentImageLoader().loadImages(from: links)
-        }
+    private var maxHeightOffset: CGFloat {
+        min(maxHeightOffsetScaled, 90)
     }
     
-    private func getSuggestionImage(url: URL) -> UIImage? {
-        if !suggestionsImages.keys.contains(url) {
-            Task {
-                suggestionsImages[url] = try await ConcurrentImageLoader()
-                    .loadImage(url)
-            }
-        }
-        
-        return suggestionsImages[url]
+    private var imgScale: CGFloat {
+        min(imgScaleScaled, 1.1)
+    }
+    
+    private var selectedCollegeImage: Image? {
+        selectedCollege != "" ? Image(getImageFilename(name: selectedCollege)) : nil
+    }
+    
+    private func getImageFilename(name: String) -> String {
+        return name.replacingOccurrences(of: " ", with: "_")
     }
     
     var body: some View {
@@ -391,16 +388,23 @@ struct SuggestionsTextField: View {
                         HStack {
                             if let image = selectedCollegeImage {
                                 image
+                                    .resizable()
+                                    .clipShape(Circle())
+                                    .scaleEffect(imgScale)
+                                    .aspectRatio(contentMode: .fit)
                             } else {
                                 ProgressView()
                             }
                             Spacer()
+                            
                             Text(selectedCollege)
+                            
+                            Spacer()
                             Spacer()
                             Spacer()
                         }
                         .foregroundColor(.primary)
-                        .frame(width: 300)
+                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.3)
                         .padding()
                     }
                 }
@@ -417,57 +421,54 @@ struct SuggestionsTextField: View {
                             ZStack {
                                 Button(action: {
                                     selectedCollege = suggestion
-                                    Task {
-                                        guard let colleges = colleges,
-                                              let key = colleges[selectedCollege],
-                                              let url = URL(string: key),
-                                              let img = getSuggestionImage(url: url)
-                                        else { return }
-                                        
-                                        selectedCollegeImage = Image(uiImage: img)
-                                    }
                                     college = selectedCollege
                                     showSuggestions = false
                                 }) {
                                     BackgroundBubble() {
                                         HStack {
-                                            if let colleges = colleges,
-                                               let value = colleges[suggestion],
-                                               let url = URL(string: value),
-                                               let img = getSuggestionImage(url: url) {
-                                                Image(uiImage: img)
-                                            } else {
-                                                ProgressView()
-                                            }
+                                            Image(getImageFilename(name: suggestion))
+                                                .resizable()
+                                                .clipShape(Circle())
+                                                .scaleEffect(min(imgScale, 1.0))
+                                                .aspectRatio(contentMode: .fit)
+                                            
                                             Spacer()
+                                            
                                             Text(suggestion)
+                                            
                                             Spacer()
                                             Spacer()
                                         }
                                         .foregroundColor(.primary)
-                                        .frame(width: 200)
-                                        .padding()
+                                        .frame(width: screenWidth * 0.80, height: screenWidth * 0.2)
                                     }
                                 }
                             }
                         }
                     }
                     .padding(.top)
+                    .padding(.bottom, maxHeightOffset)
                 }
             }
         }
+        .dynamicTypeSize(.xSmall ... .xxxLarge)
         .onAppear {
+            // Gets colleges for suggestions
             guard let colleges = colleges else { return }
             suggestions = Array(colleges.keys)
-//            fetchSuggestionsImages()
+            
+            // Checks if athlete already has a selected college and updates view if so
             guard let email = userViewData.email else { return }
-            print(getAthlete(email))
+            if let athlete = getAthlete(email),
+               let college = athlete.committedCollege {
+                selectedCollege = college
+            }
         }
         .onDisappear {
+            // Saves selected college to athlete entity if it is not empty
             if selectedCollege != "" {
                 guard let email = userViewData.email else { return }
                 updateAthleteField(email, "committedCollege", selectedCollege)
-                print(getAthlete(email))
             }
         }
     }

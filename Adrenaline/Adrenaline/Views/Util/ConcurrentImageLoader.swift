@@ -9,7 +9,6 @@
 
 import SwiftUI
 import Foundation
-import UniformTypeIdentifiers
 
 final class ConcurrentImageLoader {
     private var images: [URLRequest: LoaderStatus] = [:]
@@ -115,8 +114,6 @@ final class ConcurrentImageLoader {
             data = jpeg
         } else if let png = image.pngData() {
             data = png
-        } else if let gif = image.toGifData() {
-            data = gif
         } else {
             assertionFailure("Unable to generate a local path for \(urlRequest)")
             return
@@ -134,19 +131,5 @@ final class ConcurrentImageLoader {
     private enum LoaderStatus {
         case inProgress(Task<UIImage?, Error>)
         case fetched(UIImage)
-    }
-}
-
-extension UIImage {
-    func toGifData(options: NSDictionary? = nil) -> Data? {
-        guard let cgImage = cgImage else { return nil }
-        return autoreleasepool { () -> Data? in
-            let data = NSMutableData()
-            guard let imageDestination = CGImageDestinationCreateWithData(
-                data as CFMutableData, UTType.gif.identifier as CFString, 1, nil) else { return nil }
-            CGImageDestinationAddImage(imageDestination, cgImage, options)
-            CGImageDestinationFinalize(imageDestination)
-            return data as Data
-        }
     }
 }
