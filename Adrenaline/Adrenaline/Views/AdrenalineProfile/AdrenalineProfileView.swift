@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+func getCollegeImageFilename(name: String) -> String {
+    return name.replacingOccurrences(of: " ", with: "_")
+}
+
 struct AdrenalineProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
@@ -145,9 +149,15 @@ struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.getUser) var getUser
     @Environment(\.getAthlete) var getAthlete
+    @State var selectedCollege: String = ""
     @Binding var userViewData: UserViewData
+    @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -10.0
     
     private let screenWidth = UIScreen.main.bounds.width
+    
+    private var collegeIconPadding: CGFloat {
+        collegeIconPaddingScaled * 2.2
+    }
     
     func formatLocationString(_ input: String) -> String {
         var formattedString = input
@@ -167,53 +177,70 @@ struct PersonalInfoView: View {
     var body: some View {
         VStack {
             BackgroundBubble(vPadding: 20, hPadding: 60) {
-                VStack {
-                    HStack (alignment: .firstTextBaseline) {
-                        Text((userViewData.firstName ?? "") + " " +
-                             (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
-                        Text(userViewData.accountType ?? "")
-                            .foregroundColor(.secondary)
-                    }
-                    if userViewData.accountType != "Spectator" {
-                        if currentMode == .light {
-                            Divider()
-                        } else {
-                            WhiteDivider()
-                        }
+                    VStack {
                         HStack (alignment: .firstTextBaseline) {
-                            if userViewData.accountType == "Athlete" {
-                                let a = getAthlete(userViewData.email ?? "")
-                                HStack {
-                                    Image(systemName: "mappin.and.ellipse")
-                                    if let hometown = a?.hometown, !hometown.isEmpty {
-                                        Text(formatLocationString(hometown))
-                                    } else {
-                                        Text("?")
-                                    }
-                                }
-                                HStack {
-                                    Image(systemName: "person.fill")
-                                    if let age = a?.age {
-                                        Text(String(age))
-                                    } else {
-                                        Text("?")
-                                    }
-                                }
+                            Text((userViewData.firstName ?? "") + " " +
+                                 (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
+                            Text(userViewData.accountType ?? "")
+                                .foregroundColor(.secondary)
+                        }
+                        if userViewData.accountType != "Spectator" {
+                            if currentMode == .light {
+                                Divider()
+                            } else {
+                                WhiteDivider()
                             }
-                            if userViewData.diveMeetsID != "" {
-                                HStack {
-                                    Image(systemName: "figure.pool.swim")
-                                    if let diveMeetsID = userViewData.diveMeetsID {
-                                        Text(diveMeetsID)
-                                    } else {
-                                        Text("?")
+                            HStack (alignment: .firstTextBaseline) {
+                                if userViewData.accountType == "Athlete" {
+                                    let a = getAthlete(userViewData.email ?? "")
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        if let hometown = a?.hometown, !hometown.isEmpty {
+                                            Text(formatLocationString(hometown))
+                                        } else {
+                                            Text("?")
+                                        }
+                                    }
+                                    HStack {
+                                        Image(systemName: "person.fill")
+                                        if let age = a?.age {
+                                            Text(String(age))
+                                        } else {
+                                            Text("?")
+                                        }
+                                    }
+                                }
+                                if userViewData.diveMeetsID != "" {
+                                    HStack {
+                                        Image(systemName: "figure.pool.swim")
+                                        if let diveMeetsID = userViewData.diveMeetsID {
+                                            Text(diveMeetsID)
+                                        } else {
+                                            Text("?")
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                .frame(width: screenWidth * 0.8)
+                    .frame(width: screenWidth * 0.8)
+                    .overlay(selectedCollege == ""
+                             ? AnyView(EmptyView())
+                             : AnyView(
+                                Image(selectedCollege)
+                            .resizable()
+                            .clipShape(Circle())
+                            .aspectRatio(contentMode: .fit)
+                            .padding(.leading, collegeIconPadding)),
+                             alignment: .leading)
+            }
+        }
+        .dynamicTypeSize(.xSmall ... .xxLarge)
+        .onAppear {
+            if userViewData.accountType == "Athlete",
+               let a = getAthlete(userViewData.email ?? ""),
+               let college = a.committedCollege {
+                selectedCollege = getCollegeImageFilename(name: college)
             }
         }
     }
@@ -357,11 +384,7 @@ struct SuggestionsTextField: View {
     }
     
     private var selectedCollegeImage: Image? {
-        selectedCollege != "" ? Image(getImageFilename(name: selectedCollege)) : nil
-    }
-    
-    private func getImageFilename(name: String) -> String {
-        return name.replacingOccurrences(of: " ", with: "_")
+        selectedCollege != "" ? Image(getCollegeImageFilename(name: selectedCollege)) : nil
     }
     
     var body: some View {
@@ -426,7 +449,7 @@ struct SuggestionsTextField: View {
                                 }) {
                                     BackgroundBubble() {
                                         HStack {
-                                            Image(getImageFilename(name: suggestion))
+                                            Image(getCollegeImageFilename(name: suggestion))
                                                 .resizable()
                                                 .clipShape(Circle())
                                                 .scaleEffect(min(imgScale, 1.0))
