@@ -191,9 +191,7 @@ struct PersonalInfoView: View {
     private func updateFollowed() {
         guard let first = userViewData.firstName, let last = userViewData.lastName,
                 let userEmail = userViewData.email else { return }
-        print("before")
         addFollowedByEmail(first, last, userEmail)
-        print("after")
         guard let (email, _) = getStoredCredentials() else { return }
         guard let user = getUser(email) else { return }
         guard let followed = getFollowedByEmail(userEmail) else { return }

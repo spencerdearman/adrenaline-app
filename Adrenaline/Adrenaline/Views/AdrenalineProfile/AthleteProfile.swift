@@ -154,8 +154,12 @@ struct FavoritesView: View {
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .fill(Custom.specialGray)
                             .shadow(radius: 5)
-                        Text((followed.firstName ?? "") + " " + (followed.lastName ?? ""))
-                            .padding()
+                        HStack(alignment: .firstTextBaseline) {
+                            Text((followed.firstName ?? "") + " " + (followed.lastName ?? ""))
+                                .padding()
+                            Text(followed.email == nil ? "DiveMeets" : "Adrenaline")
+                                .foregroundColor(Custom.secondaryColor)
+                        }
                     }
                     .padding([.leading, .trailing])
                 }

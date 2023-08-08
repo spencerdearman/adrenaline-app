@@ -363,7 +363,6 @@ struct AdrenalineApp: App {
                 .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
                 .environment(\.dropFollowedFromUser, modelDataController.dropFollowedFromUser)
                 .onAppear {
-                    modelDataController.dropFollowedByEmail(email: "asdf")
                     networkMonitor.start()
                     
                     // isIndexingMeets is set to false by default so it is only executed from start
