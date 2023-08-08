@@ -29,7 +29,8 @@
         <attribute name="state" optional="YES" attributeType="String"/>
     </entity>
     <entity name="Followed" representedClassName="Followed" syncable="YES" codeGenerationType="class">
-        <attribute name="diveMeetsID" attributeType="String"/>
+        <attribute name="diveMeetsID" optional="YES" attributeType="String"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
         <attribute name="firstName" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="lastName" attributeType="String"/>

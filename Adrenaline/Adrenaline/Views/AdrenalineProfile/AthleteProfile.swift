@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DiverView: View {
     @Binding var userViewData: UserViewData
+    @Binding var loginSuccessful: Bool
     @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -23,7 +24,8 @@ struct DiverView: View {
     var body: some View {
         VStack {
             // Showing DiveMeets Linking Screen
-            if userViewData.diveMeetsID == nil || userViewData.diveMeetsID == "" {
+            if (userViewData.diveMeetsID == nil || userViewData.diveMeetsID == "") &&
+                loginSuccessful {
                 Spacer()
                 NavigationLink(destination: {
                     DiveMeetsLink(userViewData: $userViewData)

@@ -109,15 +109,27 @@ private struct NetworkIsCellularKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
-private struct AddFollowedKey: EnvironmentKey {
+private struct AddFollowedByDiveMeetsIDKey: EnvironmentKey {
     static let defaultValue: (String, String, String) -> () = { _, _, _ in }
 }
 
-private struct GetFollowedKey: EnvironmentKey {
+private struct AddFollowedByEmailKey: EnvironmentKey {
+    static let defaultValue: (String, String, String) -> () = { _, _, _ in }
+}
+
+private struct GetFollowedByDiveMeetsIDKey: EnvironmentKey {
     static let defaultValue: (String) -> Followed? = { _ in return nil }
 }
 
-private struct DropFollowedKey: EnvironmentKey {
+private struct GetFollowedByEmailKey: EnvironmentKey {
+    static let defaultValue: (String) -> Followed? = { _ in return nil }
+}
+
+private struct DropFollowedByDiveMeetsIDKey: EnvironmentKey {
+    static let defaultValue: (String) -> () = { _ in }
+}
+
+private struct DropFollowedByEmailKey: EnvironmentKey {
     static let defaultValue: (String) -> () = { _ in }
 }
 
@@ -246,19 +258,34 @@ extension EnvironmentValues {
         set { self[NetworkIsCellularKey.self] = newValue }
     }
     
-    var addFollowed: (String, String, String) -> () {
-        get { self[AddFollowedKey.self] }
-        set { self[AddFollowedKey.self] = newValue }
+    var addFollowedByDiveMeetsID: (String, String, String) -> () {
+        get { self[AddFollowedByDiveMeetsIDKey.self] }
+        set { self[AddFollowedByDiveMeetsIDKey.self] = newValue }
     }
     
-    var getFollowed: (String) -> Followed? {
-        get { self[GetFollowedKey.self] }
-        set { self[GetFollowedKey.self] = newValue }
+    var addFollowedByEmail: (String, String, String) -> () {
+        get { self[AddFollowedByEmailKey.self] }
+        set { self[AddFollowedByEmailKey.self] = newValue }
     }
     
-    var dropFollowed: (String) -> () {
-        get { self[DropFollowedKey.self] }
-        set { self[DropFollowedKey.self] = newValue }
+    var getFollowedByDiveMeetsID: (String) -> Followed? {
+        get { self[GetFollowedByDiveMeetsIDKey.self] }
+        set { self[GetFollowedByDiveMeetsIDKey.self] = newValue }
+    }
+    
+    var getFollowedByEmail: (String) -> Followed? {
+        get { self[GetFollowedByEmailKey.self] }
+        set { self[GetFollowedByEmailKey.self] = newValue }
+    }
+    
+    var dropFollowedByDiveMeetsID: (String) -> () {
+        get { self[DropFollowedByDiveMeetsIDKey.self] }
+        set { self[DropFollowedByDiveMeetsIDKey.self] = newValue }
+    }
+    
+    var dropFollowedByEmail: (String) -> () {
+        get { self[DropFollowedByEmailKey.self] }
+        set { self[DropFollowedByEmailKey.self] = newValue }
     }
     
     var addFollowedToUser: (User, Followed) -> () {
@@ -318,9 +345,12 @@ struct AdrenalineApp: App {
                 .environment(\.validatePassword, modelDataController.validatePassword)
                 .environment(\.networkIsConnected, networkMonitor.isConnected)
                 .environment(\.networkIsCellular, networkMonitor.isCellular)
-                .environment(\.addFollowed, modelDataController.addFollowed)
-                .environment(\.getFollowed, modelDataController.getFollowed)
-                .environment(\.dropFollowed, modelDataController.dropFollowed)
+                .environment(\.addFollowedByDiveMeetsID, modelDataController.addFollowedByDiveMeetsID)
+                .environment(\.addFollowedByEmail, modelDataController.addFollowedByEmail)
+                .environment(\.getFollowedByDiveMeetsID, modelDataController.getFollowedByDiveMeetsID)
+                .environment(\.getFollowedByEmail, modelDataController.getFollowedByEmail)
+                .environment(\.dropFollowedByDiveMeetsID, modelDataController.dropFollowedByDiveMeetsID)
+                .environment(\.dropFollowedByEmail, modelDataController.dropFollowedByEmail)
                 .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
                 .onAppear {
                     networkMonitor.start()

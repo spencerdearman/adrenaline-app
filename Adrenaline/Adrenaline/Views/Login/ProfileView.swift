@@ -13,11 +13,11 @@ var entriesHtmlCache: [String: String] = [:]
 struct ProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.addFollowed) private var addFollowed
-    @Environment(\.getFollowed) private var getFollowed
+    @Environment(\.addFollowedByDiveMeetsID) private var addFollowedByDiveMeetsID
+    @Environment(\.getFollowedByDiveMeetsID) private var getFollowedByDiveMeetsID
     @Environment(\.getUser) private var getUser
     @Environment(\.addFollowedToUser) private var addFollowedToUser
-    @Environment(\.dropFollowed) private var dropFollowed
+    @Environment(\.dropFollowedByDiveMeetsID) private var dropFollowedByDiveMeetsID
     
     var profileLink: String
     var isLoginProfile: Bool = false
@@ -68,10 +68,10 @@ struct ProfileView: View {
     
     private func updateFollowed(diveMeetsID: String) {
         if let info = parser.profileData.info {
-            addFollowed(info.first, info.last, diveMeetsID)
+            addFollowedByDiveMeetsID(info.first, info.last, diveMeetsID)
             guard let (email, _) = getStoredCredentials() else { return }
             guard let user = getUser(email) else { return }
-            guard let followed = getFollowed(diveMeetsID) else { return }
+            guard let followed = getFollowedByDiveMeetsID(diveMeetsID) else { return }
             
             addFollowedToUser(user, followed)
         }
@@ -138,7 +138,7 @@ struct ProfileView: View {
                                                         if starred {
                                                             updateFollowed(diveMeetsID: diverId)
                                                         } else {
-                                                            dropFollowed(diverId)
+                                                            dropFollowedByDiveMeetsID(diverId)
                                                         }
                                                     }
                                                 }

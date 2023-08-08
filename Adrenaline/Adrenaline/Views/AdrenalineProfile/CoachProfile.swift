@@ -14,6 +14,7 @@ var cachedDivers: [String: ProfileCoachDiversData] = [:]
 
 struct CoachView: View {
     @Binding var userViewData: UserViewData
+    @Binding var loginSuccessful: Bool
     @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
     
     private let linkHead: String =
@@ -29,7 +30,8 @@ struct CoachView: View {
         VStack {
             Spacer()
             // Showing DiveMeets Linking Screen
-            if userViewData.diveMeetsID == "" {
+            if (userViewData.diveMeetsID == nil || userViewData.diveMeetsID == "") &&
+                loginSuccessful {
                 NavigationLink(destination: {
                     DiveMeetsLink(userViewData: $userViewData)
                 }, label: {
