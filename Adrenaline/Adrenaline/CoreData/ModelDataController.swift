@@ -697,6 +697,7 @@ class ModelDataController: ObservableObject {
         return resultData[0]
     }
     
+    // Only used to drop a Followed entity from the database entirely
     func dropFollowedByDiveMeetsID(diveMeetsID: String) {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
@@ -712,6 +713,7 @@ class ModelDataController: ObservableObject {
         try? moc.save()
     }
     
+    // Only used to drop a Followed entity from the database entirely
     func dropFollowedByEmail(email: String) {
         let moc = container.viewContext
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
@@ -730,6 +732,12 @@ class ModelDataController: ObservableObject {
     func addFollowedToUser(_ user: User, _ followed: Followed) {
         let moc = container.viewContext
         user.addToUserToFollowed(followed)
+        try? moc.save()
+    }
+    
+    func dropFollowedFromUser(_ user: User, _ followed: Followed) {
+        let moc = container.viewContext
+        user.removeFromUserToFollowed(followed)
         try? moc.save()
     }
 }

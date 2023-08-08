@@ -47,7 +47,7 @@ struct DiverView: View {
                 Spacer()
                 Spacer()
             } else {
-                ProfileContent(userViewData: $userViewData)
+                ProfileContent(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
                     .padding(.top, screenHeight * 0.05)
             }
             Spacer()
@@ -59,6 +59,7 @@ struct ProfileContent: View {
     @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
     @State var selectedPage: Int = 0
     @Binding var userViewData: UserViewData
+    @Binding var loginSuccessful: Bool
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -76,6 +77,11 @@ struct ProfileContent: View {
         .width(.Fixed(115))
         .scrollScale(0.7)
         .frame(height: 40)
+        .onAppear {
+            if loginSuccessful, scoreValues.last != "Favorites" {
+                scoreValues.append("Favorites")
+            }
+        }
         
         switch selectedPage {
             case 0:
@@ -91,6 +97,8 @@ struct ProfileContent: View {
                 StatisticsView()
             case 4:
                 VideosView()
+            case 5:
+                FavoritesView(userViewData: $userViewData)
             default:
                 MeetList(profileLink:
                             "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
@@ -123,5 +131,44 @@ struct VideosView: View {
 struct StatisticsView: View {
     var body: some View {
         Text("Welcome to the Statistics View")
+    }
+}
+
+struct FavoritesView: View {
+    @Environment(\.getUser) private var getUser
+    @State private var followedUsers: [Followed] = []
+    @Binding var userViewData: UserViewData
+    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    
+    private let cornerRadius: CGFloat = 30
+    
+    private var maxHeightOffset: CGFloat {
+        min(maxHeightOffsetScaled, 90)
+    }
+    
+    var body: some View {
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 10) {
+                ForEach(followedUsers, id: \.self) { followed in
+                    ZStack {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(Custom.specialGray)
+                            .shadow(radius: 5)
+                        Text((followed.firstName ?? "") + " " + (followed.lastName ?? ""))
+                            .padding()
+                    }
+                    .padding([.leading, .trailing])
+                }
+            }
+            .padding(.top)
+            .padding(.bottom, maxHeightOffset)
+        }
+        .onAppear {
+            // We can use userViewData email here instead of logged in user because this view
+            // should only be visible when viewing the logged in profile
+            guard let email = userViewData.email else { return }
+            guard let user = getUser(email) else { return }
+            followedUsers = user.followedArray
+        }
     }
 }

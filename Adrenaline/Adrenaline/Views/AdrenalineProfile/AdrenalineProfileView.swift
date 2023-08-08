@@ -149,11 +149,11 @@ struct AdrenalineProfileView: View {
 
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.getUser) var getUser
-    @Environment(\.getAthlete) var getAthlete
-    @Environment(\.addFollowedByEmail) var addFollowedByEmail
-    @Environment(\.getFollowedByEmail) var getFollowedByEmail
-    @Environment(\.dropFollowedByEmail) var dropFollowedByEmail
+    @Environment(\.getUser) private var getUser
+    @Environment(\.getAthlete) private var getAthlete
+    @Environment(\.addFollowedByEmail) private var addFollowedByEmail
+    @Environment(\.getFollowedByEmail) private var getFollowedByEmail
+    @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
     @Environment(\.addFollowedToUser) private var addFollowedToUser
     @State var selectedCollege: String = ""
     @State private var starred: Bool = false
@@ -232,7 +232,17 @@ struct PersonalInfoView: View {
                                                 updateFollowed()
                                             } else {
                                                 guard let email = userViewData.email else { return }
-                                                dropFollowedByEmail(email)
+                                                // Gets logged in user
+                                                guard let (loggedInEmail, _) =
+                                                        getStoredCredentials() else {
+                                                    return
+                                                }
+                                                guard let user = getUser(loggedInEmail) else {
+                                                    return
+                                                }
+                                                guard let followed = getFollowedByEmail(email)
+                                                else { return }
+                                                dropFollowedFromUser(user, followed)
                                             }
                                         }
                                     }
@@ -588,6 +598,7 @@ struct SuggestionsTextField: View {
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.updateUserField) private var updateUserField
     @Binding var userViewData: UserViewData
     @State var diveMeetsID: String = ""
     private let screenWidth = UIScreen.main.bounds.width
@@ -608,7 +619,10 @@ struct DiveMeetsLink: View {
                     .frame(width: textFieldWidth) }
             }
             BackgroundBubble(onTapGesture: {
-                userViewData.diveMeetsID = diveMeetsID
+                if let email = userViewData.email {
+                    updateUserField(email, "diveMeetsID", diveMeetsID)
+                    userViewData.diveMeetsID = diveMeetsID
+                }
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text("Done")

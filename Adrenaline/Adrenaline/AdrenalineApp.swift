@@ -137,6 +137,10 @@ private struct AddFollowedToUserKey: EnvironmentKey {
     static let defaultValue: (User, Followed) -> () = { _, _ in }
 }
 
+private struct DropFollowedFromUserKey: EnvironmentKey {
+    static let defaultValue: (User, Followed) -> () = { _, _ in }
+}
+
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -292,6 +296,11 @@ extension EnvironmentValues {
         get { self[AddFollowedToUserKey.self] }
         set { self[AddFollowedToUserKey.self] = newValue }
     }
+    
+    var dropFollowedFromUser: (User, Followed) -> () {
+        get { self[DropFollowedFromUserKey.self] }
+        set { self[DropFollowedFromUserKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -352,7 +361,9 @@ struct AdrenalineApp: App {
                 .environment(\.dropFollowedByDiveMeetsID, modelDataController.dropFollowedByDiveMeetsID)
                 .environment(\.dropFollowedByEmail, modelDataController.dropFollowedByEmail)
                 .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
+                .environment(\.dropFollowedFromUser, modelDataController.dropFollowedFromUser)
                 .onAppear {
+                    modelDataController.dropFollowedByEmail(email: "asdf")
                     networkMonitor.start()
                     
                     // isIndexingMeets is set to false by default so it is only executed from start

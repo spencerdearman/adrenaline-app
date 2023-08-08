@@ -17,7 +17,7 @@ struct ProfileView: View {
     @Environment(\.getFollowedByDiveMeetsID) private var getFollowedByDiveMeetsID
     @Environment(\.getUser) private var getUser
     @Environment(\.addFollowedToUser) private var addFollowedToUser
-    @Environment(\.dropFollowedByDiveMeetsID) private var dropFollowedByDiveMeetsID
+    @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
     
     var profileLink: String
     var isLoginProfile: Bool = false
@@ -138,7 +138,17 @@ struct ProfileView: View {
                                                         if starred {
                                                             updateFollowed(diveMeetsID: diverId)
                                                         } else {
-                                                            dropFollowedByDiveMeetsID(diverId)
+                                                            // Gets logged in user
+                                                            guard let (email, _) =
+                                                                    getStoredCredentials() else {
+                                                                return
+                                                            }
+                                                            guard let user = getUser(email) else {
+                                                                return
+                                                            }
+                                                            guard let followed = getFollowedByDiveMeetsID(diverId)
+                                                            else { return }
+                                                            dropFollowedFromUser(user, followed)
                                                         }
                                                     }
                                                 }
