@@ -109,6 +109,22 @@ private struct NetworkIsCellularKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
+private struct AddFollowedKey: EnvironmentKey {
+    static let defaultValue: (String, String, String) -> () = { _, _, _ in }
+}
+
+private struct GetFollowedKey: EnvironmentKey {
+    static let defaultValue: (String) -> Followed? = { _ in return nil }
+}
+
+private struct DropFollowedKey: EnvironmentKey {
+    static let defaultValue: (String) -> () = { _ in }
+}
+
+private struct AddFollowedToUserKey: EnvironmentKey {
+    static let defaultValue: (User, Followed) -> () = { _, _ in }
+}
+
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -229,6 +245,26 @@ extension EnvironmentValues {
         get { self[NetworkIsCellularKey.self] }
         set { self[NetworkIsCellularKey.self] = newValue }
     }
+    
+    var addFollowed: (String, String, String) -> () {
+        get { self[AddFollowedKey.self] }
+        set { self[AddFollowedKey.self] = newValue }
+    }
+    
+    var getFollowed: (String) -> Followed? {
+        get { self[GetFollowedKey.self] }
+        set { self[GetFollowedKey.self] = newValue }
+    }
+    
+    var dropFollowed: (String) -> () {
+        get { self[DropFollowedKey.self] }
+        set { self[DropFollowedKey.self] = newValue }
+    }
+    
+    var addFollowedToUser: (User, Followed) -> () {
+        get { self[AddFollowedToUserKey.self] }
+        set { self[AddFollowedToUserKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -282,6 +318,10 @@ struct AdrenalineApp: App {
                 .environment(\.validatePassword, modelDataController.validatePassword)
                 .environment(\.networkIsConnected, networkMonitor.isConnected)
                 .environment(\.networkIsCellular, networkMonitor.isCellular)
+                .environment(\.addFollowed, modelDataController.addFollowed)
+                .environment(\.getFollowed, modelDataController.getFollowed)
+                .environment(\.dropFollowed, modelDataController.dropFollowed)
+                .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
                 .onAppear {
                     networkMonitor.start()
                     
