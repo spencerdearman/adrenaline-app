@@ -29,7 +29,8 @@ struct CoachView: View {
         VStack {
             Spacer()
             // Showing DiveMeets Linking Screen
-            if userViewData.diveMeetsID == "" {
+            if userViewData.diveMeetsID == nil || userViewData.diveMeetsID == "" {
+                Spacer()
                 NavigationLink(destination: {
                     DiveMeetsLink(userViewData: $userViewData)
                 }, label: {
@@ -46,6 +47,9 @@ struct CoachView: View {
                     }
                     .frame(width: linkButtonWidth, height: screenHeight * 0.05)
                 })
+                Spacer()
+                Spacer()
+                Spacer()
             } else {
                 CoachProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)
