@@ -616,3 +616,16 @@ class ModelDataController: ObservableObject {
     }
 }
 
+extension User {
+    public var followedArray: [Followed] {
+        let set = userToFollowed as? Set<Followed> ?? []
+        return set.sorted { ($0.firstName ?? "") < ($1.firstName ?? "") }
+    }
+}
+
+extension Followed {
+    public var userArray: [User] {
+        let set = followedToUser as? Set<User> ?? []
+        return set.sorted { ($0.firstName ?? "") < ($1.firstName ?? "") }
+    }
+}

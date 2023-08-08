@@ -34,7 +34,7 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="lastName" optional="YES" attributeType="String"/>
         <attribute name="team" optional="YES" attributeType="String"/>
-        <relationship name="user" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="followed" inverseEntity="User"/>
+        <relationship name="followedToUser" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="User" inverseName="userToFollowed" inverseEntity="User"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES" codeGenerationType="class">
         <attribute name="accountType" optional="YES" attributeType="String"/>
@@ -46,6 +46,6 @@
         <attribute name="password" attributeType="String"/>
         <attribute name="passwordSalt" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="phone" optional="YES" attributeType="String"/>
-        <relationship name="followed" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Followed" inverseName="user" inverseEntity="Followed"/>
+        <relationship name="userToFollowed" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Followed" inverseName="followedToUser" inverseEntity="Followed"/>
     </entity>
 </model>
