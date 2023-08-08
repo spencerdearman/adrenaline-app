@@ -238,9 +238,12 @@ struct PersonalInfoView: View {
         .dynamicTypeSize(.xSmall ... .xxLarge)
         .onAppear {
             if userViewData.accountType == "Athlete",
-               let a = getAthlete(userViewData.email ?? ""),
-               let college = a.committedCollege {
-                selectedCollege = getCollegeImageFilename(name: college)
+               let a = getAthlete(userViewData.email ?? "") {
+                if let college = a.committedCollege {
+                    selectedCollege = getCollegeImageFilename(name: college)
+                } else {
+                    selectedCollege = ""
+                }
             }
         }
     }
@@ -374,6 +377,7 @@ struct SuggestionsTextField: View {
     
     private let colleges: [String: String]? = getCollegeLogoData()
     private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
@@ -429,6 +433,20 @@ struct SuggestionsTextField: View {
                         .foregroundColor(.primary)
                         .frame(width: screenWidth * 0.8, height: screenWidth * 0.3)
                         .padding()
+                    }
+                    
+                    if selectedCollege != "" {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(Custom.darkGray)
+                                .cornerRadius(50)
+                                .shadow(radius: 10)
+                            Text("Clear")
+                        }
+                        .frame(width: screenWidth * 0.15, height: screenHeight * 0.05)
+                        .onTapGesture {
+                            selectedCollege = ""
+                        }
                     }
                 }
                 
@@ -488,10 +506,13 @@ struct SuggestionsTextField: View {
             }
         }
         .onDisappear {
+            guard let email = userViewData.email else { return }
+            
             // Saves selected college to athlete entity if it is not empty
             if selectedCollege != "" {
-                guard let email = userViewData.email else { return }
                 updateAthleteField(email, "committedCollege", selectedCollege)
+            } else {
+                updateAthleteField(email, "committedCollege", nil)
             }
         }
     }
