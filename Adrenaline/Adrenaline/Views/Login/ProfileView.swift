@@ -13,6 +13,11 @@ var entriesHtmlCache: [String: String] = [:]
 struct ProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.addFollowed) private var addFollowed
+    @Environment(\.getFollowed) private var getFollowed
+    @Environment(\.getUser) private var getUser
+    @Environment(\.addFollowedToUser) private var addFollowedToUser
+    @Environment(\.dropFollowed) private var dropFollowed
     
     var profileLink: String
     var isLoginProfile: Bool = false
@@ -59,6 +64,27 @@ struct ProfileView: View {
         }
         
         return ""
+    }
+    
+    private func updateFollowed(diveMeetsID: String) {
+        if let info = parser.profileData.info {
+            addFollowed(info.first, info.last, diveMeetsID)
+            guard let (email, _) = getStoredCredentials() else { return }
+            guard let user = getUser(email) else { return }
+            guard let followed = getFollowed(diveMeetsID) else { return }
+            
+            addFollowedToUser(user, followed)
+        }
+    }
+    
+    private func isFollowedByUser(diveMeetsID: String, user: User) -> Bool {
+        for followed in user.followedArray {
+            if followed.diveMeetsID == diveMeetsID {
+                return true
+            }
+        }
+        
+        return false
     }
     
     var body: some View {
@@ -109,6 +135,11 @@ struct ProfileView: View {
                                                 .onTapGesture {
                                                     withAnimation {
                                                         starred.toggle()
+                                                        if starred {
+                                                            updateFollowed(diveMeetsID: diverId)
+                                                        } else {
+                                                            dropFollowed(diverId)
+                                                        }
                                                     }
                                                 }
                                         }
@@ -327,14 +358,17 @@ struct ProfileView: View {
                         print("Failed to parse profile")
                     }
                 }
-                if let stats = parser.profileData.diveStatistics {
-                    let skill = SkillRating(diveStatistics: stats)
-                    let divesByCategory = skill.getDiverStatsByCategory()
-                    let (springboard, platform, total) = await skill
-                        .getSkillRating(link: profileLink, metric: skill.computeMetric1)
-                    print(String(format: "Springboard: %.2f", springboard))
-                    print(String(format: "Platform: %.2f", platform))
-                    print(String(format: "Total: %.2f", total))
+                
+                // Gets logged in user
+                guard let (email, _) = getStoredCredentials() else { return }
+                guard let user = getUser(email) else { return }
+                
+                // Checks user's followed divers and if this profile is followed by logged in user
+                guard let info = parser.profileData.info else { return }
+                if isFollowedByUser(diveMeetsID: info.diverId, user: user) {
+                    starred = true
+                } else {
+                    starred = false
                 }
             }
         }
