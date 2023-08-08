@@ -117,6 +117,8 @@ struct LivePersonBubbleView: View {
                                 Text(elements[1])
                                 Text(elements[2])
                             }
+                            .scaledToFit()
+                            .dynamicTypeSize(.xSmall ... .xLarge)
                         }
                         
                         if isSynchro {
@@ -126,6 +128,8 @@ struct LivePersonBubbleView: View {
                                     Text(elements[9])
                                     Text(elements[10])
                                 }
+                                .scaledToFit()
+                                .dynamicTypeSize(.xSmall ... .xLarge)
                             }
                         }
                         Spacer()
