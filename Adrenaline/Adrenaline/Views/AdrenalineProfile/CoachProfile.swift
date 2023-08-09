@@ -48,6 +48,9 @@ struct CoachView: View {
                     }
                     .frame(width: linkButtonWidth, height: screenHeight * 0.05)
                 })
+                Spacer()
+                Spacer()
+                Spacer()
             } else {
                 CoachProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)

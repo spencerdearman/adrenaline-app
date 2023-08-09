@@ -521,7 +521,7 @@ struct MeetResultsPageView: View {
                 
                 if let divers = divers {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, shadowRadius: 3) { (elems) in
+                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, rowSpacing: 10, shadowRadius: 3) { (elems) in
                             DiverListView(elements: elems)
                         }
                         .frame(height: 500)
@@ -565,6 +565,7 @@ struct EventResultsView: View {
                         .lineLimit(2)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.primary)
+                        .frame(height: 50)
                     Spacer()
                     HStack {
                         Text(elements[2] + " Entries") // entries
