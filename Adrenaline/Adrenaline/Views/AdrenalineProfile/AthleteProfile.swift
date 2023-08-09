@@ -146,6 +146,19 @@ struct FavoritesView: View {
         min(maxHeightOffsetScaled, 90)
     }
     
+    // Gets DiveMeetsID from followed entity to get ProfileImage for the list
+    private func getDiveMeetsID(followed: Followed) -> String {
+        if let diveMeetsID = followed.diveMeetsID {
+            return diveMeetsID
+        } else if let email = followed.email,
+                  let user = getUser(email),
+                  let diveMeetsID = user.diveMeetsID {
+            return diveMeetsID
+        } else {
+            return ""
+        }
+    }
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 10) {
@@ -154,11 +167,18 @@ struct FavoritesView: View {
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .fill(Custom.specialGray)
                             .shadow(radius: 5)
-                        HStack(alignment: .firstTextBaseline) {
-                            Text((followed.firstName ?? "") + " " + (followed.lastName ?? ""))
-                                .padding()
-                            Text(followed.email == nil ? "DiveMeets" : "Adrenaline")
-                                .foregroundColor(Custom.secondaryColor)
+                        HStack(alignment: .center) {
+                            ProfileImage(diverID: getDiveMeetsID(followed: followed))
+                                .frame(width: 100, height: 100)
+                                .scaleEffect(0.3)
+                            HStack(alignment: .firstTextBaseline) {
+                                Text((followed.firstName ?? "") + " " + (followed.lastName ?? ""))
+                                    .padding()
+                                Text(followed.email == nil ? "DiveMeets" : "Adrenaline")
+                                    .foregroundColor(Custom.secondaryColor)
+                                Spacer()
+                            }
+                            Spacer()
                         }
                     }
                     .padding([.leading, .trailing])
