@@ -614,5 +614,144 @@ class ModelDataController: ObservableObject {
         dropAllMeetRecords()
         dropAllUsers()
     }
+    
+    func addFollowedByDiveMeetsID(firstName: String, lastName: String, diveMeetsID: String) {
+        let moc = container.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
+        fetchRequest.predicate = NSPredicate(format: "diveMeetsID == %@", diveMeetsID)
+        
+        guard let result = try? moc.fetch(fetchRequest) else {
+            print("Failed to get result of fetch request for Followed")
+            return
+        }
+        
+        if result.count != 0 {
+            print("Failed to add Followed, diveMeetsID already exists")
+            return
+        }
+        
+        let followed = Followed(context: moc)
+        
+        followed.id = UUID()
+        followed.firstName = firstName
+        followed.lastName = lastName
+        followed.diveMeetsID = diveMeetsID
+        
+        try? moc.save()
+    }
+    
+    func addFollowedByEmail(firstName: String, lastName: String, email: String) {
+        let moc = container.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else {
+            print("Failed to get result of fetch request for Followed")
+            return
+        }
+        
+        if result.count != 0 {
+            print("Failed to add Followed, email already exists")
+            return
+        }
+        
+        let followed = Followed(context: moc)
+        
+        followed.id = UUID()
+        followed.firstName = firstName
+        followed.lastName = lastName
+        followed.email = email
+        
+        try? moc.save()
+    }
+    
+    func getFollowedByDiveMeetsID(diveMeetsID: String) -> Followed? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
+        fetchRequest.predicate = NSPredicate(format: "diveMeetsID == %@", diveMeetsID)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [Followed]
+        if resultData.count != 1 {
+            print("Failed to get Followed, result returned invalid number of results")
+            return nil
+        }
+        
+        return resultData[0]
+    }
+    
+    func getFollowedByEmail(email: String) -> Followed? {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return nil }
+        let resultData = result as! [Followed]
+        if resultData.count != 1 {
+            print("Failed to get Followed, result returned invalid number of results")
+            return nil
+        }
+        
+        return resultData[0]
+    }
+    
+    // Only used to drop a Followed entity from the database entirely
+    func dropFollowedByDiveMeetsID(diveMeetsID: String) {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
+        fetchRequest.predicate = NSPredicate(format: "diveMeetsID == %@", diveMeetsID)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return }
+        let resultData = result as! [Followed]
+        
+        for object in resultData {
+            moc.delete(object)
+        }
+        
+        try? moc.save()
+    }
+    
+    // Only used to drop a Followed entity from the database entirely
+    func dropFollowedByEmail(email: String) {
+        let moc = container.viewContext
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Followed")
+        fetchRequest.predicate = NSPredicate(format: "email == %@", email)
+        
+        guard let result = try? moc.fetch(fetchRequest) else { return }
+        let resultData = result as! [Followed]
+        
+        for object in resultData {
+            moc.delete(object)
+        }
+        
+        try? moc.save()
+    }
+    
+    func addFollowedToUser(_ user: User, _ followed: Followed) {
+        let moc = container.viewContext
+        user.addToUserToFollowed(followed)
+        try? moc.save()
+    }
+    
+    func dropFollowedFromUser(_ user: User, _ followed: Followed) {
+        let moc = container.viewContext
+        user.removeFromUserToFollowed(followed)
+        try? moc.save()
+    }
 }
 
+extension User {
+    public var followedArray: [Followed] {
+        let set = userToFollowed as? Set<Followed> ?? []
+        return set.sorted { ($0.firstName ?? "") < ($1.firstName ?? "") }
+    }
+}
+
+extension Followed {
+    public var userArray: [User] {
+        let set = followedToUser as? Set<User> ?? []
+        return set.sorted { ($0.firstName ?? "") < ($1.firstName ?? "") }
+    }
+}

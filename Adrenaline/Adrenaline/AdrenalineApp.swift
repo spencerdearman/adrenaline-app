@@ -109,6 +109,38 @@ private struct NetworkIsCellularKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
+private struct AddFollowedByDiveMeetsIDKey: EnvironmentKey {
+    static let defaultValue: (String, String, String) -> () = { _, _, _ in }
+}
+
+private struct AddFollowedByEmailKey: EnvironmentKey {
+    static let defaultValue: (String, String, String) -> () = { _, _, _ in }
+}
+
+private struct GetFollowedByDiveMeetsIDKey: EnvironmentKey {
+    static let defaultValue: (String) -> Followed? = { _ in return nil }
+}
+
+private struct GetFollowedByEmailKey: EnvironmentKey {
+    static let defaultValue: (String) -> Followed? = { _ in return nil }
+}
+
+private struct DropFollowedByDiveMeetsIDKey: EnvironmentKey {
+    static let defaultValue: (String) -> () = { _ in }
+}
+
+private struct DropFollowedByEmailKey: EnvironmentKey {
+    static let defaultValue: (String) -> () = { _ in }
+}
+
+private struct AddFollowedToUserKey: EnvironmentKey {
+    static let defaultValue: (User, Followed) -> () = { _, _ in }
+}
+
+private struct DropFollowedFromUserKey: EnvironmentKey {
+    static let defaultValue: (User, Followed) -> () = { _, _ in }
+}
+
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -229,6 +261,46 @@ extension EnvironmentValues {
         get { self[NetworkIsCellularKey.self] }
         set { self[NetworkIsCellularKey.self] = newValue }
     }
+    
+    var addFollowedByDiveMeetsID: (String, String, String) -> () {
+        get { self[AddFollowedByDiveMeetsIDKey.self] }
+        set { self[AddFollowedByDiveMeetsIDKey.self] = newValue }
+    }
+    
+    var addFollowedByEmail: (String, String, String) -> () {
+        get { self[AddFollowedByEmailKey.self] }
+        set { self[AddFollowedByEmailKey.self] = newValue }
+    }
+    
+    var getFollowedByDiveMeetsID: (String) -> Followed? {
+        get { self[GetFollowedByDiveMeetsIDKey.self] }
+        set { self[GetFollowedByDiveMeetsIDKey.self] = newValue }
+    }
+    
+    var getFollowedByEmail: (String) -> Followed? {
+        get { self[GetFollowedByEmailKey.self] }
+        set { self[GetFollowedByEmailKey.self] = newValue }
+    }
+    
+    var dropFollowedByDiveMeetsID: (String) -> () {
+        get { self[DropFollowedByDiveMeetsIDKey.self] }
+        set { self[DropFollowedByDiveMeetsIDKey.self] = newValue }
+    }
+    
+    var dropFollowedByEmail: (String) -> () {
+        get { self[DropFollowedByEmailKey.self] }
+        set { self[DropFollowedByEmailKey.self] = newValue }
+    }
+    
+    var addFollowedToUser: (User, Followed) -> () {
+        get { self[AddFollowedToUserKey.self] }
+        set { self[AddFollowedToUserKey.self] = newValue }
+    }
+    
+    var dropFollowedFromUser: (User, Followed) -> () {
+        get { self[DropFollowedFromUserKey.self] }
+        set { self[DropFollowedFromUserKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -282,6 +354,14 @@ struct AdrenalineApp: App {
                 .environment(\.validatePassword, modelDataController.validatePassword)
                 .environment(\.networkIsConnected, networkMonitor.isConnected)
                 .environment(\.networkIsCellular, networkMonitor.isCellular)
+                .environment(\.addFollowedByDiveMeetsID, modelDataController.addFollowedByDiveMeetsID)
+                .environment(\.addFollowedByEmail, modelDataController.addFollowedByEmail)
+                .environment(\.getFollowedByDiveMeetsID, modelDataController.getFollowedByDiveMeetsID)
+                .environment(\.getFollowedByEmail, modelDataController.getFollowedByEmail)
+                .environment(\.dropFollowedByDiveMeetsID, modelDataController.dropFollowedByDiveMeetsID)
+                .environment(\.dropFollowedByEmail, modelDataController.dropFollowedByEmail)
+                .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
+                .environment(\.dropFollowedFromUser, modelDataController.dropFollowedFromUser)
                 .onAppear {
                     networkMonitor.start()
                     

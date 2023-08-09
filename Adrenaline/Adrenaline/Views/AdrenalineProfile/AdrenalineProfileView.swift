@@ -62,7 +62,7 @@ struct AdrenalineProfileView: View {
                         .onAppear {
                             offset = screenHeight * 0.45
                         }
-                    PersonalInfoView(userViewData: $userViewData)
+                    PersonalInfoView(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
                 }
                 .offset(y: -screenHeight * 0.3)
                 .padding([.leading, .trailing, .top])
@@ -100,9 +100,11 @@ struct AdrenalineProfileView: View {
                     VStack {
                         if let type = user.accountType {
                             if type == AccountType.athlete.rawValue {
-                                DiverView(userViewData: $userViewData)
+                                DiverView(userViewData: $userViewData,
+                                          loginSuccessful: $loginSuccessful)
                             } else if type == AccountType.coach.rawValue {
-                                CoachView(userViewData: $userViewData)
+                                CoachView(userViewData: $userViewData,
+                                          loginSuccessful: $loginSuccessful)
                             } else if type == AccountType.spectator.rawValue {
                                 Text("This is a spectator profile")
                             } else {
@@ -147,16 +149,28 @@ struct AdrenalineProfileView: View {
 
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.getUser) var getUser
-    @Environment(\.getAthlete) var getAthlete
+    @Environment(\.getUser) private var getUser
+    @Environment(\.getAthlete) private var getAthlete
+    @Environment(\.addFollowedByEmail) private var addFollowedByEmail
+    @Environment(\.getFollowedByEmail) private var getFollowedByEmail
+    @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
+    @Environment(\.addFollowedToUser) private var addFollowedToUser
     @State var selectedCollege: String = ""
+    @State private var starred: Bool = false
     @Binding var userViewData: UserViewData
+    @Binding var loginSuccessful: Bool
     @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
     
     private let screenWidth = UIScreen.main.bounds.width
     
     private var collegeIconPadding: CGFloat {
         collegeIconPaddingScaled * 2.2
+    }
+    
+    private var isShowingStar: Bool {
+        guard let (loggedInEmail, _) = getStoredCredentials() else { return false }
+        return userViewData.accountType != "Spectator" && !loginSuccessful &&
+        userViewData.email != loggedInEmail
     }
     
     func formatLocationString(_ input: String) -> String {
@@ -174,6 +188,27 @@ struct PersonalInfoView: View {
         return formattedString
     }
     
+    private func updateFollowed() {
+        guard let first = userViewData.firstName, let last = userViewData.lastName,
+                let userEmail = userViewData.email else { return }
+        addFollowedByEmail(first, last, userEmail)
+        guard let (email, _) = getStoredCredentials() else { return }
+        guard let user = getUser(email) else { return }
+        guard let followed = getFollowedByEmail(userEmail) else { return }
+        
+        addFollowedToUser(user, followed)
+    }
+    
+    private func isFollowedByUser(email: String, user: User) -> Bool {
+        for followed in user.followedArray {
+            if followed.email == email {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     var body: some View {
         VStack {
             BackgroundBubble(vPadding: 20, hPadding: 60) {
@@ -183,6 +218,33 @@ struct PersonalInfoView: View {
                                  (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
                             Text(userViewData.accountType ?? "")
                                 .foregroundColor(.secondary)
+                            if isShowingStar {
+                                Image(systemName: starred ? "star.fill" : "star")
+                                    .foregroundColor(starred
+                                                     ? Color.yellow
+                                                     : Color.primary)
+                                    .onTapGesture {
+                                        withAnimation {
+                                            starred.toggle()
+                                            if starred {
+                                                updateFollowed()
+                                            } else {
+                                                guard let email = userViewData.email else { return }
+                                                // Gets logged in user
+                                                guard let (loggedInEmail, _) =
+                                                        getStoredCredentials() else {
+                                                    return
+                                                }
+                                                guard let user = getUser(loggedInEmail) else {
+                                                    return
+                                                }
+                                                guard let followed = getFollowedByEmail(email)
+                                                else { return }
+                                                dropFollowedFromUser(user, followed)
+                                            }
+                                        }
+                                    }
+                            }
                         }
                         if userViewData.accountType != "Spectator" {
                             if currentMode == .light {
@@ -243,6 +305,19 @@ struct PersonalInfoView: View {
                     selectedCollege = getCollegeImageFilename(name: college)
                 } else {
                     selectedCollege = ""
+                }
+            }
+            
+            if isShowingStar {
+                // Gets logged in user
+                guard let (loggedInEmail, _) = getStoredCredentials() else { return }
+                guard let user = getUser(loggedInEmail) else { return }
+                
+                guard let email = userViewData.email else { return }
+                if isFollowedByUser(email: email, user: user) {
+                    starred = true
+                } else {
+                    starred = false
                 }
             }
         }
@@ -521,6 +596,7 @@ struct SuggestionsTextField: View {
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.updateUserField) private var updateUserField
     @Binding var userViewData: UserViewData
     @State var diveMeetsID: String = ""
     private let screenWidth = UIScreen.main.bounds.width
@@ -541,7 +617,10 @@ struct DiveMeetsLink: View {
                     .frame(width: textFieldWidth) }
             }
             BackgroundBubble(onTapGesture: {
-                userViewData.diveMeetsID = diveMeetsID
+                if let email = userViewData.email {
+                    updateUserField(email, "diveMeetsID", diveMeetsID)
+                    userViewData.diveMeetsID = diveMeetsID
+                }
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text("Done")

@@ -13,11 +13,17 @@ var entriesHtmlCache: [String: String] = [:]
 struct ProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.addFollowedByDiveMeetsID) private var addFollowedByDiveMeetsID
+    @Environment(\.getFollowedByDiveMeetsID) private var getFollowedByDiveMeetsID
+    @Environment(\.getUser) private var getUser
+    @Environment(\.addFollowedToUser) private var addFollowedToUser
+    @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
     
     var profileLink: String
     var isLoginProfile: Bool = false
     @Namespace var profilespace
     @State var diverTab: Bool = false
+    @State var starred: Bool = false
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
@@ -58,6 +64,27 @@ struct ProfileView: View {
         }
         
         return ""
+    }
+    
+    private func updateFollowed(diveMeetsID: String) {
+        if let info = parser.profileData.info {
+            addFollowedByDiveMeetsID(info.first, info.last, diveMeetsID)
+            guard let (email, _) = getStoredCredentials() else { return }
+            guard let user = getUser(email) else { return }
+            guard let followed = getFollowedByDiveMeetsID(diveMeetsID) else { return }
+            
+            addFollowedToUser(user, followed)
+        }
+    }
+    
+    private func isFollowedByUser(diveMeetsID: String, user: User) -> Bool {
+        for followed in user.followedArray {
+            if followed.diveMeetsID == diveMeetsID {
+                return true
+            }
+        }
+        
+        return false
     }
     
     var body: some View {
@@ -101,6 +128,30 @@ struct ProfileView: View {
                                             } else {
                                                 Text("")
                                             }
+                                            Image(systemName: starred ? "star.fill" : "star")
+                                                .foregroundColor(starred
+                                                                 ? Color.yellow
+                                                                 : Color.primary)
+                                                .onTapGesture {
+                                                    withAnimation {
+                                                        starred.toggle()
+                                                        if starred {
+                                                            updateFollowed(diveMeetsID: diverId)
+                                                        } else {
+                                                            // Gets logged in user
+                                                            guard let (email, _) =
+                                                                    getStoredCredentials() else {
+                                                                return
+                                                            }
+                                                            guard let user = getUser(email) else {
+                                                                return
+                                                            }
+                                                            guard let followed = getFollowedByDiveMeetsID(diverId)
+                                                            else { return }
+                                                            dropFollowedFromUser(user, followed)
+                                                        }
+                                                    }
+                                                }
                                         }
                                         Divider()
                                         HStack (alignment: .firstTextBaseline) {
@@ -317,14 +368,17 @@ struct ProfileView: View {
                         print("Failed to parse profile")
                     }
                 }
-                if let stats = parser.profileData.diveStatistics {
-                    let skill = SkillRating(diveStatistics: stats)
-                    let divesByCategory = skill.getDiverStatsByCategory()
-                    let (springboard, platform, total) = await skill
-                        .getSkillRating(link: profileLink, metric: skill.computeMetric1)
-                    print(String(format: "Springboard: %.2f", springboard))
-                    print(String(format: "Platform: %.2f", platform))
-                    print(String(format: "Total: %.2f", total))
+                
+                // Gets logged in user
+                guard let (email, _) = getStoredCredentials() else { return }
+                guard let user = getUser(email) else { return }
+                
+                // Checks user's followed divers and if this profile is followed by logged in user
+                guard let info = parser.profileData.info else { return }
+                if isFollowedByUser(diveMeetsID: info.diverId, user: user) {
+                    starred = true
+                } else {
+                    starred = false
                 }
             }
         }
