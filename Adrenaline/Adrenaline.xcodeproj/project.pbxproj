@@ -92,6 +92,8 @@
 		4DF9F8022A85E3730049CCD3 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F8012A85E3730049CCD3 /* AWSDataStorePlugin */; };
 		4DF9F8042A85E3730049CCD3 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F8032A85E3730049CCD3 /* AWSS3StoragePlugin */; };
 		4DF9F8062A85E3730049CCD3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F8052A85E3730049CCD3 /* Amplify */; };
+		4DF9F8092A85E4E30049CCD3 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 4DF9F8072A85E4E30049CCD3 /* amplifyconfiguration.json */; };
+		4DF9F80A2A85E4E30049CCD3 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 4DF9F8082A85E4E30049CCD3 /* awsconfiguration.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -176,6 +178,8 @@
 		4DD880B82A76103D008F69F2 /* CoachProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachProfile.swift; sourceTree = "<group>"; };
 		4DD880BA2A761089008F69F2 /* AthleteProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteProfile.swift; sourceTree = "<group>"; };
 		4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWebView.swift; sourceTree = "<group>"; };
+		4DF9F8072A85E4E30049CCD3 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = amplifyconfiguration.json; path = ../amplifyconfiguration.json; sourceTree = "<group>"; };
+		4DF9F8082A85E4E30049CCD3 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = awsconfiguration.json; path = ../awsconfiguration.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,6 +281,8 @@
 		4D74FE8A29AE7B9800401178 = {
 			isa = PBXGroup;
 			children = (
+				4DF9F8072A85E4E30049CCD3 /* amplifyconfiguration.json */,
+				4DF9F8082A85E4E30049CCD3 /* awsconfiguration.json */,
 				4D74FE9529AE7B9800401178 /* Adrenaline */,
 				4D74FE9429AE7B9800401178 /* Products */,
 			);
@@ -517,6 +523,8 @@
 			files = (
 				4D50E7902A29106E009BFBFA /* diveTable.json in Resources */,
 				00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */,
+				4DF9F80A2A85E4E30049CCD3 /* awsconfiguration.json in Resources */,
+				4DF9F8092A85E4E30049CCD3 /* amplifyconfiguration.json in Resources */,
 				4D74FE9E29AE7B9800401178 /* Preview Assets.xcassets in Resources */,
 				4D74FE9B29AE7B9800401178 /* Assets.xcassets in Resources */,
 			);

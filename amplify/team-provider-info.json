@@ -1,0 +1,15 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-adrenaline-staging-233646-authRole",
+      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-staging-233646-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-staging-233646-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-adrenaline-staging-233646-deployment",
+      "UnauthRoleName": "amplify-adrenaline-staging-233646-unauthRole",
+      "StackName": "amplify-adrenaline-staging-233646",
+      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-staging-233646/4cc881d0-37f8-11ee-bdb9-0e0802c5bc47",
+      "AmplifyAppId": "d28uzwoi4f7qhz"
+    }
+  }
+}
