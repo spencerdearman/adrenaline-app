@@ -87,6 +87,11 @@
 		4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD880BA2A761089008F69F2 /* AthleteProfile.swift */; };
 		4DE6CFC329E25A0D00831D1D /* LoginWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */; };
 		4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 4DEF7D3529BEE796003EAD70 /* SwiftSoup */; };
+		4DF9F7FE2A85E3730049CCD3 /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F7FD2A85E3730049CCD3 /* AWSAPIPlugin */; };
+		4DF9F8002A85E3730049CCD3 /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F7FF2A85E3730049CCD3 /* AWSCognitoAuthPlugin */; };
+		4DF9F8022A85E3730049CCD3 /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F8012A85E3730049CCD3 /* AWSDataStorePlugin */; };
+		4DF9F8042A85E3730049CCD3 /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F8032A85E3730049CCD3 /* AWSS3StoragePlugin */; };
+		4DF9F8062A85E3730049CCD3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F8052A85E3730049CCD3 /* Amplify */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -178,8 +183,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DF9F7FE2A85E3730049CCD3 /* AWSAPIPlugin in Frameworks */,
+				4DF9F8062A85E3730049CCD3 /* Amplify in Frameworks */,
 				4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */,
 				4D76438C2A70F733000F35CB /* SwiftUIGIF in Frameworks */,
+				4DF9F8022A85E3730049CCD3 /* AWSDataStorePlugin in Frameworks */,
+				4DF9F8002A85E3730049CCD3 /* AWSCognitoAuthPlugin in Frameworks */,
+				4DF9F8042A85E3730049CCD3 /* AWSS3StoragePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +462,11 @@
 			packageProductDependencies = (
 				4DEF7D3529BEE796003EAD70 /* SwiftSoup */,
 				4D76438B2A70F733000F35CB /* SwiftUIGIF */,
+				4DF9F7FD2A85E3730049CCD3 /* AWSAPIPlugin */,
+				4DF9F7FF2A85E3730049CCD3 /* AWSCognitoAuthPlugin */,
+				4DF9F8012A85E3730049CCD3 /* AWSDataStorePlugin */,
+				4DF9F8032A85E3730049CCD3 /* AWSS3StoragePlugin */,
+				4DF9F8052A85E3730049CCD3 /* Amplify */,
 			);
 			productName = DiveMeets;
 			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
@@ -484,6 +499,7 @@
 			packageReferences = (
 				4DEF7D3429BEE796003EAD70 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */,
+				4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */,
 			);
 			productRefGroup = 4D74FE9429AE7B9800401178 /* Products */;
 			projectDirPath = "";
@@ -813,6 +829,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aws-amplify/amplify-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -825,6 +849,31 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4DEF7D3429BEE796003EAD70 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
+		};
+		4DF9F7FD2A85E3730049CCD3 /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSAPIPlugin;
+		};
+		4DF9F7FF2A85E3730049CCD3 /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSCognitoAuthPlugin;
+		};
+		4DF9F8012A85E3730049CCD3 /* AWSDataStorePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSDataStorePlugin;
+		};
+		4DF9F8032A85E3730049CCD3 /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSS3StoragePlugin;
+		};
+		4DF9F8052A85E3730049CCD3 /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = Amplify;
 		};
 /* End XCSwiftPackageProductDependency section */
 
