@@ -98,10 +98,11 @@ class AppLogic: ObservableObject {
 extension AppLogic {
     // Other functions for authentication, sign in, sign out, etc.
     
-    // change our internal state, this triggers an UI update on the main thread
+    // Changing the internal state, this triggers an UI update on the main thread
     @MainActor
     func updateUI(forSignInStatus: Bool) async {
         self.userData.signedIn = forSignInStatus
+        print("Changing signed in Status: " + String(self.userData.signedIn))
     }
     
     // Sign in with Cognito web user interface

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignOutButton : View {
     @EnvironmentObject var userData: UserData
-    @StateObject private var appLogic: AppLogic
+    @StateObject var appLogic: AppLogic
     
     var body: some View {
         NavigationLink(destination: LandingView(user: userData)) {
@@ -56,10 +56,18 @@ struct LandingView: View {
                     UserBadge()
                 }
             } else {
-                Home().environmentObject(user)
+                SignOutButton(appLogic: appLogic)
+                    .onAppear{
+                        print("Coming into the signout portion")
+                    }
             }
         }
         .onAppear {
+//            user.signedIn = true
+            print(user.signedIn)
+//            Task {
+//                try await appLogic.signOut()
+//            }
         }
     }
 }
