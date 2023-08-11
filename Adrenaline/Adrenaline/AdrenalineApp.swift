@@ -7,6 +7,8 @@
 
 import SwiftUI
 import CoreData
+import Combine
+import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
 
@@ -327,9 +329,12 @@ struct AdrenalineApp: App {
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
     @StateObject var userData: UserData = UserData()
     @State var isIndexingMeets: Bool = false
-    
     var appLogic: AppLogic {
-            AppLogic(userData: userData)
+        AppLogic(userData: userData)
+    }
+    
+    init() {
+        appLogic.configureAmplify()
     }
     
     var body: some Scene {

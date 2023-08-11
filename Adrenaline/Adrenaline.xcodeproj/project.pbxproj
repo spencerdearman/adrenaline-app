@@ -95,6 +95,8 @@
 		4DF9F8092A85E4E30049CCD3 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 4DF9F8072A85E4E30049CCD3 /* amplifyconfiguration.json */; };
 		4DF9F80A2A85E4E30049CCD3 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 4DF9F8082A85E4E30049CCD3 /* awsconfiguration.json */; };
 		4DF9F80D2A85E7BA0049CCD3 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF9F80C2A85E7BA0049CCD3 /* UserData.swift */; };
+		4DF9F80F2A85EFF50049CCD3 /* UserBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF9F80E2A85EFF50049CCD3 /* UserBadge.swift */; };
+		4DF9F8112A85F0040049CCD3 /* LandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF9F8102A85F0040049CCD3 /* LandingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -182,6 +184,8 @@
 		4DF9F8072A85E4E30049CCD3 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = amplifyconfiguration.json; path = ../amplifyconfiguration.json; sourceTree = "<group>"; };
 		4DF9F8082A85E4E30049CCD3 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = awsconfiguration.json; path = ../awsconfiguration.json; sourceTree = "<group>"; };
 		4DF9F80C2A85E7BA0049CCD3 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
+		4DF9F80E2A85EFF50049CCD3 /* UserBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBadge.swift; sourceTree = "<group>"; };
+		4DF9F8102A85F0040049CCD3 /* LandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -456,6 +460,8 @@
 			isa = PBXGroup;
 			children = (
 				4DF9F80C2A85E7BA0049CCD3 /* UserData.swift */,
+				4DF9F80E2A85EFF50049CCD3 /* UserBadge.swift */,
+				4DF9F8102A85F0040049CCD3 /* LandingView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -557,6 +563,7 @@
 				00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */,
 				00F9667B29AFDA1500F3720B /* ContentView.swift in Sources */,
 				00FFDAE82A66FBE10090727B /* AthleteRecruitingView.swift in Sources */,
+				4DF9F8112A85F0040049CCD3 /* LandingView.swift in Sources */,
 				4D60E8F92A1737A90011A295 /* ScoringParser.swift in Sources */,
 				00F2C3142A25B1B800B1CD01 /* EventParser.swift in Sources */,
 				00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */,
@@ -616,6 +623,7 @@
 				0037877A29D4F40900D3CD59 /* ProfileMeetCache.swift in Sources */,
 				00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */,
 				008CB5672A61B3EE00935537 /* ProfileParser.swift in Sources */,
+				4DF9F80F2A85EFF50049CCD3 /* UserBadge.swift in Sources */,
 				4D0A01762A73781B00615326 /* AdrenalineLoginView.swift in Sources */,
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,

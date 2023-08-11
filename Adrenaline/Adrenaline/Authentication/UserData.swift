@@ -12,33 +12,34 @@ import Amplify
 import AWSCognitoAuthPlugin
 
 
+//Creating a structure to be observable in Main
 class UserData: ObservableObject {
     @Published var signedIn: Bool = false
 }
 
+//Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
     var userData: UserData
     
     init(userData: UserData) {
         self.userData = userData
-        configureAmplify()
     }
     
     func configureAmplify() {
         do {
             // reduce verbosity of AWS SDK
             SDKLoggingSystem.initialize(logLevel: .warning)
-            //Amplify.Logging.logLevel = .info
+            Amplify.Logging.logLevel = .info
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             
+            //Initializing Amplify
             try Amplify.configure()
             print("Amplify initialized")
             
             // asynchronously
             Task {
-                
                 // check if user is already signed in from a previous run
                 let session = try await Amplify.Auth.fetchAuthSession()
                 
@@ -90,8 +91,11 @@ class AppLogic: ObservableObject {
         } catch {
             print("Error when configuring Amplify: \(error)")
         }
+        
     }
-    
+}
+
+extension AppLogic {
     // Other functions for authentication, sign in, sign out, etc.
     
     // change our internal state, this triggers an UI update on the main thread
@@ -139,7 +143,6 @@ class AppLogic: ObservableObject {
     
     // signout globally
     public func signOut() async throws {
-        
         // https://docs.amplify.aws/lib/auth/signOut/q/platform/ios
         let options = AuthSignOutRequest.Options(globalSignOut: true)
         let _ = await Amplify.Auth.signOut(options: options)
