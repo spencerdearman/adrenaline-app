@@ -10,6 +10,11 @@
       "StackName": "amplify-adrenaline-staging-233646",
       "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-staging-233646/4cc881d0-37f8-11ee-bdb9-0e0802c5bc47",
       "AmplifyAppId": "d28uzwoi4f7qhz"
+    },
+    "categories": {
+      "auth": {
+        "adrenaline7ea715e2": {}
+      }
     }
   }
 }
