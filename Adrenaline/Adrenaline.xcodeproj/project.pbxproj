@@ -94,6 +94,7 @@
 		4DF9F8062A85E3730049CCD3 /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 4DF9F8052A85E3730049CCD3 /* Amplify */; };
 		4DF9F8092A85E4E30049CCD3 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 4DF9F8072A85E4E30049CCD3 /* amplifyconfiguration.json */; };
 		4DF9F80A2A85E4E30049CCD3 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 4DF9F8082A85E4E30049CCD3 /* awsconfiguration.json */; };
+		4DF9F80D2A85E7BA0049CCD3 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF9F80C2A85E7BA0049CCD3 /* UserData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -180,6 +181,7 @@
 		4DE6CFC229E25A0D00831D1D /* LoginWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWebView.swift; sourceTree = "<group>"; };
 		4DF9F8072A85E4E30049CCD3 /* amplifyconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = amplifyconfiguration.json; path = ../amplifyconfiguration.json; sourceTree = "<group>"; };
 		4DF9F8082A85E4E30049CCD3 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = awsconfiguration.json; path = ../awsconfiguration.json; sourceTree = "<group>"; };
+		4DF9F80C2A85E7BA0049CCD3 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -303,6 +305,7 @@
 				4D1177C729F88B7000850D18 /* Info.plist */,
 				4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */,
 				4D74FE9A29AE7B9800401178 /* Assets.xcassets */,
+				4DF9F80B2A85E7A60049CCD3 /* Authentication */,
 				009F41B62A6ABA1700348C68 /* CoreData */,
 				4D74FEB329AEB4B200401178 /* Model */,
 				4D50E7722A24050E009BFBFA /* Parsers */,
@@ -449,6 +452,14 @@
 			path = AdrenalineProfile;
 			sourceTree = "<group>";
 		};
+		4DF9F80B2A85E7A60049CCD3 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				4DF9F80C2A85E7BA0049CCD3 /* UserData.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -540,6 +551,7 @@
 				4D3FD9CF2A5DFAF6003E1FF7 /* SearchBackgroundView.swift in Sources */,
 				4D7643892A70CB39000F35CB /* AppLaunchSequence.swift in Sources */,
 				4D753DE32A2158370029138B /* EventPageParser.swift in Sources */,
+				4DF9F80D2A85E7BA0049CCD3 /* UserData.swift in Sources */,
 				0040A6B72A550C8E004C84BF /* NoStickPicker.swift in Sources */,
 				4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */,
 				00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */,

@@ -323,6 +323,7 @@ struct AdrenalineApp: App {
     @StateObject var modelDataController = ModelDataController()
     @StateObject var meetParser: MeetParser = MeetParser()
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
+    @StateObject var userData: UserData = UserData()
     @State var isIndexingMeets: Bool = false
     
     var body: some Scene {
