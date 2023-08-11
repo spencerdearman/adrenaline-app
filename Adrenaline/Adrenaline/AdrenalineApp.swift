@@ -7,6 +7,8 @@
 
 import SwiftUI
 import CoreData
+import Amplify
+import AWSCognitoAuthPlugin
 
 private struct ModelDB: EnvironmentKey {
     static var defaultValue: ModelDataController {
@@ -326,9 +328,15 @@ struct AdrenalineApp: App {
     @StateObject var userData: UserData = UserData()
     @State var isIndexingMeets: Bool = false
     
+    var appLogic: AppLogic {
+            AppLogic(userData: userData)
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(userData)
+                .environmentObject(appLogic)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)
