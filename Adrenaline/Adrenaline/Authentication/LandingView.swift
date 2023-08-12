@@ -34,7 +34,6 @@ struct SignOutButton : View {
 }
 
 struct LandingView: View {
-//    @EnvironmentObject var user: UserData
     @EnvironmentObject var appLogic: AppLogic
     @State private var authenticated: Bool = false
     
