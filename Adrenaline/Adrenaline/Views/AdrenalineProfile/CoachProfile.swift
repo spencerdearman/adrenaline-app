@@ -70,6 +70,8 @@ struct CoachProfileContent: View {
     @State var scoreValues: [String] = ["Judging", "Divers", "Metrics", "Recruiting", "Statistics"]
     @State var selectedPage: Int = 1
     @State var profileLink: String = ""
+    @State var judgingData: ProfileJudgingData? = nil
+    @State var coachDiversData: ProfileCoachDiversData? = nil
     @Binding var userViewData: UserViewData
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenWidth = UIScreen.main.bounds.width
@@ -105,12 +107,15 @@ struct CoachProfileContent: View {
                     cachedJudging[diveMeetsID] = parser.profileData.judging
                     cachedDivers[diveMeetsID] = parser.profileData.coachDivers
                 }
+                
+                judgingData = cachedJudging[diveMeetsID]
+                coachDiversData = cachedDivers[diveMeetsID]
             }
         }
         
         switch selectedPage {
             case 0:
-                if let judging = cachedJudging[diveMeetsID] {
+                if let judging = judgingData {
                     JudgedList(data: judging)
                 } else if diveMeetsID == "" {
                     BackgroundBubble() {
@@ -129,7 +134,7 @@ struct CoachProfileContent: View {
                     }
                 }
         case 1:
-            if let divers = cachedDivers[diveMeetsID] {
+            if let divers = coachDiversData {
                 DiversList(divers: divers)
                     .offset(y: -20)
             } else if diveMeetsID == "" {
@@ -155,7 +160,7 @@ struct CoachProfileContent: View {
         case 4:
             CoachStatisticsView()
         default:
-            if let judging = cachedJudging[diveMeetsID] {
+            if let judging = judgingData {
                 JudgedList(data: judging)
             }
         }
