@@ -22,9 +22,9 @@ struct Event: View {
     @State var fullEventPageShown: Bool = false
     @State var finishedParsing: Bool = false
     @State var timedOut: Bool = false
-    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 60
     private var maxHeightOffset: CGFloat {
-        min(maxHeightOffsetScaled, 90)
+        min(maxHeightOffsetScaled * 1.5, 140)
     }
     
     var screenWidth = UIScreen.main.bounds.width
@@ -38,13 +38,15 @@ struct Event: View {
             if finishedParsing && !timedOut {
                 VStack {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(meet.name)
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .padding()
-                            .fixedSize(horizontal: false, vertical: true)
-                            .lineLimit(2)
-                            .multilineTextAlignment(.center)
+                        VStack(alignment: .center) {
+                            Text(meet.name)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                                .padding()
+                                .fixedSize(horizontal: false, vertical: true)
+                                .lineLimit(2)
+                                .multilineTextAlignment(.center)
+                        }
                         
                         ZStack {
                             Rectangle()
@@ -145,6 +147,7 @@ struct Event: View {
                 }
             }
         }
+        .dynamicTypeSize(.xSmall ... .xxxLarge)
         .onAppear {
             Task {
                 let parseTask = Task {
