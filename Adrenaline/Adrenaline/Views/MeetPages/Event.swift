@@ -101,7 +101,8 @@ struct Event: View {
                                         HStack {
                                             Text(value.2 + " - " + String(value.5))
                                                 .font(.headline)
-                                                .padding()
+                                                .padding([.leading, .trailing])
+                                                .padding([.top, .bottom], 20)
                                             Spacer()
                                         }
                                     } else {
