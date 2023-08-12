@@ -404,7 +404,8 @@ struct DiversList: View {
     
     var body: some View {
         ScalingScrollView(records: divers,
-                          bgColor: currentMode == .light ? .white : .black) { elem in
+                          bgColor: currentMode == .light ? .white : .black,
+                          shadowRadius: 5) { elem in
                         DiverBubbleView(element: elem)
                     }
                           .frame(height: screenHeight * 0.64)
@@ -426,7 +427,6 @@ struct DiverBubbleView: View {
                 Rectangle()
                     .foregroundColor(currentMode == .light ? .white : .black)
                     .cornerRadius(30)
-                    .shadow(radius: 5)
                 HStack {
                     Text(element.name)
                         .foregroundColor(.primary)
