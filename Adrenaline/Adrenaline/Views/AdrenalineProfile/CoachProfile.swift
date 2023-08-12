@@ -72,11 +72,11 @@ struct CoachProfileContent: View {
     @State var profileLink: String = ""
     @Binding var userViewData: UserViewData
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
+    private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     private var diveMeetsID: String {
-        guard let nums = profileLink.split(separator: "=", maxSplits: 1).last else { return "" }
-        return String(nums)
+        userViewData.diveMeetsID ?? ""
     }
     
     var body: some View {
@@ -109,10 +109,18 @@ struct CoachProfileContent: View {
         }
         
         switch selectedPage {
-        case 0:
-            if let judging = cachedJudging[diveMeetsID] {
-                JudgedList(data: judging)
-            } else {
+            case 0:
+                if let judging = cachedJudging[diveMeetsID] {
+                    JudgedList(data: judging)
+                } else if diveMeetsID == "" {
+                    BackgroundBubble() {
+                        Text("Cannot get judging data, account is not linked to DiveMeets")
+                            .font(.title2)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                    }
+                    .frame(width: screenWidth * 0.9)
+        } else {
                     BackgroundBubble(vPadding: 40, hPadding: 40) {
                         VStack {
                             Text("Getting judging data...")
@@ -124,6 +132,14 @@ struct CoachProfileContent: View {
             if let divers = cachedDivers[diveMeetsID] {
                 DiversList(divers: divers)
                     .offset(y: -20)
+            } else if diveMeetsID == "" {
+                BackgroundBubble() {
+                    Text("Cannot get diver data, account is not linked to DiveMeets")
+                        .font(.title2)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+                .frame(width: screenWidth * 0.9)
             } else {
                 BackgroundBubble(vPadding: 40, hPadding: 40) {
                     VStack {
@@ -148,19 +164,19 @@ struct CoachProfileContent: View {
 }
 
 struct CoachMetricsView: View {
-    var body: some View{
+    var body: some View {
         Text("Coach Metrics")
     }
 }
 
 struct CoachRecruitingView: View {
-    var body: some View{
+    var body: some View {
         Text("Coach Recruiting")
     }
 }
 
 struct CoachStatisticsView: View {
-    var body: some View{
+    var body: some View {
         Text("Coach Statistics")
     }
 }
