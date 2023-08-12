@@ -95,7 +95,6 @@ struct ProfileView: View {
             let name = info?.name
             let diverId = info?.diverId ?? ""
             let cityState = info?.cityState
-            let country = info?.country
             let age = info?.age
             
             if !isLoginProfile {

@@ -34,7 +34,7 @@ class AppLogic: ObservableObject {
                 
                 // and update the GUI accordingly
                 await self.updateUI(forSignInStatus: session.isSignedIn)
-                print("Updaing GUI")
+                print("Updating GUI")
             }
             
             // listen to auth events.
@@ -72,7 +72,7 @@ class AppLogic: ObservableObject {
                     }
                     
                 default:
-                    //print("==HUB== \(payload)")
+//                    print("==HUB== \(payload)")
                     break
                 }
             }
@@ -83,9 +83,9 @@ class AppLogic: ObservableObject {
         }
         
     }
-}
-
-extension AppLogic {
+//}
+//
+//extension AppLogic {
     // Other functions for authentication, sign in, sign out, etc.
     
     // Changing the internal state, this triggers an UI update on the main thread
@@ -96,11 +96,12 @@ extension AppLogic {
     }
     
     // Sign in with Cognito web user interface
+    @MainActor
     public func authenticateWithHostedUI() async throws {
         print("hostedUI()")
         
         // Find the key window to use as presentation anchor
-        guard let keyWindow = await findKeyWindow() else {
+        guard let keyWindow = findKeyWindow() else {
             throw AuthenticationError.keyWindowNotFound
         }
         

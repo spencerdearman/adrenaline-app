@@ -6,9 +6,13 @@
 //
 
 import SwiftUI
+import Combine
+import ClientRuntime
+import Amplify
+import AWSCognitoAuthPlugin
 
 struct SignOutButton : View {
-//    @EnvironmentObject var userData: UserData
+    @Binding var authenticated: Bool
     @EnvironmentObject var appLogic: AppLogic
     
     var body: some View {
@@ -17,8 +21,7 @@ struct SignOutButton : View {
                 Task {
                     do {
                         try await appLogic.signOut()
-                        // Reset user data after signing out
-                        appLogic.isSignedIn = false
+                        authenticated = false
                     } catch {
                         print("Error signing out: \(error)")
                     }
@@ -33,44 +36,46 @@ struct SignOutButton : View {
 struct LandingView: View {
 //    @EnvironmentObject var user: UserData
     @EnvironmentObject var appLogic: AppLogic
+    @State private var authenticated: Bool = false
     
     func delay(seconds: Double, closure: @escaping () -> Void) {
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: closure)
     }
     
     var body: some View {
-        VStack {
-            if !appLogic.isSignedIn {
-                Button(action: {
-                    Task {
-                        do {
-                            try await appLogic.authenticateWithHostedUI()
-                        } catch {
-                            print("Error authenticating: \(error)")
+        NavigationView {
+            VStack {
+                if !authenticated {
+                    Button(action: {
+                        Task {
+                            do {
+                                try await appLogic.authenticateWithHostedUI()
+                                let session = try await Amplify.Auth.fetchAuthSession()
+                                if session.isSignedIn {
+                                    authenticated = true
+                                }
+                            } catch {
+                                print("Error authenticating: \(error)")
+                            }
                         }
+                    }) {
+                        UserBadge()
                     }
-                }) {
-                    //This is where the 'Sign in Button' or content goes
-                    UserBadge()
+                } else {
+                    SignOutButton(authenticated: $authenticated)
+                        .onAppear{
+                            print("Coming into the signout portion")
+                        }
                 }
-            } else {
-                SignOutButton()
-                    .onAppear{
-                        print("Coming into the signout portion")
-                    }
             }
         }
-        .onChange(of: appLogic.isSignedIn, perform: { _ in
-            print(appLogic.isSignedIn)})
         .onAppear {
-//            user.signedIn = true
-//            print(user.signedIn)
-//            delay(seconds: 5) {
-//                print(appLogic.signedIn)
-//            }
-//            Task {
-//                try await appLogic.signOut()
-//            }
+            Task {
+                let session = try await Amplify.Auth.fetchAuthSession()
+                if session.isSignedIn {
+                    authenticated = true
+                }
+            }
         }
     }
 }

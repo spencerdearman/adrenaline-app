@@ -17,7 +17,6 @@ var blockingNetwork: Bool = false
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
-//    @EnvironmentObject var userData: UserData
     @State private var selectedTab: Tab = .house
     @State var showSplash: Bool = false
     private let splashDuration: CGFloat = 2

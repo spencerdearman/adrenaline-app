@@ -20,6 +20,10 @@ private struct ModelDB: EnvironmentKey {
     }
 }
 
+private struct AuthenticatedKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
 private struct UpcomingMeetsKey: EnvironmentKey {
     static let defaultValue: MeetDict? = nil
 }
@@ -149,6 +153,11 @@ extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
         set { self[ModelDB.self] = newValue }
+    }
+    
+    var authenticated: Bool {
+        get { self[AuthenticatedKey.self] }
+        set { self[AuthenticatedKey.self] = newValue }
     }
     
     var upcomingMeets: MeetDict? {
@@ -325,7 +334,7 @@ struct AdrenalineApp: App {
     @StateObject var modelDataController = ModelDataController()
     @StateObject var meetParser: MeetParser = MeetParser()
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
-    @StateObject var appLogic: AppLogic = AppLogic()
+    @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
     
     init() {
@@ -336,6 +345,7 @@ struct AdrenalineApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appLogic)
+                .environment(\.authenticated, appLogic.isSignedIn) 
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)
