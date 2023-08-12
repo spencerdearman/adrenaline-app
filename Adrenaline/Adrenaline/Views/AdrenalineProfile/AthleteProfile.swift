@@ -85,10 +85,7 @@ struct ProfileContent: View {
         
         switch selectedPage {
             case 0:
-                MeetList(profileLink:
-                            "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                         (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
-                .offset(y: -screenHeight * 0.05)
+                MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
             case 1:
                 MetricsView(userViewData: $userViewData)
             case 2:
@@ -100,19 +97,55 @@ struct ProfileContent: View {
             case 5:
                 FavoritesView(userViewData: $userViewData)
             default:
-                MeetList(profileLink:
-                            "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                         (userViewData.diveMeetsID ?? "00000"), nameShowing: false)
+                MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
+        }
+    }
+}
+
+struct MeetListView: View {
+    var diveMeetsID: String?
+    var nameShowing: Bool = true
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
+    var body: some View {
+        if let diveMeetsID = diveMeetsID {
+            MeetList(
+                profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+            diveMeetsID, nameShowing: nameShowing)
+            .offset(y: -screenHeight * 0.05)
+        } else {
+            BackgroundBubble() {
+                Text("Cannot get meet list data, account is not linked to DiveMeets")
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+            .frame(width: screenWidth * 0.9)
         }
     }
 }
 
 struct MetricsView: View {
     @Binding var userViewData: UserViewData
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
     var body: some View {
-        let profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-        (userViewData.diveMeetsID ?? "00000")
-        SkillsGraph(profileLink: profileLink)
+        if let diveMeetsID = userViewData.diveMeetsID {
+            SkillsGraph(
+                profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+                        diveMeetsID)
+        } else {
+            BackgroundBubble() {
+                Text("Unable to get metrics, account is not linked to DiveMeets")
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+            .frame(width: screenWidth * 0.9)
+        }
     }
 }
 
@@ -147,7 +180,7 @@ struct FavoritesView: View {
     }
     
     // Gets DiveMeetsID from followed entity to get ProfileImage for the list
-    private func getDiveMeetsID(followed: Followed) -> String {
+    private func getDiveMeetsID(followed: Followed) -> String? {
         if let diveMeetsID = followed.diveMeetsID {
             return diveMeetsID
         } else if let email = followed.email,
@@ -155,7 +188,7 @@ struct FavoritesView: View {
                   let diveMeetsID = user.diveMeetsID {
             return diveMeetsID
         } else {
-            return ""
+            return nil
         }
     }
     
@@ -168,7 +201,7 @@ struct FavoritesView: View {
                             .fill(Custom.specialGray)
                             .shadow(radius: 5)
                         HStack(alignment: .center) {
-                            ProfileImage(diverID: getDiveMeetsID(followed: followed))
+                            ProfileImage(diverID: getDiveMeetsID(followed: followed) ?? "")
                                 .frame(width: 100, height: 100)
                                 .scaleEffect(0.3)
                             HStack(alignment: .firstTextBaseline) {
