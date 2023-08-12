@@ -86,9 +86,11 @@ struct RankingsView: View {
                 if let males = getMaleAthletes() {
                     maleRatings = []
                     for male in males {
-                        maleRatings.append((male, male.springboardRating,
-                                            male.platformRating,
-                                            male.totalRating))
+                        if let diveMeetsID = male.diveMeetsID, diveMeetsID != "" {
+                            maleRatings.append((male, male.springboardRating,
+                                                male.platformRating,
+                                                male.totalRating))
+                        }
                     }
                     
                     maleRatings = normalizeRatings(ratings: maleRatings)
@@ -97,9 +99,11 @@ struct RankingsView: View {
                 if let females = getFemaleAthletes() {
                     femaleRatings = []
                     for female in females {
-                        femaleRatings.append((female, female.springboardRating,
-                                              female.platformRating,
-                                              female.totalRating))
+                        if let diveMeetsID = female.diveMeetsID, diveMeetsID != "" {
+                            femaleRatings.append((female, female.springboardRating,
+                                                  female.platformRating,
+                                                  female.totalRating))
+                        }
                     }
                     
                     femaleRatings = normalizeRatings(ratings: femaleRatings)
