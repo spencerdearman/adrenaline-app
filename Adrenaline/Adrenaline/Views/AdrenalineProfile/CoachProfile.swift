@@ -113,57 +113,60 @@ struct CoachProfileContent: View {
             }
         }
         
-        switch selectedPage {
-            case 0:
-                if let judging = judgingData {
-                    JudgedList(data: judging)
-                } else if diveMeetsID == "" {
-                    BackgroundBubble() {
-                        Text("Cannot get judging data, account is not linked to DiveMeets")
-                            .font(.title2)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                    }
-                    .frame(width: screenWidth * 0.9)
-        } else {
-                    BackgroundBubble(vPadding: 40, hPadding: 40) {
-                        VStack {
-                            Text("Getting judging data...")
-                            ProgressView()
+        Group {
+            switch selectedPage {
+                case 0:
+                    if let judging = judgingData {
+                        JudgedList(data: judging)
+                    } else if diveMeetsID == "" {
+                        BackgroundBubble() {
+                            Text("Cannot get judging data, account is not linked to DiveMeets")
+                                .font(.title2)
+                                .multilineTextAlignment(.center)
+                                .padding()
+                        }
+                        .frame(width: screenWidth * 0.9)
+                    } else {
+                        BackgroundBubble(vPadding: 40, hPadding: 40) {
+                            VStack {
+                                Text("Getting judging data...")
+                                ProgressView()
+                            }
                         }
                     }
-                }
-        case 1:
-            if let divers = coachDiversData {
-                DiversList(divers: divers)
-                    .offset(y: -20)
-            } else if diveMeetsID == "" {
-                BackgroundBubble() {
-                    Text("Cannot get diver data, account is not linked to DiveMeets")
-                        .font(.title2)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                }
-                .frame(width: screenWidth * 0.9)
-            } else {
-                BackgroundBubble(vPadding: 40, hPadding: 40) {
-                    VStack {
-                        Text("Getting coach divers list...")
-                        ProgressView()
+                case 1:
+                    if let divers = coachDiversData {
+                        DiversList(divers: divers)
+                            .offset(y: -20)
+                    } else if diveMeetsID == "" {
+                        BackgroundBubble() {
+                            Text("Cannot get diver data, account is not linked to DiveMeets")
+                                .font(.title2)
+                                .multilineTextAlignment(.center)
+                                .padding()
+                        }
+                        .frame(width: screenWidth * 0.9)
+                    } else {
+                        BackgroundBubble(vPadding: 40, hPadding: 40) {
+                            VStack {
+                                Text("Getting coach divers list...")
+                                ProgressView()
+                            }
+                        }
                     }
-                }
-            }
-        case 2:
-            CoachMetricsView()
-        case 3:
-            CoachRecruitingView()
-        case 4:
-            CoachStatisticsView()
-        default:
-            if let judging = judgingData {
-                JudgedList(data: judging)
+                case 2:
+                    CoachMetricsView()
+                case 3:
+                    CoachRecruitingView()
+                case 4:
+                    CoachStatisticsView()
+                default:
+                    if let judging = judgingData {
+                        JudgedList(data: judging)
+                    }
             }
         }
+        .offset(y: -screenHeight * 0.05)
         Spacer()
     }
 }
