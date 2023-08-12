@@ -68,9 +68,9 @@ struct LandingView: View {
 //            delay(seconds: 5) {
 //                print(appLogic.signedIn)
 //            }
-            Task {
-                try await appLogic.signOut()
-            }
+//            Task {
+//                try await appLogic.signOut()
+//            }
         }
     }
 }

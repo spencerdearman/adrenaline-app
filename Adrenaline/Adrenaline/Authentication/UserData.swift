@@ -11,23 +11,9 @@ import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
 
-
-//Creating a structure to be observable in Main
-//class UserData: ObservableObject {
-//    @Published var signedIn: Bool = false
-//}
-
 //Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
-    @Published var signedIn: Bool = false
-    
-//
-//    var userData: UserData
-//
-//    init(userData: UserData) {
-//        self.userData = userData
-//    }
     
     func configureAmplify() {
         do {

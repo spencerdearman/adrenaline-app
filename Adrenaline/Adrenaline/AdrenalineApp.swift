@@ -322,17 +322,11 @@ extension UINavigationController {
 
 @main
 struct AdrenalineApp: App {
-    // Only one of these should exist, add @Environment to use variable in views
-    // instead of creating a new instance of ModelDataController()
     @StateObject var modelDataController = ModelDataController()
     @StateObject var meetParser: MeetParser = MeetParser()
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
     @StateObject var appLogic: AppLogic = AppLogic()
-//    @StateObject var userData: UserData = UserData()
     @State var isIndexingMeets: Bool = false
-//    var appLogic: AppLogic {
-//        AppLogic(userData: userData)
-//    }
     
     init() {
         appLogic.configureAmplify()
@@ -341,7 +335,6 @@ struct AdrenalineApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-//                .environmentObject(userData)
                 .environmentObject(appLogic)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
