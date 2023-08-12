@@ -38,10 +38,6 @@ struct LandingView: View {
     @EnvironmentObject var appLogic: AppLogic
     @State private var authenticated: Bool = false
     
-    func delay(seconds: Double, closure: @escaping () -> Void) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: closure)
-    }
-    
     var body: some View {
         NavigationView {
             VStack {
