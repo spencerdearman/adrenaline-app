@@ -190,7 +190,7 @@ struct PersonalInfoView: View {
     
     private func updateFollowed() {
         guard let first = userViewData.firstName, let last = userViewData.lastName,
-                let userEmail = userViewData.email else { return }
+              let userEmail = userViewData.email else { return }
         addFollowedByEmail(first, last, userEmail)
         guard let (email, _) = getStoredCredentials() else { return }
         guard let user = getUser(email) else { return }
@@ -212,89 +212,89 @@ struct PersonalInfoView: View {
     var body: some View {
         VStack {
             BackgroundBubble(vPadding: 20, hPadding: 60) {
-                    VStack {
-                        HStack (alignment: .firstTextBaseline) {
-                            Text((userViewData.firstName ?? "") + " " +
-                                 (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
-                            Text(userViewData.accountType ?? "")
-                                .foregroundColor(.secondary)
-                            if isShowingStar {
-                                Image(systemName: starred ? "star.fill" : "star")
-                                    .foregroundColor(starred
-                                                     ? Color.yellow
-                                                     : Color.primary)
-                                    .onTapGesture {
-                                        withAnimation {
-                                            starred.toggle()
-                                            if starred {
-                                                updateFollowed()
-                                            } else {
-                                                guard let email = userViewData.email else { return }
-                                                // Gets logged in user
-                                                guard let (loggedInEmail, _) =
-                                                        getStoredCredentials() else {
-                                                    return
-                                                }
-                                                guard let user = getUser(loggedInEmail) else {
-                                                    return
-                                                }
-                                                guard let followed = getFollowedByEmail(email)
-                                                else { return }
-                                                dropFollowedFromUser(user, followed)
+                VStack {
+                    HStack (alignment: .firstTextBaseline) {
+                        Text((userViewData.firstName ?? "") + " " +
+                             (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
+                        Text(userViewData.accountType ?? "")
+                            .foregroundColor(.secondary)
+                        if isShowingStar {
+                            Image(systemName: starred ? "star.fill" : "star")
+                                .foregroundColor(starred
+                                                 ? Color.yellow
+                                                 : Color.primary)
+                                .onTapGesture {
+                                    withAnimation {
+                                        starred.toggle()
+                                        if starred {
+                                            updateFollowed()
+                                        } else {
+                                            guard let email = userViewData.email else { return }
+                                            // Gets logged in user
+                                            guard let (loggedInEmail, _) =
+                                                    getStoredCredentials() else {
+                                                return
                                             }
-                                        }
-                                    }
-                            }
-                        }
-                        if userViewData.accountType != "Spectator" {
-                            if currentMode == .light {
-                                Divider()
-                            } else {
-                                WhiteDivider()
-                            }
-                            HStack (alignment: .firstTextBaseline) {
-                                if userViewData.accountType == "Athlete" {
-                                    let a = getAthlete(userViewData.email ?? "")
-                                    HStack {
-                                        Image(systemName: "mappin.and.ellipse")
-                                        if let hometown = a?.hometown, !hometown.isEmpty {
-                                            Text(formatLocationString(hometown))
-                                        } else {
-                                            Text("?")
-                                        }
-                                    }
-                                    HStack {
-                                        Image(systemName: "person.fill")
-                                        if let age = a?.age {
-                                            Text(String(age))
-                                        } else {
-                                            Text("?")
+                                            guard let user = getUser(loggedInEmail) else {
+                                                return
+                                            }
+                                            guard let followed = getFollowedByEmail(email)
+                                            else { return }
+                                            dropFollowedFromUser(user, followed)
                                         }
                                     }
                                 }
-                                if userViewData.diveMeetsID != "" {
-                                    HStack {
-                                        Image(systemName: "figure.pool.swim")
-                                        if let diveMeetsID = userViewData.diveMeetsID {
-                                            Text(diveMeetsID)
-                                        } else {
-                                            Text("?")
-                                        }
+                        }
+                    }
+                    if userViewData.accountType != "Spectator" {
+                        if currentMode == .light {
+                            Divider()
+                        } else {
+                            WhiteDivider()
+                        }
+                        HStack (alignment: .firstTextBaseline) {
+                            if userViewData.accountType == "Athlete" {
+                                let a = getAthlete(userViewData.email ?? "")
+                                HStack {
+                                    Image(systemName: "mappin.and.ellipse")
+                                    if let hometown = a?.hometown, !hometown.isEmpty {
+                                        Text(formatLocationString(hometown))
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                    if let age = a?.age {
+                                        Text(String(age))
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                            }
+                            if userViewData.diveMeetsID != "" {
+                                HStack {
+                                    Image(systemName: "figure.pool.swim")
+                                    if let diveMeetsID = userViewData.diveMeetsID {
+                                        Text(diveMeetsID)
+                                    } else {
+                                        Text("?")
                                     }
                                 }
                             }
                         }
                     }
-                    .frame(width: screenWidth * 0.8)
-                    .overlay(selectedCollege == ""
-                             ? AnyView(EmptyView())
-                             : AnyView(
-                                Image(selectedCollege)
-                            .resizable()
-                            .clipShape(Circle())
-                            .aspectRatio(contentMode: .fit)
-                            .padding(.leading, collegeIconPadding)),
-                             alignment: .leading)
+                }
+                .frame(width: screenWidth * 0.8)
+                .overlay(selectedCollege == ""
+                         ? AnyView(EmptyView())
+                         : AnyView(
+                            Image(selectedCollege)
+                                .resizable()
+                                .clipShape(Circle())
+                                .aspectRatio(contentMode: .fit)
+                                .padding(.leading, collegeIconPadding)),
+                         alignment: .leading)
             }
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
@@ -325,12 +325,20 @@ struct PersonalInfoView: View {
 }
 
 struct SettingsPage: View {
+    @Environment(\.colorScheme) private var currentMode
     @Environment(\.dismiss) private var dismiss
     @Binding var userViewData: UserViewData
+    @ScaledMetric var buttonWidthScaled: CGFloat = 0.35
     private let screenWidth = UIScreen.main.bounds.width
+    
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
     }
+    
+    private var buttonWidth: CGFloat {
+        min(buttonWidthScaled, 0.9)
+    }
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -351,7 +359,12 @@ struct SettingsPage: View {
                 NavigationLink {
                     EditProfile(userViewData: $userViewData)
                 } label: {
-                    BackgroundBubble(shadow: 5) {
+                    ZStack {
+                        Rectangle()
+                            .frame(width: screenWidth * buttonWidth)
+                            .foregroundColor(currentMode == .light ? .white : .black)
+                            .mask(RoundedRectangle(cornerRadius: 40))
+                            .shadow(radius: 5)
                         HStack {
                             Text("Edit Profile")
                                 .foregroundColor(.primary)
@@ -376,14 +389,27 @@ struct SettingsPage: View {
 }
 
 struct EditProfile: View {
+    @Environment(\.colorScheme) private var currentMode
     @Environment(\.dismiss) private var dismiss
     @Binding var userViewData: UserViewData
+    @ScaledMetric var buttonWidthScaled: CGFloat = 0.42
+    private let screenWidth = UIScreen.main.bounds.width
+    
+    private var buttonWidth: CGFloat {
+        min(buttonWidthScaled, 0.9)
+    }
     
     var body: some View {
         VStack {
             Text("This is where you will edit your account")
             NavigationLink(destination: CommittedCollegeView(userViewData: $userViewData)) {
-                BackgroundBubble() {
+                ZStack {
+                    Rectangle()
+                        .frame(width: screenWidth * buttonWidth, height: screenWidth * buttonWidth / 2)
+                        .foregroundColor(currentMode == .light ? .white : .black)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 5)
+                    
                     Text("Choose College")
                         .foregroundColor(.primary)
                         .padding()
