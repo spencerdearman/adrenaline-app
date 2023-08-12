@@ -64,23 +64,25 @@ struct RankingsView: View {
     
     var body: some View {
         if networkIsConnected {
-            VStack {
-                Text("Rankings")
-                    .font(.title)
-                    .bold()
-                
-                BubbleSelectView(selection: $rankingType)
-                    .padding([.leading, .trailing])
-                
-                BubbleSelectView(selection: $gender)
-                    .padding([.leading, .trailing])
-                
-                Divider()
-                
-                RankingListView(rankingType: $rankingType, gender: $gender,
-                                maleRatings: $maleRatings, femaleRatings: $femaleRatings)
-                
-                Spacer()
+            NavigationView {
+                VStack {
+                    Text("Rankings")
+                        .font(.title)
+                        .bold()
+                    
+                    BubbleSelectView(selection: $rankingType)
+                        .padding([.leading, .trailing])
+                    
+                    BubbleSelectView(selection: $gender)
+                        .padding([.leading, .trailing])
+                    
+                    Divider()
+                    
+                    RankingListView(rankingType: $rankingType, gender: $gender,
+                                    maleRatings: $maleRatings, femaleRatings: $femaleRatings)
+                    
+                    Spacer()
+                }
             }
             .onAppear {
                 if let males = getMaleAthletes() {
@@ -116,10 +118,13 @@ struct RankingsView: View {
 }
 
 struct RankingListView: View {
+    @Environment(\.colorScheme) private var currentMode
     @Binding var rankingType: RankingType
     @Binding var gender: Gender
     @Binding var maleRatings: GenderRankingList
     @Binding var femaleRatings: GenderRankingList
+    
+    private let screenWidth = UIScreen.main.bounds.width
     
     private func getSortedRankingList() -> RankingList {
         let list = gender == .male ? maleRatings : femaleRatings
@@ -190,25 +195,80 @@ struct RankingListView: View {
     
     var body: some View {
         let numberedList = numberSortedRankingList(getSortedRankingList())
-        ScrollView(showsIndicators: false) {
-            VStack {
-                ForEach(numberedList.indices, id: \.self) { index in
-                    let number = numberedList[index].0
-                    let athlete = numberedList[index].1.0
-                    let rating = numberedList[index].1.1
-                    BackgroundBubble() {
-                        HStack {
-                            Text(String(number))
-                                .padding(.trailing)
-                            Text((athlete.firstName ?? "") + " "  +
-                                 (athlete.lastName ?? ""))
-                            Spacer()
-                            Text(String(format: "%.1f", rating))
-                        }
-                        .padding([.leading, .trailing])
-                    }
-                    .padding([.leading, .trailing])
+        VStack {
+            // Column headers
+            ZStack {
+                Rectangle()
+                    .frame(width: screenWidth * 0.9, height: screenWidth * 0.1)
+                    .foregroundColor(currentMode == .light ? .white : .black)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 5)
+                
+                HStack {
+                    Text("Rank")
+                        .padding(.leading, 17)
+                        .padding(.trailing, 20)
+                    Text("Name")
+                    Spacer()
+                    Text("Rating")
+                        .padding(.trailing, 31)
                 }
+                .bold()
+                .padding()
+            }
+            
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    ForEach(numberedList.indices, id: \.self) { index in
+                        let number = numberedList[index].0
+                        let athlete = numberedList[index].1.0
+                        let rating = numberedList[index].1.1
+                        
+                        RankingListDiverView(number: number, athlete: athlete, rating: rating)
+                    }
+                }
+                .padding()
+            }
+        }
+    }
+}
+
+struct RankingListDiverView: View {
+    @Environment(\.colorScheme) private var currentMode
+    var number: Int
+    var athlete: Athlete
+    var rating: Double
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .frame(width: screenWidth * 0.9)
+                .foregroundColor(currentMode == .light ? .white : .black)
+                .mask(RoundedRectangle(cornerRadius: 40))
+                .shadow(radius: 5)
+            HStack {
+                Text(String(number))
+                    .padding(.leading)
+                    .padding(.trailing, 40)
+                if let email = athlete.email {
+                    NavigationLink(
+                        destination: AdrenalineProfileView(showBackButton: true, userEmail: email,
+                                                           loginSuccessful: .constant(false))) {
+                                                               Text((athlete.firstName ?? "") +
+                                                                    " "  +
+                                                                    (athlete.lastName ?? ""))
+                                                               .foregroundColor(Custom.coolBlue)
+                                                           }
+                } else {
+                    Text((athlete.firstName ?? "") + " "  + (athlete.lastName ?? ""))
+                    .foregroundColor(.primary)
+                }
+                
+                Spacer()
+                Text(String(format: "%.1f", rating))
+                    .padding(.trailing)
             }
             .padding()
         }
