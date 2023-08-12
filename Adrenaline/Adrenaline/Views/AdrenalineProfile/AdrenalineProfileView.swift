@@ -156,6 +156,7 @@ struct PersonalInfoView: View {
     @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
     @Environment(\.addFollowedToUser) private var addFollowedToUser
     @State var selectedCollege: String = ""
+    @State var athlete: Athlete? = nil
     @State private var starred: Bool = false
     @Binding var userViewData: UserViewData
     @Binding var loginSuccessful: Bool
@@ -190,7 +191,7 @@ struct PersonalInfoView: View {
     
     private func updateFollowed() {
         guard let first = userViewData.firstName, let last = userViewData.lastName,
-              let userEmail = userViewData.email else { return }
+                let userEmail = userViewData.email else { return }
         addFollowedByEmail(first, last, userEmail)
         guard let (email, _) = getStoredCredentials() else { return }
         guard let user = getUser(email) else { return }
@@ -209,104 +210,114 @@ struct PersonalInfoView: View {
         return false
     }
     
+    private func updateCollege() {
+        if userViewData.accountType == "Athlete",
+           let a = getAthlete(userViewData.email ?? "") {
+            athlete = a
+            if let college = a.committedCollege {
+                selectedCollege = getCollegeImageFilename(name: college)
+            } else {
+                selectedCollege = ""
+            }
+        }
+    }
+    
     var body: some View {
         VStack {
             BackgroundBubble(vPadding: 20, hPadding: 60) {
-                VStack {
-                    HStack (alignment: .firstTextBaseline) {
-                        Text((userViewData.firstName ?? "") + " " +
-                             (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
-                        Text(userViewData.accountType ?? "")
-                            .foregroundColor(.secondary)
-                        if isShowingStar {
-                            Image(systemName: starred ? "star.fill" : "star")
-                                .foregroundColor(starred
-                                                 ? Color.yellow
-                                                 : Color.primary)
-                                .onTapGesture {
-                                    withAnimation {
-                                        starred.toggle()
-                                        if starred {
-                                            updateFollowed()
+                    VStack {
+                        HStack (alignment: .firstTextBaseline) {
+                            Text((userViewData.firstName ?? "") + " " +
+                                 (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
+                            Text(userViewData.accountType ?? "")
+                                .foregroundColor(.secondary)
+                            if isShowingStar {
+                                Image(systemName: starred ? "star.fill" : "star")
+                                    .foregroundColor(starred
+                                                     ? Color.yellow
+                                                     : Color.primary)
+                                    .onTapGesture {
+                                        withAnimation {
+                                            starred.toggle()
+                                            if starred {
+                                                updateFollowed()
+                                            } else {
+                                                guard let email = userViewData.email else { return }
+                                                // Gets logged in user
+                                                guard let (loggedInEmail, _) =
+                                                        getStoredCredentials() else {
+                                                    return
+                                                }
+                                                guard let user = getUser(loggedInEmail) else {
+                                                    return
+                                                }
+                                                guard let followed = getFollowedByEmail(email)
+                                                else { return }
+                                                dropFollowedFromUser(user, followed)
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+                        if userViewData.accountType != "Spectator" {
+                            if currentMode == .light {
+                                Divider()
+                            } else {
+                                WhiteDivider()
+                            }
+                            HStack (alignment: .firstTextBaseline) {
+                                if userViewData.accountType == "Athlete" {
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        if let hometown = athlete?.hometown, !hometown.isEmpty {
+                                            Text(formatLocationString(hometown))
                                         } else {
-                                            guard let email = userViewData.email else { return }
-                                            // Gets logged in user
-                                            guard let (loggedInEmail, _) =
-                                                    getStoredCredentials() else {
-                                                return
-                                            }
-                                            guard let user = getUser(loggedInEmail) else {
-                                                return
-                                            }
-                                            guard let followed = getFollowedByEmail(email)
-                                            else { return }
-                                            dropFollowedFromUser(user, followed)
+                                            Text("?")
+                                        }
+                                    }
+                                    HStack {
+                                        Image(systemName: "person.fill")
+                                        if let age = athlete?.age {
+                                            Text(String(age))
+                                        } else {
+                                            Text("?")
                                         }
                                     }
                                 }
-                        }
-                    }
-                    if userViewData.accountType != "Spectator" {
-                        if currentMode == .light {
-                            Divider()
-                        } else {
-                            WhiteDivider()
-                        }
-                        HStack (alignment: .firstTextBaseline) {
-                            if userViewData.accountType == "Athlete" {
-                                let a = getAthlete(userViewData.email ?? "")
-                                HStack {
-                                    Image(systemName: "mappin.and.ellipse")
-                                    if let hometown = a?.hometown, !hometown.isEmpty {
-                                        Text(formatLocationString(hometown))
-                                    } else {
-                                        Text("?")
-                                    }
-                                }
-                                HStack {
-                                    Image(systemName: "person.fill")
-                                    if let age = a?.age {
-                                        Text(String(age))
-                                    } else {
-                                        Text("?")
-                                    }
-                                }
-                            }
-                            if userViewData.diveMeetsID != "" {
-                                HStack {
-                                    Image(systemName: "figure.pool.swim")
-                                    if let diveMeetsID = userViewData.diveMeetsID {
-                                        Text(diveMeetsID)
-                                    } else {
-                                        Text("?")
+                                if userViewData.diveMeetsID != "" {
+                                    HStack {
+                                        Image(systemName: "figure.pool.swim")
+                                        if let diveMeetsID = userViewData.diveMeetsID {
+                                            Text(diveMeetsID)
+                                        } else {
+                                            Text("?")
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-                .frame(width: screenWidth * 0.8)
-                .overlay(selectedCollege == ""
-                         ? AnyView(EmptyView())
-                         : AnyView(
-                            Image(selectedCollege)
-                                .resizable()
-                                .clipShape(Circle())
-                                .aspectRatio(contentMode: .fit)
-                                .padding(.leading, collegeIconPadding)),
-                         alignment: .leading)
+                    .frame(width: screenWidth * 0.8)
+                    .overlay(selectedCollege == ""
+                             ? AnyView(EmptyView())
+                             : AnyView(
+                                Image(selectedCollege)
+                            .resizable()
+                            .clipShape(Circle())
+                            .aspectRatio(contentMode: .fit)
+                            .padding(.leading, collegeIconPadding)),
+                             alignment: .leading)
             }
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
-        .onAppear {
+        .onChange(of: userViewData.diveMeetsID) { _ in
             if userViewData.accountType == "Athlete",
-               let a = getAthlete(userViewData.email ?? "") {
-                if let college = a.committedCollege {
-                    selectedCollege = getCollegeImageFilename(name: college)
-                } else {
-                    selectedCollege = ""
-                }
+               let email = userViewData.email {
+                athlete = getAthlete(email)
             }
+        }
+        .onAppear {
+            updateCollege()
             
             if isShowingStar {
                 // Gets logged in user
@@ -325,20 +336,12 @@ struct PersonalInfoView: View {
 }
 
 struct SettingsPage: View {
-    @Environment(\.colorScheme) private var currentMode
     @Environment(\.dismiss) private var dismiss
     @Binding var userViewData: UserViewData
-    @ScaledMetric var buttonWidthScaled: CGFloat = 0.35
     private let screenWidth = UIScreen.main.bounds.width
-    
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
     }
-    
-    private var buttonWidth: CGFloat {
-        min(buttonWidthScaled, 0.9)
-    }
-    
     var body: some View {
         ScrollView {
             VStack {
@@ -359,12 +362,7 @@ struct SettingsPage: View {
                 NavigationLink {
                     EditProfile(userViewData: $userViewData)
                 } label: {
-                    ZStack {
-                        Rectangle()
-                            .frame(width: screenWidth * buttonWidth)
-                            .foregroundColor(currentMode == .light ? .white : .black)
-                            .mask(RoundedRectangle(cornerRadius: 40))
-                            .shadow(radius: 5)
+                    BackgroundBubble(shadow: 5) {
                         HStack {
                             Text("Edit Profile")
                                 .foregroundColor(.primary)
@@ -389,27 +387,14 @@ struct SettingsPage: View {
 }
 
 struct EditProfile: View {
-    @Environment(\.colorScheme) private var currentMode
     @Environment(\.dismiss) private var dismiss
     @Binding var userViewData: UserViewData
-    @ScaledMetric var buttonWidthScaled: CGFloat = 0.42
-    private let screenWidth = UIScreen.main.bounds.width
-    
-    private var buttonWidth: CGFloat {
-        min(buttonWidthScaled, 0.9)
-    }
     
     var body: some View {
         VStack {
             Text("This is where you will edit your account")
             NavigationLink(destination: CommittedCollegeView(userViewData: $userViewData)) {
-                ZStack {
-                    Rectangle()
-                        .frame(width: screenWidth * buttonWidth, height: screenWidth * buttonWidth / 2)
-                        .foregroundColor(currentMode == .light ? .white : .black)
-                        .mask(RoundedRectangle(cornerRadius: 40))
-                        .shadow(radius: 5)
-                    
+                BackgroundBubble() {
                     Text("Choose College")
                         .foregroundColor(.primary)
                         .padding()
@@ -623,8 +608,10 @@ struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.updateUserField) private var updateUserField
+    @Environment(\.updateAthleteField) private var updateAthleteField
     @Binding var userViewData: UserViewData
     @State var diveMeetsID: String = ""
+    private let parser: ProfileParser = ProfileParser()
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
@@ -645,7 +632,19 @@ struct DiveMeetsLink: View {
             BackgroundBubble(onTapGesture: {
                 if let email = userViewData.email {
                     updateUserField(email, "diveMeetsID", diveMeetsID)
-                    userViewData.diveMeetsID = diveMeetsID
+                    Task {
+                        if await parser.parseProfile(diveMeetsID: diveMeetsID),
+                           let info = parser.profileData.info {
+                            if let age = info.age { updateAthleteField(email, "age", Int16(age)) }
+                            if let hometown = info.cityState {
+                                updateAthleteField(email, "hometown", hometown)
+                            }
+                        } else {
+                            print("Failed to get profile info from new DiveMeets link")
+                        }
+                        
+                        userViewData.diveMeetsID = diveMeetsID
+                    }
                 }
                 presentationMode.wrappedValue.dismiss()
             }) {

@@ -83,25 +83,22 @@ struct ProfileContent: View {
             }
         }
         
-        Group {
-            switch selectedPage {
-                case 0:
-                    MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
-                case 1:
-                    MetricsView(userViewData: $userViewData)
-                case 2:
-                    RecruitingView()
-                case 3:
-                    StatisticsView()
-                case 4:
-                    VideosView()
-                case 5:
-                    FavoritesView(userViewData: $userViewData)
-                default:
-                    MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
-            }
+        switch selectedPage {
+            case 0:
+                MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
+            case 1:
+                MetricsView(userViewData: $userViewData)
+            case 2:
+                RecruitingView()
+            case 3:
+                StatisticsView()
+            case 4:
+                VideosView()
+            case 5:
+                FavoritesView(userViewData: $userViewData)
+            default:
+                MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
         }
-        .offset(y: -screenHeight * 0.05)
     }
 }
 
@@ -116,7 +113,8 @@ struct MeetListView: View {
         if let diveMeetsID = diveMeetsID {
             MeetList(
                 profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                diveMeetsID, nameShowing: nameShowing)
+            diveMeetsID, nameShowing: nameShowing)
+            .offset(y: -screenHeight * 0.05)
         } else {
             BackgroundBubble() {
                 Text("Cannot get meet list data, account is not linked to DiveMeets")
@@ -138,7 +136,7 @@ struct MetricsView: View {
         if let diveMeetsID = userViewData.diveMeetsID {
             SkillsGraph(
                 profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
-                diveMeetsID)
+                        diveMeetsID)
         } else {
             BackgroundBubble() {
                 Text("Unable to get metrics, account is not linked to DiveMeets")
