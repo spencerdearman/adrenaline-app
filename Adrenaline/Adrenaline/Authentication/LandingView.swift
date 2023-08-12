@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct SignOutButton : View {
-    @EnvironmentObject var userData: UserData
-    @StateObject var appLogic: AppLogic
+//    @EnvironmentObject var userData: UserData
+    @EnvironmentObject var appLogic: AppLogic
     
     var body: some View {
-        NavigationLink(destination: LandingView(user: userData)) {
+        NavigationLink(destination: LandingView()) {
             Button(action: {
                 Task {
                     do {
                         try await appLogic.signOut()
                         // Reset user data after signing out
-                        userData.signedIn = false
+                        appLogic.isSignedIn = false
                     } catch {
                         print("Error signing out: \(error)")
                     }
@@ -31,18 +31,16 @@ struct SignOutButton : View {
 }
 
 struct LandingView: View {
-    @ObservedObject public var user : UserData
-//    @EnvironmentObject var userData: UserData
-    @StateObject private var appLogic: AppLogic
-//
-    init(user: UserData) {
-        self.user = user
-        _appLogic = StateObject(wrappedValue: AppLogic(userData: user))
+//    @EnvironmentObject var user: UserData
+    @EnvironmentObject var appLogic: AppLogic
+    
+    func delay(seconds: Double, closure: @escaping () -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: closure)
     }
     
     var body: some View {
         VStack {
-            if !user.signedIn {
+            if !appLogic.isSignedIn {
                 Button(action: {
                     Task {
                         do {
@@ -56,18 +54,23 @@ struct LandingView: View {
                     UserBadge()
                 }
             } else {
-                SignOutButton(appLogic: appLogic)
+                SignOutButton()
                     .onAppear{
                         print("Coming into the signout portion")
                     }
             }
         }
+        .onChange(of: appLogic.isSignedIn, perform: { _ in
+            print(appLogic.isSignedIn)})
         .onAppear {
 //            user.signedIn = true
-            print(user.signedIn)
-//            Task {
-//                try await appLogic.signOut()
+//            print(user.signedIn)
+//            delay(seconds: 5) {
+//                print(appLogic.signedIn)
 //            }
+            Task {
+                try await appLogic.signOut()
+            }
         }
     }
 }

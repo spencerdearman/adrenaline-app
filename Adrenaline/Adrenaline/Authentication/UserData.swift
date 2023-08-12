@@ -13,18 +13,21 @@ import AWSCognitoAuthPlugin
 
 
 //Creating a structure to be observable in Main
-class UserData: ObservableObject {
-    @Published var signedIn: Bool = false
-}
+//class UserData: ObservableObject {
+//    @Published var signedIn: Bool = false
+//}
 
 //Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
-    var userData: UserData
+    @Published var signedIn: Bool = false
     
-    init(userData: UserData) {
-        self.userData = userData
-    }
+//
+//    var userData: UserData
+//
+//    init(userData: UserData) {
+//        self.userData = userData
+//    }
     
     func configureAmplify() {
         do {
@@ -45,6 +48,7 @@ class AppLogic: ObservableObject {
                 
                 // and update the GUI accordingly
                 await self.updateUI(forSignInStatus: session.isSignedIn)
+                print("Updaing GUI")
             }
             
             // listen to auth events.
@@ -101,8 +105,8 @@ extension AppLogic {
     // Changing the internal state, this triggers an UI update on the main thread
     @MainActor
     func updateUI(forSignInStatus: Bool) async {
-        self.userData.signedIn = forSignInStatus
-        print("Changing signed in Status: " + String(self.userData.signedIn))
+        self.isSignedIn = forSignInStatus
+        print("Changing signed in Status: " + String(self.isSignedIn))
     }
     
     // Sign in with Cognito web user interface
@@ -110,7 +114,7 @@ extension AppLogic {
         print("hostedUI()")
         
         // Find the key window to use as presentation anchor
-        guard let keyWindow = findKeyWindow() else {
+        guard let keyWindow = await findKeyWindow() else {
             throw AuthenticationError.keyWindowNotFound
         }
         
@@ -127,6 +131,7 @@ extension AppLogic {
     }
     
     // Find the key window from connected scenes
+    @MainActor
     private func findKeyWindow() -> UIWindow? {
         for scene in UIApplication.shared.connectedScenes {
             if let windowScene = scene as? UIWindowScene,
