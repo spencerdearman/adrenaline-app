@@ -7,6 +7,10 @@
 
 import SwiftUI
 import CoreData
+import Combine
+import ClientRuntime
+import Amplify
+import AWSCognitoAuthPlugin
 
 private struct ModelDB: EnvironmentKey {
     static var defaultValue: ModelDataController {
@@ -14,6 +18,10 @@ private struct ModelDB: EnvironmentKey {
             ModelDataController()
         }
     }
+}
+
+private struct AuthenticatedKey: EnvironmentKey {
+    static let defaultValue: Bool = false
 }
 
 private struct UpcomingMeetsKey: EnvironmentKey {
@@ -145,6 +153,11 @@ extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
         set { self[ModelDB.self] = newValue }
+    }
+    
+    var authenticated: Bool {
+        get { self[AuthenticatedKey.self] }
+        set { self[AuthenticatedKey.self] = newValue }
     }
     
     var upcomingMeets: MeetDict? {
@@ -318,16 +331,21 @@ extension UINavigationController {
 
 @main
 struct AdrenalineApp: App {
-    // Only one of these should exist, add @Environment to use variable in views
-    // instead of creating a new instance of ModelDataController()
     @StateObject var modelDataController = ModelDataController()
     @StateObject var meetParser: MeetParser = MeetParser()
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
+    @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
+    
+    init() {
+        appLogic.configureAmplify()
+    }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appLogic)
+                .environment(\.authenticated, appLogic.isSignedIn) 
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)

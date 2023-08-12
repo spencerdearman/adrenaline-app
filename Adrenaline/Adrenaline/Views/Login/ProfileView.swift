@@ -95,10 +95,7 @@ struct ProfileView: View {
             let name = info?.name
             let diverId = info?.diverId ?? ""
             let cityState = info?.cityState
-            let country = info?.country
-            let gender = info?.gender
             let age = info?.age
-            let finaAge = info?.finaAge
             
             if !isLoginProfile {
                 Custom.darkGray.ignoresSafeArea()
@@ -158,8 +155,7 @@ struct ProfileView: View {
                                             HStack {
                                                 Image(systemName: "mappin.and.ellipse")
                                                 if infoSafe,
-                                                   let cityState = cityState,
-                                                   let country = country {
+                                                   let cityState = cityState {
                                                     Text(cityState)
                                                 } else {
                                                     Text("")
@@ -276,8 +272,7 @@ struct ProfileView: View {
                                         HStack {
                                             Image(systemName: "mappin.and.ellipse")
                                             if infoSafe,
-                                               let cityState = cityState,
-                                               let country = country {
+                                               let cityState = cityState {
                                                 Text(cityState)
                                             } else {
                                                 Text("")
