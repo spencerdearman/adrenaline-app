@@ -149,6 +149,7 @@ struct AdrenalineProfileView: View {
 
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.getUser) private var getUser
     @Environment(\.getAthlete) private var getAthlete
     @Environment(\.addFollowedByEmail) private var addFollowedByEmail
@@ -161,11 +162,21 @@ struct PersonalInfoView: View {
     @Binding var userViewData: UserViewData
     @Binding var loginSuccessful: Bool
     @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
+    @ScaledMetric private var bubbleHeightScaled: CGFloat = 85
     
     private let screenWidth = UIScreen.main.bounds.width
     
     private var collegeIconPadding: CGFloat {
         collegeIconPaddingScaled * 2.2
+    }
+    
+    private var bubbleHeight: CGFloat {
+        switch dynamicTypeSize {
+            case .xSmall, .small, .medium:
+                return 85
+            default:
+                return bubbleHeightScaled * 1.2
+        }
     }
     
     private var isShowingStar: Bool {
@@ -224,7 +235,13 @@ struct PersonalInfoView: View {
     
     var body: some View {
         VStack {
-            BackgroundBubble(vPadding: 20, hPadding: 60) {
+            ZStack {
+                Rectangle()
+                    .frame(width: screenWidth * 0.95, height: bubbleHeight)
+                    .foregroundColor(currentMode == .light ? .white : .black)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 10)
+                
                     VStack {
                         HStack (alignment: .firstTextBaseline) {
                             Text((userViewData.firstName ?? "") + " " +
