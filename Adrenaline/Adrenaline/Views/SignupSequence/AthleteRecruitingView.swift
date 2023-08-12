@@ -125,6 +125,7 @@ struct AthleteRecruitingView: View {
         var values: [String: Any?] = ["weightUnit": recruiting.weight?.unit.rawValue,
                                       "gender": gender.rawValue,
                                       "graduationYear": recruiting.gradYear,
+                                      "highSchool": recruiting.highSchool,
                                       "hometown": recruiting.hometown]
         
         if let feet = recruiting.height?.feet {
