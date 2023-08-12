@@ -45,7 +45,7 @@ struct Event: View {
                                 .padding()
                                 .fixedSize(horizontal: false, vertical: true)
                                 .lineLimit(2)
-                            .multilineTextAlignment(.center)
+                                .multilineTextAlignment(.center)
                         }
                         
                         ZStack {
