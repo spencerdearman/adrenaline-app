@@ -167,7 +167,8 @@ struct StatisticsView: View {
     @Environment(\.colorScheme) private var currentMode
     @State var stats: ProfileDiveStatisticsData = []
     @State var filteredStats: ProfileDiveStatisticsData = []
-    @State var selection: Int = 0
+    @State var categorySelection: Int = 0
+    @State var heightSelection: Int = 0
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 240
     
     var diveMeetsID: String?
@@ -209,18 +210,24 @@ struct StatisticsView: View {
         }
     }
     
+    private func updateFilteredStats() {
+        filteredStats = stats.filter {
+            categorySelection == 0 || String(categorySelection) == $0.number.prefix(1)
+        }.filter {
+            heightSelection == 0 || heightSelection == Int($0.height) ||
+            (heightSelection == 5 && $0.height >= 5)
+        }
+    }
+    
     var body: some View {
         VStack {
             HStack {
                 Spacer()
                 Menu {
-                    Picker("", selection: $selection) {
+                    Picker("", selection: $categorySelection) {
                         ForEach([0, 1, 2, 3, 4, 5, 6], id: \.self) { elem in
                             if elem == 0 {
-                                HStack {
                                     Text(String("All"))
-                                        .padding(.leading, 30)
-                                }
                                 .tag(elem)
                             } else {
                                 HStack {
@@ -229,6 +236,14 @@ struct StatisticsView: View {
                                 }
                                 .tag(elem)
                             }
+                        }
+                    }
+                    Divider()
+                    Picker("", selection: $heightSelection) {
+                        ForEach([0, 1, 3, 5], id: \.self) { elem in
+                            let text = elem == 0 ? "All" : (elem == 5 ? "Platform" : "\(elem)M")
+                            Text(text)
+                                .tag(elem)
                         }
                     }
                 } label: {
@@ -289,8 +304,11 @@ struct StatisticsView: View {
                 }
         }
         }
-        .onChange(of: selection) { _ in
-            filteredStats = stats.filter { selection == 0 || String(selection) == $0.number.prefix(1) }
+        .onChange(of: categorySelection) { _ in
+            updateFilteredStats()
+        }
+        .onChange(of: heightSelection) { _ in
+            updateFilteredStats()
         }
     }
 }
