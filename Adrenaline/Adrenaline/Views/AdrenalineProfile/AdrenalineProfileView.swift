@@ -389,14 +389,27 @@ struct SettingsPage: View {
 }
 
 struct EditProfile: View {
+    @Environment(\.colorScheme) private var currentMode
     @Environment(\.dismiss) private var dismiss
     @Binding var userViewData: UserViewData
+    @ScaledMetric var buttonWidthScaled: CGFloat = 0.42
+    private let screenWidth = UIScreen.main.bounds.width
+    
+    private var buttonWidth: CGFloat {
+        min(buttonWidthScaled, 0.9)
+    }
     
     var body: some View {
         VStack {
             Text("This is where you will edit your account")
             NavigationLink(destination: CommittedCollegeView(userViewData: $userViewData)) {
-                BackgroundBubble() {
+                ZStack {
+                    Rectangle()
+                        .frame(width: screenWidth * buttonWidth, height: screenWidth * buttonWidth / 2)
+                        .foregroundColor(currentMode == .light ? .white : .black)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 5)
+                    
                     Text("Choose College")
                         .foregroundColor(.primary)
                         .padding()
