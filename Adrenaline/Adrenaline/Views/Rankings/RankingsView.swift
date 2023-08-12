@@ -259,6 +259,7 @@ struct RankingListDiverView: View {
                                                                Text((athlete.firstName ?? "") +
                                                                     " "  +
                                                                     (athlete.lastName ?? ""))
+                                                               .foregroundColor(Custom.coolBlue)
                                                            }
                 } else {
                     Text((athlete.firstName ?? "") + " "  + (athlete.lastName ?? ""))
