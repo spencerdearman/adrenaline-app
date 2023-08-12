@@ -247,7 +247,7 @@ struct StatisticsView: View {
                         }
                     }
                 } label: {
-                    BackgroundBubble() {
+                    BackgroundBubble(shadow: 5) {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                             .font(.title)
                             .foregroundColor(.primary)
