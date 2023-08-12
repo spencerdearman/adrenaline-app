@@ -426,7 +426,7 @@ struct DiverBubbleView: View {
             ZStack {
                 Rectangle()
                     .foregroundColor(currentMode == .light ? .white : .black)
-                    .cornerRadius(30)
+                    .cornerRadius(40)
                 HStack {
                     Text(element.name)
                         .foregroundColor(.primary)
