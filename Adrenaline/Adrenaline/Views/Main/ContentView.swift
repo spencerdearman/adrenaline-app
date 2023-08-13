@@ -57,7 +57,6 @@ struct ContentView: View {
                             // Add different page views here for different tabs
                             switch tab {
                                 case .house:
-//                                LandingView()
                                     Home()
                                 case .wrench:
                                     //NavigationView {
