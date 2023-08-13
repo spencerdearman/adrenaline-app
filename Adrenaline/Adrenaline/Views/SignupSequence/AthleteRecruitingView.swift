@@ -162,6 +162,8 @@ struct AthleteRecruitingView: View {
                 let infoSafe = parser.profileData.info != nil
                 let info = parser.profileData.info
                 let parsedCityState = info?.cityState
+                let parsedGender = info?.gender
+                let parsedAge = info?.age
                 let parsedGradYear = info?.hsGradYear
                 
                 VStack {
