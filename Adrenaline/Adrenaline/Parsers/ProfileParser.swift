@@ -611,6 +611,12 @@ final class ProfileParser: ObservableObject {
         
         return false
     }
+    
+    func parseProfile(diveMeetsID: String) async -> Bool {
+        return await parseProfile(
+            link: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
+            diveMeetsID)
+    }
 }
 
 struct NewProfileParserView: View {

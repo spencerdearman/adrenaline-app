@@ -95,7 +95,10 @@ struct ProfileView: View {
             let name = info?.name
             let diverId = info?.diverId ?? ""
             let cityState = info?.cityState
+            let country = info?.country
+            let gender = info?.gender
             let age = info?.age
+            let finaAge = info?.finaAge
             
             if !isLoginProfile {
                 Custom.darkGray.ignoresSafeArea()
@@ -155,7 +158,8 @@ struct ProfileView: View {
                                             HStack {
                                                 Image(systemName: "mappin.and.ellipse")
                                                 if infoSafe,
-                                                   let cityState = cityState {
+                                                   let cityState = cityState,
+                                                   let country = country {
                                                     Text(cityState)
                                                 } else {
                                                     Text("")
@@ -272,7 +276,8 @@ struct ProfileView: View {
                                         HStack {
                                             Image(systemName: "mappin.and.ellipse")
                                             if infoSafe,
-                                               let cityState = cityState {
+                                               let cityState = cityState,
+                                               let country = country {
                                                 Text(cityState)
                                             } else {
                                                 Text("")
@@ -391,19 +396,19 @@ struct ProfileView: View {
 }
 
 struct DiversList: View {
+    @Environment(\.colorScheme) private var currentMode
     var divers: [DiverInfo]
     
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
     var body: some View {
-        VStack (spacing: 1) {
-            TabView {
-                ForEach(divers, id: \.self) { elem in
-                    DiverBubbleView(element: elem)
-                }
-            }
-            .tabViewStyle(PageTabViewStyle())
-            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
-            .frame(height: 190)
-        }
+        ScalingScrollView(records: divers,
+                          bgColor: currentMode == .light ? .white : .black,
+                          shadowRadius: 5) { elem in
+                        DiverBubbleView(element: elem)
+                    }
+                          .frame(height: screenHeight * 0.64)
     }
 }
 
@@ -420,10 +425,8 @@ struct DiverBubbleView: View {
         } label: {
             ZStack {
                 Rectangle()
-                    .foregroundColor(Custom.grayThinMaterial)
-                    .cornerRadius(30)
-                    .frame(width: 300, height: 100)
-                    .shadow(radius: 5)
+                    .foregroundColor(currentMode == .light ? .white : .black)
+                    .cornerRadius(40)
                 HStack {
                     Text(element.name)
                         .foregroundColor(.primary)

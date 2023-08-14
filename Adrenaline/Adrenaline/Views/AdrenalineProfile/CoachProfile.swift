@@ -70,13 +70,15 @@ struct CoachProfileContent: View {
     @State var scoreValues: [String] = ["Judging", "Divers", "Metrics", "Recruiting", "Statistics"]
     @State var selectedPage: Int = 1
     @State var profileLink: String = ""
+    @State var judgingData: ProfileJudgingData? = nil
+    @State var coachDiversData: ProfileCoachDiversData? = nil
     @Binding var userViewData: UserViewData
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
+    private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     private var diveMeetsID: String {
-        guard let nums = profileLink.split(separator: "=", maxSplits: 1).last else { return "" }
-        return String(nums)
+        userViewData.diveMeetsID ?? ""
     }
     
     var body: some View {
@@ -105,62 +107,84 @@ struct CoachProfileContent: View {
                     cachedJudging[diveMeetsID] = parser.profileData.judging
                     cachedDivers[diveMeetsID] = parser.profileData.coachDivers
                 }
+                
+                judgingData = cachedJudging[diveMeetsID]
+                coachDiversData = cachedDivers[diveMeetsID]
             }
         }
         
-        switch selectedPage {
-        case 0:
-            if let judging = cachedJudging[diveMeetsID] {
-                JudgedList(data: judging)
-            } else {
-                    BackgroundBubble(vPadding: 40, hPadding: 40) {
-                        VStack {
-                            Text("Getting judging data...")
-                            ProgressView()
+        Group {
+            switch selectedPage {
+                case 0:
+                    if let judging = judgingData {
+                        JudgedList(data: judging)
+                    } else if diveMeetsID == "" {
+                        BackgroundBubble() {
+                            Text("Cannot get judging data, account is not linked to DiveMeets")
+                                .font(.title2)
+                                .multilineTextAlignment(.center)
+                                .padding()
+                        }
+                        .frame(width: screenWidth * 0.9)
+                    } else {
+                        BackgroundBubble(vPadding: 40, hPadding: 40) {
+                            VStack {
+                                Text("Getting judging data...")
+                                ProgressView()
+                            }
                         }
                     }
-                }
-        case 1:
-            if let divers = cachedDivers[diveMeetsID] {
-                DiversList(divers: divers)
-                    .offset(y: -20)
-            } else {
-                BackgroundBubble(vPadding: 40, hPadding: 40) {
-                    VStack {
-                        Text("Getting coach divers list...")
-                        ProgressView()
+                case 1:
+                    if let divers = coachDiversData {
+                        DiversList(divers: divers)
+                            .offset(y: -20)
+                    } else if diveMeetsID == "" {
+                        BackgroundBubble() {
+                            Text("Cannot get diver data, account is not linked to DiveMeets")
+                                .font(.title2)
+                                .multilineTextAlignment(.center)
+                                .padding()
+                        }
+                        .frame(width: screenWidth * 0.9)
+                    } else {
+                        BackgroundBubble(vPadding: 40, hPadding: 40) {
+                            VStack {
+                                Text("Getting coach divers list...")
+                                ProgressView()
+                            }
+                        }
                     }
-                }
-            }
-        case 2:
-            CoachMetricsView()
-        case 3:
-            CoachRecruitingView()
-        case 4:
-            CoachStatisticsView()
-        default:
-            if let judging = cachedJudging[diveMeetsID] {
-                JudgedList(data: judging)
+                case 2:
+                    CoachMetricsView()
+                case 3:
+                    CoachRecruitingView()
+                case 4:
+                    CoachStatisticsView()
+                default:
+                    if let judging = judgingData {
+                        JudgedList(data: judging)
+                    }
             }
         }
+        .offset(y: -screenHeight * 0.05)
         Spacer()
     }
 }
 
 struct CoachMetricsView: View {
-    var body: some View{
+    var body: some View {
         Text("Coach Metrics")
     }
 }
 
 struct CoachRecruitingView: View {
-    var body: some View{
+    var body: some View {
         Text("Coach Recruiting")
     }
 }
 
 struct CoachStatisticsView: View {
-    var body: some View{
+    var body: some View {
         Text("Coach Statistics")
     }
 }
