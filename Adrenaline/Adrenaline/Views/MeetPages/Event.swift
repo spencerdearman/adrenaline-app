@@ -97,36 +97,26 @@ struct Event: View {
                                         .cornerRadius(30)
                                         .shadow(radius: 4)
                                         .frame(maxWidth: screenWidth * 0.9)
-                                    if key == 0 {
-                                        HStack {
-                                            Text(value.2 + " - " + String(value.5))
-                                                .font(.headline)
-                                                .padding([.leading, .trailing])
-                                                .padding([.top, .bottom], 20)
-                                            Spacer()
-                                        }
-                                    } else {
-                                        DisclosureGroup(
-                                            isExpanded: isExpanded(key),
-                                            content: {
-                                                VStack(alignment: .leading, spacing: 5) {
-                                                    Text("Height: \(value.1)")
-                                                    Text("Scores: " + (scoreDictionary[value.0] ?? ""))
-                                                    Text("Name: \(value.2)")
-                                                    Text("Net Score: \(value.3, specifier: "%.2f")")
-                                                    Text("DD: \(value.4, specifier: "%.1f")")
-                                                }
-                                                .padding(.leading, 20)
-                                            },
-                                            label: {
-                                                Text(value.0 + " - " + String(value.5))
-                                                    .font(.headline)
+                                    DisclosureGroup(
+                                        isExpanded: isExpanded(key),
+                                        content: {
+                                            VStack(alignment: .leading, spacing: 5) {
+                                                Text("Height: \(value.1)")
+                                                Text("Scores: " + (scoreDictionary[value.0] ?? ""))
+                                                Text("Name: \(value.2)")
+                                                Text("Net Score: \(value.3, specifier: "%.2f")")
+                                                Text("DD: \(value.4, specifier: "%.1f")")
                                             }
-                                        )
-                                        .frame(maxWidth: screenWidth * 0.85)
-                                        .padding()
-                                        .foregroundColor(.primary)
-                                    }
+                                            .padding(.leading, 20)
+                                        },
+                                        label: {
+                                            Text(value.0 + " - " + String(value.5))
+                                                .font(.headline)
+                                        }
+                                    )
+                                    .frame(maxWidth: screenWidth * 0.85)
+                                    .padding()
+                                    .foregroundColor(.primary)
                                 }
                                 .padding(.bottom)
                             }

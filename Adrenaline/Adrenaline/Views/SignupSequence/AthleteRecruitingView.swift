@@ -111,8 +111,7 @@ struct AthleteRecruitingView: View {
         signupData.recruiting!.gender = gender.rawValue
     }
     
-    // Updates age string in wheel after ageIndex is updated
-    private func updateAge() {
+    private func setAge() {
         age = String(ageRange[ageIndex])
         if signupData.recruiting == nil {
             signupData.recruiting = RecruitingData()
@@ -126,7 +125,6 @@ struct AthleteRecruitingView: View {
         var values: [String: Any?] = ["weightUnit": recruiting.weight?.unit.rawValue,
                                       "gender": gender.rawValue,
                                       "graduationYear": recruiting.gradYear,
-                                      "highSchool": recruiting.highSchool,
                                       "hometown": recruiting.hometown]
         
         if let feet = recruiting.height?.feet {
@@ -162,8 +160,6 @@ struct AthleteRecruitingView: View {
                 let infoSafe = parser.profileData.info != nil
                 let info = parser.profileData.info
                 let parsedCityState = info?.cityState
-                let parsedGender = info?.gender
-                let parsedAge = info?.age
                 let parsedGradYear = info?.hsGradYear
                 
                 VStack {
@@ -274,10 +270,10 @@ struct AthleteRecruitingView: View {
                                                       .frame(width: textFieldWidth / 2)
                                                       .padding(.trailing)
                                                       .onChange(of: ageIndex) { _ in
-                                                          updateAge()
+                                                          setAge()
                                                       }
                                                       .onAppear {
-                                                          updateAge()
+                                                          setAge()
                                                       }
                                     }
                                     .padding([.leading, .trailing])
@@ -452,9 +448,7 @@ struct AthleteRecruitingView: View {
                         guard let g = info?.gender else { return }
                         gender = g == "M" ? .male : .female
                         guard let parsedAge = info?.age else { return }
-                        guard let newAgeIndex = ageRange.firstIndex(of: parsedAge) else { return }
-                        ageIndex = newAgeIndex
-                        updateAge()
+                        age = String(parsedAge)
                         guard let parsedGradYear = info?.hsGradYear else { return }
                         gradYear = String(parsedGradYear)
                         guard let parsedHometown = info?.cityState else { return }

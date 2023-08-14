@@ -149,7 +149,6 @@ struct AdrenalineProfileView: View {
 
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.getUser) private var getUser
     @Environment(\.getAthlete) private var getAthlete
     @Environment(\.addFollowedByEmail) private var addFollowedByEmail
@@ -157,26 +156,15 @@ struct PersonalInfoView: View {
     @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
     @Environment(\.addFollowedToUser) private var addFollowedToUser
     @State var selectedCollege: String = ""
-    @State var athlete: Athlete? = nil
     @State private var starred: Bool = false
     @Binding var userViewData: UserViewData
     @Binding var loginSuccessful: Bool
     @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
-    @ScaledMetric private var bubbleHeightScaled: CGFloat = 85
     
     private let screenWidth = UIScreen.main.bounds.width
     
     private var collegeIconPadding: CGFloat {
         collegeIconPaddingScaled * 2.2
-    }
-    
-    private var bubbleHeight: CGFloat {
-        switch dynamicTypeSize {
-            case .xSmall, .small, .medium:
-                return 85
-            default:
-                return bubbleHeightScaled * 1.2
-        }
     }
     
     private var isShowingStar: Bool {
@@ -221,27 +209,9 @@ struct PersonalInfoView: View {
         return false
     }
     
-    private func updateCollege() {
-        if userViewData.accountType == "Athlete",
-           let a = getAthlete(userViewData.email ?? "") {
-            athlete = a
-            if let college = a.committedCollege {
-                selectedCollege = getCollegeImageFilename(name: college)
-            } else {
-                selectedCollege = ""
-            }
-        }
-    }
-    
     var body: some View {
         VStack {
-            ZStack {
-                Rectangle()
-                    .frame(width: screenWidth * 0.95, height: bubbleHeight)
-                    .foregroundColor(currentMode == .light ? .white : .black)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 10)
-                
+            BackgroundBubble(vPadding: 20, hPadding: 60) {
                     VStack {
                         HStack (alignment: .firstTextBaseline) {
                             Text((userViewData.firstName ?? "") + " " +
@@ -284,9 +254,10 @@ struct PersonalInfoView: View {
                             }
                             HStack (alignment: .firstTextBaseline) {
                                 if userViewData.accountType == "Athlete" {
+                                    let a = getAthlete(userViewData.email ?? "")
                                     HStack {
                                         Image(systemName: "mappin.and.ellipse")
-                                        if let hometown = athlete?.hometown, !hometown.isEmpty {
+                                        if let hometown = a?.hometown, !hometown.isEmpty {
                                             Text(formatLocationString(hometown))
                                         } else {
                                             Text("?")
@@ -294,7 +265,7 @@ struct PersonalInfoView: View {
                                     }
                                     HStack {
                                         Image(systemName: "person.fill")
-                                        if let age = athlete?.age {
+                                        if let age = a?.age {
                                             Text(String(age))
                                         } else {
                                             Text("?")
@@ -327,14 +298,15 @@ struct PersonalInfoView: View {
             }
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
-        .onChange(of: userViewData.diveMeetsID) { _ in
-            if userViewData.accountType == "Athlete",
-               let email = userViewData.email {
-                athlete = getAthlete(email)
-            }
-        }
         .onAppear {
-            updateCollege()
+            if userViewData.accountType == "Athlete",
+               let a = getAthlete(userViewData.email ?? "") {
+                if let college = a.committedCollege {
+                    selectedCollege = getCollegeImageFilename(name: college)
+                } else {
+                    selectedCollege = ""
+                }
+            }
             
             if isShowingStar {
                 // Gets logged in user
@@ -625,10 +597,8 @@ struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.updateUserField) private var updateUserField
-    @Environment(\.updateAthleteField) private var updateAthleteField
     @Binding var userViewData: UserViewData
     @State var diveMeetsID: String = ""
-    private let parser: ProfileParser = ProfileParser()
     private let screenWidth = UIScreen.main.bounds.width
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
@@ -649,19 +619,7 @@ struct DiveMeetsLink: View {
             BackgroundBubble(onTapGesture: {
                 if let email = userViewData.email {
                     updateUserField(email, "diveMeetsID", diveMeetsID)
-                    Task {
-                        if await parser.parseProfile(diveMeetsID: diveMeetsID),
-                           let info = parser.profileData.info {
-                            if let age = info.age { updateAthleteField(email, "age", Int16(age)) }
-                            if let hometown = info.cityState {
-                                updateAthleteField(email, "hometown", hometown)
-                            }
-                        } else {
-                            print("Failed to get profile info from new DiveMeets link")
-                        }
-                        
-                        userViewData.diveMeetsID = diveMeetsID
-                    }
+                    userViewData.diveMeetsID = diveMeetsID
                 }
                 presentationMode.wrappedValue.dismiss()
             }) {
