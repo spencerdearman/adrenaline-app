@@ -338,11 +338,7 @@ struct AdrenalineApp: App {
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
     @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
-    
-    init() {
-        appLogic.configureAmplify()
-    }
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -383,6 +379,7 @@ struct AdrenalineApp: App {
                 .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
                 .environment(\.dropFollowedFromUser, modelDataController.dropFollowedFromUser)
                 .onAppear {
+                    appLogic.configureAmplify()
                     networkMonitor.start()
                     
                     // isIndexingMeets is set to false by default so it is only executed from start
