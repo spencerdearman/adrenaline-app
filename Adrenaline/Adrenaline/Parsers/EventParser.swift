@@ -43,7 +43,7 @@ final class EventHTMLParser: ObservableObject {
         var eventLink = ""
         var meetName = ""
         var meetLink = ""
-      
+        
         for (_, t) in overall.enumerated() {
             let tester = try t.getElementsByTag("td")
             if try tester.count >= 3 && tester[2].text().contains("Dive Sheet") {
@@ -72,7 +72,7 @@ final class EventHTMLParser: ObservableObject {
                 if !cachedMainMeetLinks.keys.contains(meetName) {
                     meetLink = (eventLink.components(separatedBy: "&").first ?? "")
                         .replacingOccurrences(of: "divesheet", with: "meet")
-
+                    
                     await MainActor.run { [meetName, meetLink] in
                         cachedMainMeetLinks[meetName] = meetLink
                     }
@@ -178,10 +178,21 @@ final class EventHTMLParser: ObservableObject {
             }
             height = try String(diveInformation[2].html().split(separator:"<br>").last!)
             name = try String(diveInformation[3].html().split(separator:"<br>").last!)
-            let tempScore = (try diveInformation[4].text())
+            let isCarryOverRow = order == 0
+            
+            let tempScoreText = try diveInformation[4].text()
+            let hasFailedDiveText = tempScoreText.contains("Failed Dive")
+            let tempScore = tempScoreText
                 .replacingOccurrences(of: " Failed Dive", with: "")
             let updatedScore = (tempScore.replacingOccurrences(of: "Dive Changed", with: ""))
             netScore = Double(updatedScore) ?? 0.0
+            
+            // If netScore is zero but the dive wasn't failed, then the row is skipped
+            // This should account for carryover dives from a prelim that sometimes appear in the
+            // table, but don't contain any score information
+            if !isCarryOverRow, !hasFailedDiveText, netScore == 0.0 {
+                continue
+            }
             
             if try diveInformation[5].text().count > 4 {
                 DD = Double(try diveInformation[5].text().suffix(4)) ?? 0.0

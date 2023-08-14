@@ -154,7 +154,7 @@ extension EnvironmentValues {
         get { self[ModelDB.self] }
         set { self[ModelDB.self] = newValue }
     }
-    
+
     var authenticated: Bool {
         get { self[AuthenticatedKey.self] }
         set { self[AuthenticatedKey.self] = newValue }
@@ -331,6 +331,8 @@ extension UINavigationController {
 
 @main
 struct AdrenalineApp: App {
+    // Only one of these should exist, add @Environment to use variable in views
+    // instead of creating a new instance of ModelDataController()
     @StateObject var modelDataController = ModelDataController()
     @StateObject var meetParser: MeetParser = MeetParser()
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()

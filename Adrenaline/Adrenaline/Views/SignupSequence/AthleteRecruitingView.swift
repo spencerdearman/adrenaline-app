@@ -111,7 +111,8 @@ struct AthleteRecruitingView: View {
         signupData.recruiting!.gender = gender.rawValue
     }
     
-    private func setAge() {
+    // Updates age string in wheel after ageIndex is updated
+    private func updateAge() {
         age = String(ageRange[ageIndex])
         if signupData.recruiting == nil {
             signupData.recruiting = RecruitingData()
@@ -125,6 +126,7 @@ struct AthleteRecruitingView: View {
         var values: [String: Any?] = ["weightUnit": recruiting.weight?.unit.rawValue,
                                       "gender": gender.rawValue,
                                       "graduationYear": recruiting.gradYear,
+                                      "highSchool": recruiting.highSchool,
                                       "hometown": recruiting.hometown]
         
         if let feet = recruiting.height?.feet {
@@ -270,10 +272,10 @@ struct AthleteRecruitingView: View {
                                                       .frame(width: textFieldWidth / 2)
                                                       .padding(.trailing)
                                                       .onChange(of: ageIndex) { _ in
-                                                          setAge()
+                                                          updateAge()
                                                       }
                                                       .onAppear {
-                                                          setAge()
+                                                          updateAge()
                                                       }
                                     }
                                     .padding([.leading, .trailing])
@@ -448,7 +450,9 @@ struct AthleteRecruitingView: View {
                         guard let g = info?.gender else { return }
                         gender = g == "M" ? .male : .female
                         guard let parsedAge = info?.age else { return }
-                        age = String(parsedAge)
+                        guard let newAgeIndex = ageRange.firstIndex(of: parsedAge) else { return }
+                        ageIndex = newAgeIndex
+                        updateAge()
                         guard let parsedGradYear = info?.hsGradYear else { return }
                         gradYear = String(parsedGradYear)
                         guard let parsedHometown = info?.cityState else { return }
