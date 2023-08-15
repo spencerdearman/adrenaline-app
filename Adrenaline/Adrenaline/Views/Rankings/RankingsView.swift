@@ -200,7 +200,7 @@ struct RankingListView: View {
             ZStack {
                 Rectangle()
                     .frame(width: screenWidth * 0.9, height: screenWidth * 0.1)
-                    .foregroundColor(currentMode == .light ? .white : .black)
+                    .foregroundColor(Custom.darkGray)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 5)
                 
@@ -245,7 +245,7 @@ struct RankingListDiverView: View {
         ZStack {
             Rectangle()
                 .frame(width: screenWidth * 0.9)
-                .foregroundColor(currentMode == .light ? .white : .black)
+                .foregroundColor(Custom.darkGray)
                 .mask(RoundedRectangle(cornerRadius: 40))
                 .shadow(radius: 5)
             HStack {
