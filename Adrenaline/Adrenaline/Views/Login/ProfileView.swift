@@ -212,8 +212,58 @@ struct ProfileView: View {
                                     case 0:
                                         MeetListView(diveMeetsID: diverId, nameShowing: false)
                                     case 1:
-                                        Text("idk why")
-                                        //ProfileUpcomingMeets(profileLink: profileLink)
+                                        if let upcomingMeets = parser.profileData.upcomingMeets {
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: 50)
+                                                    .fill(.white)
+                                                    .shadow(radius: 5)
+                                                
+                                                DisclosureGroup(isExpanded: $isExpanded) {
+                                                    ForEach(upcomingMeets.sorted(by: { $0.name < $1.name }),
+                                                            id: \.self) { meet in
+                                                        VStack(alignment: .leading, spacing: 0) {
+                                                            Text(meet.name)
+                                                                .font(.title3)
+                                                                .bold()
+                                                            VStack(spacing: 5) {
+                                                                ForEach(meet.events.sorted(by: {
+                                                                    $0.name < $1.name
+                                                                }), id: \.self) { event in
+                                                                    let html = getEntriesHtml(link: event.link)
+                                                                    if let name = name,
+                                                                       let entry = ep.parseNamedEntry(
+                                                                        html: html,
+                                                                        searchName: name) {
+                                                                        EntryView(entry: entry) {
+                                                                            Text(event.name)
+                                                                                .font(.headline)
+                                                                                .bold()
+                                                                                .foregroundColor(Color.primary)
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            .padding(.leading)
+                                                            .padding(.top, 5)
+                                                        }
+                                                        .padding(.top, 5)
+                                                    }
+                                                            .padding()
+                                                } label: {
+                                                    Text("Upcoming Meets")
+                                                        .font(.title2)
+                                                        .bold()
+                                                        .foregroundColor(Color.primary)
+                                                }
+                                                .padding([.leading, .trailing])
+                                                .padding(.bottom, 5)
+                                            }
+                                            .padding([.leading, .trailing])
+                                            Spacer()
+                                        } else {
+                                            Text("No Upcoming Meets Available")
+                                            Spacer()
+                                        }
                                     default:
                                         MeetListView(diveMeetsID: diverId, nameShowing: false)
                                     }
@@ -265,100 +315,6 @@ struct ProfileView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: { dismiss() }) {
                         NavigationViewBackButton()
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-struct ProfileUpcomingMeets {
-    private let getTextModel = GetTextAsyncModel()
-    private let ep = EntriesParser()
-    @StateObject private var parser = ProfileParser()
-    @State private var isExpanded: Bool = false
-    var profileLink: String
-    
-    private func getEntriesHtml(link: String) -> String {
-        if entriesHtmlCache.keys.contains(link) { return entriesHtmlCache[link]! }
-        Task {
-            guard let url = URL(string: link) else { return "" }
-            await getTextModel.fetchText(url: url)
-            
-            if let text = getTextModel.text {
-                entriesHtmlCache[link] = text
-                return text
-            }
-            
-            return ""
-        }
-        
-        return ""
-    }
-    
-    
-    var body: some View {
-        ZStack {
-            let info = parser.profileData.info
-            let name = info?.name
-            if let upcomingMeets = parser.profileData.upcomingMeets {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 50)
-                        .fill(.white)
-                        .shadow(radius: 5)
-                    
-                    DisclosureGroup(isExpanded: $isExpanded) {
-                        ForEach(upcomingMeets.sorted(by: { $0.name < $1.name }),
-                                id: \.self) { meet in
-                            VStack(alignment: .leading, spacing: 0) {
-                                Text(meet.name)
-                                    .font(.title3)
-                                    .bold()
-                                VStack(spacing: 5) {
-                                    ForEach(meet.events.sorted(by: {
-                                        $0.name < $1.name
-                                    }), id: \.self) { event in
-                                        let html = getEntriesHtml(link: event.link)
-                                        if let name = name,
-                                           let entry = ep.parseNamedEntry(
-                                            html: html,
-                                            searchName: name) {
-                                            EntryView(entry: entry) {
-                                                Text(event.name)
-                                                    .font(.headline)
-                                                    .bold()
-                                                    .foregroundColor(Color.primary)
-                                            }
-                                        }
-                                    }
-                                }
-                                .padding(.leading)
-                                .padding(.top, 5)
-                            }
-                            .padding(.top, 5)
-                        }
-                                .padding()
-                    } label: {
-                        Text("Upcoming Meets")
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(Color.primary)
-                    }
-                    .padding([.leading, .trailing])
-                    .padding(.bottom, 5)
-                }
-                .padding([.leading, .trailing])
-                Spacer()
-            } else {
-                Text("No Upcoming Meets Available")
-            }
-        }
-        .onAppear {
-            Task {
-                if parser.profileData.info == nil {
-                    if await !parser.parseProfile(link: profileLink) {
-                        print("Failed to parse profile")
                     }
                 }
             }
