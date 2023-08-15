@@ -25,6 +25,8 @@ struct ProfileView: View {
     @State var diverTab: Bool = false
     @State var starred: Bool = false
     @State var scoreValues: [String] = ["Meets", "Upcoming Meets"]
+    @State var coachValues: [String] = ["Meets", "Divers"]
+    @State var coachDiversData: ProfileCoachDiversData? = nil
     @State var selectedPage: Int = 0
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
@@ -284,7 +286,111 @@ struct ProfileView: View {
                     }
                 }
             } else {
-                Text("Coaching Profile")
+                ZStack {
+                    VStack {
+                        Spacer()
+                        ProfileImage(diverID: diverId)
+                            .frame(width: 200, height: 150)
+                            .scaleEffect(0.9)
+                            .padding(.top)
+                            .padding()
+                        BackgroundBubble(vPadding: 40, hPadding: 60) {
+                            VStack() {
+                                HStack (alignment: .firstTextBaseline) {
+                                    if infoSafe, let name = name {
+                                        Text(name)
+                                            .font(.title3).fontWeight(.semibold)
+                                    } else {
+                                        Text("")
+                                    }
+                                }
+                                if currentMode == .light {
+                                    Divider()
+                                } else {
+                                    WhiteDivider()
+                                }
+                                HStack (alignment: .firstTextBaseline) {
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        if infoSafe,
+                                           let cityState = cityState {
+                                            Text(cityState)
+                                        } else {
+                                            Text("")
+                                        }
+                                    }
+                                    HStack {
+                                        Image(systemName: "figure.pool.swim")
+                                        Text(diverId)
+                                    }
+                                }
+                                .padding([.leading], 2)
+                            }
+                            .frame(width: screenWidth * 0.8)
+                        }
+                        .padding()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                    }
+                    ZStack{
+                        Rectangle()
+                            .foregroundColor(Custom.darkGray)
+                            .cornerRadius(50)
+                            .shadow(radius: 10)
+                            .frame(width: screenWidth, height: screenHeight * 1.05)
+                        VStack {
+                            SwiftUIWheelPicker($selectedPage, items: coachValues) { value in
+                                GeometryReader { g in
+                                    Text(value)
+                                        .font(.title2).fontWeight(.semibold)
+                                        .frame(width: g.size.width, height: g.size.height,
+                                               alignment: .center)
+                                }
+                            }
+                            .scrollAlpha(0.3)
+                            .width(.Fixed(115))
+                            .scrollScale(0.7)
+                            .frame(height: 50)
+                            
+                            Group {
+                                switch selectedPage {
+                                case 0:
+                                    VStack {
+                                        if let judging = parser.profileData.judging {
+                                            JudgedList(data: judging)
+                                        }
+                                        Spacer()
+                                    }
+                                case 1:
+                                    VStack {
+                                        if let divers = coachDiversData {
+                                            DiversList(divers: divers)
+                                        }
+                                        Spacer()
+                                    }
+                                default:
+                                    MeetListView(diveMeetsID: diverId, nameShowing: false)
+                                }
+                            }
+                        }
+                        .offset(y: screenHeight * 0.03)
+                    }
+                    .offset(y: offset)
+                    .onSwipeGesture(trigger: .onEnded) { direction in
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            if direction == .up {
+                                offset = screenHeight * 0.13
+                            } else if direction == .down {
+                                offset = screenHeight * 0.45
+                            }
+                        }
+                    }
+                }
             }
         }
         .onAppear {
@@ -307,6 +413,7 @@ struct ProfileView: View {
                 } else {
                     starred = false
                 }
+                coachDiversData = parser.profileData.coachDivers
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -321,128 +428,6 @@ struct ProfileView: View {
         }
     }
 }
-
-//struct CoachProfile {
-//    var body: some View {
-//        Text("Coach Profile")
-////        ZStack {
-////            GeometryReader { geometry in
-////                BackgroundSpheres()
-////                Rectangle()
-////                    .fill(Custom.darkGray)
-////                    .mask(RoundedRectangle(cornerRadius: 40))
-////                    .offset(y: geometry.size.height * 0.4)
-////            }
-////            VStack {
-////                ProfileImage(diverID: diverId)
-////                    .frame(width: 200, height: 150)
-////                    .scaleEffect(0.9)
-////                    .padding(.top)
-////                    .padding()
-////                VStack {
-////                    BackgroundBubble(vPadding: 40, hPadding: 60) {
-////                        VStack() {
-////                            HStack (alignment: .firstTextBaseline) {
-////                                if infoSafe, let name = name {
-////                                    Text(name)
-////                                        .font(.title3).fontWeight(.semibold)
-////                                } else {
-////                                    Text("")
-////                                }
-////                            }
-////                            if currentMode == .light {
-////                                Divider()
-////                            } else {
-////                                WhiteDivider()
-////                            }
-////                            HStack (alignment: .firstTextBaseline) {
-////                                HStack {
-////                                    Image(systemName: "mappin.and.ellipse")
-////                                    if infoSafe,
-////                                       let cityState = cityState {
-////                                        Text(cityState)
-////                                    } else {
-////                                        Text("")
-////                                    }
-////                                }
-////                                HStack {
-////                                    Image(systemName: "figure.pool.swim")
-////                                    Text(diverId)
-////                                }
-////                            }
-////                            .padding([.leading], 2)
-////                        }
-////                        .frame(width: screenWidth * 0.8)
-////                    }
-////                    .padding()
-////                    if !diverTab {
-////                        VStack{
-////                            Spacer()
-////                        }
-////                        .frame(width: 100, height: 50)
-////                        .foregroundStyle(.white)
-////                        .background(
-////                            Custom.specialGray.matchedGeometryEffect(id: "background",
-////                                                                     in: profilespace)
-////                        )
-////                        .mask(
-////                            RoundedRectangle(cornerRadius: 40, style: .continuous)
-////                                .matchedGeometryEffect(id: "mask", in: profilespace)
-////                        )
-////                        .shadow(radius: 5)
-////                        .overlay(
-////                            ZStack {
-////                                Text("Divers")
-////                                    .font(.title3).fontWeight(.semibold)
-////                                    .matchedGeometryEffect(id: "title", in: profilespace)
-////                            })
-////                        .padding(.top, 8)
-////                        .onTapGesture{
-////                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-////                                diverTab.toggle()
-////                            }
-////                        }
-////                    } else {
-////                        ZStack {
-////                            VStack {
-////                                Text("Divers")
-////                                    .padding(.top)
-////                                    .font(.title3).fontWeight(.semibold)
-////                                    .matchedGeometryEffect(id: "title", in: profilespace)
-////                                    .onTapGesture{
-////                                        withAnimation(.spring(response: 0.6,
-////                                                              dampingFraction: 0.8)) {
-////                                            diverTab.toggle()
-////                                        }
-////                                    }
-////                                if let divers = parser.profileData.coachDivers {
-////                                    DiversList(divers: divers)
-////                                        .offset(y: -20)
-////                                }
-////                            }
-////                            .padding(.top, 8)
-////                        }
-////                        .background(
-////                            Custom.darkGray.matchedGeometryEffect(id: "background",
-////                                                                  in: profilespace)
-////                        )
-////                        .mask(
-////                            RoundedRectangle(cornerRadius: 40, style: .continuous)
-////                                .matchedGeometryEffect(id: "mask", in: profilespace)
-////                        )
-////                        .shadow(radius: 10)
-////                        .frame(width: 375, height: 300)
-////                    }
-////                    if let judging = parser.profileData.judging {
-////                        JudgedList(data: judging)
-////                            .frame(height: screenHeight * 0.4)
-////                            .offset(y: screenHeight * 0.1)
-////                    }
-////                }
-////            }
-////        }
-//    }
-//}
 
 struct DiversList: View {
     @Environment(\.colorScheme) private var currentMode
@@ -494,6 +479,7 @@ struct JudgedList: View {
     var data: ProfileJudgingData
     
     let cornerRadius: CGFloat = 30
+    private let screenHeight = UIScreen.main.bounds.height
     private let rowSpacing: CGFloat = 10
     
     var body: some View {
@@ -550,5 +536,6 @@ struct JudgedList: View {
                 .padding([.top, .bottom], rowSpacing)
             }
         }
+        .frame(height: screenHeight * 0.64)
     }
 }
