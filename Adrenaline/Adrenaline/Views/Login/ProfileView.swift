@@ -24,12 +24,15 @@ struct ProfileView: View {
     @Namespace var profilespace
     @State var diverTab: Bool = false
     @State var starred: Bool = false
+    @State var scoreValues: [String] = ["Meets", "Upcoming Meets"]
+    @State var selectedPage: Int = 0
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
     @StateObject private var parser = ProfileParser()
     @State private var isExpanded: Bool = false
+    @State private var offset: CGFloat = 0
     private let getTextModel = GetTextAsyncModel()
     private let ep = EntriesParser()
     private let screenWidth = UIScreen.main.bounds.width
@@ -110,149 +113,12 @@ struct ProfileView: View {
                 ZStack {
                     if infoSafe {
                         VStack {
+                            Spacer()
                             ProfileImage(diverID: diverId)
                                 .frame(width: 200, height: 150)
                                 .scaleEffect(0.9)
                                 .padding(.top)
                                 .padding()
-                            VStack {
-                                BackgroundBubble(vPadding: 40, hPadding: 60) {
-                                    VStack() {
-                                        HStack (alignment: .firstTextBaseline) {
-                                            if infoSafe, let name = name {
-                                                Text(name)
-                                                    .font(.title3).fontWeight(.semibold)
-                                            } else {
-                                                Text("")
-                                            }
-                                            Image(systemName: starred ? "star.fill" : "star")
-                                                .foregroundColor(starred
-                                                                 ? Color.yellow
-                                                                 : Color.primary)
-                                                .onTapGesture {
-                                                    withAnimation {
-                                                        starred.toggle()
-                                                        if starred {
-                                                            updateFollowed(diveMeetsID: diverId)
-                                                        } else {
-                                                            // Gets logged in user
-                                                            guard let (email, _) =
-                                                                    getStoredCredentials() else {
-                                                                return
-                                                            }
-                                                            guard let user = getUser(email) else {
-                                                                return
-                                                            }
-                                                            guard let followed = getFollowedByDiveMeetsID(diverId)
-                                                            else { return }
-                                                            dropFollowedFromUser(user, followed)
-                                                        }
-                                                    }
-                                                }
-                                        }
-                                        Divider()
-                                        HStack (alignment: .firstTextBaseline) {
-                                            HStack {
-                                                Image(systemName: "mappin.and.ellipse")
-                                                if infoSafe,
-                                                   let cityState = cityState {
-                                                    Text(cityState)
-                                                } else {
-                                                    Text("")
-                                                }
-                                            }
-                                            HStack {
-                                                Image(systemName: "person.fill")
-                                                if infoSafe, let age = age {
-                                                    Text("Age: " + String(age))
-                                                } else {
-                                                    Text("")
-                                                }
-                                            }
-                                            HStack {
-                                                Image(systemName: "figure.pool.swim")
-                                                Text(diverId)
-                                            }
-                                        }
-                                        .padding([.leading], 2)
-                                    }
-                                    .frame(width: screenWidth * 0.8)
-                                }
-                            }
-                            .frame(width: screenWidth * 0.8)
-                            .padding([.leading, .trailing, .top])
-                            
-                            if let upcomingMeets = parser.profileData.upcomingMeets {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 50)
-                                        .fill(.white)
-                                        .shadow(radius: 5)
-                                    
-                                    DisclosureGroup(isExpanded: $isExpanded) {
-                                        ForEach(upcomingMeets.sorted(by: { $0.name < $1.name }),
-                                                id: \.self) { meet in
-                                            VStack(alignment: .leading, spacing: 0) {
-                                                Text(meet.name)
-                                                    .font(.title3)
-                                                    .bold()
-                                                VStack(spacing: 5) {
-                                                    ForEach(meet.events.sorted(by: {
-                                                        $0.name < $1.name
-                                                    }), id: \.self) { event in
-                                                        let html = getEntriesHtml(link: event.link)
-                                                        if let name = name,
-                                                           let entry = ep.parseNamedEntry(
-                                                            html: html,
-                                                            searchName: name) {
-                                                            EntryView(entry: entry) {
-                                                                Text(event.name)
-                                                                    .font(.headline)
-                                                                    .bold()
-                                                                    .foregroundColor(Color.primary)
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                .padding(.leading)
-                                                .padding(.top, 5)
-                                            }
-                                            .padding(.top, 5)
-                                        }
-                                                .padding()
-                                    } label: {
-                                        Text("Upcoming Meets")
-                                            .font(.title2)
-                                            .bold()
-                                            .foregroundColor(Color.primary)
-                                    }
-                                    .padding([.leading, .trailing])
-                                    .padding(.bottom, 5)
-                                }
-                                .padding([.leading, .trailing])
-                                Spacer()
-                            }
-                            Spacer()
-                            MeetList(profileLink: profileLink)
-                        }
-                        .padding(.bottom, maxHeightOffset)
-                    }
-                }
-            } else {
-                ZStack {
-                    GeometryReader { geometry in
-                        BackgroundSpheres()
-                        Rectangle()
-                            .fill(Custom.darkGray)
-                            .mask(RoundedRectangle(cornerRadius: 40))
-                            .offset(y: geometry.size.height * 0.4)
-                    }
-                    VStack {
-                        ProfileImage(diverID: diverId)
-                            .frame(width: 200, height: 150)
-                            .scaleEffect(0.9)
-                            .padding(.top)
-                            .padding()
-                        VStack {
                             BackgroundBubble(vPadding: 40, hPadding: 60) {
                                 VStack() {
                                     HStack (alignment: .firstTextBaseline) {
@@ -262,12 +128,32 @@ struct ProfileView: View {
                                         } else {
                                             Text("")
                                         }
+                                        Image(systemName: starred ? "star.fill" : "star")
+                                            .foregroundColor(starred
+                                                             ? Color.yellow
+                                                             : Color.primary)
+                                            .onTapGesture {
+                                                withAnimation {
+                                                    starred.toggle()
+                                                    if starred {
+                                                        updateFollowed(diveMeetsID: diverId)
+                                                    } else {
+                                                        // Gets logged in user
+                                                        guard let (email, _) =
+                                                                getStoredCredentials() else {
+                                                            return
+                                                        }
+                                                        guard let user = getUser(email) else {
+                                                            return
+                                                        }
+                                                        guard let followed = getFollowedByDiveMeetsID(diverId)
+                                                        else { return }
+                                                        dropFollowedFromUser(user, followed)
+                                                    }
+                                                }
+                                            }
                                     }
-                                    if currentMode == .light {
-                                        Divider()
-                                    } else {
-                                        WhiteDivider()
-                                    }
+                                    Divider()
                                     HStack (alignment: .firstTextBaseline) {
                                         HStack {
                                             Image(systemName: "mappin.and.ellipse")
@@ -279,84 +165,80 @@ struct ProfileView: View {
                                             }
                                         }
                                         HStack {
+                                            Image(systemName: "person.fill")
+                                            if infoSafe, let age = age {
+                                                Text("Age: " + String(age))
+                                            } else {
+                                                Text("")
+                                            }
+                                        }
+                                        HStack {
                                             Image(systemName: "figure.pool.swim")
                                             Text(diverId)
                                         }
                                     }
-                                    .padding([.leading], 2)
                                 }
                                 .frame(width: screenWidth * 0.8)
                             }
-                            .padding()
-                            if !diverTab {
-                                VStack{
-                                    Spacer()
-                                }
-                                .frame(width: 100, height: 50)
-                                .foregroundStyle(.white)
-                                .background(
-                                    Custom.specialGray.matchedGeometryEffect(id: "background",
-                                                                             in: profilespace)
-                                )
-                                .mask(
-                                    RoundedRectangle(cornerRadius: 40, style: .continuous)
-                                        .matchedGeometryEffect(id: "mask", in: profilespace)
-                                )
-                                .shadow(radius: 5)
-                                .overlay(
-                                    ZStack {
-                                        Text("Divers")
-                                            .font(.title3).fontWeight(.semibold)
-                                            .matchedGeometryEffect(id: "title", in: profilespace)
-                                    })
-                                .padding(.top, 8)
-                                .onTapGesture{
-                                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                                        diverTab.toggle()
-                                    }
-                                }
-                            } else {
-                                ZStack {
-                                    VStack {
-                                        Text("Divers")
-                                            .padding(.top)
-                                            .font(.title3).fontWeight(.semibold)
-                                            .matchedGeometryEffect(id: "title", in: profilespace)
-                                            .onTapGesture{
-                                                withAnimation(.spring(response: 0.6,
-                                                                      dampingFraction: 0.8)) {
-                                                    diverTab.toggle()
-                                                }
-                                            }
-                                        if let divers = parser.profileData.coachDivers {
-                                            DiversList(divers: divers)
-                                                .offset(y: -20)
-                                        }
-                                    }
-                                    .padding(.top, 8)
-                                }
-                                .background(
-                                    Custom.darkGray.matchedGeometryEffect(id: "background",
-                                                                          in: profilespace)
-                                )
-                                .mask(
-                                    RoundedRectangle(cornerRadius: 40, style: .continuous)
-                                        .matchedGeometryEffect(id: "mask", in: profilespace)
-                                )
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                        }
+                        ZStack{
+                            Rectangle()
+                                .foregroundColor(Custom.darkGray)
+                                .cornerRadius(50)
                                 .shadow(radius: 10)
-                                .frame(width: 375, height: 300)
+                                .frame(width: screenWidth, height: screenHeight * 1.05)
+                            VStack {
+                                SwiftUIWheelPicker($selectedPage, items: scoreValues) { value in
+                                    GeometryReader { g in
+                                        Text(value)
+                                            .font(.title2).fontWeight(.semibold)
+                                            .frame(width: g.size.width, height: g.size.height,
+                                                   alignment: .center)
+                                    }
+                                }
+                                .scrollAlpha(0.3)
+                                .width(.Fixed(115))
+                                .scrollScale(0.7)
+                                .frame(height: 50)
+                                
+                                Group {
+                                    switch selectedPage {
+                                    case 0:
+                                        MeetListView(diveMeetsID: diverId, nameShowing: false)
+                                    case 1:
+                                        Text("idk why")
+                                        //ProfileUpcomingMeets(profileLink: profileLink)
+                                    default:
+                                        MeetListView(diveMeetsID: diverId, nameShowing: false)
+                                    }
+                                }
                             }
-                            if let judging = parser.profileData.judging {
-                                JudgedList(data: judging)
-                                    .frame(height: screenHeight * 0.4)
-                                    .offset(y: screenHeight * 0.1)
+                            .offset(y: screenHeight * 0.03)
+                        }
+                        .offset(y: offset)
+                        .onSwipeGesture(trigger: .onEnded) { direction in
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                if direction == .up {
+                                    offset = screenHeight * 0.13
+                                } else if direction == .down {
+                                    offset = screenHeight * 0.45
+                                }
                             }
                         }
                     }
                 }
+            } else {
+                Text("Coaching Profile")
             }
         }
         .onAppear {
+            offset = screenHeight * 0.45
             Task {
                 if parser.profileData.info == nil {
                     if await !parser.parseProfile(link: profileLink) {
@@ -390,6 +272,222 @@ struct ProfileView: View {
     }
 }
 
+
+struct ProfileUpcomingMeets {
+    private let getTextModel = GetTextAsyncModel()
+    private let ep = EntriesParser()
+    @StateObject private var parser = ProfileParser()
+    @State private var isExpanded: Bool = false
+    var profileLink: String
+    
+    private func getEntriesHtml(link: String) -> String {
+        if entriesHtmlCache.keys.contains(link) { return entriesHtmlCache[link]! }
+        Task {
+            guard let url = URL(string: link) else { return "" }
+            await getTextModel.fetchText(url: url)
+            
+            if let text = getTextModel.text {
+                entriesHtmlCache[link] = text
+                return text
+            }
+            
+            return ""
+        }
+        
+        return ""
+    }
+    
+    
+    var body: some View {
+        ZStack {
+            let info = parser.profileData.info
+            let name = info?.name
+            if let upcomingMeets = parser.profileData.upcomingMeets {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 50)
+                        .fill(.white)
+                        .shadow(radius: 5)
+                    
+                    DisclosureGroup(isExpanded: $isExpanded) {
+                        ForEach(upcomingMeets.sorted(by: { $0.name < $1.name }),
+                                id: \.self) { meet in
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(meet.name)
+                                    .font(.title3)
+                                    .bold()
+                                VStack(spacing: 5) {
+                                    ForEach(meet.events.sorted(by: {
+                                        $0.name < $1.name
+                                    }), id: \.self) { event in
+                                        let html = getEntriesHtml(link: event.link)
+                                        if let name = name,
+                                           let entry = ep.parseNamedEntry(
+                                            html: html,
+                                            searchName: name) {
+                                            EntryView(entry: entry) {
+                                                Text(event.name)
+                                                    .font(.headline)
+                                                    .bold()
+                                                    .foregroundColor(Color.primary)
+                                            }
+                                        }
+                                    }
+                                }
+                                .padding(.leading)
+                                .padding(.top, 5)
+                            }
+                            .padding(.top, 5)
+                        }
+                                .padding()
+                    } label: {
+                        Text("Upcoming Meets")
+                            .font(.title2)
+                            .bold()
+                            .foregroundColor(Color.primary)
+                    }
+                    .padding([.leading, .trailing])
+                    .padding(.bottom, 5)
+                }
+                .padding([.leading, .trailing])
+                Spacer()
+            } else {
+                Text("No Upcoming Meets Available")
+            }
+        }
+        .onAppear {
+            Task {
+                if parser.profileData.info == nil {
+                    if await !parser.parseProfile(link: profileLink) {
+                        print("Failed to parse profile")
+                    }
+                }
+            }
+        }
+    }
+}
+
+//struct CoachProfile {
+//    var body: some View {
+//        Text("Coach Profile")
+////        ZStack {
+////            GeometryReader { geometry in
+////                BackgroundSpheres()
+////                Rectangle()
+////                    .fill(Custom.darkGray)
+////                    .mask(RoundedRectangle(cornerRadius: 40))
+////                    .offset(y: geometry.size.height * 0.4)
+////            }
+////            VStack {
+////                ProfileImage(diverID: diverId)
+////                    .frame(width: 200, height: 150)
+////                    .scaleEffect(0.9)
+////                    .padding(.top)
+////                    .padding()
+////                VStack {
+////                    BackgroundBubble(vPadding: 40, hPadding: 60) {
+////                        VStack() {
+////                            HStack (alignment: .firstTextBaseline) {
+////                                if infoSafe, let name = name {
+////                                    Text(name)
+////                                        .font(.title3).fontWeight(.semibold)
+////                                } else {
+////                                    Text("")
+////                                }
+////                            }
+////                            if currentMode == .light {
+////                                Divider()
+////                            } else {
+////                                WhiteDivider()
+////                            }
+////                            HStack (alignment: .firstTextBaseline) {
+////                                HStack {
+////                                    Image(systemName: "mappin.and.ellipse")
+////                                    if infoSafe,
+////                                       let cityState = cityState {
+////                                        Text(cityState)
+////                                    } else {
+////                                        Text("")
+////                                    }
+////                                }
+////                                HStack {
+////                                    Image(systemName: "figure.pool.swim")
+////                                    Text(diverId)
+////                                }
+////                            }
+////                            .padding([.leading], 2)
+////                        }
+////                        .frame(width: screenWidth * 0.8)
+////                    }
+////                    .padding()
+////                    if !diverTab {
+////                        VStack{
+////                            Spacer()
+////                        }
+////                        .frame(width: 100, height: 50)
+////                        .foregroundStyle(.white)
+////                        .background(
+////                            Custom.specialGray.matchedGeometryEffect(id: "background",
+////                                                                     in: profilespace)
+////                        )
+////                        .mask(
+////                            RoundedRectangle(cornerRadius: 40, style: .continuous)
+////                                .matchedGeometryEffect(id: "mask", in: profilespace)
+////                        )
+////                        .shadow(radius: 5)
+////                        .overlay(
+////                            ZStack {
+////                                Text("Divers")
+////                                    .font(.title3).fontWeight(.semibold)
+////                                    .matchedGeometryEffect(id: "title", in: profilespace)
+////                            })
+////                        .padding(.top, 8)
+////                        .onTapGesture{
+////                            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+////                                diverTab.toggle()
+////                            }
+////                        }
+////                    } else {
+////                        ZStack {
+////                            VStack {
+////                                Text("Divers")
+////                                    .padding(.top)
+////                                    .font(.title3).fontWeight(.semibold)
+////                                    .matchedGeometryEffect(id: "title", in: profilespace)
+////                                    .onTapGesture{
+////                                        withAnimation(.spring(response: 0.6,
+////                                                              dampingFraction: 0.8)) {
+////                                            diverTab.toggle()
+////                                        }
+////                                    }
+////                                if let divers = parser.profileData.coachDivers {
+////                                    DiversList(divers: divers)
+////                                        .offset(y: -20)
+////                                }
+////                            }
+////                            .padding(.top, 8)
+////                        }
+////                        .background(
+////                            Custom.darkGray.matchedGeometryEffect(id: "background",
+////                                                                  in: profilespace)
+////                        )
+////                        .mask(
+////                            RoundedRectangle(cornerRadius: 40, style: .continuous)
+////                                .matchedGeometryEffect(id: "mask", in: profilespace)
+////                        )
+////                        .shadow(radius: 10)
+////                        .frame(width: 375, height: 300)
+////                    }
+////                    if let judging = parser.profileData.judging {
+////                        JudgedList(data: judging)
+////                            .frame(height: screenHeight * 0.4)
+////                            .offset(y: screenHeight * 0.1)
+////                    }
+////                }
+////            }
+////        }
+//    }
+//}
+
 struct DiversList: View {
     @Environment(\.colorScheme) private var currentMode
     var divers: [DiverInfo]
@@ -401,8 +499,8 @@ struct DiversList: View {
         ScalingScrollView(records: divers,
                           bgColor: currentMode == .light ? .white : .black,
                           shadowRadius: 5) { elem in
-                        DiverBubbleView(element: elem)
-                    }
+            DiverBubbleView(element: elem)
+        }
                           .frame(height: screenHeight * 0.64)
     }
 }
