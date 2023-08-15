@@ -149,6 +149,10 @@ private struct DropFollowedFromUserKey: EnvironmentKey {
     static let defaultValue: (User, Followed) -> () = { _, _ in }
 }
 
+private struct GraphUsersKey: EnvironmentKey {
+    static let defaultValue: [GraphUser] = []
+}
+
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -314,6 +318,11 @@ extension EnvironmentValues {
         get { self[DropFollowedFromUserKey.self] }
         set { self[DropFollowedFromUserKey.self] = newValue }
     }
+    
+    var graphUsers: [GraphUser] {
+        get { self[GraphUsersKey.self] }
+        set { self[GraphUsersKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -343,7 +352,8 @@ struct AdrenalineApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appLogic)
-                .environment(\.authenticated, appLogic.isSignedIn) 
+                .environment(\.authenticated, appLogic.isSignedIn)
+                .environment(\.graphUsers, appLogic.users)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)

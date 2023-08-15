@@ -36,6 +36,7 @@ struct SignOutButton : View {
 struct LandingView: View {
 //    @EnvironmentObject var user: UserData
     @EnvironmentObject var appLogic: AppLogic
+    @Environment(\.graphUsers) private var users
     @State private var authenticated: Bool = false
     
     var body: some View {
@@ -65,7 +66,7 @@ struct LandingView: View {
                 }
                 
                 VStack {
-                    ForEach(appLogic.users, id: \.id) { user in
+                    ForEach(users, id: \.id) { user in
                         HStack {
                             Text(user.firstName)
                             Text(user.lastName)
