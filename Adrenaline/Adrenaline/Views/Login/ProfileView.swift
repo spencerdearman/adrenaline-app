@@ -25,7 +25,7 @@ struct ProfileView: View {
     @Namespace var profilespace
     @State var diverTab: Bool = false
     @State var starred: Bool = false
-    @State var scoreValues: [String] = ["Meets", "Upcoming"]
+    @State var scoreValues: [String] = ["Meets", "Upcoming", "Statistics"]
     @State var coachValues: [String] = ["Meets", "Divers"]
     @State var coachDiversData: ProfileCoachDiversData? = nil
     @State var selectedPage: Int = 0
@@ -291,6 +291,8 @@ struct ProfileView: View {
                                             Text("No Upcoming Meets Available")
                                             Spacer()
                                         }
+                                    case 2:
+                                        StatisticsView(diveMeetsID: diverId)
                                     default:
                                         MeetListView(diveMeetsID: diverId, nameShowing: false)
                                     }
