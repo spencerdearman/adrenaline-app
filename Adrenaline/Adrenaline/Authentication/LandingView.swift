@@ -63,6 +63,16 @@ struct LandingView: View {
                             print("Coming into the signout portion")
                         }
                 }
+                
+                VStack {
+                    ForEach(appLogic.users, id: \.id) { user in
+                        HStack {
+                            Text(user.firstName)
+                            Text(user.lastName)
+                            Text(user.email)
+                        }
+                    }
+                }
             }
         }
         .onAppear {

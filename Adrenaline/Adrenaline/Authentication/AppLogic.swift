@@ -10,10 +10,12 @@ import Combine
 import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
+import AWSAPIPlugin
 
 //Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
+    @Published var users: [GraphUser] = []
     
     func configureAmplify() {
         do {
@@ -22,6 +24,7 @@ class AppLogic: ObservableObject {
             Amplify.Logging.logLevel = .info
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
             
             //Initializing Amplify
             try Amplify.configure()
@@ -93,6 +96,13 @@ class AppLogic: ObservableObject {
     func updateUI(forSignInStatus: Bool) async {
         self.isSignedIn = forSignInStatus
         print("Changing signed in Status: " + String(self.isSignedIn))
+        
+        // load landmarks at start of app when user signed in
+        if (forSignInStatus && self.users.isEmpty) {
+            self.users = await self.queryUsers()
+        } else {
+            self.users = []
+        }
     }
     
     // Sign in with Cognito web user interface
@@ -129,6 +139,30 @@ class AppLogic: ObservableObject {
         return nil
     }
     
+    @MainActor
+    func queryUsers() async -> [GraphUser] {
+        print("Query users")
+        
+        do {
+            let queryResult = try await Amplify.API.query(request: .list(NewUser.self))
+            print("Successfully retrieved list of users")
+            
+            // convert [ LandmarkData ] to [ LandMark ]
+            let result = try queryResult.get().map { newUser in
+                GraphUser.init(from: newUser)
+            }
+            
+            return result
+            
+        } catch let error as APIError {
+            print("Failed to load data from api : \(error)")
+        } catch {
+            print("Unexpected error while calling API : \(error)")
+        }
+        
+        return []
+    }
+    
     enum AuthenticationError: Error {
         case keyWindowNotFound
     }
@@ -140,5 +174,52 @@ class AppLogic: ObservableObject {
         let options = AuthSignOutRequest.Options(globalSignOut: true)
         let _ = await Amplify.Auth.signOut(options: options)
         print("Signed Out")
+    }
+}
+
+struct GraphUser: Hashable, Codable, Identifiable {
+    let id: Int
+    var firstName: String
+    var lastName: String
+    var email: String
+    var phone: String?
+    var diveMeetsID: String?
+    var accountType: String
+    var followed: [String]
+    var createdAt: String?
+    var updatedAt: String?
+    var athleteId: String?
+    var coachId: String?
+}
+
+
+// Added later, not generated code
+extension GraphUser {
+    // construct from API Data
+    init(from : NewUser)  {
+        
+        guard let i = Int(from.id) else {
+            preconditionFailure("Can not create user, Invalid ID : \(from.id) (expected Int)")
+        }
+        
+        // assume all fields are non null.
+        // real life project must spend more time thinking about null values and
+        // maybe convert the above code (original Landmark class) to optionals
+        // I am not doing it for this workshop as this would imply too many changes in UI code
+        // MARK: - TODO
+        
+        id = i
+        firstName = from.firstName
+        lastName = from.lastName
+        email = from.email
+        phone = from.phone
+        diveMeetsID = from.diveMeetsID
+        accountType = from.accountType
+        // TODO: fix this later
+        followed = []
+        createdAt = from.createdAt?.iso8601String
+        updatedAt = from.updatedAt?.iso8601String
+        athleteId = from.newUserAthleteId
+        coachId = from.newUserCoachId
     }
 }

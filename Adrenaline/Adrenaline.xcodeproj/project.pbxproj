@@ -20,6 +20,31 @@
 		0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6B82A58E024004C84BF /* SwipeActions.swift */; };
 		0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */; };
 		0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */; };
+		006025D02A8B38CF00A4D8CB /* NewAthlete+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025B72A8B38CF00A4D8CB /* NewAthlete+Schema.swift */; };
+		006025D12A8B38CF00A4D8CB /* NewMeet+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025B82A8B38CF00A4D8CB /* NewMeet+Schema.swift */; };
+		006025D22A8B38CF00A4D8CB /* College.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025B92A8B38CF00A4D8CB /* College.swift */; };
+		006025D32A8B38CF00A4D8CB /* NewUserNewFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025BA2A8B38CF00A4D8CB /* NewUserNewFollowed.swift */; };
+		006025D42A8B38CF00A4D8CB /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025BB2A8B38CF00A4D8CB /* Video+Schema.swift */; };
+		006025D52A8B38CF00A4D8CB /* NewAthlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025BC2A8B38CF00A4D8CB /* NewAthlete.swift */; };
+		006025D72A8B38CF00A4D8CB /* NewUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025BE2A8B38CF00A4D8CB /* NewUser+Schema.swift */; };
+		006025D82A8B38CF00A4D8CB /* College+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025BF2A8B38CF00A4D8CB /* College+Schema.swift */; };
+		006025D92A8B38CF00A4D8CB /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C02A8B38CF00A4D8CB /* Coach.swift */; };
+		006025DA2A8B38CF00A4D8CB /* Dive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C12A8B38CF00A4D8CB /* Dive.swift */; };
+		006025DB2A8B38CF00A4D8CB /* Dive+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C22A8B38CF00A4D8CB /* Dive+Schema.swift */; };
+		006025DC2A8B38CF00A4D8CB /* NewUserNewFollowed+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C32A8B38CF00A4D8CB /* NewUserNewFollowed+Schema.swift */; };
+		006025DD2A8B38CF00A4D8CB /* JudgeScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C42A8B38CF00A4D8CB /* JudgeScore.swift */; };
+		006025DE2A8B38CF00A4D8CB /* NewFollowed+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C52A8B38CF00A4D8CB /* NewFollowed+Schema.swift */; };
+		006025DF2A8B38CF00A4D8CB /* NewEvent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C62A8B38CF00A4D8CB /* NewEvent+Schema.swift */; };
+		006025E02A8B38CF00A4D8CB /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C72A8B38CF00A4D8CB /* Video.swift */; };
+		006025E22A8B38CF00A4D8CB /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025C92A8B38CF00A4D8CB /* NewEvent.swift */; };
+		006025E32A8B38CF00A4D8CB /* NewFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025CA2A8B38CF00A4D8CB /* NewFollowed.swift */; };
+		006025E42A8B38CF00A4D8CB /* NewUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025CB2A8B38CF00A4D8CB /* NewUser.swift */; };
+		006025E52A8B38CF00A4D8CB /* NewMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025CC2A8B38CF00A4D8CB /* NewMeet.swift */; };
+		006025E62A8B38CF00A4D8CB /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025CD2A8B38CF00A4D8CB /* AmplifyModels.swift */; };
+		006025E72A8B38CF00A4D8CB /* JudgeScore+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025CE2A8B38CF00A4D8CB /* JudgeScore+Schema.swift */; };
+		006025E82A8B38CF00A4D8CB /* Coach+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025CF2A8B38CF00A4D8CB /* Coach+Schema.swift */; };
+		006025EB2A8B3D3F00A4D8CB /* NewTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025E92A8B3D3F00A4D8CB /* NewTeam.swift */; };
+		006025EC2A8B3D3F00A4D8CB /* NewTeam+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006025EA2A8B3D3F00A4D8CB /* NewTeam+Schema.swift */; };
 		006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */; };
 		0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5A92A426D9E0040600E /* TileSwapView.swift */; };
 		0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5AB2A4377920040600E /* SwipeModifier.swift */; };
@@ -113,6 +138,31 @@
 		0040A6B82A58E024004C84BF /* SwipeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActions.swift; sourceTree = "<group>"; };
 		0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsView.swift; sourceTree = "<group>"; };
 		0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsParser.swift; sourceTree = "<group>"; };
+		006025B72A8B38CF00A4D8CB /* NewAthlete+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NewAthlete+Schema.swift"; path = "../../../amplify/generated/models/NewAthlete+Schema.swift"; sourceTree = "<group>"; };
+		006025B82A8B38CF00A4D8CB /* NewMeet+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NewMeet+Schema.swift"; path = "../../../amplify/generated/models/NewMeet+Schema.swift"; sourceTree = "<group>"; };
+		006025B92A8B38CF00A4D8CB /* College.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = College.swift; path = ../../../amplify/generated/models/College.swift; sourceTree = "<group>"; };
+		006025BA2A8B38CF00A4D8CB /* NewUserNewFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewUserNewFollowed.swift; path = ../../../amplify/generated/models/NewUserNewFollowed.swift; sourceTree = "<group>"; };
+		006025BB2A8B38CF00A4D8CB /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Video+Schema.swift"; path = "../../../amplify/generated/models/Video+Schema.swift"; sourceTree = "<group>"; };
+		006025BC2A8B38CF00A4D8CB /* NewAthlete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewAthlete.swift; path = ../../../amplify/generated/models/NewAthlete.swift; sourceTree = "<group>"; };
+		006025BE2A8B38CF00A4D8CB /* NewUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NewUser+Schema.swift"; path = "../../../amplify/generated/models/NewUser+Schema.swift"; sourceTree = "<group>"; };
+		006025BF2A8B38CF00A4D8CB /* College+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "College+Schema.swift"; path = "../../../amplify/generated/models/College+Schema.swift"; sourceTree = "<group>"; };
+		006025C02A8B38CF00A4D8CB /* Coach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Coach.swift; path = ../../../amplify/generated/models/Coach.swift; sourceTree = "<group>"; };
+		006025C12A8B38CF00A4D8CB /* Dive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Dive.swift; path = ../../../amplify/generated/models/Dive.swift; sourceTree = "<group>"; };
+		006025C22A8B38CF00A4D8CB /* Dive+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Dive+Schema.swift"; path = "../../../amplify/generated/models/Dive+Schema.swift"; sourceTree = "<group>"; };
+		006025C32A8B38CF00A4D8CB /* NewUserNewFollowed+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NewUserNewFollowed+Schema.swift"; path = "../../../amplify/generated/models/NewUserNewFollowed+Schema.swift"; sourceTree = "<group>"; };
+		006025C42A8B38CF00A4D8CB /* JudgeScore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JudgeScore.swift; path = ../../../amplify/generated/models/JudgeScore.swift; sourceTree = "<group>"; };
+		006025C52A8B38CF00A4D8CB /* NewFollowed+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NewFollowed+Schema.swift"; path = "../../../amplify/generated/models/NewFollowed+Schema.swift"; sourceTree = "<group>"; };
+		006025C62A8B38CF00A4D8CB /* NewEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NewEvent+Schema.swift"; path = "../../../amplify/generated/models/NewEvent+Schema.swift"; sourceTree = "<group>"; };
+		006025C72A8B38CF00A4D8CB /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Video.swift; path = ../../../amplify/generated/models/Video.swift; sourceTree = "<group>"; };
+		006025C92A8B38CF00A4D8CB /* NewEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewEvent.swift; path = ../../../amplify/generated/models/NewEvent.swift; sourceTree = "<group>"; };
+		006025CA2A8B38CF00A4D8CB /* NewFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewFollowed.swift; path = ../../../amplify/generated/models/NewFollowed.swift; sourceTree = "<group>"; };
+		006025CB2A8B38CF00A4D8CB /* NewUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewUser.swift; path = ../../../amplify/generated/models/NewUser.swift; sourceTree = "<group>"; };
+		006025CC2A8B38CF00A4D8CB /* NewMeet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewMeet.swift; path = ../../../amplify/generated/models/NewMeet.swift; sourceTree = "<group>"; };
+		006025CD2A8B38CF00A4D8CB /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AmplifyModels.swift; path = ../../../amplify/generated/models/AmplifyModels.swift; sourceTree = "<group>"; };
+		006025CE2A8B38CF00A4D8CB /* JudgeScore+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "JudgeScore+Schema.swift"; path = "../../../amplify/generated/models/JudgeScore+Schema.swift"; sourceTree = "<group>"; };
+		006025CF2A8B38CF00A4D8CB /* Coach+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Coach+Schema.swift"; path = "../../../amplify/generated/models/Coach+Schema.swift"; sourceTree = "<group>"; };
+		006025E92A8B3D3F00A4D8CB /* NewTeam.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewTeam.swift; path = ../../../amplify/generated/models/NewTeam.swift; sourceTree = "<group>"; };
+		006025EA2A8B3D3F00A4D8CB /* NewTeam+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NewTeam+Schema.swift"; path = "../../../amplify/generated/models/NewTeam+Schema.swift"; sourceTree = "<group>"; };
 		006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
 		0065C5A92A426D9E0040600E /* TileSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSwapView.swift; sourceTree = "<group>"; };
 		0065C5AB2A4377920040600E /* SwipeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeModifier.swift; sourceTree = "<group>"; };
@@ -206,6 +256,38 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		006025B62A8B38B500A4D8CB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				006025CD2A8B38CF00A4D8CB /* AmplifyModels.swift */,
+				006025C02A8B38CF00A4D8CB /* Coach.swift */,
+				006025CF2A8B38CF00A4D8CB /* Coach+Schema.swift */,
+				006025B92A8B38CF00A4D8CB /* College.swift */,
+				006025BF2A8B38CF00A4D8CB /* College+Schema.swift */,
+				006025C12A8B38CF00A4D8CB /* Dive.swift */,
+				006025C22A8B38CF00A4D8CB /* Dive+Schema.swift */,
+				006025C42A8B38CF00A4D8CB /* JudgeScore.swift */,
+				006025CE2A8B38CF00A4D8CB /* JudgeScore+Schema.swift */,
+				006025BC2A8B38CF00A4D8CB /* NewAthlete.swift */,
+				006025B72A8B38CF00A4D8CB /* NewAthlete+Schema.swift */,
+				006025C92A8B38CF00A4D8CB /* NewEvent.swift */,
+				006025C62A8B38CF00A4D8CB /* NewEvent+Schema.swift */,
+				006025CA2A8B38CF00A4D8CB /* NewFollowed.swift */,
+				006025C52A8B38CF00A4D8CB /* NewFollowed+Schema.swift */,
+				006025CC2A8B38CF00A4D8CB /* NewMeet.swift */,
+				006025B82A8B38CF00A4D8CB /* NewMeet+Schema.swift */,
+				006025E92A8B3D3F00A4D8CB /* NewTeam.swift */,
+				006025EA2A8B3D3F00A4D8CB /* NewTeam+Schema.swift */,
+				006025CB2A8B38CF00A4D8CB /* NewUser.swift */,
+				006025BE2A8B38CF00A4D8CB /* NewUser+Schema.swift */,
+				006025BA2A8B38CF00A4D8CB /* NewUserNewFollowed.swift */,
+				006025C32A8B38CF00A4D8CB /* NewUserNewFollowed+Schema.swift */,
+				006025C72A8B38CF00A4D8CB /* Video.swift */,
+				006025BB2A8B38CF00A4D8CB /* Video+Schema.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		0080BF9D2A6F0CD9001F5764 /* Rankings */ = {
 			isa = PBXGroup;
 			children = (
@@ -305,6 +387,7 @@
 		4D74FE9529AE7B9800401178 /* Adrenaline */ = {
 			isa = PBXGroup;
 			children = (
+				006025B62A8B38B500A4D8CB /* Models */,
 				4DC7ACEC29F38828008BBB62 /* Adrenaline.entitlements */,
 				4D1177C729F88B7000850D18 /* Info.plist */,
 				4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */,
@@ -554,7 +637,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				006025D42A8B38CF00A4D8CB /* Video+Schema.swift in Sources */,
 				4D3FD9CF2A5DFAF6003E1FF7 /* SearchBackgroundView.swift in Sources */,
+				006025D02A8B38CF00A4D8CB /* NewAthlete+Schema.swift in Sources */,
 				4D7643892A70CB39000F35CB /* AppLaunchSequence.swift in Sources */,
 				4D753DE32A2158370029138B /* EventPageParser.swift in Sources */,
 				4DF9F80D2A85E7BA0049CCD3 /* AppLogic.swift in Sources */,
@@ -562,6 +647,7 @@
 				4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */,
 				00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */,
 				00F9667B29AFDA1500F3720B /* ContentView.swift in Sources */,
+				006025D82A8B38CF00A4D8CB /* College+Schema.swift in Sources */,
 				00FFDAE82A66FBE10090727B /* AthleteRecruitingView.swift in Sources */,
 				4DF9F8112A85F0040049CCD3 /* LandingView.swift in Sources */,
 				4D60E8F92A1737A90011A295 /* ScoringParser.swift in Sources */,
@@ -572,12 +658,17 @@
 				4D8B9C1929F8D395002B53AD /* Home.swift in Sources */,
 				4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */,
 				00B6A5D62A6651A700C4DFDA /* AccountTypeSelectView.swift in Sources */,
+				006025E22A8B38CF00A4D8CB /* NewEvent.swift in Sources */,
+				006025D22A8B38CF00A4D8CB /* College.swift in Sources */,
 				00F1129D2A51C7A100557265 /* JudgeScoreCalculator.swift in Sources */,
 				4D74FEAF29AEB02100401178 /* Meet.swift in Sources */,
+				006025E72A8B38CF00A4D8CB /* JudgeScore+Schema.swift in Sources */,
 				4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */,
+				006025E52A8B38CF00A4D8CB /* NewMeet.swift in Sources */,
 				0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */,
 				000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
+				006025D92A8B38CF00A4D8CB /* Coach.swift in Sources */,
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
 				4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */,
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
@@ -587,20 +678,27 @@
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
+				006025E62A8B38CF00A4D8CB /* AmplifyModels.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
 				4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */,
 				4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */,
 				4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,
+				006025E82A8B38CF00A4D8CB /* Coach+Schema.swift in Sources */,
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
+				006025EB2A8B3D3F00A4D8CB /* NewTeam.swift in Sources */,
+				006025E32A8B38CF00A4D8CB /* NewFollowed.swift in Sources */,
 				002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */,
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
+				006025EC2A8B3D3F00A4D8CB /* NewTeam+Schema.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
 				0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */,
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
+				006025DB2A8B38CF00A4D8CB /* Dive+Schema.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
+				006025E42A8B38CF00A4D8CB /* NewUser.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
 				0097478F2A24549A004E7C73 /* MeetPageParser.swift in Sources */,
 				4D261CB42A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift in Sources */,
@@ -610,17 +708,27 @@
 				008CB5652A61000400935537 /* NavigationViewBackButton.swift in Sources */,
 				0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */,
 				0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */,
+				006025DA2A8B38CF00A4D8CB /* Dive.swift in Sources */,
 				007EAFED2A4B639600061113 /* MovingSplashView.swift in Sources */,
+				006025DD2A8B38CF00A4D8CB /* JudgeScore.swift in Sources */,
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
 				4D753DE02A214F640029138B /* EventResultPage.swift in Sources */,
+				006025DC2A8B38CF00A4D8CB /* NewUserNewFollowed+Schema.swift in Sources */,
 				0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */,
+				006025D12A8B38CF00A4D8CB /* NewMeet+Schema.swift in Sources */,
+				006025DF2A8B38CF00A4D8CB /* NewEvent+Schema.swift in Sources */,
+				006025D32A8B38CF00A4D8CB /* NewUserNewFollowed.swift in Sources */,
 				009F41BA2A6AC51A00348C68 /* UsersDBTestView.swift in Sources */,
 				4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */,
+				006025D52A8B38CF00A4D8CB /* NewAthlete.swift in Sources */,
 				006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */,
 				0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */,
 				00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */,
+				006025D72A8B38CF00A4D8CB /* NewUser+Schema.swift in Sources */,
+				006025E02A8B38CF00A4D8CB /* Video.swift in Sources */,
 				0037877A29D4F40900D3CD59 /* ProfileMeetCache.swift in Sources */,
+				006025DE2A8B38CF00A4D8CB /* NewFollowed+Schema.swift in Sources */,
 				00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */,
 				008CB5672A61B3EE00935537 /* ProfileParser.swift in Sources */,
 				4DF9F80F2A85EFF50049CCD3 /* UserBadge.swift in Sources */,
@@ -761,7 +869,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Adrenaline/Preview Content\"";
-				DEVELOPMENT_TEAM = WY8V5FPBV9;
+				DEVELOPMENT_TEAM = UCV4CFXWW3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Adrenaline/Info.plist;
@@ -775,7 +883,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LoganSherwin-SpencerDearman.Adrenaline";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SpencerDearman-LoganSherwin.Adrenaline";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -794,7 +902,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Adrenaline/Preview Content\"";
-				DEVELOPMENT_TEAM = WY8V5FPBV9;
+				DEVELOPMENT_TEAM = UCV4CFXWW3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Adrenaline/Info.plist;
@@ -808,7 +916,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.LoganSherwin-SpencerDearman.Adrenaline";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.SpencerDearman-LoganSherwin.Adrenaline";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;

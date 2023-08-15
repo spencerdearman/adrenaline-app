@@ -14,6 +14,9 @@
     "categories": {
       "auth": {
         "adrenaline7ea715e2": {}
+      },
+      "api": {
+        "adrenaline": {}
       }
     }
   }
