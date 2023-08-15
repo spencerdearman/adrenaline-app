@@ -18,13 +18,14 @@ struct ProfileView: View {
     @Environment(\.getUser) private var getUser
     @Environment(\.addFollowedToUser) private var addFollowedToUser
     @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     
     var profileLink: String
     var isLoginProfile: Bool = false
     @Namespace var profilespace
     @State var diverTab: Bool = false
     @State var starred: Bool = false
-    @State var scoreValues: [String] = ["Meets", "Upcoming Meets"]
+    @State var scoreValues: [String] = ["Meets", "Upcoming"]
     @State var coachValues: [String] = ["Meets", "Divers"]
     @State var coachDiversData: ProfileCoachDiversData? = nil
     @State var selectedPage: Int = 0
@@ -35,6 +36,7 @@ struct ProfileView: View {
     @StateObject private var parser = ProfileParser()
     @State private var isExpanded: Bool = false
     @State private var offset: CGFloat = 0
+    @ScaledMetric private var bubbleHeightScaled: CGFloat = 85
     private let getTextModel = GetTextAsyncModel()
     private let ep = EntriesParser()
     private let screenWidth = UIScreen.main.bounds.width
@@ -47,6 +49,15 @@ struct ProfileView: View {
     
     private var profileType: String {
         parser.profileData.coachDivers == nil ? "Diver" : "Coach"
+    }
+    
+    private var bubbleHeight: CGFloat {
+        switch dynamicTypeSize {
+            case .xSmall, .small, .medium:
+                return 85
+            default:
+                return bubbleHeightScaled * 1.2
+        }
     }
     
     private func isDictionary(_ object: Any) -> Bool {
@@ -121,7 +132,12 @@ struct ProfileView: View {
                                 .scaleEffect(0.9)
                                 .padding(.top)
                                 .padding()
-                            BackgroundBubble(vPadding: 40, hPadding: 60) {
+                            ZStack {
+                                Rectangle()
+                                    .frame(width: screenWidth * 0.95, height: bubbleHeight)
+                                    .foregroundColor(currentMode == .light ? .white : .black)
+                                    .mask(RoundedRectangle(cornerRadius: 40))
+                                    .shadow(radius: 10)
                                 VStack() {
                                     HStack (alignment: .firstTextBaseline) {
                                         if infoSafe, let name = name {
@@ -182,11 +198,19 @@ struct ProfileView: View {
                                 }
                                 .frame(width: screenWidth * 0.8)
                             }
-                            Spacer()
-                            Spacer()
-                            Spacer()
-                            Spacer()
-                            Spacer()
+                            .offset(y: screenHeight * 0.012)
+                            Group {
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                                Spacer()
+                            }
                             Spacer()
                         }
                         ZStack{
@@ -200,6 +224,7 @@ struct ProfileView: View {
                                     GeometryReader { g in
                                         Text(value)
                                             .font(.title2).fontWeight(.semibold)
+                                            .dynamicTypeSize(.xSmall ... .xLarge)
                                             .frame(width: g.size.width, height: g.size.height,
                                                    alignment: .center)
                                     }
@@ -207,7 +232,7 @@ struct ProfileView: View {
                                 .scrollAlpha(0.3)
                                 .width(.Fixed(115))
                                 .scrollScale(0.7)
-                                .frame(height: 50)
+                                .frame(height: 40)
                                 
                                 Group {
                                     switch selectedPage {
@@ -271,7 +296,7 @@ struct ProfileView: View {
                                     }
                                 }
                             }
-                            .offset(y: screenHeight * 0.03)
+                            .offset(y: screenHeight * 0.05)
                         }
                         .offset(y: offset)
                         .onSwipeGesture(trigger: .onEnded) { direction in
@@ -294,7 +319,12 @@ struct ProfileView: View {
                             .scaleEffect(0.9)
                             .padding(.top)
                             .padding()
-                        BackgroundBubble(vPadding: 40, hPadding: 60) {
+                        ZStack {
+                            Rectangle()
+                                .frame(width: screenWidth * 0.95, height: bubbleHeight)
+                                .foregroundColor(currentMode == .light ? .white : .black)
+                                .mask(RoundedRectangle(cornerRadius: 40))
+                                .shadow(radius: 10)
                             VStack() {
                                 HStack (alignment: .firstTextBaseline) {
                                     if infoSafe, let name = name {
@@ -329,12 +359,18 @@ struct ProfileView: View {
                             .frame(width: screenWidth * 0.8)
                         }
                         .padding()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
-                        Spacer()
+                        Group {
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                            Spacer()
+                        }
                         Spacer()
                     }
                     ZStack{
@@ -347,6 +383,7 @@ struct ProfileView: View {
                             SwiftUIWheelPicker($selectedPage, items: coachValues) { value in
                                 GeometryReader { g in
                                     Text(value)
+                                        .dynamicTypeSize(.xSmall ... .xLarge)
                                         .font(.title2).fontWeight(.semibold)
                                         .frame(width: g.size.width, height: g.size.height,
                                                alignment: .center)
@@ -355,7 +392,7 @@ struct ProfileView: View {
                             .scrollAlpha(0.3)
                             .width(.Fixed(115))
                             .scrollScale(0.7)
-                            .frame(height: 50)
+                            .frame(height: 40)
                             
                             Group {
                                 switch selectedPage {
@@ -378,7 +415,7 @@ struct ProfileView: View {
                                 }
                             }
                         }
-                        .offset(y: screenHeight * 0.03)
+                        .offset(y: screenHeight * 0.05)
                     }
                     .offset(y: offset)
                     .onSwipeGesture(trigger: .onEnded) { direction in
@@ -386,7 +423,7 @@ struct ProfileView: View {
                             if direction == .up {
                                 offset = screenHeight * 0.13
                             } else if direction == .down {
-                                offset = screenHeight * 0.45
+                                offset = screenHeight * 0.43
                             }
                         }
                     }
@@ -394,7 +431,7 @@ struct ProfileView: View {
             }
         }
         .onAppear {
-            offset = screenHeight * 0.45
+            offset = screenHeight * 0.43
             Task {
                 if parser.profileData.info == nil {
                     if await !parser.parseProfile(link: profileLink) {
