@@ -62,8 +62,14 @@ struct LandingView: View {
                     SignOutButton(authenticated: $authenticated)
                         .onAppear{
                             print("Coming into the signout portion")
+                            Task {
+                                if (self.users.isEmpty) {
+                                    appLogic.users = await appLogic.queryUsers()
+                                } else {
+                                    appLogic.users = []
+                                }
+                            }
                         }
-                }
                 
                 VStack {
                     ForEach(users, id: \.id) { user in
@@ -88,6 +94,7 @@ struct LandingView: View {
                         Text("Create New User")
                     }
                 }
+            }
             }
         }
         .onAppear {

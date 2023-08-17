@@ -1,0 +1,1268 @@
+# this is an auto generated file. This will be overwritten
+
+query GetNewUser($id: ID!) {
+  getNewUser(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    phone
+    diveMeetsID
+    accountType
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamAthletesId
+      collegeAthletesId
+      newAthleteUserId
+      __typename
+    }
+    coach {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserId
+      coachTeamId
+      __typename
+    }
+    followed {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newUserAthleteId
+    newUserCoachId
+    __typename
+  }
+}
+
+query ListNewUsers(
+  $filter: ModelNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewUsers(
+  $filter: ModelNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewUsers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetNewAthlete($id: ID!) {
+  getNewAthlete(id: $id) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    college {
+      id
+      name
+      imageLink
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    heightFeet
+    heightInches
+    weight
+    weightUnit
+    gender
+    age
+    graduationYear
+    highSchool
+    hometown
+    springboardRating
+    platformRating
+    totalRating
+    dives {
+      nextToken
+      startedAt
+      __typename
+    }
+    videos {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamAthletesId
+    collegeAthletesId
+    newAthleteUserId
+    __typename
+  }
+}
+
+query ListNewAthletes(
+  $filter: ModelNewAthleteFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewAthletes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamAthletesId
+      collegeAthletesId
+      newAthleteUserId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewAthletes(
+  $filter: ModelNewAthleteFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewAthletes(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamAthletesId
+      collegeAthletesId
+      newAthleteUserId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetVideo($id: ID!) {
+  getVideo(id: $id) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamAthletesId
+      collegeAthletesId
+      newAthleteUserId
+      __typename
+    }
+    link
+    title
+    description
+    uploadDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newAthleteVideosId
+    __typename
+  }
+}
+
+query ListVideos(
+  $filter: ModelVideoFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listVideos(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      link
+      title
+      description
+      uploadDate
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteVideosId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncVideos(
+  $filter: ModelVideoFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncVideos(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      link
+      title
+      description
+      uploadDate
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteVideosId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetCoach($id: ID!) {
+  getCoach(id: $id) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    coachUserId
+    coachTeamId
+    __typename
+  }
+}
+
+query ListCoaches(
+  $filter: ModelCoachFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listCoaches(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserId
+      coachTeamId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncCoachs(
+  $filter: ModelCoachFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncCoachs(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserId
+      coachTeamId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetNewFollowed($id: ID!) {
+  getNewFollowed(id: $id) {
+    id
+    firstName
+    lastName
+    email
+    diveMeetsID
+    users {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListNewFolloweds(
+  $filter: ModelNewFollowedFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewFolloweds(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      firstName
+      lastName
+      email
+      diveMeetsID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewFolloweds(
+  $filter: ModelNewFollowedFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewFolloweds(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      firstName
+      lastName
+      email
+      diveMeetsID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetNewTeam($id: ID!) {
+  getNewTeam(id: $id) {
+    id
+    name
+    coach {
+      id
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserId
+      coachTeamId
+      __typename
+    }
+    athletes {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamCoachId
+    __typename
+  }
+}
+
+query ListNewTeams(
+  $filter: ModelNewTeamFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewTeams(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewTeams(
+  $filter: ModelNewTeamFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewTeams(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetCollege($id: ID!) {
+  getCollege(id: $id) {
+    id
+    name
+    imageLink
+    athletes {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListColleges(
+  $filter: ModelCollegeFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listColleges(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      imageLink
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncColleges(
+  $filter: ModelCollegeFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncColleges(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      name
+      imageLink
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetNewMeet($id: ID!) {
+  getNewMeet(id: $id) {
+    id
+    meetID
+    name
+    organization
+    startDate
+    endDate
+    city
+    state
+    country
+    link
+    meetType
+    events {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListNewMeets(
+  $filter: ModelNewMeetFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewMeets(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      meetID
+      name
+      organization
+      startDate
+      endDate
+      city
+      state
+      country
+      link
+      meetType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewMeets(
+  $filter: ModelNewMeetFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewMeets(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      meetID
+      name
+      organization
+      startDate
+      endDate
+      city
+      state
+      country
+      link
+      meetType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetNewEvent($id: ID!) {
+  getNewEvent(id: $id) {
+    id
+    meet {
+      id
+      meetID
+      name
+      organization
+      startDate
+      endDate
+      city
+      state
+      country
+      link
+      meetType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    name
+    date
+    link
+    numEntries
+    dives {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newMeetEventsId
+    __typename
+  }
+}
+
+query ListNewEvents(
+  $filter: ModelNewEventFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewEvents(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      date
+      link
+      numEntries
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newMeetEventsId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewEvents(
+  $filter: ModelNewEventFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewEvents(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      name
+      date
+      link
+      numEntries
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newMeetEventsId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetDive($id: ID!) {
+  getDive(id: $id) {
+    id
+    event {
+      id
+      name
+      date
+      link
+      numEntries
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newMeetEventsId
+      __typename
+    }
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamAthletesId
+      collegeAthletesId
+      newAthleteUserId
+      __typename
+    }
+    number
+    name
+    height
+    netScore
+    dd
+    totalScore
+    scores {
+      nextToken
+      startedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newAthleteDivesId
+    newEventDivesId
+    __typename
+  }
+}
+
+query ListDives(
+  $filter: ModelDiveFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDives(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      number
+      name
+      height
+      netScore
+      dd
+      totalScore
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteDivesId
+      newEventDivesId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncDives(
+  $filter: ModelDiveFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncDives(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      number
+      name
+      height
+      netScore
+      dd
+      totalScore
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteDivesId
+      newEventDivesId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetJudgeScore($id: ID!) {
+  getJudgeScore(id: $id) {
+    id
+    dive {
+      id
+      number
+      name
+      height
+      netScore
+      dd
+      totalScore
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteDivesId
+      newEventDivesId
+      __typename
+    }
+    score
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    diveScoresId
+    __typename
+  }
+}
+
+query ListJudgeScores(
+  $filter: ModelJudgeScoreFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listJudgeScores(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      score
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      diveScoresId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncJudgeScores(
+  $filter: ModelJudgeScoreFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncJudgeScores(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      score
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      diveScoresId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetNewUserNewFollowed($id: ID!) {
+  getNewUserNewFollowed(id: $id) {
+    id
+    newUserId
+    newFollowedId
+    newUser {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    newFollowed {
+      id
+      firstName
+      lastName
+      email
+      diveMeetsID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListNewUserNewFolloweds(
+  $filter: ModelNewUserNewFollowedFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewUserNewFolloweds(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      newUserId
+      newFollowedId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewUserNewFolloweds(
+  $filter: ModelNewUserNewFollowedFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewUserNewFolloweds(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      newUserId
+      newFollowedId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query NewUserNewFollowedsByNewUserId(
+  $newUserId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelNewUserNewFollowedFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  newUserNewFollowedsByNewUserId(
+    newUserId: $newUserId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      newUserId
+      newFollowedId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query NewUserNewFollowedsByNewFollowedId(
+  $newFollowedId: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelNewUserNewFollowedFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  newUserNewFollowedsByNewFollowedId(
+    newFollowedId: $newFollowedId
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      newUserId
+      newFollowedId
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}

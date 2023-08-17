@@ -100,11 +100,11 @@ class AppLogic: ObservableObject {
         print("Changing signed in Status: " + String(self.isSignedIn))
         
         // load landmarks at start of app when user signed in
-        if (forSignInStatus && self.users.isEmpty) {
-            self.users = await self.queryUsers()
-        } else {
-            self.users = []
-        }
+//        if (forSignInStatus && self.users.isEmpty) {
+//            self.users = await self.queryUsers()
+//        } else {
+//            self.users = []
+//        }
     }
     
     // Sign in with Cognito web user interface
