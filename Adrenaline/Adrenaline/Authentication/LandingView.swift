@@ -38,6 +38,7 @@ struct LandingView: View {
     @EnvironmentObject var appLogic: AppLogic
     @Environment(\.graphUsers) private var users
     @State private var authenticated: Bool = false
+    @State private var image: Image = ImageStore.shared.placeholder()
     
     var body: some View {
         NavigationView {
@@ -87,6 +88,15 @@ struct LandingView: View {
                     }) {
                         Text("Create New User")
                     }
+                    
+                    if image != ImageStore.shared.placeholder() {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .padding()
+                    } else {
+                        ProgressView()
+                    }
                 }
             }
         }
@@ -96,6 +106,8 @@ struct LandingView: View {
                 if session.isSignedIn {
                     authenticated = true
                 }
+                
+                image = await appLogic.imageStore.image(name: "training-trip")
             }
         }
     }

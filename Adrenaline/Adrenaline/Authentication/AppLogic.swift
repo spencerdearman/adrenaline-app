@@ -12,11 +12,13 @@ import Amplify
 import AWSCognitoAuthPlugin
 import AWSDataStorePlugin
 import AWSAPIPlugin
+import AWSS3StoragePlugin
 
 //Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
     @Published var users: [GraphUser] = []
+    var imageStore: ImageStore = ImageStore()
     
     func configureAmplify() {
         do {
@@ -27,6 +29,7 @@ class AppLogic: ObservableObject {
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: AmplifyModels()))
+            try Amplify.add(plugin: AWSS3StoragePlugin())
             
             //Initializing Amplify
             try Amplify.configure()
@@ -141,7 +144,6 @@ class AppLogic: ObservableObject {
         return nil
     }
     
-    @MainActor
     func queryUsers() async -> [GraphUser] {
         print("Query users")
         

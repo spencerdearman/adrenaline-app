@@ -67,6 +67,7 @@
 		00DAFEDC2A8C8F2C00497917 /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DAFEC32A8C8F2C00497917 /* NewEvent.swift */; };
 		00DAFEDD2A8C8F2C00497917 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DAFEC42A8C8F2C00497917 /* Video.swift */; };
 		00DAFEDE2A8C8F2C00497917 /* College+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DAFEC52A8C8F2C00497917 /* College+Schema.swift */; };
+		00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DAFEDF2A8DA22F00497917 /* ImageStore.swift */; };
 		00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1129A2A50EAA900557265 /* MeetScoreCalculator.swift */; };
 		00F1129D2A51C7A100557265 /* JudgeScoreCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1129C2A51C7A100557265 /* JudgeScoreCalculator.swift */; };
 		00F2C3142A25B1B800B1CD01 /* EventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F2C3132A25B1B800B1CD01 /* EventParser.swift */; };
@@ -185,6 +186,7 @@
 		00DAFEC32A8C8F2C00497917 /* NewEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewEvent.swift; sourceTree = "<group>"; };
 		00DAFEC42A8C8F2C00497917 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		00DAFEC52A8C8F2C00497917 /* College+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "College+Schema.swift"; sourceTree = "<group>"; };
+		00DAFEDF2A8DA22F00497917 /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
 		00F1129A2A50EAA900557265 /* MeetScoreCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetScoreCalculator.swift; sourceTree = "<group>"; };
 		00F1129C2A51C7A100557265 /* JudgeScoreCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JudgeScoreCalculator.swift; sourceTree = "<group>"; };
 		00F2C3132A25B1B800B1CD01 /* EventParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventParser.swift; sourceTree = "<group>"; };
@@ -313,6 +315,7 @@
 				00DAFEC32A8C8F2C00497917 /* NewEvent.swift */,
 				00DAFEC42A8C8F2C00497917 /* Video.swift */,
 				00DAFEC52A8C8F2C00497917 /* College+Schema.swift */,
+				00DAFEDF2A8DA22F00497917 /* ImageStore.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -670,6 +673,7 @@
 				00DAFEDE2A8C8F2C00497917 /* College+Schema.swift in Sources */,
 				0037877929D4F40900D3CD59 /* Cache.swift in Sources */,
 				4D74FEC629AEC95500401178 /* MeetPageView.swift in Sources */,
+				00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */,
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
