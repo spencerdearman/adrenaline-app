@@ -4,13 +4,13 @@ import Foundation
 
 public class Coach: Model {
   public let id: String
-  public var user: NewUser
+  public var user: NewUser?
   public var team: NewTeam?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
     public convenience init(id: String = UUID().uuidString,
-      user: NewUser,
+      user: NewUser? = nil,
       team: NewTeam? = nil) {
     self.init(id: id,
       user: user,
@@ -19,7 +19,7 @@ public class Coach: Model {
       updatedAt: nil)
   }
   internal init(id: String = UUID().uuidString,
-      user: NewUser,
+      user: NewUser? = nil,
       team: NewTeam? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {

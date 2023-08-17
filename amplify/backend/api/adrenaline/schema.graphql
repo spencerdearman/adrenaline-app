@@ -43,7 +43,7 @@ type Video @model @auth(rules: [{ allow: private }]) {
 
 type Coach @model @auth(rules: [{ allow: private }]) {
   id: ID!
-  user: NewUser! @belongsTo
+  user: NewUser @belongsTo
   team: NewTeam @belongsTo
 }
 

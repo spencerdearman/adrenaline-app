@@ -73,6 +73,20 @@ struct LandingView: View {
                             Text(user.email)
                         }
                     }
+                    
+                    Button(action: {
+                        Task {
+                            do {
+                                let user = NewUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com", accountType: "Athlete")
+                                let savedUser = try await Amplify.DataStore.save(user)
+                                print("Saved user: \(savedUser.email)")
+                            } catch {
+                                print("Could not save user to DataStore: \(error)")
+                            }
+                        }
+                    }) {
+                        Text("Create New User")
+                    }
                 }
             }
         }

@@ -1,0 +1,14 @@
+{
+  "resourceName": "adrenaline",
+  "policyUUID": "c91eaa89",
+  "bucketName": "adrenalinexxxxx",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

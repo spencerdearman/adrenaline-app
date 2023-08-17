@@ -30,7 +30,7 @@ extension Coach {
     
     model.fields(
       .field(coach.id, is: .required, ofType: .string),
-      .belongsTo(coach.user, is: .required, ofType: NewUser.self, targetNames: ["coachUserId"]),
+      .belongsTo(coach.user, is: .optional, ofType: NewUser.self, targetNames: ["coachUserId"]),
       .belongsTo(coach.team, is: .optional, ofType: NewTeam.self, targetNames: ["coachTeamId"]),
       .field(coach.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(coach.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)

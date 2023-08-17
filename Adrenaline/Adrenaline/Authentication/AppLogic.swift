@@ -10,6 +10,7 @@ import Combine
 import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
+import AWSDataStorePlugin
 import AWSAPIPlugin
 
 //Creating App Logic Structure for Authentication
@@ -25,6 +26,7 @@ class AppLogic: ObservableObject {
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
+            try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: AmplifyModels()))
             
             //Initializing Amplify
             try Amplify.configure()
