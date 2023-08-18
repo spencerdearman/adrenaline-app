@@ -46,7 +46,6 @@ final class VideoStore {
             
             // trigger an asynchronous download
             let vid = await asyncDownloadVideo(email: email, name: name)
-            print("video found")
             result = vid
             
         }
@@ -77,7 +76,6 @@ final class VideoStore {
             return self.placeholder()
         }
         
-        print("url works")
         let player = AVPlayer(url: url)
         let vid = VideoPlayer(player: player)
         
@@ -149,6 +147,10 @@ final class VideoStore {
         }
         
         return nil
+    }
+    
+    func downloadVideosByEmail(email: String) -> [VideoPlayer<EmptyView>] {
+        return []
     }
     
     // return the placeholder video from the cache

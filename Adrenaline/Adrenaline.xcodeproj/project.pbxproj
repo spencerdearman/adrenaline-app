@@ -317,10 +317,17 @@
 				00DAFEC32A8C8F2C00497917 /* NewEvent.swift */,
 				00DAFEC42A8C8F2C00497917 /* Video.swift */,
 				00DAFEC52A8C8F2C00497917 /* College+Schema.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		00DAFEE32A90240D00497917 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
 				00DAFEDF2A8DA22F00497917 /* ImageStore.swift */,
 				00DAFEE12A8EED2500497917 /* VideoStore.swift */,
 			);
-			path = Models;
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		00E7B0AA2A3EBFF8004575F0 /* MeetPages */ = {
@@ -393,7 +400,6 @@
 		4D74FE9529AE7B9800401178 /* Adrenaline */ = {
 			isa = PBXGroup;
 			children = (
-				00DAFEAC2A8C8F2C00497917 /* Models */,
 				4DC7ACEC29F38828008BBB62 /* Adrenaline.entitlements */,
 				4D1177C729F88B7000850D18 /* Info.plist */,
 				4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */,
@@ -401,9 +407,11 @@
 				4DF9F80B2A85E7A60049CCD3 /* Authentication */,
 				009F41B62A6ABA1700348C68 /* CoreData */,
 				4D74FEB329AEB4B200401178 /* Model */,
+				00DAFEAC2A8C8F2C00497917 /* Models */,
 				4D50E7722A24050E009BFBFA /* Parsers */,
 				4D74FE9C29AE7B9800401178 /* Preview Content */,
 				4D74FEB529AEB4CD00401178 /* Resources */,
+				00DAFEE32A90240D00497917 /* Storage */,
 				4D74FEB229AEB47000401178 /* Views */,
 			);
 			path = Adrenaline;

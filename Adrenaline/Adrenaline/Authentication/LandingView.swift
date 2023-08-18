@@ -38,6 +38,7 @@ struct SignOutButton : View {
 struct LandingView: View {
     @EnvironmentObject var appLogic: AppLogic
     @Environment(\.graphUsers) private var users
+    @Environment(\.videoStore) private var videoStore
     @State private var authenticated: Bool = false
     @State private var video: VideoPlayer<EmptyView>? = nil
     @State private var selection: PhotosPickerItem? = nil
@@ -111,7 +112,7 @@ struct LandingView: View {
                             if let data = selectedFileData,
                                type.conforms(to: UTType.movie) {
                                 video = nil
-                                video = await appLogic.videoStore.uploadVideo(data: data,
+                                video = await videoStore.uploadVideo(data: data,
                                                                 email: "Lsherwin10@gmail.com",
                                                                               name: "test")
                                 selection = nil
@@ -134,7 +135,7 @@ struct LandingView: View {
                     authenticated = true
                 }
                 
-                video = await appLogic.videoStore.video(email: "lsherwin10@gmail.com", name: "logan-401")
+                video = await videoStore.video(email: "lsherwin10@gmail.com", name: "logan-401")
             }
         }
     }

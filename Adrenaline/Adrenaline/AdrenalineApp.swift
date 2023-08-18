@@ -153,6 +153,10 @@ private struct GraphUsersKey: EnvironmentKey {
     static let defaultValue: [GraphUser] = []
 }
 
+private struct VideoStoreKey: EnvironmentKey {
+    static let defaultValue: VideoStore = VideoStore()
+}
+
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -323,6 +327,11 @@ extension EnvironmentValues {
         get { self[GraphUsersKey.self] }
         set { self[GraphUsersKey.self] = newValue }
     }
+    
+    var videoStore: VideoStore {
+        get { self[VideoStoreKey.self] }
+        set { self[VideoStoreKey.self] = newValue }
+    }
 }
 
 extension View {
@@ -354,6 +363,7 @@ struct AdrenalineApp: App {
                 .environmentObject(appLogic)
                 .environment(\.authenticated, appLogic.isSignedIn)
                 .environment(\.graphUsers, appLogic.users)
+                .environment(\.videoStore, appLogic.videoStore)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)
