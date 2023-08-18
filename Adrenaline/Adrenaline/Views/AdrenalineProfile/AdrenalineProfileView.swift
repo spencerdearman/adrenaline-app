@@ -244,10 +244,6 @@ struct PersonalInfoView: View {
                 
                     VStack {
                         HStack (alignment: .firstTextBaseline) {
-                            Text((userViewData.firstName ?? "") + " " +
-                                 (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
-                            Text(userViewData.accountType ?? "")
-                                .foregroundColor(.secondary)
                             if isShowingStar {
                                 Image(systemName: starred ? "star.fill" : "star")
                                     .foregroundColor(starred
@@ -274,6 +270,15 @@ struct PersonalInfoView: View {
                                             }
                                         }
                                     }
+                            }
+                            Text((userViewData.firstName ?? "") + " " +
+                                 (userViewData.lastName ?? "")).font(.title3).fontWeight(.semibold)
+                            if selectedCollege == "" {
+                                Text(userViewData.accountType ?? "")
+                                    .foregroundColor(.secondary)
+                            }
+                            if selectedCollege != "" {
+                                Spacer()
                             }
                         }
                         if userViewData.accountType != "Spectator" {
@@ -317,13 +322,20 @@ struct PersonalInfoView: View {
                     .frame(width: screenWidth * 0.8)
                     .overlay(selectedCollege == ""
                              ? AnyView(EmptyView())
-                             : AnyView(
-                                Image(selectedCollege)
-                            .resizable()
-                            .clipShape(Circle())
-                            .aspectRatio(contentMode: .fit)
-                            .padding(.leading, collegeIconPadding)),
-                             alignment: .leading)
+                             : AnyView(BackgroundBubble(color: Custom.accentThinMaterial, vPadding: -5, hPadding: 35) {
+                        HStack {
+                            Image(selectedCollege)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width:30, height:40)
+                                .clipShape(Circle())
+                            Text(selectedCollege.replacingOccurrences(of: "_", with: " "))
+                                .fontWeight(.semibold)
+                                .lineLimit(1)
+                        }
+                    }
+                    .scaleEffect(0.75)
+                    .offset(x: screenWidth * 0.2, y: -screenWidth * 0.045)))
             }
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
