@@ -19,6 +19,7 @@ class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
     @Published var users: [GraphUser] = []
     var imageStore: ImageStore = ImageStore()
+    var videoStore: VideoStore = VideoStore()
     
     func configureAmplify() {
         do {

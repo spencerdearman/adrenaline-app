@@ -10,6 +10,8 @@ import Combine
 import ClientRuntime
 import Amplify
 import AWSCognitoAuthPlugin
+import AVKit
+import PhotosUI
 
 struct SignOutButton : View {
     @Binding var authenticated: Bool
@@ -34,11 +36,11 @@ struct SignOutButton : View {
 }
 
 struct LandingView: View {
-//    @EnvironmentObject var user: UserData
     @EnvironmentObject var appLogic: AppLogic
     @Environment(\.graphUsers) private var users
     @State private var authenticated: Bool = false
-    @State private var image: Image = ImageStore.shared.placeholder()
+    @State private var video: VideoPlayer<EmptyView>? = nil
+    @State private var selection: PhotosPickerItem? = nil
     
     var body: some View {
         NavigationView {
@@ -61,7 +63,7 @@ struct LandingView: View {
                     }
                 } else {
                     SignOutButton(authenticated: $authenticated)
-                        .onAppear{
+                        .onAppear {
                             print("Coming into the signout portion")
                         }
                 }
@@ -89,11 +91,36 @@ struct LandingView: View {
                         Text("Create New User")
                     }
                     
-                    if image != ImageStore.shared.placeholder() {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .padding()
+                    PhotosPicker("Add Video", selection: $selection,
+                                 matching: .any(of: [.videos, .not(.images)]))
+                    .onChange(of: selection) { newValue in
+                        if newValue == nil { return }
+                        
+                        var selectedFileData: Data? = nil
+                        Task {
+                            
+                            if let selection = selection,
+                               let data = try? await selection.loadTransferable(type: Data.self) {
+                                selectedFileData = data
+                            }
+                            guard let type = selection?.supportedContentTypes.first else {
+                                print("There is not supported type")
+                                return
+                            }
+                            
+                            if let data = selectedFileData,
+                               type.conforms(to: UTType.movie) {
+                                video = nil
+                                video = await appLogic.videoStore.uploadVideo(data: data,
+                                                                email: "Lsherwin10@gmail.com",
+                                                                              name: "test")
+                                selection = nil
+                            }
+                        }
+                    }
+                    
+                    if video != nil {
+                        video
                     } else {
                         ProgressView()
                     }
@@ -107,7 +134,7 @@ struct LandingView: View {
                     authenticated = true
                 }
                 
-                image = await appLogic.imageStore.image(name: "training-trip")
+                video = await appLogic.videoStore.video(email: "lsherwin10@gmail.com", name: "logan-401")
             }
         }
     }
