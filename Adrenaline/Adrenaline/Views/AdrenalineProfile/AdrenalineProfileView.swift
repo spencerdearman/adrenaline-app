@@ -241,7 +241,16 @@ struct PersonalInfoView: View {
                     .foregroundColor(currentMode == .light ? .white : .black)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 10)
-                
+                HStack {
+                    if selectedCollege != "" {
+                        Image(selectedCollege)
+                            .resizable()
+                            .clipShape(Circle())
+                            .aspectRatio(contentMode: .fit)
+                            .padding(.leading, collegeIconPadding)
+                            .frame(width: screenWidth * 0.15,
+                                   height: screenWidth * 0.15)
+                    }
                     VStack {
                         HStack (alignment: .firstTextBaseline) {
                             Text((userViewData.firstName ?? "") + " " +
@@ -314,16 +323,8 @@ struct PersonalInfoView: View {
                             }
                         }
                     }
+                }
                     .frame(width: screenWidth * 0.8)
-                    .overlay(selectedCollege == ""
-                             ? AnyView(EmptyView())
-                             : AnyView(
-                                Image(selectedCollege)
-                            .resizable()
-                            .clipShape(Circle())
-                            .aspectRatio(contentMode: .fit)
-                            .padding(.leading, collegeIconPadding)),
-                             alignment: .leading)
             }
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
