@@ -2,18 +2,18 @@
 import Amplify
 import Foundation
 
-public struct NewTeam: Model {
+public class NewTeam: Model {
   public let id: String
   public var name: String
-  public var coach: Coach?
+  public var coach: CoachUser?
   public var athletes: List<NewAthlete>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newTeamCoachId: String?
   
-  public init(id: String = UUID().uuidString,
+  public convenience init(id: String = UUID().uuidString,
       name: String,
-      coach: Coach? = nil,
+      coach: CoachUser? = nil,
       athletes: List<NewAthlete> = [],
       newTeamCoachId: String? = nil) {
     self.init(id: id,
@@ -26,7 +26,7 @@ public struct NewTeam: Model {
   }
   internal init(id: String = UUID().uuidString,
       name: String,
-      coach: Coach? = nil,
+      coach: CoachUser? = nil,
       athletes: List<NewAthlete> = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,

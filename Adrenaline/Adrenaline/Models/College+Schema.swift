@@ -24,6 +24,7 @@ extension College {
     ]
     
     model.listPluralName = "Colleges"
+    model.syncPluralName = "Colleges"
     
     model.attributes(
       .primaryKey(fields: [college.id])

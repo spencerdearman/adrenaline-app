@@ -24,6 +24,8 @@ xcuserdata/
 # End of https://www.toptal.com/developers/gitignore/api/xcode
 venv
 
+amplify/generated
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -45,4 +47,3 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-amplify/generated

@@ -1,3 +1,4 @@
+
 type NewUser @model @auth(rules: [{ allow: private }]) {
   id: ID!
   firstName: String!
@@ -7,7 +8,7 @@ type NewUser @model @auth(rules: [{ allow: private }]) {
   diveMeetsID: String
   accountType: String!
   athlete: NewAthlete @hasOne
-  coach: Coach @hasOne
+  coach: CoachUser @hasOne
   followed: [NewFollowed!]! @manyToMany(relationName: "NewUserNewFollowed")
 }
 
@@ -41,7 +42,7 @@ type Video @model @auth(rules: [{ allow: private }]) {
   uploadDate: AWSDateTime!
 }
 
-type Coach @model @auth(rules: [{ allow: private }]) {
+type CoachUser @model @auth(rules: [{ allow: private }]) {
   id: ID!
   user: NewUser @belongsTo
   team: NewTeam @belongsTo
@@ -59,7 +60,7 @@ type NewFollowed @model @auth(rules: [{ allow: private }]) {
 type NewTeam @model @auth(rules: [{ allow: private }]) {
   id: ID!
   name: String!
-  coach: Coach @hasOne
+  coach: CoachUser @hasOne
   athletes: [NewAthlete!]! @hasMany
 }
 

@@ -15,10 +15,10 @@
       "auth": {
         "adrenaline7ea715e2": {}
       },
-      "api": {
+      "storage": {
         "adrenaline": {}
       },
-      "storage": {
+      "api": {
         "adrenaline": {}
       }
     }

@@ -38,6 +38,7 @@ extension NewAthlete {
     ]
     
     model.listPluralName = "NewAthletes"
+    model.syncPluralName = "NewAthletes"
     
     model.attributes(
       .primaryKey(fields: [newAthlete.id])

@@ -26,6 +26,7 @@ extension Video {
     ]
     
     model.listPluralName = "Videos"
+    model.syncPluralName = "Videos"
     
     model.attributes(
       .primaryKey(fields: [video.id])

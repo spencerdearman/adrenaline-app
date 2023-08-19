@@ -32,6 +32,7 @@ extension NewMeet {
     ]
     
     model.listPluralName = "NewMeets"
+    model.syncPluralName = "NewMeets"
     
     model.attributes(
       .primaryKey(fields: [newMeet.id])

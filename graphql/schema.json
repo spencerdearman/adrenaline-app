@@ -342,7 +342,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "getCoach",
+          "name" : "getCoachUser",
           "description" : null,
           "args" : [ {
             "name" : "id",
@@ -360,20 +360,20 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "listCoaches",
+          "name" : "listCoachUsers",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachFilterInput",
+              "name" : "ModelCoachUserFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
@@ -398,20 +398,20 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "ModelCoachConnection",
+            "name" : "ModelCoachUserConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "syncCoachs",
+          "name" : "syncCoachUsers",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachFilterInput",
+              "name" : "ModelCoachUserFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
@@ -445,7 +445,7 @@
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "ModelCoachConnection",
+            "name" : "ModelCoachUserConnection",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -1565,7 +1565,7 @@
           "args" : [ ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -2230,7 +2230,7 @@
           "args" : [ ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -2371,7 +2371,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "Coach",
+        "name" : "CoachUser",
         "description" : null,
         "fields" : [ {
           "name" : "id",
@@ -2482,7 +2482,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "coachUserId",
+          "name" : "coachUserUserId",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -2493,7 +2493,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "coachTeamId",
+          "name" : "coachUserTeamId",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -6063,7 +6063,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "OBJECT",
-        "name" : "ModelCoachConnection",
+        "name" : "ModelCoachUserConnection",
         "description" : null,
         "fields" : [ {
           "name" : "items",
@@ -6077,7 +6077,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "OBJECT",
-                "name" : "Coach",
+                "name" : "CoachUser",
                 "ofType" : null
               }
             }
@@ -6113,7 +6113,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "ModelCoachFilterInput",
+        "name" : "ModelCoachUserFilterInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -6133,7 +6133,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachFilterInput",
+              "name" : "ModelCoachUserFilterInput",
               "ofType" : null
             }
           },
@@ -6146,7 +6146,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachFilterInput",
+              "name" : "ModelCoachUserFilterInput",
               "ofType" : null
             }
           },
@@ -6156,7 +6156,7 @@
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
-            "name" : "ModelCoachFilterInput",
+            "name" : "ModelCoachUserFilterInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -6170,7 +6170,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachUserId",
+          "name" : "coachUserUserId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -6179,7 +6179,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachTeamId",
+          "name" : "coachUserTeamId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -7103,7 +7103,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "createCoach",
+          "name" : "createCoachUser",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -7113,7 +7113,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "CreateCoachInput",
+                "name" : "CreateCoachUserInput",
                 "ofType" : null
               }
             },
@@ -7123,20 +7123,20 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachConditionInput",
+              "name" : "ModelCoachUserConditionInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "updateCoach",
+          "name" : "updateCoachUser",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -7146,7 +7146,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "UpdateCoachInput",
+                "name" : "UpdateCoachUserInput",
                 "ofType" : null
               }
             },
@@ -7156,20 +7156,20 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachConditionInput",
+              "name" : "ModelCoachUserConditionInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "deleteCoach",
+          "name" : "deleteCoachUser",
           "description" : null,
           "args" : [ {
             "name" : "input",
@@ -7179,7 +7179,7 @@
               "name" : null,
               "ofType" : {
                 "kind" : "INPUT_OBJECT",
-                "name" : "DeleteCoachInput",
+                "name" : "DeleteCoachUserInput",
                 "ofType" : null
               }
             },
@@ -7189,14 +7189,14 @@
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachConditionInput",
+              "name" : "ModelCoachUserConditionInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -9262,7 +9262,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "CreateCoachInput",
+        "name" : "CreateCoachUserInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -9284,7 +9284,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachUserId",
+          "name" : "coachUserUserId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -9293,7 +9293,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachTeamId",
+          "name" : "coachUserTeamId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -9307,7 +9307,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "ModelCoachConditionInput",
+        "name" : "ModelCoachUserConditionInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -9318,7 +9318,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachConditionInput",
+              "name" : "ModelCoachUserConditionInput",
               "ofType" : null
             }
           },
@@ -9331,7 +9331,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelCoachConditionInput",
+              "name" : "ModelCoachUserConditionInput",
               "ofType" : null
             }
           },
@@ -9341,7 +9341,7 @@
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
-            "name" : "ModelCoachConditionInput",
+            "name" : "ModelCoachUserConditionInput",
             "ofType" : null
           },
           "defaultValue" : null
@@ -9355,7 +9355,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachUserId",
+          "name" : "coachUserUserId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -9364,7 +9364,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachTeamId",
+          "name" : "coachUserTeamId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -9378,7 +9378,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "UpdateCoachInput",
+        "name" : "UpdateCoachUserInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -9404,7 +9404,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachUserId",
+          "name" : "coachUserUserId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -9413,7 +9413,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "coachTeamId",
+          "name" : "coachUserTeamId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -9427,7 +9427,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "DeleteCoachInput",
+        "name" : "DeleteCoachUserInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -11846,61 +11846,61 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onCreateCoach",
+          "name" : "onCreateCoachUser",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionCoachFilterInput",
+              "name" : "ModelSubscriptionCoachUserFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onUpdateCoach",
+          "name" : "onUpdateCoachUser",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionCoachFilterInput",
+              "name" : "ModelSubscriptionCoachUserFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "onDeleteCoach",
+          "name" : "onDeleteCoachUser",
           "description" : null,
           "args" : [ {
             "name" : "filter",
             "description" : null,
             "type" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionCoachFilterInput",
+              "name" : "ModelSubscriptionCoachUserFilterInput",
               "ofType" : null
             },
             "defaultValue" : null
           } ],
           "type" : {
             "kind" : "OBJECT",
-            "name" : "Coach",
+            "name" : "CoachUser",
             "ofType" : null
           },
           "isDeprecated" : false,
@@ -13211,7 +13211,7 @@
         "possibleTypes" : null
       }, {
         "kind" : "INPUT_OBJECT",
-        "name" : "ModelSubscriptionCoachFilterInput",
+        "name" : "ModelSubscriptionCoachUserFilterInput",
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
@@ -13231,7 +13231,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionCoachFilterInput",
+              "name" : "ModelSubscriptionCoachUserFilterInput",
               "ofType" : null
             }
           },
@@ -13244,7 +13244,7 @@
             "name" : null,
             "ofType" : {
               "kind" : "INPUT_OBJECT",
-              "name" : "ModelSubscriptionCoachFilterInput",
+              "name" : "ModelSubscriptionCoachUserFilterInput",
               "ofType" : null
             }
           },
@@ -14767,24 +14767,25 @@
         "onFragment" : false,
         "onField" : true
       }, {
-        "name" : "aws_lambda",
-        "description" : "Tells the service this field/object has access authorized by a Lambda Authorizer.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
+        "name" : "deprecated",
+        "description" : null,
+        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
+        "args" : [ {
+          "name" : "reason",
+          "description" : null,
+          "type" : {
+            "kind" : "SCALAR",
+            "name" : "String",
+            "ofType" : null
+          },
+          "defaultValue" : "\"No longer supported\""
+        } ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false
       }, {
         "name" : "aws_api_key",
         "description" : "Tells the service this field/object has access authorized by an API key.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
-        "name" : "aws_iam",
-        "description" : "Tells the service this field/object has access authorized by sigv4 signing.",
         "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
         "args" : [ ],
         "onOperation" : false,
@@ -14812,19 +14813,10 @@
         "onFragment" : false,
         "onField" : false
       }, {
-        "name" : "deprecated",
-        "description" : null,
-        "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
-        "args" : [ {
-          "name" : "reason",
-          "description" : null,
-          "type" : {
-            "kind" : "SCALAR",
-            "name" : "String",
-            "ofType" : null
-          },
-          "defaultValue" : "\"No longer supported\""
-        } ],
+        "name" : "aws_lambda",
+        "description" : "Tells the service this field/object has access authorized by a Lambda Authorizer.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false
@@ -14888,6 +14880,14 @@
           },
           "defaultValue" : null
         } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_iam",
+        "description" : "Tells the service this field/object has access authorized by sigv4 signing.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false

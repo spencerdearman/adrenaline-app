@@ -23,6 +23,7 @@ extension JudgeScore {
     ]
     
     model.listPluralName = "JudgeScores"
+    model.syncPluralName = "JudgeScores"
     
     model.attributes(
       .primaryKey(fields: [judgeScore.id])

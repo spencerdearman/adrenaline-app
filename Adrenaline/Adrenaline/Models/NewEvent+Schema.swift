@@ -27,6 +27,7 @@ extension NewEvent {
     ]
     
     model.listPluralName = "NewEvents"
+    model.syncPluralName = "NewEvents"
     
     model.attributes(
       .primaryKey(fields: [newEvent.id])

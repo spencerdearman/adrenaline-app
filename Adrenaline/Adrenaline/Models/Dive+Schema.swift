@@ -30,6 +30,7 @@ extension Dive {
     ]
     
     model.listPluralName = "Dives"
+    model.syncPluralName = "Dives"
     
     model.attributes(
       .primaryKey(fields: [dive.id])

@@ -182,7 +182,7 @@ class AppLogic: ObservableObject {
 }
 
 struct GraphUser: Hashable, Codable, Identifiable {
-    let id: Int
+    let id: UUID
     var firstName: String
     var lastName: String
     var email: String
@@ -202,8 +202,8 @@ extension GraphUser {
     // construct from API Data
     init(from : NewUser)  {
         
-        guard let i = Int(from.id) else {
-            preconditionFailure("Can not create user, Invalid ID : \(from.id) (expected Int)")
+        guard let i = UUID(uuidString: from.id) else {
+            preconditionFailure("Can not create user, Invalid ID : \(from.id) (expected UUID)")
         }
         
         // assume all fields are non null.

@@ -19,6 +19,7 @@ extension NewUserNewFollowed {
     let newUserNewFollowed = NewUserNewFollowed.keys
     
     model.listPluralName = "NewUserNewFolloweds"
+    model.syncPluralName = "NewUserNewFolloweds"
     
     model.attributes(
       .index(fields: ["newUserId"], name: "byNewUser"),

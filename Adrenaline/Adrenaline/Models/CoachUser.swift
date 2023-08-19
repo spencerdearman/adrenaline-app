@@ -2,14 +2,14 @@
 import Amplify
 import Foundation
 
-public class Coach: Model {
+public struct CoachUser: Model {
   public let id: String
   public var user: NewUser?
   public var team: NewTeam?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
-    public convenience init(id: String = UUID().uuidString,
+  public init(id: String = UUID().uuidString,
       user: NewUser? = nil,
       team: NewTeam? = nil) {
     self.init(id: id,

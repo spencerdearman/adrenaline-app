@@ -32,6 +32,7 @@ extension NewUser {
     ]
     
     model.listPluralName = "NewUsers"
+    model.syncPluralName = "NewUsers"
     
     model.attributes(
       .primaryKey(fields: [newUser.id])
@@ -46,7 +47,7 @@ extension NewUser {
       .field(newUser.diveMeetsID, is: .optional, ofType: .string),
       .field(newUser.accountType, is: .required, ofType: .string),
       .hasOne(newUser.athlete, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.user, targetNames: ["newUserAthleteId"]),
-      .hasOne(newUser.coach, is: .optional, ofType: Coach.self, associatedWith: Coach.keys.user, targetNames: ["newUserCoachId"]),
+      .hasOne(newUser.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.user, targetNames: ["newUserCoachId"]),
       .hasMany(newUser.followed, is: .optional, ofType: NewUserNewFollowed.self, associatedWith: NewUserNewFollowed.keys.newUser),
       .field(newUser.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newUser.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),

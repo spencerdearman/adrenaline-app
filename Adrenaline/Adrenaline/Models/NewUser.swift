@@ -11,14 +11,14 @@ public class NewUser: Model {
   public var diveMeetsID: String?
   public var accountType: String
   public var athlete: NewAthlete?
-  public var coach: Coach?
+  public var coach: CoachUser?
   public var followed: List<NewUserNewFollowed>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newUserAthleteId: String?
   public var newUserCoachId: String?
   
-    public convenience init(id: String = UUID().uuidString,
+  public convenience init(id: String = UUID().uuidString,
       firstName: String,
       lastName: String,
       email: String,
@@ -26,7 +26,7 @@ public class NewUser: Model {
       diveMeetsID: String? = nil,
       accountType: String,
       athlete: NewAthlete? = nil,
-      coach: Coach? = nil,
+      coach: CoachUser? = nil,
       followed: List<NewUserNewFollowed> = [],
       newUserAthleteId: String? = nil,
       newUserCoachId: String? = nil) {
@@ -53,7 +53,7 @@ public class NewUser: Model {
       diveMeetsID: String? = nil,
       accountType: String,
       athlete: NewAthlete? = nil,
-      coach: Coach? = nil,
+      coach: CoachUser? = nil,
       followed: List<NewUserNewFollowed> = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,

@@ -11,6 +11,45 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     accountType
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -23,6 +62,16 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -35,16 +84,55 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     }
     coach {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      coachUserId
-      coachTeamId
+      coachUserUserId
+      coachUserTeamId
       __typename
     }
     followed {
+      items {
+        id
+        newUserId
+        newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -71,6 +159,45 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     accountType
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -83,6 +210,16 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -95,16 +232,55 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     }
     coach {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      coachUserId
-      coachTeamId
+      coachUserUserId
+      coachUserTeamId
       __typename
     }
     followed {
+      items {
+        id
+        newUserId
+        newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -131,6 +307,45 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     accountType
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -143,6 +358,16 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -155,16 +380,55 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     }
     coach {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      coachUserId
-      coachTeamId
+      coachUserUserId
+      coachUserTeamId
       __typename
     }
     followed {
+      items {
+        id
+        newUserId
+        newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -193,6 +457,46 @@ subscription OnCreateNewAthlete(
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -205,6 +509,22 @@ subscription OnCreateNewAthlete(
     team {
       id
       name
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -217,6 +537,11 @@ subscription OnCreateNewAthlete(
       id
       name
       imageLink
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -237,11 +562,42 @@ subscription OnCreateNewAthlete(
     platformRating
     totalRating
     dives {
+      items {
+        id
+        number
+        name
+        height
+        netScore
+        dd
+        totalScore
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteDivesId
+        newEventDivesId
+        __typename
+      }
       nextToken
       startedAt
       __typename
     }
     videos {
+      items {
+        id
+        link
+        title
+        description
+        uploadDate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteVideosId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -271,6 +627,46 @@ subscription OnUpdateNewAthlete(
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -283,6 +679,22 @@ subscription OnUpdateNewAthlete(
     team {
       id
       name
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -295,6 +707,11 @@ subscription OnUpdateNewAthlete(
       id
       name
       imageLink
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -315,11 +732,42 @@ subscription OnUpdateNewAthlete(
     platformRating
     totalRating
     dives {
+      items {
+        id
+        number
+        name
+        height
+        netScore
+        dd
+        totalScore
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteDivesId
+        newEventDivesId
+        __typename
+      }
       nextToken
       startedAt
       __typename
     }
     videos {
+      items {
+        id
+        link
+        title
+        description
+        uploadDate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteVideosId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -349,6 +797,46 @@ subscription OnDeleteNewAthlete(
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -361,6 +849,22 @@ subscription OnDeleteNewAthlete(
     team {
       id
       name
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -373,6 +877,11 @@ subscription OnDeleteNewAthlete(
       id
       name
       imageLink
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -393,11 +902,42 @@ subscription OnDeleteNewAthlete(
     platformRating
     totalRating
     dives {
+      items {
+        id
+        number
+        name
+        height
+        netScore
+        dd
+        totalScore
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteDivesId
+        newEventDivesId
+        __typename
+      }
       nextToken
       startedAt
       __typename
     }
     videos {
+      items {
+        id
+        link
+        title
+        description
+        uploadDate
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteVideosId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -419,6 +959,45 @@ subscription OnCreateVideo($filter: ModelSubscriptionVideoFilterInput) {
     id
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -431,6 +1010,16 @@ subscription OnCreateVideo($filter: ModelSubscriptionVideoFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -460,6 +1049,45 @@ subscription OnUpdateVideo($filter: ModelSubscriptionVideoFilterInput) {
     id
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -472,6 +1100,16 @@ subscription OnUpdateVideo($filter: ModelSubscriptionVideoFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -501,6 +1139,45 @@ subscription OnDeleteVideo($filter: ModelSubscriptionVideoFilterInput) {
     id
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -513,6 +1190,16 @@ subscription OnDeleteVideo($filter: ModelSubscriptionVideoFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -537,8 +1224,8 @@ subscription OnDeleteVideo($filter: ModelSubscriptionVideoFilterInput) {
   }
 }
 
-subscription OnCreateCoach($filter: ModelSubscriptionCoachFilterInput) {
-  onCreateCoach(filter: $filter) {
+subscription OnCreateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
+  onCreateCoachUser(filter: $filter) {
     id
     user {
       id
@@ -548,6 +1235,46 @@ subscription OnCreateCoach($filter: ModelSubscriptionCoachFilterInput) {
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -560,6 +1287,22 @@ subscription OnCreateCoach($filter: ModelSubscriptionCoachFilterInput) {
     team {
       id
       name
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -573,14 +1316,14 @@ subscription OnCreateCoach($filter: ModelSubscriptionCoachFilterInput) {
     _version
     _deleted
     _lastChangedAt
-    coachUserId
-    coachTeamId
+    coachUserUserId
+    coachUserTeamId
     __typename
   }
 }
 
-subscription OnUpdateCoach($filter: ModelSubscriptionCoachFilterInput) {
-  onUpdateCoach(filter: $filter) {
+subscription OnUpdateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
+  onUpdateCoachUser(filter: $filter) {
     id
     user {
       id
@@ -590,6 +1333,46 @@ subscription OnUpdateCoach($filter: ModelSubscriptionCoachFilterInput) {
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -602,6 +1385,22 @@ subscription OnUpdateCoach($filter: ModelSubscriptionCoachFilterInput) {
     team {
       id
       name
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -615,14 +1414,14 @@ subscription OnUpdateCoach($filter: ModelSubscriptionCoachFilterInput) {
     _version
     _deleted
     _lastChangedAt
-    coachUserId
-    coachTeamId
+    coachUserUserId
+    coachUserTeamId
     __typename
   }
 }
 
-subscription OnDeleteCoach($filter: ModelSubscriptionCoachFilterInput) {
-  onDeleteCoach(filter: $filter) {
+subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
+  onDeleteCoachUser(filter: $filter) {
     id
     user {
       id
@@ -632,6 +1431,46 @@ subscription OnDeleteCoach($filter: ModelSubscriptionCoachFilterInput) {
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -644,6 +1483,22 @@ subscription OnDeleteCoach($filter: ModelSubscriptionCoachFilterInput) {
     team {
       id
       name
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      athletes {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -657,8 +1512,8 @@ subscription OnDeleteCoach($filter: ModelSubscriptionCoachFilterInput) {
     _version
     _deleted
     _lastChangedAt
-    coachUserId
-    coachTeamId
+    coachUserUserId
+    coachUserTeamId
     __typename
   }
 }
@@ -673,6 +1528,17 @@ subscription OnCreateNewFollowed(
     email
     diveMeetsID
     users {
+      items {
+        id
+        newUserId
+        newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -696,6 +1562,17 @@ subscription OnUpdateNewFollowed(
     email
     diveMeetsID
     users {
+      items {
+        id
+        newUserId
+        newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -719,6 +1596,17 @@ subscription OnDeleteNewFollowed(
     email
     diveMeetsID
     users {
+      items {
+        id
+        newUserId
+        newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -738,16 +1626,68 @@ subscription OnCreateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     name
     coach {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      coachUserId
-      coachTeamId
+      coachUserUserId
+      coachUserTeamId
       __typename
     }
     athletes {
+      items {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -768,16 +1708,68 @@ subscription OnUpdateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     name
     coach {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      coachUserId
-      coachTeamId
+      coachUserUserId
+      coachUserTeamId
       __typename
     }
     athletes {
+      items {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -798,16 +1790,68 @@ subscription OnDeleteNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     name
     coach {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      coachUserId
-      coachTeamId
+      coachUserUserId
+      coachUserTeamId
       __typename
     }
     athletes {
+      items {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -828,6 +1872,30 @@ subscription OnCreateCollege($filter: ModelSubscriptionCollegeFilterInput) {
     name
     imageLink
     athletes {
+      items {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -847,6 +1915,30 @@ subscription OnUpdateCollege($filter: ModelSubscriptionCollegeFilterInput) {
     name
     imageLink
     athletes {
+      items {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -866,6 +1958,30 @@ subscription OnDeleteCollege($filter: ModelSubscriptionCollegeFilterInput) {
     name
     imageLink
     athletes {
+      items {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -893,6 +2009,20 @@ subscription OnCreateNewMeet($filter: ModelSubscriptionNewMeetFilterInput) {
     link
     meetType
     events {
+      items {
+        id
+        name
+        date
+        link
+        numEntries
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newMeetEventsId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -920,6 +2050,20 @@ subscription OnUpdateNewMeet($filter: ModelSubscriptionNewMeetFilterInput) {
     link
     meetType
     events {
+      items {
+        id
+        name
+        date
+        link
+        numEntries
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newMeetEventsId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -947,6 +2091,20 @@ subscription OnDeleteNewMeet($filter: ModelSubscriptionNewMeetFilterInput) {
     link
     meetType
     events {
+      items {
+        id
+        name
+        date
+        link
+        numEntries
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newMeetEventsId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -975,6 +2133,11 @@ subscription OnCreateNewEvent($filter: ModelSubscriptionNewEventFilterInput) {
       country
       link
       meetType
+      events {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -987,6 +2150,23 @@ subscription OnCreateNewEvent($filter: ModelSubscriptionNewEventFilterInput) {
     link
     numEntries
     dives {
+      items {
+        id
+        number
+        name
+        height
+        netScore
+        dd
+        totalScore
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteDivesId
+        newEventDivesId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -1016,6 +2196,11 @@ subscription OnUpdateNewEvent($filter: ModelSubscriptionNewEventFilterInput) {
       country
       link
       meetType
+      events {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1028,6 +2213,23 @@ subscription OnUpdateNewEvent($filter: ModelSubscriptionNewEventFilterInput) {
     link
     numEntries
     dives {
+      items {
+        id
+        number
+        name
+        height
+        netScore
+        dd
+        totalScore
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteDivesId
+        newEventDivesId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -1057,6 +2259,11 @@ subscription OnDeleteNewEvent($filter: ModelSubscriptionNewEventFilterInput) {
       country
       link
       meetType
+      events {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1069,6 +2276,23 @@ subscription OnDeleteNewEvent($filter: ModelSubscriptionNewEventFilterInput) {
     link
     numEntries
     dives {
+      items {
+        id
+        number
+        name
+        height
+        netScore
+        dd
+        totalScore
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newAthleteDivesId
+        newEventDivesId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -1088,10 +2312,34 @@ subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {
     id
     event {
       id
+      meet {
+        id
+        meetID
+        name
+        organization
+        startDate
+        endDate
+        city
+        state
+        country
+        link
+        meetType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       name
       date
       link
       numEntries
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1102,6 +2350,45 @@ subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {
     }
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -1114,6 +2401,16 @@ subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1131,6 +2428,17 @@ subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {
     dd
     totalScore
     scores {
+      items {
+        id
+        score
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        diveScoresId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -1151,10 +2459,34 @@ subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {
     id
     event {
       id
+      meet {
+        id
+        meetID
+        name
+        organization
+        startDate
+        endDate
+        city
+        state
+        country
+        link
+        meetType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       name
       date
       link
       numEntries
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1165,6 +2497,45 @@ subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {
     }
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -1177,6 +2548,16 @@ subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1194,6 +2575,17 @@ subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {
     dd
     totalScore
     scores {
+      items {
+        id
+        score
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        diveScoresId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -1214,10 +2606,34 @@ subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {
     id
     event {
       id
+      meet {
+        id
+        meetID
+        name
+        organization
+        startDate
+        endDate
+        city
+        state
+        country
+        link
+        meetType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       name
       date
       link
       numEntries
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1228,6 +2644,45 @@ subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {
     }
     athlete {
       id
+      user {
+        id
+        firstName
+        lastName
+        email
+        phone
+        diveMeetsID
+        accountType
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newUserAthleteId
+        newUserCoachId
+        __typename
+      }
+      team {
+        id
+        name
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamCoachId
+        __typename
+      }
+      college {
+        id
+        name
+        imageLink
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
       heightFeet
       heightInches
       weight
@@ -1240,6 +2695,16 @@ subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {
       springboardRating
       platformRating
       totalRating
+      dives {
+        nextToken
+        startedAt
+        __typename
+      }
+      videos {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1257,6 +2722,17 @@ subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {
     dd
     totalScore
     scores {
+      items {
+        id
+        score
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        diveScoresId
+        __typename
+      }
       nextToken
       startedAt
       __typename
@@ -1279,12 +2755,55 @@ subscription OnCreateJudgeScore(
     id
     dive {
       id
+      event {
+        id
+        name
+        date
+        link
+        numEntries
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newMeetEventsId
+        __typename
+      }
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       number
       name
       height
       netScore
       dd
       totalScore
+      scores {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1312,12 +2831,55 @@ subscription OnUpdateJudgeScore(
     id
     dive {
       id
+      event {
+        id
+        name
+        date
+        link
+        numEntries
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newMeetEventsId
+        __typename
+      }
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       number
       name
       height
       netScore
       dd
       totalScore
+      scores {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1345,12 +2907,55 @@ subscription OnDeleteJudgeScore(
     id
     dive {
       id
+      event {
+        id
+        name
+        date
+        link
+        numEntries
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newMeetEventsId
+        __typename
+      }
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
       number
       name
       height
       netScore
       dd
       totalScore
+      scores {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1386,6 +2991,46 @@ subscription OnCreateNewUserNewFollowed(
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1401,6 +3046,11 @@ subscription OnCreateNewUserNewFollowed(
       lastName
       email
       diveMeetsID
+      users {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1432,6 +3082,46 @@ subscription OnUpdateNewUserNewFollowed(
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1447,6 +3137,11 @@ subscription OnUpdateNewUserNewFollowed(
       lastName
       email
       diveMeetsID
+      users {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1478,6 +3173,46 @@ subscription OnDeleteNewUserNewFollowed(
       phone
       diveMeetsID
       accountType
+      athlete {
+        id
+        heightFeet
+        heightInches
+        weight
+        weightUnit
+        gender
+        age
+        graduationYear
+        highSchool
+        hometown
+        springboardRating
+        platformRating
+        totalRating
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        newTeamAthletesId
+        collegeAthletesId
+        newAthleteUserId
+        __typename
+      }
+      coach {
+        id
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        coachUserUserId
+        coachUserTeamId
+        __typename
+      }
+      followed {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1493,6 +3228,11 @@ subscription OnDeleteNewUserNewFollowed(
       lastName
       email
       diveMeetsID
+      users {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version

@@ -26,6 +26,7 @@ extension NewFollowed {
     ]
     
     model.listPluralName = "NewFolloweds"
+    model.syncPluralName = "NewFolloweds"
     
     model.attributes(
       .primaryKey(fields: [newFollowed.id])
@@ -46,5 +47,5 @@ extension NewFollowed {
 
 extension NewFollowed: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
-  public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+  public typealias IdentifierProtocol = DefaultModelIdentifier<NewUser>
 }
