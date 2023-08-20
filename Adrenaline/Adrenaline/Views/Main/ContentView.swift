@@ -6,9 +6,6 @@
 //
 
 import SwiftUI
-import Amplify
-import AWSCognitoAuthPlugin
-import Authenticator
 
 // Global timeoutInterval to use for online loading pages
 let timeoutInterval: TimeInterval = 30
@@ -18,17 +15,13 @@ let timeoutInterval: TimeInterval = 30
 var blockingNetwork: Bool = false
 
 struct ContentView: View {
-    @EnvironmentObject var appLogic: AppLogic
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
     @State private var selectedTab: Tab = .house
     @State var showSplash: Bool = false
-    @State var authenticated: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
-    
-    private let theme = AuthenticatorTheme()
     
     var hasHomeButton: Bool {
         if #available(iOS 13.0, *) {
@@ -47,13 +40,6 @@ struct ContentView: View {
     // Necessary to hide gray navigation bar from behind floating tab bar
     init() {
         UITabBar.appearance().isHidden = true
-        theme.components.field.cornerRadius = 50
-        theme.components.button.primary.cornerRadius = 50
-        theme.components.authenticator.spacing.vertical = 15
-        theme.colors.background.interactive = Custom.darkBlue
-        theme.colors.foreground.primary = Custom.darkBlue
-        theme.colors.foreground.secondary = Custom.coolBlue
-        theme.colors.foreground.interactive = Custom.coolBlue
     }
     
     var body: some View {
@@ -69,26 +55,18 @@ struct ContentView: View {
                     ForEach(Tab.allCases, id: \.rawValue) { tab in
                         HStack {
                             // Add different page views here for different tabs
-                            Authenticator { state in
-                                switch tab {
+                            switch tab {
                                 case .house:
-                                    ZStack {
-                                        SignOutButton(authenticated: $authenticated)
-                                            .onAppear{
-                                                Task {
-                                                    let session = try await Amplify.Auth.fetchAuthSession()
-                                                    if session.isSignedIn {
-                                                        authenticated = true
-                                                    }
-                                                }
-                                            }
-                                    }
-                                    //LandingView()
-                                    //Home()
+                                    LandingView()
+//                                    Home()
                                 case .wrench:
                                     //NavigationView {
-                                    //LiveResultsView(request: "debug")
+//                                    LiveResultsView(request: "debug")
+                                    //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                                    //}
+                                    //.navigationViewStyle(StackNavigationViewStyle())
                                     //ToolsMenu()
+                                    //SearchColorfulView()
                                     RankingsView()
                                     //AppLaunchSequence(showSplash: $showSplash)
                                     //UsersDBTestView()
@@ -97,30 +75,18 @@ struct ContentView: View {
                                 case .person:
                                     AdrenalineLoginView(showSplash: $showSplash)
                                     //LoginSearchView(showSplash: $showSplash)
-                                }
                             }
-                            .authenticatorTheme(theme)
                         }
                         .tag(tab)
                         
                     }
                 }
-                if authenticated {
-                    FloatingMenuBar(selectedTab: $selectedTab)
-                        .offset(y: menuBarOffset)
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .dynamicTypeSize(.medium ... .xxxLarge)
-                }
+                FloatingMenuBar(selectedTab: $selectedTab)
+                    .offset(y: menuBarOffset)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .dynamicTypeSize(.medium ... .xxxLarge)
             }
             .ignoresSafeArea(.keyboard)
-        }
-        .onAppear {
-            Task {
-                let session = try await Amplify.Auth.fetchAuthSession()
-                if session.isSignedIn {
-                    authenticated = true
-                }
-            }
         }
     }
 }
