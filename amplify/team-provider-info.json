@@ -22,5 +22,29 @@
         "adrenaline": {}
       }
     }
+  },
+  "login": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-adrenaline-login-203904-authRole",
+      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-login-203904-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-login-203904-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-adrenaline-login-203904-deployment",
+      "UnauthRoleName": "amplify-adrenaline-login-203904-unauthRole",
+      "StackName": "amplify-adrenaline-login-203904",
+      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-login-203904/f706ea10-3ef1-11ee-aa84-0aed193130ff",
+      "AmplifyAppId": "d28uzwoi4f7qhz"
+    },
+    "categories": {
+      "auth": {
+        "adrenaline7ea715e2": {}
+      },
+      "api": {
+        "adrenaline": {}
+      },
+      "storage": {
+        "adrenaline": {}
+      }
+    }
   }
 }
