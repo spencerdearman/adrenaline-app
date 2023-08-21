@@ -8,11 +8,9 @@
 import Foundation
 import Amplify
 
-func queryUsers() async -> [GraphUser] {
-    print("Query users")
-    
+func queryUsers(where predicate: QueryPredicate? = nil) async -> [GraphUser] {
     do {
-        let queryResult = try await Amplify.DataStore.query(NewUser.self)
+        let queryResult = try await Amplify.DataStore.query(NewUser.self, where: predicate)
         print("Successfully retrieved list of users")
         
         //            // convert [ LandmarkData ] to [ LandMark ]
@@ -21,7 +19,6 @@ func queryUsers() async -> [GraphUser] {
         }
         
         return result
-        
     } catch let error as DataStoreError {
         print("Failed to load data from DataStore : \(error)")
     } catch {
@@ -37,6 +34,39 @@ func saveUser(user: GraphUser) async throws -> NewUser {
     print("Saved user: \(savedUser.email)")
     
     return savedUser
+}
+
+func updateUserField(email: String, key: String, value: Any) async throws {
+    let users = await queryUsers(where: NewUser.keys.email == email)
+    print(users)
+    for user in users {
+        var updatedUser = user
+        switch key {
+            case "firstName":
+                updatedUser.firstName = value as! String
+                break
+            case "lastName":
+                updatedUser.lastName = value as! String
+                break
+            case "phone":
+                updatedUser.phone = value as? String
+                break
+            case "accountType":
+                updatedUser.accountType = value as! String
+                break
+            case "diveMeetsId":
+                updatedUser.diveMeetsID = value as? String
+                break
+            case "followed":
+                updatedUser.followed = value as! [String]
+                break
+            default:
+                print("Invalid key in NewUser")
+                return
+        }
+        
+        let _ = try await saveUser(user: updatedUser)
+    }
 }
 
 func deleteUserByEmail(email: String) async throws {

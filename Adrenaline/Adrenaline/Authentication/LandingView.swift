@@ -94,6 +94,19 @@ struct LandingView: View {
                     Button(action: {
                         Task {
                             do {
+                                try await updateUserField(email: "achen@gmail.com", key: "phone",
+                                                          value: "1234567890")
+                            } catch {
+                                print("Could not update user field: \(error)")
+                            }
+                        }
+                    }) {
+                        Text("Update User Field")
+                    }
+                    
+                    Button(action: {
+                        Task {
+                            do {
                                 try await deleteUserByEmail(email: "achen@gmail.com")
                             } catch {
                                 print("Could not save user to DataStore: \(error)")
