@@ -8,12 +8,21 @@
 import Foundation
 import Amplify
 
-func queryUsers(where predicate: QueryPredicate? = nil) async -> [GraphUser] {
+// Returns generated model list without converting to Swift class
+func query<M: Model>(where predicate: QueryPredicate? = nil,
+                     sortBy: QuerySortInput? = nil) async throws -> [M] {
+    let queryResult = try await Amplify.DataStore.query(M.self, where: predicate,
+                                                        sort: sortBy)
+    
+    return queryResult
+}
+
+// Returns GraphUser class list
+func queryUsers(where predicate: QueryPredicate? = nil,
+                sortBy: QuerySortInput? = nil) async -> [GraphUser] {
     do {
-        let queryResult = try await Amplify.DataStore.query(NewUser.self, where: predicate)
-        print("Successfully retrieved list of users")
+        let queryResult: [NewUser] = try await query(where: predicate, sortBy: sortBy)
         
-        //            // convert [ LandmarkData ] to [ LandMark ]
         let result = queryResult.map { newUser in
             GraphUser.init(from: newUser)
         }
