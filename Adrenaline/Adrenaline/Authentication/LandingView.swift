@@ -82,7 +82,7 @@ struct LandingView: View {
                         Task {
                             do {
                                 let user = GraphUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com", accountType: "Athlete")
-                                let savedUser = try await saveUser(user: user)
+                                let _ = try await saveUser(user: user)
                             } catch {
                                 print("Could not save user to DataStore: \(error)")
                             }
