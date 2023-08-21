@@ -104,7 +104,7 @@ class AppLogic: ObservableObject {
         
         // load landmarks at start of app when user signed in
         if (forSignInStatus && self.users.isEmpty) {
-            self.users = await self.queryUsers()
+            self.users = await queryUsers()
         } else {
             self.users = []
         }
@@ -144,29 +144,6 @@ class AppLogic: ObservableObject {
         return nil
     }
     
-    func queryUsers() async -> [GraphUser] {
-        print("Query users")
-        
-        do {
-            let queryResult = try await Amplify.DataStore.query(NewUser.self)
-            print("Successfully retrieved list of users")
-            
-//            // convert [ LandmarkData ] to [ LandMark ]
-            let result = queryResult.map { newUser in
-                GraphUser.init(from: newUser)
-            }
-            
-            return result
-            
-        } catch let error as DataStoreError {
-            print("Failed to load data from DataStore : \(error)")
-        } catch {
-            print("Unexpected error while calling DataStore : \(error)")
-        }
-        
-        return []
-    }
-    
     enum AuthenticationError: Error {
         case keyWindowNotFound
     }
@@ -182,14 +159,14 @@ class AppLogic: ObservableObject {
 }
 
 struct GraphUser: Hashable, Codable, Identifiable {
-    let id: UUID
+    var id: UUID = UUID()
     var firstName: String
     var lastName: String
     var email: String
     var phone: String?
     var diveMeetsID: String?
     var accountType: String
-    var followed: [String]
+    var followed: [String] = []
     var createdAt: String?
     var updatedAt: String?
     var athleteId: String?

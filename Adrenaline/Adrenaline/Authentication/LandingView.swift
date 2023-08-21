@@ -81,9 +81,8 @@ struct LandingView: View {
                     Button(action: {
                         Task {
                             do {
-                                let user = NewUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com", accountType: "Athlete")
-                                let savedUser = try await Amplify.DataStore.save(user)
-                                print("Saved user: \(savedUser.email)")
+                                let user = GraphUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com", accountType: "Athlete")
+                                let savedUser = try await saveUser(user: user)
                             } catch {
                                 print("Could not save user to DataStore: \(error)")
                             }
@@ -92,39 +91,51 @@ struct LandingView: View {
                         Text("Create New User")
                     }
                     
-                    PhotosPicker("Add Video", selection: $selection,
-                                 matching: .any(of: [.videos, .not(.images)]))
-                    .onChange(of: selection) { newValue in
-                        if newValue == nil { return }
-                        
-                        var selectedFileData: Data? = nil
+                    Button(action: {
                         Task {
-                            
-                            if let selection = selection,
-                               let data = try? await selection.loadTransferable(type: Data.self) {
-                                selectedFileData = data
-                            }
-                            guard let type = selection?.supportedContentTypes.first else {
-                                print("There is not supported type")
-                                return
-                            }
-                            
-                            if let data = selectedFileData,
-                               type.conforms(to: UTType.movie) {
-                                video = nil
-                                video = await videoStore.uploadVideo(data: data,
-                                                                email: "Lsherwin10@gmail.com",
-                                                                              name: "test")
-                                selection = nil
+                            do {
+                                try await deleteUserByEmail(email: "achen@gmail.com")
+                            } catch {
+                                print("Could not save user to DataStore: \(error)")
                             }
                         }
+                    }) {
+                        Text("Delete Last User")
                     }
                     
-                    if video != nil {
-                        video
-                    } else {
-                        ProgressView()
-                    }
+//                    PhotosPicker("Add Video", selection: $selection,
+//                                 matching: .any(of: [.videos, .not(.images)]))
+//                    .onChange(of: selection) { newValue in
+//                        if newValue == nil { return }
+//
+//                        var selectedFileData: Data? = nil
+//                        Task {
+//
+//                            if let selection = selection,
+//                               let data = try? await selection.loadTransferable(type: Data.self) {
+//                                selectedFileData = data
+//                            }
+//                            guard let type = selection?.supportedContentTypes.first else {
+//                                print("There is not supported type")
+//                                return
+//                            }
+//
+//                            if let data = selectedFileData,
+//                               type.conforms(to: UTType.movie) {
+//                                video = nil
+//                                video = await videoStore.uploadVideo(data: data,
+//                                                                email: "Lsherwin10@gmail.com",
+//                                                                              name: "test")
+//                                selection = nil
+//                            }
+//                        }
+//                    }
+                    
+//                    if video != nil {
+//                        video
+//                    } else {
+//                        ProgressView()
+//                    }
                 }
             }
         }
@@ -135,7 +146,7 @@ struct LandingView: View {
                     authenticated = true
                 }
                 
-                video = await videoStore.video(email: "lsherwin10@gmail.com", name: "logan-401")
+//                video = await videoStore.video(email: "lsherwin10@gmail.com", name: "logan-401")
             }
         }
     }

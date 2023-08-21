@@ -35,6 +35,7 @@
 		009F41BA2A6AC51A00348C68 /* UsersDBTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009F41B92A6AC51A00348C68 /* UsersDBTestView.swift */; };
 		009F41BD2A6AD9E400348C68 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 009F41BB2A6AD9E400348C68 /* Model.xcdatamodeld */; };
 		009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009F41BE2A6ADD8100348C68 /* ModelDataController.swift */; };
+		00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ADF5092A93304800C85C7F /* DataStoreAPI.swift */; };
 		00B6A5D62A6651A700C4DFDA /* AccountTypeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */; };
 		00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */; };
 		00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */; };
@@ -155,6 +156,7 @@
 		009F41B92A6AC51A00348C68 /* UsersDBTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersDBTestView.swift; sourceTree = "<group>"; };
 		009F41BC2A6AD9E400348C68 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		009F41BE2A6ADD8100348C68 /* ModelDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDataController.swift; sourceTree = "<group>"; };
+		00ADF5092A93304800C85C7F /* DataStoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreAPI.swift; sourceTree = "<group>"; };
 		00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTypeSelectView.swift; sourceTree = "<group>"; };
 		00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoView.swift; sourceTree = "<group>"; };
 		00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TextFieldClearButton.swift; path = Adrenaline/Views/Util/TextFieldClearButton.swift; sourceTree = SOURCE_ROOT; };
@@ -277,6 +279,14 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		00ADF5082A93303400C85C7F /* DataStore */ = {
+			isa = PBXGroup;
+			children = (
+				00ADF5092A93304800C85C7F /* DataStoreAPI.swift */,
+			);
+			path = DataStore;
+			sourceTree = "<group>";
+		};
 		00B6A5D22A66500F00C4DFDA /* SignupSequence */ = {
 			isa = PBXGroup;
 			children = (
@@ -374,6 +384,7 @@
 				4D74FE9A29AE7B9800401178 /* Assets.xcassets */,
 				4DF9F80B2A85E7A60049CCD3 /* Authentication */,
 				009F41B62A6ABA1700348C68 /* CoreData */,
+				00ADF5082A93303400C85C7F /* DataStore */,
 				4D74FEB329AEB4B200401178 /* Model */,
 				4DCA5AEF2A9175EE00C2A6BB /* Models */,
 				4D50E7722A24050E009BFBFA /* Parsers */,
@@ -676,6 +687,7 @@
 				4D74FEAF29AEB02100401178 /* Meet.swift in Sources */,
 				4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */,
 				0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */,
+				00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */,
 				4DCA5B0A2A9175EE00C2A6BB /* Video+Schema.swift in Sources */,
 				000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
