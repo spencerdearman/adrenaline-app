@@ -53,7 +53,7 @@ func saveUser(user: GraphUser) async throws -> NewUser {
 }
 
 func updateUserField(email: String, key: String, value: Any) async throws {
-    let users = await queryUsers(where: NewUser.keys.email == email)
+    let users: [NewUser] = try await query(where: NewUser.keys.email == email)
     print(users)
     for user in users {
         var updatedUser = user
@@ -74,14 +74,14 @@ func updateUserField(email: String, key: String, value: Any) async throws {
                 updatedUser.diveMeetsID = value as? String
                 break
             case "followed":
-                updatedUser.followed = value as! [String]
+                updatedUser.followed = value as? List<NewUserNewFollowed>
                 break
             default:
                 print("Invalid key in NewUser")
                 return
         }
         
-        let _ = try await saveUser(user: updatedUser)
+        let _ = try await saveToDataStore(object: updatedUser)
     }
 }
 
