@@ -37,9 +37,16 @@ func queryUsers(where predicate: QueryPredicate? = nil,
     return []
 }
 
+// Saves to DataStore without converting object from Swift class
+func saveToDataStore<M: Model>(object: M) async throws -> M {
+    let savedObject = try await Amplify.DataStore.save(object)
+    
+    return savedObject
+}
+
 func saveUser(user: GraphUser) async throws -> NewUser {
     let newUser = NewUser(from: user)
-    let savedUser = try await Amplify.DataStore.save(newUser)
+    let savedUser = try await saveToDataStore(object: newUser)
     print("Saved user: \(savedUser.email)")
     
     return savedUser
@@ -78,11 +85,15 @@ func updateUserField(email: String, key: String, value: Any) async throws {
     }
 }
 
+func deleteFromDataStore<M: Model>(object: M) async throws {
+    try await Amplify.DataStore.delete(object)
+}
+
 func deleteUserByEmail(email: String) async throws {
     for user in await queryUsers() {
         if user.email == email {
             let newUser = NewUser(from: user)
-            try await Amplify.DataStore.delete(newUser)
+            try await deleteFromDataStore(object: newUser)
             print("Deleted user: \(user.email)")
         }
     }
