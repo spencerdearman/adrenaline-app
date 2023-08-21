@@ -148,20 +148,20 @@ class AppLogic: ObservableObject {
         print("Query users")
         
         do {
-            let queryResult = try await Amplify.API.query(request: .list(NewUser.self))
+            let queryResult = try await Amplify.DataStore.query(NewUser.self)
             print("Successfully retrieved list of users")
             
-            // convert [ LandmarkData ] to [ LandMark ]
-            let result = try queryResult.get().map { newUser in
+//            // convert [ LandmarkData ] to [ LandMark ]
+            let result = queryResult.map { newUser in
                 GraphUser.init(from: newUser)
             }
             
             return result
             
-        } catch let error as APIError {
-            print("Failed to load data from api : \(error)")
+        } catch let error as DataStoreError {
+            print("Failed to load data from DataStore : \(error)")
         } catch {
-            print("Unexpected error while calling API : \(error)")
+            print("Unexpected error while calling DataStore : \(error)")
         }
         
         return []
