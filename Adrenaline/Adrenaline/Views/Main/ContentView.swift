@@ -17,7 +17,7 @@ var blockingNetwork: Bool = false
 struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
-    @State private var selectedTab: Tab = .house
+    @State private var tabBarState: Visibility = .visible
     @State var showSplash: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -37,11 +37,6 @@ struct ContentView: View {
         hasHomeButton ? 0 : 20
     }
     
-    // Necessary to hide gray navigation bar from behind floating tab bar
-    init() {
-        UITabBar.appearance().isHidden = true
-    }
-    
     var body: some View {
         ZStack {
             // Only shows splash screen while bool is true, auto dismisses after splashDuration
@@ -50,41 +45,34 @@ struct ContentView: View {
                     .zIndex(10)
             }
             
-            ZStack {
-                TabView(selection: $selectedTab) {
-                    ForEach(Tab.allCases, id: \.rawValue) { tab in
-                        HStack {
-                            // Add different page views here for different tabs
-                            switch tab {
-                                case .house:
-                                    LandingView()
-//                                    Home()
-                                case .wrench:
-                                    //NavigationView {
-//                                    LiveResultsView(request: "debug")
-                                    //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
-                                    //}
-                                    //.navigationViewStyle(StackNavigationViewStyle())
-                                    //ToolsMenu()
-                                    //SearchColorfulView()
-                                    RankingsView()
-                                    //AppLaunchSequence(showSplash: $showSplash)
-                                    //UsersDBTestView()
-                                case .magnifyingglass:
-                                    SearchView()
-                                case .person:
-                                    AdrenalineLoginView(showSplash: $showSplash)
-                                    //LoginSearchView(showSplash: $showSplash)
-                            }
-                        }
-                        .tag(tab)
-                        
+            TabView {
+                    LandingView()
+//                    Home()
+                    .tabItem {
+                        Label("Home", systemImage: "house")
                     }
-                }
-                FloatingMenuBar(selectedTab: $selectedTab)
-                    .offset(y: menuBarOffset)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .dynamicTypeSize(.medium ... .xxxLarge)
+                //NavigationView {
+                //                                    LiveResultsView(request: "debug")
+                //                                            FinishedLiveResultsView(link: "https://secure.meetcontrol.com/divemeets/system/livestats.php?event=stats-9050-770-9-Finished")
+                //}
+                //.navigationViewStyle(StackNavigationViewStyle())
+                //ToolsMenu()
+                
+                RankingsView(tabBarState: $tabBarState)
+                    .tabItem {
+                        Label("Rankings", systemImage: "trophy")
+                    }
+                
+                //AppLaunchSequence(showSplash: $showSplash)
+                AdrenalineLoginView(showSplash: $showSplash)
+                    .tabItem {
+                        Label("Profile", systemImage: "person")
+                    }
+                
+                SearchView()
+                    .tabItem {
+                        Label("Search", systemImage: "magnifyingglass")
+                    }
             }
             .ignoresSafeArea(.keyboard)
         }
