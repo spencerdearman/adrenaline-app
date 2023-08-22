@@ -33,6 +33,7 @@ struct RankingsView: View {
     @State private var gender: Gender = .male
     @State private var maleRatings: GenderRankingList = []
     @State private var femaleRatings: GenderRankingList = []
+    @Binding var tabBarState: Visibility
     
     private let skill = SkillRating(diveStatistics: nil)
     
@@ -78,7 +79,7 @@ struct RankingsView: View {
                     
                     Divider()
                     
-                    RankingListView(rankingType: $rankingType, gender: $gender,
+                    RankingListView(tabBarState: $tabBarState, rankingType: $rankingType, gender: $gender,
                                     maleRatings: $maleRatings, femaleRatings: $femaleRatings)
                     
                     Spacer()
@@ -119,6 +120,7 @@ struct RankingsView: View {
 
 struct RankingListView: View {
     @Environment(\.colorScheme) private var currentMode
+    @Binding var tabBarState: Visibility
     @Binding var rankingType: RankingType
     @Binding var gender: Gender
     @Binding var maleRatings: GenderRankingList
@@ -217,7 +219,7 @@ struct RankingListView: View {
                 .padding()
             }
             
-            ScrollView(showsIndicators: false) {
+            HideTabBarScrollView(tabBarState: $tabBarState) {
                 VStack {
                     ForEach(numberedList.indices, id: \.self) { index in
                         let number = numberedList[index].0
@@ -272,11 +274,5 @@ struct RankingListDiverView: View {
             }
             .padding()
         }
-    }
-}
-
-struct RankingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        RankingsView()
     }
 }
