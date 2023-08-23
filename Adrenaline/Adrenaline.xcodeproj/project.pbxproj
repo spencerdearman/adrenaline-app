@@ -57,6 +57,10 @@
 		00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FEF7BA2A2A990900AAFC7C /* EntryPageView.swift */; };
 		00FFDAE82A66FBE10090727B /* AthleteRecruitingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */; };
 		4D0A01762A73781B00615326 /* AdrenalineLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A01752A73781B00615326 /* AdrenalineLoginView.swift */; };
+		4D1A31B02A95BE8700128F81 /* FeedStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */; };
+		4D1A31B32A96AFA300128F81 /* FeedBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B22A96AFA200128F81 /* FeedBase.swift */; };
+		4D1A31B52A96B44F00128F81 /* ProfileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B42A96B44F00128F81 /* ProfileButton.swift */; };
+		4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B62A96BBDC00128F81 /* SearchButton.swift */; };
 		4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */; };
 		4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */; };
 		4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D254F1529C0411C0033838D /* HTMLParser.swift */; };
@@ -182,6 +186,10 @@
 		00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AthleteRecruitingView.swift; sourceTree = "<group>"; };
 		4D0A01752A73781B00615326 /* AdrenalineLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineLoginView.swift; sourceTree = "<group>"; };
 		4D1177C729F88B7000850D18 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedStructure.swift; sourceTree = "<group>"; };
+		4D1A31B22A96AFA200128F81 /* FeedBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBase.swift; sourceTree = "<group>"; };
+		4D1A31B42A96B44F00128F81 /* ProfileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileButton.swift; sourceTree = "<group>"; };
+		4D1A31B62A96BBDC00128F81 /* SearchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchButton.swift; sourceTree = "<group>"; };
 		4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUIWebView.swift; sourceTree = "<group>"; };
 		4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordList.swift; sourceTree = "<group>"; };
 		4D254F1529C0411C0033838D /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
@@ -334,6 +342,16 @@
 			path = AdrenalineLogin;
 			sourceTree = "<group>";
 		};
+		4D1A31B12A96AF9300128F81 /* Feed */ = {
+			isa = PBXGroup;
+			children = (
+				4D1A31B22A96AFA200128F81 /* FeedBase.swift */,
+				4D1A31B42A96B44F00128F81 /* ProfileButton.swift */,
+				4D1A31B62A96BBDC00128F81 /* SearchButton.swift */,
+			);
+			path = Feed;
+			sourceTree = "<group>";
+		};
 		4D50E7722A24050E009BFBFA /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
@@ -413,6 +431,7 @@
 		4D74FEB229AEB47000401178 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4D1A31B12A96AF9300128F81 /* Feed */,
 				4D0A01742A7377FD00615326 /* AdrenalineLogin */,
 				4DB1DC782A67112B0016EE14 /* AdrenalineProfile */,
 				4D8B9C1229F898DD002B53AD /* Home */,
@@ -482,6 +501,7 @@
 			children = (
 				4D8B9C1829F8D395002B53AD /* Home.swift */,
 				000AAE8F2A955ADA006393B7 /* HomeFeed.swift */,
+				4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -719,6 +739,7 @@
 				4DCA5B1E2A9175EE00C2A6BB /* NewTeam+Schema.swift in Sources */,
 				4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */,
 				4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */,
+				4D1A31B32A96AFA300128F81 /* FeedBase.swift in Sources */,
 				4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
@@ -733,6 +754,7 @@
 				4DCA5B0B2A9175EE00C2A6BB /* Dive.swift in Sources */,
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
+				4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
 				0097478F2A24549A004E7C73 /* MeetPageParser.swift in Sources */,
 				4DCA5B1A2A9175EE00C2A6BB /* CoachUser.swift in Sources */,
@@ -740,6 +762,7 @@
 				0095BD2D29B1491D004D7EFD /* SearchView.swift in Sources */,
 				009F41BD2A6AD9E400348C68 /* Model.xcdatamodeld in Sources */,
 				006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */,
+				4D1A31B02A95BE8700128F81 /* FeedStructure.swift in Sources */,
 				4DCA5B142A9175EE00C2A6BB /* Dive+Schema.swift in Sources */,
 				008CB5652A61000400935537 /* NavigationViewBackButton.swift in Sources */,
 				0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */,
@@ -773,6 +796,7 @@
 				4DCA5B192A9175EE00C2A6BB /* NewTeam.swift in Sources */,
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				4DCA5B1D2A9175EE00C2A6BB /* NewUserNewFollowed.swift in Sources */,
+				4D1A31B52A96B44F00128F81 /* ProfileButton.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
 				4DCA5B202A9175EE00C2A6BB /* Video.swift in Sources */,
