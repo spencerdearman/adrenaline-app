@@ -8,15 +8,15 @@
 import Foundation
 import SwiftUI
 
-struct Meet: Hashable {
-
-    var meetName: String
-    var meetEvents: [String]
-    var meetPlaces: [Int]
-    var meetScores: [Double]
-    var events: [Meet]?
-    var isOpen: Bool = false
-}
+//struct Meet: Hashable {
+//
+//    var meetName: String
+//    var meetEvents: [String]
+//    var meetPlaces: [Int]
+//    var meetScores: [Double]
+//    var events: [Meet]?
+//    var isOpen: Bool = false
+//}
 
 struct MeetEvent: Hashable, Identifiable {
 

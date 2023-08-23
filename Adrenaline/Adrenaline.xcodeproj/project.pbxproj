@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE892A94481D006393B7 /* HideTabBarGesture.swift */; };
 		000AAE8C2A9448A8006393B7 /* HideTabBarScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */; };
+		000AAE902A955ADA006393B7 /* HomeFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE8F2A955ADA006393B7 /* HomeFeed.swift */; };
 		000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DC29E0EF9100B184E9 /* LiveResults.swift */; };
 		000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DE29E1201200B184E9 /* LiveResultsWebView.swift */; };
 		000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28E029E122B700B184E9 /* LiveResultsView.swift */; };
@@ -132,6 +133,7 @@
 /* Begin PBXFileReference section */
 		000AAE892A94481D006393B7 /* HideTabBarGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarGesture.swift; sourceTree = "<group>"; };
 		000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarScrollView.swift; sourceTree = "<group>"; };
+		000AAE8F2A955ADA006393B7 /* HomeFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeFeed.swift; sourceTree = "<group>"; };
 		000D28DC29E0EF9100B184E9 /* LiveResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResults.swift; sourceTree = "<group>"; };
 		000D28DE29E1201200B184E9 /* LiveResultsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResultsWebView.swift; sourceTree = "<group>"; };
 		000D28E029E122B700B184E9 /* LiveResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResultsView.swift; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 			isa = PBXGroup;
 			children = (
 				4D8B9C1829F8D395002B53AD /* Home.swift */,
+				000AAE8F2A955ADA006393B7 /* HomeFeed.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -698,6 +701,7 @@
 				000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
 				4DCA5B092A9175EE00C2A6BB /* NewEvent+Schema.swift in Sources */,
+				000AAE902A955ADA006393B7 /* HomeFeed.swift in Sources */,
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
 				4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */,
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
