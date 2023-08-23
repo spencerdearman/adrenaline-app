@@ -348,6 +348,7 @@
 				4D1A31B22A96AFA200128F81 /* FeedBase.swift */,
 				4D1A31B42A96B44F00128F81 /* ProfileButton.swift */,
 				4D1A31B62A96BBDC00128F81 /* SearchButton.swift */,
+				4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -501,7 +502,6 @@
 			children = (
 				4D8B9C1829F8D395002B53AD /* Home.swift */,
 				000AAE8F2A955ADA006393B7 /* HomeFeed.swift */,
-				4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
