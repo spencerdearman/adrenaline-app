@@ -72,7 +72,7 @@ struct NavigationBar: View {
     
     @ViewBuilder
     var avatar: some View {
-            AsyncImage(url: URL(string: "https://picsum.photos/200"),
+            AsyncImage(url: URL(string: "https://secure.meetcontrol.com/divemeets/system/profilephotos/56961.jpg?&x=511121484"),
                        transaction: .init(animation: .easeOut)) { phase in
                 switch phase {
                 case .empty:
@@ -93,9 +93,3 @@ struct NavigationBar: View {
             .transition(.scale.combined(with: .slide))
     }
 }
-
-//struct NavigationBar_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NavigationBar(contentHasScrolled: .constant(false))
-//    }
-//}

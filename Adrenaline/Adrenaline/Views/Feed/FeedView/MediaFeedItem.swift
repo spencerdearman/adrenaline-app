@@ -37,7 +37,8 @@ struct MediaFeedItemCollapsedView: View {
             Rectangle()
                 .fill(.ultraThinMaterial)
                 .cornerRadius(30)
-                .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15), radius: 15, x: 0, y: 30)
+                .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
+                        radius: 15, x: 0, y: 30)
                 .matchedGeometryEffect(id: "background\(id)", in: namespace)
             VStack {
                 VStack(alignment: .leading, spacing: 16) {
@@ -166,7 +167,12 @@ struct MediaFeedItemExpandedView: View {
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
             .background(
                 Rectangle()
-                    .fill(LinearGradient(gradient: Gradient(colors: [.white, Custom.lightBlue, Custom.medBlue, Custom.coolBlue, Custom.darkBlue]), startPoint: .bottom, endPoint: .top))
+                    .fill(LinearGradient(gradient: Gradient(colors: [.white,
+                                                                     Custom.lightBlue,
+                                                                     Custom.medBlue,
+                                                                     Custom.coolBlue,
+                                                                     Custom.darkBlue]),
+                                         startPoint: .bottom, endPoint: .top))
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
                     .mask(RoundedRectangle(cornerRadius: 30))
                     .offset(y: scrollY > 0 ? -scrollY : 0)

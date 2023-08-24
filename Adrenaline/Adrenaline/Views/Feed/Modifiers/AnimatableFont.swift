@@ -25,7 +25,8 @@ struct AnimatableFontModifier: AnimatableModifier {
 }
 
 extension View {
-    func animatableFont(size: Double, weight: Font.Weight = .regular, design: Font.Design = .default) -> some View {
+    func animatableFont(size: Double, weight: Font.Weight = .regular,
+                        design: Font.Design = .default) -> some View {
         self.modifier(AnimatableFontModifier(size: size, weight: weight, design: design))
     }
 }

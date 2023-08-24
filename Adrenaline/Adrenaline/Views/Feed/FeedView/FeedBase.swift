@@ -63,14 +63,17 @@ struct FeedBase: View {
                     .offset(y: -80)
                 }
             }
+            .dynamicTypeSize(.xSmall ... .xxLarge)
             .coordinateSpace(name: "scroll")
         }
         .onAppear {
             feedItems = [
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.text("Hello World"), namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)), namespace: namespace, feedModel: $feedModel)
+                MediaFeedItem(media: Media.text("Hello World"),
+                              namespace: namespace, feedModel: $feedModel),
+                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                              namespace: namespace, feedModel: $feedModel)
             ]
         }
         
@@ -83,7 +86,8 @@ struct FeedBase: View {
         }
         .overlay{
             if feedModel.showTab {
-                NavigationBar(title: "Adrenaline", contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
+                NavigationBar(title: "Adrenaline",
+                              contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
                     .frame(width: screenWidth)
             }
         }
