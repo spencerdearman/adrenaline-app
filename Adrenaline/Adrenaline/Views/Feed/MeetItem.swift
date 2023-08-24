@@ -74,17 +74,13 @@ struct MeetFeedItemExpandedView: View {
         ZStack {
             ScrollView {
                 cover
-//                sectionsSection
-//                    .opacity(appear[2] ? 1 : 0)
             }
             .coordinateSpace(name: "scroll")
             .background(Color("Background"))
             .mask(RoundedRectangle(cornerRadius: appear[0] ? 0 : 30))
             .mask(RoundedRectangle(cornerRadius: viewState.width / 3))
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))
-//            .shadow(color: Color("Shadow").opacity(0.5), radius: 30, x: 0, y: 10)
-//            .scaleEffect(-viewState.width/500 + 1)
-//            .background(Color("Shadow").opacity(viewState.width / 500))
+            .scaleEffect(-viewState.width/500 + 1)
             .background(.ultraThinMaterial)
             .gesture(isAnimated ? drag : nil)
             .ignoresSafeArea()
@@ -131,20 +127,14 @@ struct MeetFeedItemExpandedView: View {
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
             .background(
                 Rectangle()
-                    .foregroundColor(Custom.darkBlue)
-                    .padding(20)
-                    .matchedGeometryEffect(id: "image\(id)", in: namespace)
-                    .offset(y: scrollY > 0 ? -scrollY : 0)
-                    .accessibility(hidden: true)
-            )
-            .background(
-                Rectangle()
-                    .foregroundColor(Custom.coolBlue)
+                    .fill(LinearGradient(gradient: Gradient(colors: [.white, Custom.lightBlue, Custom.medBlue, Custom.coolBlue, Custom.darkBlue]), startPoint: .bottom, endPoint: .top))
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
+                    .mask(RoundedRectangle(cornerRadius: 30))
                     .offset(y: scrollY > 0 ? -scrollY : 0)
                     .scaleEffect(scrollY > 0 ? scrollY / 1000 + 1 : 1)
                     .blur(radius: scrollY > 0 ? scrollY / 10 : 0)
                     .accessibility(hidden: true)
+                    .ignoresSafeArea()
             )
             .mask(
                 RoundedRectangle(cornerRadius: appear[0] ? 0 : 30)
@@ -219,28 +209,6 @@ struct MeetFeedItemExpandedView: View {
         .frame(height: 500)
     }
     
-//    var sectionsSection: some View {
-//        VStack(spacing: 16) {
-//            ForEach(Array(courseSections.enumerated()), id: \.offset) { index, section in
-//                if index != 0 { Divider() }
-//                SectionRow(section: section)
-//                    .onTapGesture {
-//                        showSection.toggle()
-//                        selectedSection = section
-//                    }
-//                    .accessibilityElement(children: .combine)
-//            }
-//        }
-//        .padding(20)
-//        .background(.ultraThinMaterial)
-//        .backgroundStyle(cornerRadius: 30)
-//        .padding(20)
-//        .padding(.vertical, 80)
-//        .sheet(isPresented: $showSection) {
-//            SectionView(section: $selectedSection)
-//        }
-//    }
-//
     func close() {
         withAnimation {
             viewState = .zero
