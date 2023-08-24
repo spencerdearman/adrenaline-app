@@ -11,7 +11,16 @@ import AVKit
 
 
 struct FeedBase: View {
+    var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     @Environment(\.colorScheme) var currentMode
+    @State var feedModel: FeedModel = FeedModel()
+    @State var showDetail: Bool = false
+    @State var showTab: Bool = true
+    @State var showNav: Bool = true
+    @State var show = false
+    @State var showStatusBar = true
+    @State var showCourse = false
+    @State var contentHasScrolled = false
     @State private var feedItems: [FeedItem] = []
     @State private var tabBarState: Visibility = .visible
     private let screenWidth = UIScreen.main.bounds.width
@@ -19,60 +28,103 @@ struct FeedBase: View {
     @Namespace var namespace
     var body: some View {
         ZStack {
+            Custom.darkGray.ignoresSafeArea()
             Image(currentMode == .light ? "FeedBackgroundLight" : "FeedBackgroundDark")
                 .offset(x: screenWidth * 0.27, y: -screenHeight * 0.02)
-                .opacity(0.9)
-                .scaleEffect(1.1)
             
-            // Top Menu Bar
-            // Will become .overlay later
-            HStack {
-                // Adrenaline Title
-                Text("Adrenaline")
-                    .font(.largeTitle)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.black)
-                Spacer()
-                SearchButton()
-                ProfileButton(imageName: "Spencer")
+            if showDetail {
+                detail
             }
-            .frame(width: screenWidth * 0.87)
-            .offset(y: -screenHeight * 0.4)
             
-            
-            HideTabBarScrollView(tabBarState: $tabBarState) {
-                VStack(spacing: -18) {
-                    ForEach($feedItems) { item in
-                        Group {
-                            if item.isExpanded.wrappedValue {
-                                AnyView(item.expandedView.wrappedValue)
-                            } else {
-                                AnyView(item.collapsedView.wrappedValue)
-                            }
-                        }
-                        .onTapGesture {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
-                                item.isExpanded.wrappedValue.toggle()
-                            }
+            ScrollView {
+                // Detects Movement of Page
+                scrollDetection
+                
+                Rectangle()
+                    .frame(width: 100, height: 150)
+                    .opacity(0)
+                
+                if showDetail {
+                    LazyVGrid(columns: columns, spacing: 20) {
+                        ForEach($feedItems) { _ in
+                            Rectangle()
+                                .fill(.white)
+                                .cornerRadius(30)
+                                .shadow(radius: 20)
+                                .opacity(0.3)
                         }
                     }
+                    .padding(.horizontal, 20)
+                    .offset(y: -80)
+                } else {
+                    LazyVGrid(columns: columns, spacing: 20) {
+                        item
+                    }
+                    .padding(.horizontal, 20)
+                    .offset(y: -80)
                 }
             }
-            .offset(y: screenHeight * 0.09)
-            .onAppear {
-                feedItems = [
-                    MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
-                                 namespace: namespace),
-                    MediaFeedItem(media: Media.text("Hello World"), namespace: namespace),
-                    MediaFeedItem(media: Media.video(VideoPlayer(player: nil)), namespace: namespace)
-                ]
+        }
+        .coordinateSpace(name: "scroll")
+        .onAppear {
+            feedItems = [
+                MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
+                             namespace: namespace, feedModel: $feedModel),
+                MediaFeedItem(media: Media.text("Hello World"), namespace: namespace),
+                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)), namespace: namespace)
+            ]
+        }
+        .onChange(of: showDetail) { value in
+            withAnimation {
+                showTab.toggle()
+                showNav.toggle()
+                showStatusBar.toggle()
             }
-//            Rectangle()
-//            .foregroundColor(.clear)
-//            .frame(width: 350, height: 450)
-//            .background(.white.opacity(0.9))
-//            .cornerRadius(30)
-//            .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15), radius: 15, x: 0, y: 30)
+        }
+        .overlay{
+            NavigationBar(title: "Adrenaline", contentHasScrolled: $contentHasScrolled)
+                .frame(width: screenWidth)
+        }
+    }
+    
+    var item: some View {
+        ForEach($feedItems) { item in
+                AnyView(item.collapsedView.wrappedValue)
+        }
+    }
+    
+    var detail: some View {
+        ForEach($feedItems) { item in
+            if item.id == feedModel.selectedItem {
+                AnyView(item.expandedView.wrappedValue)
+                    .onAppear{
+                        print(item.id)
+                    }
+            }
+        }
+    }
+    
+    // Credit Meng To
+    struct ScrollPreferenceKey: PreferenceKey {
+        static var defaultValue: CGFloat = 0
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = nextValue()
+        }
+    }
+    
+    var scrollDetection: some View {
+        GeometryReader { proxy in
+            let offset = proxy.frame(in: .named("scroll")).minY
+            Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
+        }
+        .onPreferenceChange(ScrollPreferenceKey.self) { value in
+            withAnimation(.easeInOut) {
+                if value < 0 {
+                    contentHasScrolled = true
+                } else {
+                    contentHasScrolled = false
+                }
+            }
         }
     }
 }
