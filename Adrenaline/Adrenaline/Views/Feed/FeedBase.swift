@@ -32,7 +32,7 @@ struct FeedBase: View {
             Image(currentMode == .light ? "FeedBackgroundLight" : "FeedBackgroundDark")
                 .offset(x: screenWidth * 0.27, y: -screenHeight * 0.02)
             
-            if showDetail {
+            if feedModel.showTile {
                 detail
             }
             
@@ -64,8 +64,8 @@ struct FeedBase: View {
                     .offset(y: -80)
                 }
             }
+            .coordinateSpace(name: "scroll")
         }
-        .coordinateSpace(name: "scroll")
         .onAppear {
             feedItems = [
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
@@ -74,17 +74,21 @@ struct FeedBase: View {
                 MediaFeedItem(media: Media.video(VideoPlayer(player: nil)), namespace: namespace)
             ]
         }
-        .onChange(of: showDetail) { value in
+        
+        .onChange(of: feedModel.showTile) { value in
             withAnimation {
-                showTab.toggle()
+                feedModel.showTab.toggle()
                 showNav.toggle()
                 showStatusBar.toggle()
             }
         }
         .overlay{
-            NavigationBar(title: "Adrenaline", contentHasScrolled: $contentHasScrolled)
-                .frame(width: screenWidth)
+            if feedModel.showTab {
+                NavigationBar(title: "Adrenaline", contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
+                    .frame(width: screenWidth)
+            }
         }
+        .statusBar(hidden: !showStatusBar)
     }
     
     var item: some View {
@@ -97,18 +101,7 @@ struct FeedBase: View {
         ForEach($feedItems) { item in
             if item.id == feedModel.selectedItem {
                 AnyView(item.expandedView.wrappedValue)
-                    .onAppear{
-                        print(item.id)
-                    }
             }
-        }
-    }
-    
-    // Credit Meng To
-    struct ScrollPreferenceKey: PreferenceKey {
-        static var defaultValue: CGFloat = 0
-        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-            value = nextValue()
         }
     }
     

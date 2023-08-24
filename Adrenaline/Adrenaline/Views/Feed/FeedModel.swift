@@ -16,7 +16,7 @@ struct FeedModel {
     var showNav: Bool = true
     
     // Detail View
-    var showDetail: Bool = false
+    var showTile: Bool = false
     var selectedItem: String = ""
 }
 

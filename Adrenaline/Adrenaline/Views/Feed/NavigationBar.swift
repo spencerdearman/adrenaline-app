@@ -12,7 +12,7 @@ struct NavigationBar: View {
     @State var showSheet = false
     @Binding var contentHasScrolled: Bool
     
-    @State var feedModel = FeedModel()
+    @Binding var feedModel : FeedModel
     @State var showAccount = true
     @State var isLogged = true
     
@@ -94,8 +94,8 @@ struct NavigationBar: View {
     }
 }
 
-struct NavigationBar_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationBar(contentHasScrolled: .constant(false))
-    }
-}
+//struct NavigationBar_Previews: PreviewProvider {
+//    static var previews: some View {
+//        NavigationBar(contentHasScrolled: .constant(false))
+//    }
+//}

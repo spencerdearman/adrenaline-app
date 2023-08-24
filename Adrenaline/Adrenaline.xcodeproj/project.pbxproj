@@ -59,7 +59,7 @@
 		4D0A01762A73781B00615326 /* AdrenalineLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D0A01752A73781B00615326 /* AdrenalineLoginView.swift */; };
 		4D1A31B02A95BE8700128F81 /* FeedStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */; };
 		4D1A31B32A96AFA300128F81 /* FeedBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B22A96AFA200128F81 /* FeedBase.swift */; };
-		4D1A31B52A96B44F00128F81 /* ProfileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B42A96B44F00128F81 /* ProfileButton.swift */; };
+		4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B42A96B44F00128F81 /* LogoView.swift */; };
 		4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B62A96BBDC00128F81 /* SearchButton.swift */; };
 		4D1A31B92A96DA1C00128F81 /* FeedModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B82A96DA1C00128F81 /* FeedModel.swift */; };
 		4D1A31BD2A96DC6400128F81 /* AnimatableFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31BC2A96DC6400128F81 /* AnimatableFont.swift */; };
@@ -67,6 +67,7 @@
 		4D1A31C12A96EBD800128F81 /* Modifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31C02A96EBD800128F81 /* Modifiers.swift */; };
 		4D1A31C32A97006500128F81 /* MeetItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31C22A97006500128F81 /* MeetItem.swift */; };
 		4D1A31C52A97087500128F81 /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31C42A97087500128F81 /* CloseButton.swift */; };
+		4D1A31C72A970AA100128F81 /* FeedScrollSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31C62A970AA100128F81 /* FeedScrollSettings.swift */; };
 		4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */; };
 		4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */; };
 		4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D254F1529C0411C0033838D /* HTMLParser.swift */; };
@@ -194,7 +195,7 @@
 		4D1177C729F88B7000850D18 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedStructure.swift; sourceTree = "<group>"; };
 		4D1A31B22A96AFA200128F81 /* FeedBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBase.swift; sourceTree = "<group>"; };
-		4D1A31B42A96B44F00128F81 /* ProfileButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileButton.swift; sourceTree = "<group>"; };
+		4D1A31B42A96B44F00128F81 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
 		4D1A31B62A96BBDC00128F81 /* SearchButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchButton.swift; sourceTree = "<group>"; };
 		4D1A31B82A96DA1C00128F81 /* FeedModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedModel.swift; sourceTree = "<group>"; };
 		4D1A31BC2A96DC6400128F81 /* AnimatableFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatableFont.swift; sourceTree = "<group>"; };
@@ -202,6 +203,7 @@
 		4D1A31C02A96EBD800128F81 /* Modifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Modifiers.swift; sourceTree = "<group>"; };
 		4D1A31C22A97006500128F81 /* MeetItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetItem.swift; sourceTree = "<group>"; };
 		4D1A31C42A97087500128F81 /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
+		4D1A31C62A970AA100128F81 /* FeedScrollSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedScrollSettings.swift; sourceTree = "<group>"; };
 		4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUIWebView.swift; sourceTree = "<group>"; };
 		4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordList.swift; sourceTree = "<group>"; };
 		4D254F1529C0411C0033838D /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
@@ -358,7 +360,7 @@
 			isa = PBXGroup;
 			children = (
 				4D1A31B22A96AFA200128F81 /* FeedBase.swift */,
-				4D1A31B42A96B44F00128F81 /* ProfileButton.swift */,
+				4D1A31B42A96B44F00128F81 /* LogoView.swift */,
 				4D1A31B62A96BBDC00128F81 /* SearchButton.swift */,
 				4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */,
 				4D1A31B82A96DA1C00128F81 /* FeedModel.swift */,
@@ -367,6 +369,7 @@
 				4D1A31C02A96EBD800128F81 /* Modifiers.swift */,
 				4D1A31C22A97006500128F81 /* MeetItem.swift */,
 				4D1A31C42A97087500128F81 /* CloseButton.swift */,
+				4D1A31C62A970AA100128F81 /* FeedScrollSettings.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -743,6 +746,7 @@
 				4DCA5B092A9175EE00C2A6BB /* NewEvent+Schema.swift in Sources */,
 				000AAE902A955ADA006393B7 /* HomeFeed.swift in Sources */,
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
+				4D1A31C72A970AA100128F81 /* FeedScrollSettings.swift in Sources */,
 				4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */,
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
 				00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */,
@@ -820,7 +824,7 @@
 				4DCA5B192A9175EE00C2A6BB /* NewTeam.swift in Sources */,
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				4DCA5B1D2A9175EE00C2A6BB /* NewUserNewFollowed.swift in Sources */,
-				4D1A31B52A96B44F00128F81 /* ProfileButton.swift in Sources */,
+				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
 				4DCA5B202A9175EE00C2A6BB /* Video.swift in Sources */,
