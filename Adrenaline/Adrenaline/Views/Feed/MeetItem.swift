@@ -26,6 +26,7 @@ struct MeetFeedItemCollapsedView: View {
     var id: String
     var namespace: Namespace.ID
     var meet: MeetEvent
+    @State var appear = [false, false, false]
     @Binding var feedModel: FeedModel
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -34,14 +35,44 @@ struct MeetFeedItemCollapsedView: View {
     var body: some View {
         ZStack {
             Rectangle()
-                .foregroundColor(.white.opacity(0.95))
+                .fill(.ultraThinMaterial)
                 .cornerRadius(30)
                 .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15), radius: 15, x: 0, y: 30)
-                .matchedGeometryEffect(id: "background" + id, in: namespace)
+                .matchedGeometryEffect(id: "background\(id)", in: namespace)
             VStack {
-                Text(meet.name)
-                    .font(.title).fontWeight(.bold)
-                    .matchedGeometryEffect(id: "title" + id, in: namespace)
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(meet.name)
+                        .font(.title).bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary)
+                        .matchedGeometryEffect(id: "title\(id)", in: namespace)
+                    
+                    Text("Meet Location - Date Range".uppercased())
+                        .font(.footnote).bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
+                    
+                    Text("Basic Results are going to go here or something to lure the person in")
+                        .font(.footnote)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
+                    
+                    Divider()
+                        .foregroundColor(.secondary)
+                    
+                    HStack {
+                        LogoView(imageName: "Spencer")
+                            .shadow(radius: 10)
+                        Text("You attended, check your results now")
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+                .padding(20)
+                .padding(.vertical, 10)
             }
         }
         .onTapGesture {
@@ -112,7 +143,7 @@ struct MeetFeedItemExpandedView: View {
             fadeIn()
         }
         .onChange(of: feedModel.showTile) { show in
-           fadeOut()
+            fadeOut()
         }
     }
     
@@ -142,68 +173,59 @@ struct MeetFeedItemExpandedView: View {
                     .offset(y: scrollY > 0 ? -scrollY : 0)
             )
             .overlay(
-                Image(horizontalSizeClass == .compact ? "Waves 1" : "Waves 2")
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .offset(y: scrollY > 0 ? -scrollY : 0)
-                    .scaleEffect(scrollY > 0 ? scrollY / 500 + 1 : 1)
-                    .opacity(1)
-                    .matchedGeometryEffect(id: "waves\(id)", in: namespace)
-                    .accessibility(hidden: true)
-            )
-            .overlay(
                 VStack(alignment: .leading, spacing: 16) {
                     Text(meet.name)
                         .font(.title).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary)
                         .matchedGeometryEffect(id: "title\(id)", in: namespace)
-
-                    Text("8 videos - 12 hours".uppercased())
+                    
+                    Text("Meet Location - Date Range".uppercased())
                         .font(.footnote).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-
-                    Text("A complete guide to designing for iOS 14 with videos, examples and design...")
+                    
+                    Text("Basic Results are going to go here or something to lure the person in")
                         .font(.footnote)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "description\(id)", in: namespace)
-
+                    
                     Divider()
                         .foregroundColor(.secondary)
                         .opacity(appear[1] ? 1 : 0)
-
+                    
                     HStack {
                         LogoView(imageName: "Spencer")
-                        Text("Taught by Meng To and Stephanie Diep")
+                        Text("You attended, check your results now")
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
                     .opacity(appear[1] ? 1 : 0)
                     .accessibilityElement(children: .combine)
                 }
-                .padding(20)
-                .padding(.vertical, 10)
-                .background(
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .cornerRadius(30)
-                        .blur(radius: 30)
-                        .matchedGeometryEffect(id: "blur\(id)", in: namespace)
-                        .opacity(appear[0] ? 0 : 1)
-                )
-                .background(
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .backgroundStyle(cornerRadius: 30)
-                        .opacity(appear[0] ? 1 : 0)
-                )
-                .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
-                .frame(maxHeight: .infinity, alignment: .bottom)
-                .offset(y: 100)
-                .padding(20)
+                    .padding(20)
+                    .padding(.vertical, 10)
+                    .background(
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .frame(maxHeight: .infinity, alignment: .bottom)
+                            .cornerRadius(30)
+                            .blur(radius: 30)
+                            .matchedGeometryEffect(id: "blur\(id)", in: namespace)
+                            .opacity(appear[0] ? 0 : 1)
+                    )
+                    .background(
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .backgroundStyle(cornerRadius: 30)
+                            .opacity(appear[0] ? 1 : 0)
+                    )
+                    .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .offset(y: 100)
+                    .padding(20)
             )
         }
         .frame(height: 500)

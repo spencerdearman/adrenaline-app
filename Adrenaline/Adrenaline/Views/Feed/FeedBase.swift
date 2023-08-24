@@ -58,7 +58,7 @@ struct FeedBase: View {
                     .offset(y: -80)
                 } else {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        item
+                        item.frame(height: 200)
                     }
                     .padding(.horizontal, 20)
                     .offset(y: -80)
@@ -114,8 +114,10 @@ struct FeedBase: View {
             withAnimation(.easeInOut) {
                 if value < 0 {
                     contentHasScrolled = true
+                    tabBarState = .hidden
                 } else {
                     contentHasScrolled = false
+                    tabBarState = .visible
                 }
             }
         }
