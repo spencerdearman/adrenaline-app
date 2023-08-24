@@ -1,31 +1,31 @@
 //
-//  MeetItem.swift
+//  MediaFeedItem.swift
 //  Adrenaline
 //
-//  Created by Spencer Dearman on 8/23/23.
+//  Created by Spencer Dearman on 8/24/23.
 //
 
 import SwiftUI
 import UIKit
 import AVKit
 
-class MeetFeedItem: FeedItem {
-    var meet: MeetEvent
+class MediaFeedItem: FeedItem {
+    var media: Media
     
-    init(meet: MeetEvent, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
-        self.meet = meet
+    init(media: Media, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
+        self.media = media
         super.init()
-        self.collapsedView = MeetFeedItemCollapsedView(id: self.id, namespace: namespace,
-                                                       meet: self.meet, feedModel: feedModel)
-        self.expandedView = MeetFeedItemExpandedView(id: self.id, namespace: namespace,
-                                                     meet: self.meet, feedModel: feedModel)
+        self.collapsedView = MediaFeedItemCollapsedView(id: self.id, namespace: namespace,
+                                                        media: media, feedModel: feedModel)
+        self.expandedView = MediaFeedItemExpandedView(id: self.id, namespace: namespace,
+                                                       media: media, feedModel: feedModel)
     }
 }
 
-struct MeetFeedItemCollapsedView: View {
+struct MediaFeedItemCollapsedView: View {
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var media: Media
     @State var appear = [false, false, false]
     @Binding var feedModel: FeedModel
     
@@ -41,7 +41,19 @@ struct MeetFeedItemCollapsedView: View {
                 .matchedGeometryEffect(id: "background\(id)", in: namespace)
             VStack {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(meet.name)
+                    HStack {
+                        LogoView(imageName: "Spencer")
+                            .shadow(radius: 10)
+                        Text("Spencer Dearman Uploaded a Video")
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    .accessibilityElement(children: .combine)
+                    
+                    Divider()
+                        .foregroundColor(.secondary)
+                    
+                    Text("VIDEO NAME")
                         .font(.title).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary)
@@ -53,23 +65,11 @@ struct MeetFeedItemCollapsedView: View {
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
                     
-                    Text("Basic Results are going to go here or something to lure the person in")
+                    Text("Comments/Caption for the Video")
                         .font(.footnote)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "description\(id)", in: namespace)
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                    
-                    HStack {
-                        LogoView(imageName: "Spencer")
-                            .shadow(radius: 10)
-                        Text("You attended, check your results now")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
-                    .accessibilityElement(children: .combine)
                 }
                 .padding(20)
                 .padding(.vertical, 10)
@@ -87,12 +87,12 @@ struct MeetFeedItemCollapsedView: View {
     }
 }
 
-struct MeetFeedItemExpandedView: View {
+struct MediaFeedItemExpandedView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var media: Media
     var isAnimated = true
     @State var viewState: CGSize = .zero
     @State var showSection = false
@@ -100,6 +100,14 @@ struct MeetFeedItemExpandedView: View {
     @Binding var feedModel: FeedModel
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    private var isVideo: Bool {
+        if case .video(_) = media {
+            return true
+        } else {
+            return false
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -174,7 +182,15 @@ struct MeetFeedItemExpandedView: View {
             )
             .overlay(
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(meet.name)
+                    if case .video(let videoPlayer) = media {
+                        videoPlayer
+                            .padding()
+                            .matchedGeometryEffect(id: "body" + id, in: namespace)
+                    } else if case .text(let string) = media {
+                        Text(string)
+                            .matchedGeometryEffect(id: "body" + id, in: namespace)
+                    }
+                    Text("VIDEO NAME")
                         .font(.title).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary)
@@ -186,7 +202,7 @@ struct MeetFeedItemExpandedView: View {
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
                     
-                    Text("Basic Results are going to go here or something to lure the person in")
+                    Text("Comments/Caption for the Video")
                         .font(.footnote)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
@@ -197,8 +213,9 @@ struct MeetFeedItemExpandedView: View {
                         .opacity(appear[1] ? 1 : 0)
                     
                     HStack {
-                        LogoView(imageName: "Spencer")
-                        Text("You attended, check your results now")
+                        LogoView(imageName: "Beck")
+                        LogoView(imageName: "Jeff")
+                        Text("Viewed (Or Shared) with Beck and Jeff...")
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(.secondary)
                     }

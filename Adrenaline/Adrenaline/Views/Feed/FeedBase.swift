@@ -28,7 +28,7 @@ struct FeedBase: View {
     @Namespace var namespace
     var body: some View {
         ZStack {
-            Custom.darkGray.ignoresSafeArea()
+            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
             Image(currentMode == .light ? "FeedBackgroundLight" : "FeedBackgroundDark")
                 .offset(x: screenWidth * 0.27, y: -screenHeight * 0.02)
             
@@ -37,7 +37,6 @@ struct FeedBase: View {
             }
             
             ScrollView {
-                // Detects Movement of Page
                 scrollDetection
                 
                 Rectangle()
@@ -58,7 +57,7 @@ struct FeedBase: View {
                     .offset(y: -80)
                 } else {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        item.frame(height: 200)
+                        item.frame(height: 220)
                     }
                     .padding(.horizontal, 20)
                     .offset(y: -80)
@@ -70,8 +69,8 @@ struct FeedBase: View {
             feedItems = [
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.text("Hello World"), namespace: namespace),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)), namespace: namespace)
+                MediaFeedItem(media: Media.text("Hello World"), namespace: namespace, feedModel: $feedModel),
+                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)), namespace: namespace, feedModel: $feedModel)
             ]
         }
         
