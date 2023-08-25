@@ -26,6 +26,7 @@ class ImageFeedItem: FeedItem {
 
 
 struct ImageFeedItemCollapsedView: View {
+    @Environment(\.colorScheme) var currentMode
     var id: String
     var namespace: Namespace.ID
     var image: Image
@@ -88,12 +89,12 @@ struct ImageFeedItemCollapsedView: View {
             }
         }
         .frame(width: screenWidth * 0.9, height: screenHeight * 0.6)
-        .padding()
-        .fixedSize(horizontal: true, vertical: false)
+        .fixedSize(horizontal: true, vertical: true)
     }
 }
 
 struct ImageFeedItemExpandedView: View {
+    @Environment(\.colorScheme) var currentMode
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
     var id: String
@@ -113,7 +114,7 @@ struct ImageFeedItemExpandedView: View {
                 cover
             }
             .coordinateSpace(name: "scroll")
-            .background(Color("Background"))
+            .background(currentMode == .light ? Color.white : Color.black)
             .mask(RoundedRectangle(cornerRadius: appear[0] ? 0 : 30))
             .mask(RoundedRectangle(cornerRadius: viewState.width / 3))
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))

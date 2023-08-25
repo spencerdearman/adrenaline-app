@@ -83,13 +83,13 @@ struct OutlineOverlay: ViewModifier {
 
 struct BackgroundColor: ViewModifier {
     var opacity: Double = 0.6
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) var currentMode
     
     func body(content: Content) -> some View {
         content
             .overlay(
-                Color("Background")
-                    .opacity(colorScheme == .dark ? opacity : 0)
+                (currentMode == .light ? Color.white : Color.black)
+                    .opacity(currentMode == .dark ? opacity : 0)
                     .blendMode(.overlay)
                     .allowsHitTesting(false)
             )

@@ -23,6 +23,7 @@ class MediaFeedItem: FeedItem {
 }
 
 struct MediaFeedItemCollapsedView: View {
+    @Environment(\.colorScheme) var currentMode
     var id: String
     var namespace: Namespace.ID
     var media: Media
@@ -82,13 +83,13 @@ struct MediaFeedItemCollapsedView: View {
                 feedModel.selectedItem = id
             }
         }
-        .frame(width: screenWidth * 0.9, height: screenWidth * 0.25)
-        .padding()
-        .fixedSize(horizontal: true, vertical: false)
+        .frame(width: screenWidth * 0.9, height: screenHeight * 0.6)
+        .fixedSize(horizontal: true, vertical: true)
     }
 }
 
 struct MediaFeedItemExpandedView: View {
+    @Environment(\.colorScheme) var currentMode
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
     var id: String
@@ -116,7 +117,7 @@ struct MediaFeedItemExpandedView: View {
                 cover
             }
             .coordinateSpace(name: "scroll")
-            .background(Color("Background"))
+            .background(currentMode == .light ? Color.white : Color.black)
             .mask(RoundedRectangle(cornerRadius: appear[0] ? 0 : 30))
             .mask(RoundedRectangle(cornerRadius: viewState.width / 3))
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))
