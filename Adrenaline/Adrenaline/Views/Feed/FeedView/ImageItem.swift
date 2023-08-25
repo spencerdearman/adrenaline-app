@@ -45,35 +45,37 @@ struct ImageFeedItemCollapsedView: View {
                 .matchedGeometryEffect(id: "background\(id)", in: namespace)
             VStack {
                 VStack(alignment: .center, spacing: 16) {
+                    
+                    HStack {
+                        LogoView(imageName: "Spencer")
+                            .shadow(radius: 10)
+                        Text("username...")
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityElement(children: .combine)
+                    
+                    Divider()
+                        .foregroundColor(.secondary)
+                    
                     image
                         .resizable()
                         .scaledToFit()
                         .foregroundColor(.primary)
                         .matchedGeometryEffect(id: "image\(id)", in: namespace)
                     
-                    Text("Meet Location - Date Range".uppercased())
+                    Text("Location / Competition".uppercased())
                         .font(.footnote).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
                     
-                    Text("Basic Results are going to go here or something to lure the person in")
+                    Text("Caption, could be something about the image, could be about recruiting, etc.")
                         .font(.footnote)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "description\(id)", in: namespace)
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                    
-                    HStack {
-                        LogoView(imageName: "Spencer")
-                            .shadow(radius: 10)
-                        Text("You attended, check your results now")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
-                    .accessibilityElement(children: .combine)
                 }
                 .padding(20)
                 .padding(.vertical, 10)
@@ -179,22 +181,6 @@ struct ImageFeedItemExpandedView: View {
             )
             .overlay(
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Meet Location - Date Range".uppercased())
-                        .font(.footnote).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-                    
-                    Text("Basic Results are going to go here or something to lure the person in")
-                        .font(.footnote)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                        .opacity(appear[1] ? 1 : 0)
-                    
                     HStack {
                         LogoView(imageName: "Spencer")
                         Text("You attended, check your results now")
@@ -203,6 +189,22 @@ struct ImageFeedItemExpandedView: View {
                     }
                     .opacity(appear[1] ? 1 : 0)
                     .accessibilityElement(children: .combine)
+                    
+                    Divider()
+                        .foregroundColor(.secondary)
+                        .opacity(appear[1] ? 1 : 0)
+                    
+                    Text("Location / Competition".uppercased())
+                        .font(.footnote).bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
+                    
+                    Text("Caption, could be something about the image, could be about recruiting, etc.")
+                        .font(.footnote)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
                 }
                     .padding(20)
                     .padding(.vertical, 10)

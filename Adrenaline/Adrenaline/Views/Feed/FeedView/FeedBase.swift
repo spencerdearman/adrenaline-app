@@ -40,7 +40,7 @@ struct FeedBase: View {
                 scrollDetection
                 
                 Rectangle()
-                    .frame(width: 100, height: 150)
+                    .frame(width: 100, height: 200)
                     .opacity(0)
                 
                 if showDetail {
@@ -54,10 +54,10 @@ struct FeedBase: View {
                         }
                     }
                     .padding(.horizontal, 20)
-                    .offset(y: -80)
+                    .offset(y: -100)
                 } else {
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        item.frame(height: 220)
+                    LazyVGrid(columns: columns, spacing: 40) {
+                        item
                     }
                     .padding(.horizontal, 20)
                     .offset(y: -80)
@@ -72,9 +72,9 @@ struct FeedBase: View {
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Spencer"), namespace: namespace, feedModel: $feedModel),
                 MediaFeedItem(media: Media.text("Hello World"),
-                              namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
                               namespace: namespace, feedModel: $feedModel)
+//                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+//                              namespace: namespace, feedModel: $feedModel)
             ]
         }
         
