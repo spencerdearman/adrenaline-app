@@ -70,6 +70,7 @@ struct FeedBase: View {
             feedItems = [
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
+                ImageFeedItem(image: Image("Spencer"), namespace: namespace, feedModel: $feedModel),
                 MediaFeedItem(media: Media.text("Hello World"),
                               namespace: namespace, feedModel: $feedModel),
                 MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),

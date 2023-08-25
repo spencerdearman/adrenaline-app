@@ -42,7 +42,6 @@ struct NewSearchView: View {
                 if results.count != 0 {
                     Divider()
                 }
-//                if index != 0 { Divider() }
                 Button {
                     showItem = true
                     selectedItem = item

@@ -1,31 +1,34 @@
 //
-//  MeetItem.swift
+//  ImageItem.swift
 //  Adrenaline
 //
-//  Created by Spencer Dearman on 8/23/23.
+//  Created by Spencer Dearman on 8/25/23.
 //
+
+import SwiftUI
 
 import SwiftUI
 import UIKit
 import AVKit
 
-class MeetFeedItem: FeedItem {
-    var meet: MeetEvent
+class ImageFeedItem: FeedItem {
+    var image: Image
     
-    init(meet: MeetEvent, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
-        self.meet = meet
+    init(image: Image, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
+        self.image = image
         super.init()
-        self.collapsedView = MeetFeedItemCollapsedView(id: self.id, namespace: namespace,
-                                                       meet: self.meet, feedModel: feedModel)
-        self.expandedView = MeetFeedItemExpandedView(id: self.id, namespace: namespace,
-                                                     meet: self.meet, feedModel: feedModel)
+        self.collapsedView = ImageFeedItemCollapsedView(id: self.id, namespace: namespace,
+                                                       image: self.image, feedModel: feedModel)
+        self.expandedView = ImageFeedItemExpandedView(id: self.id, namespace: namespace,
+                                                     image: self.image, feedModel: feedModel)
     }
 }
 
-struct MeetFeedItemCollapsedView: View {
+
+struct ImageFeedItemCollapsedView: View {
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var image: Image
     @State var appear = [false, false, false]
     @Binding var feedModel: FeedModel
     
@@ -41,12 +44,12 @@ struct MeetFeedItemCollapsedView: View {
                         radius: 15, x: 0, y: 30)
                 .matchedGeometryEffect(id: "background\(id)", in: namespace)
             VStack {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(meet.name)
-                        .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .center, spacing: 16) {
+                    image
+                        .resizable()
+                        .scaledToFit()
                         .foregroundColor(.primary)
-                        .matchedGeometryEffect(id: "title\(id)", in: namespace)
+                        .matchedGeometryEffect(id: "image\(id)", in: namespace)
                     
                     Text("Meet Location - Date Range".uppercased())
                         .font(.footnote).bold()
@@ -82,18 +85,18 @@ struct MeetFeedItemCollapsedView: View {
                 feedModel.selectedItem = id
             }
         }
-        .frame(width: screenWidth * 0.9, height: screenWidth * 0.25)
+        .frame(width: screenWidth * 0.9, height: screenHeight * 0.6)
         .padding()
         .fixedSize(horizontal: true, vertical: false)
     }
 }
 
-struct MeetFeedItemExpandedView: View {
+struct ImageFeedItemExpandedView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var image: Image
     var isAnimated = true
     @State var viewState: CGSize = .zero
     @State var showSection = false
@@ -151,23 +154,20 @@ struct MeetFeedItemExpandedView: View {
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
             .background(
-                ZStack {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .frame(width: screenWidth * 0.5, height: screenWidth * 0.5)
-                        .shadow(radius: 10)
-                    Image("PlatformImage")
-                        .frame(width: screenWidth * 0.3, height: screenWidth * 0.3)
-                        .scaleEffect(0.2)
-                }
-                    .offset(y: scrollY > 0 ? -scrollY - 45 : -45)
-            )
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.primary)
+                    .matchedGeometryEffect(id: "image\(id)", in: namespace)
+                    .padding(screenWidth * 0.1)
+                )
             .background(
-                Image("WaveBackground")
+                Rectangle()
+                    .fill(.thinMaterial)
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
                     .mask(RoundedRectangle(cornerRadius: 30))
                     .offset(y: scrollY > 0 ? -scrollY : 0)
-                    .scaleEffect(scrollY > 0 ? scrollY / 1000 + 1.2 : 1.2)
+                    .scaleEffect(scrollY > 0 ? scrollY / 1000 + 1 : 1)
                     .blur(radius: scrollY > 0 ? scrollY / 10 : 0)
                     .accessibility(hidden: true)
                     .ignoresSafeArea()
@@ -179,12 +179,6 @@ struct MeetFeedItemExpandedView: View {
             )
             .overlay(
                 VStack(alignment: .leading, spacing: 16) {
-                    Text(meet.name)
-                        .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary)
-                        .matchedGeometryEffect(id: "title\(id)", in: namespace)
-                    
                     Text("Meet Location - Date Range".uppercased())
                         .font(.footnote).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -229,11 +223,11 @@ struct MeetFeedItemExpandedView: View {
                     )
                     .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
                     .frame(maxHeight: .infinity, alignment: .bottom)
-                    .offset(y: 100)
+                    .offset(y: screenHeight * 0.28)
                     .padding(20)
             )
         }
-        .frame(height: 500)
+        .frame(height: screenHeight)
     }
     
     func close() {
