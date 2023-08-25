@@ -70,6 +70,7 @@
 		4D1A31C92A971D3F00128F81 /* EventSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31C82A971D3F00128F81 /* EventSectionView.swift */; };
 		4D1A31CB2A971E4500128F81 /* VideoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31CA2A971E4500128F81 /* VideoButton.swift */; };
 		4D1A31CD2A971FEA00128F81 /* MediaFeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31CC2A971FEA00128F81 /* MediaFeedItem.swift */; };
+		4D1A31D32A9857FA00128F81 /* NewSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31D22A9857FA00128F81 /* NewSearch.swift */; };
 		4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */; };
 		4D1A5C3929CCA1B400F3DA2B /* RecordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */; };
 		4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D254F1529C0411C0033838D /* HTMLParser.swift */; };
@@ -208,6 +209,7 @@
 		4D1A31C82A971D3F00128F81 /* EventSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSectionView.swift; sourceTree = "<group>"; };
 		4D1A31CA2A971E4500128F81 /* VideoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoButton.swift; sourceTree = "<group>"; };
 		4D1A31CC2A971FEA00128F81 /* MediaFeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaFeedItem.swift; sourceTree = "<group>"; };
+		4D1A31D22A9857FA00128F81 /* NewSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSearch.swift; sourceTree = "<group>"; };
 		4D1A5C3629CB953300F3DA2B /* SwiftUIWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftUIWebView.swift; sourceTree = "<group>"; };
 		4D1A5C3829CCA1B400F3DA2B /* RecordList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordList.swift; sourceTree = "<group>"; };
 		4D254F1529C0411C0033838D /* HTMLParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLParser.swift; sourceTree = "<group>"; };
@@ -367,6 +369,7 @@
 				4D1A31CF2A97259300128F81 /* FeedModels */,
 				4D1A31D12A9725D400128F81 /* FeedView */,
 				4D1A31D02A9725BD00128F81 /* Modifiers */,
+				4D1A31D22A9857FA00128F81 /* NewSearch.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -798,6 +801,7 @@
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
+				4D1A31D32A9857FA00128F81 /* NewSearch.swift in Sources */,
 				4DCA5B1E2A9175EE00C2A6BB /* NewTeam+Schema.swift in Sources */,
 				4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */,
 				4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */,

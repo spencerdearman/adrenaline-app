@@ -47,7 +47,7 @@ struct NavigationBar: View {
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 .sheet(isPresented: $showSheet) {
-                    SearchView()
+                    NewSearchView()
                 }
                 
                 Button {

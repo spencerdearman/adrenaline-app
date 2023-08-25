@@ -166,13 +166,7 @@ struct MediaFeedItemExpandedView: View {
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
             .background(
-                Rectangle()
-                    .fill(LinearGradient(gradient: Gradient(colors: [.white,
-                                                                     Custom.lightBlue,
-                                                                     Custom.medBlue,
-                                                                     Custom.coolBlue,
-                                                                     Custom.darkBlue]),
-                                         startPoint: .bottom, endPoint: .top))
+                Image("VideoBackground")
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
                     .mask(RoundedRectangle(cornerRadius: 30))
                     .offset(y: scrollY > 0 ? -scrollY : 0)

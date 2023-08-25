@@ -158,17 +158,23 @@ struct MeetFeedItemExpandedView: View {
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
             .background(
-                Rectangle()
-                    .fill(LinearGradient(gradient: Gradient(colors: [.white,
-                                                                     Custom.lightBlue,
-                                                                     Custom.medBlue,
-                                                                     Custom.coolBlue,
-                                                                     Custom.darkBlue]),
-                                         startPoint: .bottom, endPoint: .top))
+                ZStack {
+                    Circle()
+                        .fill(.ultraThinMaterial)
+                        .frame(width: screenWidth * 0.5, height: screenWidth * 0.5)
+                        .shadow(radius: 10)
+                    Image("PlatformImage")
+                        .frame(width: screenWidth * 0.3, height: screenWidth * 0.3)
+                        .scaleEffect(0.2)
+                }
+                    .offset(y: scrollY > 0 ? -scrollY - 45 : -45)
+            )
+            .background(
+                Image("WaveBackground")
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
                     .mask(RoundedRectangle(cornerRadius: 30))
                     .offset(y: scrollY > 0 ? -scrollY : 0)
-                    .scaleEffect(scrollY > 0 ? scrollY / 1000 + 1 : 1)
+                    .scaleEffect(scrollY > 0 ? scrollY / 1000 + 1.2 : 1.2)
                     .blur(radius: scrollY > 0 ? scrollY / 10 : 0)
                     .accessibility(hidden: true)
                     .ignoresSafeArea()
