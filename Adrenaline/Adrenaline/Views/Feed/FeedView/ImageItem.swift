@@ -134,7 +134,7 @@ struct ImageFeedItemExpandedView: View {
                 CloseButton()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(30)
+            .padding(25)
             .ignoresSafeArea()
         }
         .frame(maxWidth: screenWidth)
@@ -162,11 +162,11 @@ struct ImageFeedItemExpandedView: View {
                     .scaledToFit()
                     .foregroundColor(.primary)
                     .matchedGeometryEffect(id: "image\(id)", in: namespace)
-                    .padding(screenWidth * 0.1)
+                    .padding(screenWidth * 0.125)
                 )
             .background(
                 Rectangle()
-                    .fill(.thinMaterial)
+                    .fill(.ultraThinMaterial)
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
                     .mask(RoundedRectangle(cornerRadius: 30))
                     .offset(y: scrollY > 0 ? -scrollY : 0)

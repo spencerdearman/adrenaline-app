@@ -129,7 +129,7 @@ struct MeetFeedItemExpandedView: View {
                 CloseButton()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(30)
+            .padding(25)
             .ignoresSafeArea()
         }
         .frame(maxWidth: screenWidth)

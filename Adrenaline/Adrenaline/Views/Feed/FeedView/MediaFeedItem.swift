@@ -55,6 +55,15 @@ struct MediaFeedItemCollapsedView: View {
                     Divider()
                         .foregroundColor(.secondary)
                     
+                    Group {
+                        if case .video(let videoPlayer) = media {
+                            videoPlayer
+                                .padding()
+                                .matchedGeometryEffect(id: "body" + id, in: namespace)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    
                     Text("VIDEO NAME")
                         .font(.title).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -137,7 +146,7 @@ struct MediaFeedItemExpandedView: View {
                 CloseButton()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(20)
+            .padding(25)
             .ignoresSafeArea()
             
             LogoView(imageName: "Spencer")

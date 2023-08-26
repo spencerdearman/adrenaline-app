@@ -56,7 +56,7 @@ struct FeedBase: View {
                     .padding(.horizontal, 20)
                     .offset(y: -100)
                 } else {
-                    LazyVGrid(columns: columns, spacing: 20) {
+                    LazyVGrid(columns: columns, spacing: 15) {
                         item
                     }
                     .padding(.horizontal, 20)
@@ -75,11 +75,15 @@ struct FeedBase: View {
                              namespace: namespace, feedModel: $feedModel),
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.text("Hello World"),
-                              namespace: namespace, feedModel: $feedModel),
+                ImageFeedItem(image: Image("Logan"), namespace: namespace, feedModel: $feedModel),
                 MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
                               namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.text("Hello World"),
+                MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
+                             namespace: namespace, feedModel: $feedModel),
+                ImageFeedItem(image: Image("Beck"), namespace: namespace, feedModel: $feedModel),
+                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                              namespace: namespace, feedModel: $feedModel),
+                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
                               namespace: namespace, feedModel: $feedModel)
             ]
         }
