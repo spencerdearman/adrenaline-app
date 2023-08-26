@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct NavigationBar: View {
+    private let screenWidth = UIScreen.main.bounds.width
     var title = ""
     @State var showSheet = false
-    @Binding var contentHasScrolled: Bool
-    
-    @Binding var feedModel : FeedModel
     @State var showAccount = true
     @State var isLogged = true
+    @Binding var contentHasScrolled: Bool
+    @Binding var feedModel : FeedModel
     
     var body: some View {
         ZStack {
@@ -57,7 +57,26 @@ struct NavigationBar: View {
                         }
                     }
                 } label: {
-                    avatar
+                    AsyncImage(url: URL(string:
+                    "https://secure.meetcontrol.com/divemeets/system/profilephotos/56961.jpg?&x=511121484"),
+                               transaction: .init(animation: .easeOut)) { phase in
+                        switch phase {
+                        case .empty:
+                            Color.white
+                        case .success(let image):
+                            image.resizable()
+                        case .failure(_):
+                            Color.gray
+                        @unknown default:
+                            Color.gray
+                        }
+                    }
+                    .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
+                    .cornerRadius(10)
+                    .padding(8)
+                    .background(.ultraThinMaterial)
+                    .backgroundStyle(cornerRadius: 18, opacity: 0.4)
+                    .transition(.scale.combined(with: .slide))
                 }
                 .accessibilityElement()
                 .accessibilityLabel("Account")
@@ -68,28 +87,5 @@ struct NavigationBar: View {
         .offset(y: feedModel.showNav ? 0 : -120)
         .accessibility(hidden: !feedModel.showNav)
         .offset(y: contentHasScrolled ? -16 : 0)
-    }
-    
-    @ViewBuilder
-    var avatar: some View {
-            AsyncImage(url: URL(string: "https://secure.meetcontrol.com/divemeets/system/profilephotos/56961.jpg?&x=511121484"),
-                       transaction: .init(animation: .easeOut)) { phase in
-                switch phase {
-                case .empty:
-                    Color.white
-                case .success(let image):
-                    image.resizable()
-                case .failure(_):
-                    Color.gray
-                @unknown default:
-                    Color.gray
-                }
-            }
-            .frame(width: 26, height: 26)
-            .cornerRadius(10)
-            .padding(8)
-            .background(.ultraThinMaterial)
-            .backgroundStyle(cornerRadius: 18, opacity: 0.4)
-            .transition(.scale.combined(with: .slide))
     }
 }

@@ -21,7 +21,6 @@ class FeedItem: Identifiable {
 enum Media {
     case video(VideoPlayer<EmptyView>)
     case text(String)
-//    case profile(Profi)
 }
 
 class SuggestedFeedItem: FeedItem {

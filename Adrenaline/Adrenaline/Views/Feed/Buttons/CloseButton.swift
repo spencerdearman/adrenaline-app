@@ -10,7 +10,7 @@ import SwiftUI
 struct CloseButton: View {
     var body: some View {
         Image(systemName: "xmark")
-            .font(.system(size: 17, weight: .bold))
+            .font(.title3)
             .foregroundColor(.secondary)
             .padding(8)
             .background(.ultraThinMaterial, in: Circle())

@@ -15,21 +15,22 @@ class MediaFeedItem: FeedItem {
     init(media: Media, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
         self.media = media
         super.init()
-        self.collapsedView = MediaFeedItemCollapsedView(id: self.id, namespace: namespace,
-                                                        media: media, feedModel: feedModel)
-        self.expandedView = MediaFeedItemExpandedView(id: self.id, namespace: namespace,
-                                                       media: media, feedModel: feedModel)
+        self.collapsedView = MediaFeedItemCollapsedView(feedModel: feedModel, id: self.id,
+                                                        namespace: namespace,
+                                                        media: media)
+        self.expandedView = MediaFeedItemExpandedView(feedModel: feedModel, id: self.id,
+                                                      namespace: namespace,
+                                                      media: media)
     }
 }
 
 struct MediaFeedItemCollapsedView: View {
     @Environment(\.colorScheme) var currentMode
+    @State var appear = [false, false, false]
+    @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
     var media: Media
-    @State var appear = [false, false, false]
-    @Binding var feedModel: FeedModel
-    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -101,14 +102,14 @@ struct MediaFeedItemExpandedView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
-    var id: String
-    var namespace: Namespace.ID
-    var media: Media
-    var isAnimated = true
     @State var viewState: CGSize = .zero
     @State var showSection = false
     @State var appear = [false, false, false]
     @Binding var feedModel: FeedModel
+    var id: String
+    var namespace: Namespace.ID
+    var media: Media
+    var isAnimated = true
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -148,13 +149,6 @@ struct MediaFeedItemExpandedView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             .padding(25)
             .ignoresSafeArea()
-            
-            LogoView(imageName: "Spencer")
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding(20)
-                .matchedGeometryEffect(id: "logo\(id)", in: namespace)
-                .ignoresSafeArea()
-                .accessibility(hidden: true)
         }
         .frame(maxWidth: screenWidth)
         .zIndex(1)

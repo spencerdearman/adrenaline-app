@@ -27,9 +27,22 @@ struct SettingsView: View {
                             .font(.system(size: 32))
                             .padding()
                             .background(Circle().fill(.ultraThinMaterial))
-                            .background(AnimatedBlobView(colors: [.white, Custom.coolBlue]).frame(width: 400, height: 414).offset(x: 200, y: 0).scaleEffect(0.8))
-                            .background(AnimatedBlobView(colors: [.white, Custom.lightBlue, Custom.coolBlue]).frame(width: 400, height: 414).offset(x: -50, y: 200).scaleEffect(0.7))
-                            .background(AnimatedBlobView(colors: [.white, Custom.lightBlue, Custom.medBlue, Custom.coolBlue]).frame(width: 400, height: 414).offset(x: -100, y: 20).scaleEffect(1.6).rotationEffect(Angle(degrees: 60)))
+                            .background(AnimatedBlobView(
+                                colors: [.white, Custom.coolBlue])
+                                .frame(width: 400, height: 414)
+                                .offset(x: 200, y: 0)
+                                .scaleEffect(0.8))
+                            .background(AnimatedBlobView(
+                                colors: [.white, Custom.lightBlue, Custom.coolBlue])
+                                .frame(width: 400, height: 414)
+                                .offset(x: -50, y: 200)
+                                .scaleEffect(0.7))
+                            .background(AnimatedBlobView(
+                                colors: [.white, Custom.lightBlue, Custom.medBlue, Custom.coolBlue])
+                                .frame(width: 400, height: 414)
+                                .offset(x: -100, y: 20)
+                                .scaleEffect(1.6)
+                                .rotationEffect(Angle(degrees: 60)))
                         Text("Spencer Dearman")
                             .font(.title.weight(.semibold))
                     }

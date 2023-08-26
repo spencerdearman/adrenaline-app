@@ -11,8 +11,8 @@ import AVKit
 
 
 struct FeedBase: View {
-    var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     @Environment(\.colorScheme) var currentMode
+    @Namespace var namespace
     @State var feedModel: FeedModel = FeedModel()
     @State var showDetail: Bool = false
     @State var showTab: Bool = true
@@ -25,7 +25,8 @@ struct FeedBase: View {
     @State private var tabBarState: Visibility = .visible
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    @Namespace var namespace
+    var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
+    
     var body: some View {
         ZStack {
             (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
@@ -33,11 +34,30 @@ struct FeedBase: View {
                 .offset(x: screenWidth * 0.27, y: -screenHeight * 0.02)
             
             if feedModel.showTile {
-                detail
+                ForEach($feedItems) { item in
+                    if item.id == feedModel.selectedItem {
+                        AnyView(item.expandedView.wrappedValue)
+                    }
+                }
             }
             
             ScrollView {
-                scrollDetection
+                // Scrolling Detection
+                GeometryReader { proxy in
+                    let offset = proxy.frame(in: .named("scroll")).minY
+                    Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
+                }
+                .onPreferenceChange(ScrollPreferenceKey.self) { value in
+                    withAnimation(.easeInOut) {
+                        if value < 0 {
+                            contentHasScrolled = true
+                            tabBarState = .hidden
+                        } else {
+                            contentHasScrolled = false
+                            tabBarState = .visible
+                        }
+                    }
+                }
                 
                 Rectangle()
                     .frame(width: 100, height: screenHeight * 0.15)
@@ -57,7 +77,9 @@ struct FeedBase: View {
                     .offset(y: -100)
                 } else {
                     LazyVGrid(columns: columns, spacing: 15) {
-                        item
+                        ForEach($feedItems) { item in
+                                AnyView(item.collapsedView.wrappedValue)
+                        }
                     }
                     .padding(.horizontal, 20)
                     .offset(y: -80)
@@ -104,39 +126,15 @@ struct FeedBase: View {
         }
         .statusBar(hidden: !showStatusBar)
     }
-    
-    var item: some View {
-        ForEach($feedItems) { item in
-                AnyView(item.collapsedView.wrappedValue)
-        }
-    }
-    
-    var detail: some View {
-        ForEach($feedItems) { item in
-            if item.id == feedModel.selectedItem {
-                AnyView(item.expandedView.wrappedValue)
-            }
-        }
-    }
-    
-    var scrollDetection: some View {
-        GeometryReader { proxy in
-            let offset = proxy.frame(in: .named("scroll")).minY
-            Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
-        }
-        .onPreferenceChange(ScrollPreferenceKey.self) { value in
-            withAnimation(.easeInOut) {
-                if value < 0 {
-                    contentHasScrolled = true
-                    tabBarState = .hidden
-                } else {
-                    contentHasScrolled = false
-                    tabBarState = .visible
-                }
-            }
-        }
+}
+
+struct ScrollPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
+
 
 struct FeedBase_Previews: PreviewProvider {
     static var previews: some View {

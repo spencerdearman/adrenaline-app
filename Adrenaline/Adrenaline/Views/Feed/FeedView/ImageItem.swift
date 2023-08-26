@@ -17,22 +17,23 @@ class ImageFeedItem: FeedItem {
     init(image: Image, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
         self.image = image
         super.init()
-        self.collapsedView = ImageFeedItemCollapsedView(id: self.id, namespace: namespace,
-                                                       image: self.image, feedModel: feedModel)
-        self.expandedView = ImageFeedItemExpandedView(id: self.id, namespace: namespace,
-                                                     image: self.image, feedModel: feedModel)
+        self.collapsedView = ImageFeedItemCollapsedView(feedModel: feedModel, id: self.id,
+                                                        namespace: namespace,
+                                                        image: self.image)
+        self.expandedView = ImageFeedItemExpandedView(feedModel: feedModel, id: self.id,
+                                                      namespace: namespace,
+                                                      image: self.image)
     }
 }
 
 
 struct ImageFeedItemCollapsedView: View {
     @Environment(\.colorScheme) var currentMode
+    @State var appear = [false, false, false]
+    @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
     var image: Image
-    @State var appear = [false, false, false]
-    @Binding var feedModel: FeedModel
-    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -97,14 +98,14 @@ struct ImageFeedItemExpandedView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
-    var id: String
-    var namespace: Namespace.ID
-    var image: Image
-    var isAnimated = true
     @State var viewState: CGSize = .zero
     @State var showSection = false
     @State var appear = [false, false, false]
     @Binding var feedModel: FeedModel
+    var id: String
+    var namespace: Namespace.ID
+    var image: Image
+    var isAnimated = true
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     

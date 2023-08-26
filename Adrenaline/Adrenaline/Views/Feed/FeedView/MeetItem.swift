@@ -15,20 +15,22 @@ class MeetFeedItem: FeedItem {
     init(meet: MeetEvent, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
         self.meet = meet
         super.init()
-        self.collapsedView = MeetFeedItemCollapsedView(id: self.id, namespace: namespace,
-                                                       meet: self.meet, feedModel: feedModel)
-        self.expandedView = MeetFeedItemExpandedView(id: self.id, namespace: namespace,
-                                                     meet: self.meet, feedModel: feedModel)
+        self.collapsedView = MeetFeedItemCollapsedView(feedModel: feedModel, id: self.id,
+                                                       namespace: namespace,
+                                                       meet: self.meet)
+        self.expandedView = MeetFeedItemExpandedView(feedModel: feedModel, id: self.id,
+                                                     namespace: namespace,
+                                                     meet: self.meet)
     }
 }
 
 struct MeetFeedItemCollapsedView: View {
     @Environment(\.colorScheme) var currentMode
+    @State var appear = [false, false, false]
+    @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
     var meet: MeetEvent
-    @State var appear = [false, false, false]
-    @Binding var feedModel: FeedModel
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -92,14 +94,14 @@ struct MeetFeedItemExpandedView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
-    var id: String
-    var namespace: Namespace.ID
-    var meet: MeetEvent
-    var isAnimated = true
     @State var viewState: CGSize = .zero
     @State var showSection = false
     @State var appear = [false, false, false]
     @Binding var feedModel: FeedModel
+    var id: String
+    var namespace: Namespace.ID
+    var meet: MeetEvent
+    var isAnimated = true
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
