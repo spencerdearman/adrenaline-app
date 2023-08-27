@@ -104,7 +104,7 @@ struct NewSearchView: View {
         if text.isEmpty {
             return suggestionsData
         } else {
-            return suggestionsData.filter { $0.text.contains(text) }
+            return suggestionsData.filter { $0.text.lowercased().contains(text.lowercased()) }
         }
     }
 }
