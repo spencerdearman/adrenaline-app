@@ -47,15 +47,15 @@ struct AdrenalineProfileView: View {
     
     var body: some View {
         ZStack {
+            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+            Image(currentMode == .light ? "ProfileBackground-Light" : "ProfileBackground-Dark")
+                .frame(height: screenHeight * 0.7)
+                .offset(x: screenWidth * 0.2, y: -screenHeight * 0.4)
+                .scaleEffect(0.7)
             if let user = user {
-                // Universal Base View
-                if !loginSuccessful {
-                    BackgroundSpheres()
-                        .ignoresSafeArea()
-                }
                 VStack {
                     ProfileImage(diverID: (user.diveMeetsID ?? ""))
-                        .frame(width: 200, height: 150)
+                        .frame(width: 200, height: 130)
                         .scaleEffect(0.9)
                         .padding(.top, 50)
                         .padding(.bottom, 30)
@@ -64,39 +64,16 @@ struct AdrenalineProfileView: View {
                         }
                     PersonalInfoView(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
                 }
-                .offset(y: -screenHeight * 0.3)
+                .offset(y: -screenHeight * 0.25)
                 .padding([.leading, .trailing, .top])
                 .frame(width: screenWidth * 0.9)
-                .overlay{
-                    if loginSuccessful {
-                        BackgroundBubble(vPadding: 20, hPadding: 35) {
-                            Text("Logout")
-                                .onTapGesture {
-                                    withAnimation {
-                                        clearCredentials(email: userEmail)
-                                        loginSuccessful = false
-                                    }
-                                }
-                        }
-                        .offset(x: -screenWidth * 0.35, y: -screenHeight * 0.42)
-                    }
-                    BackgroundBubble() {
-                        NavigationLink {
-                            SettingsPage(userViewData: $userViewData)
-                        } label: {
-                            Image(systemName: "gear")
-                                .foregroundColor(.primary)
-                        }
-                    }
-                    .offset(x: screenWidth * 0.26, y: -screenHeight * 0.3)
-                    .scaleEffect(1.4)
-                }
+
                 ZStack{
                     Rectangle()
                         .foregroundColor(Custom.darkGray)
                         .cornerRadius(50)
                         .shadow(radius: 10)
-                        .frame(width: screenWidth, height: screenHeight * 1.05)
+                        .frame(width: screenWidth, height: screenHeight * 0.8)
                     VStack {
                         if let type = user.accountType {
                             if type == AccountType.athlete.rawValue {
@@ -113,6 +90,7 @@ struct AdrenalineProfileView: View {
                         }
                     }
                 }
+                .frame(width: screenWidth)
                 .offset(y: offset)
                 .onSwipeGesture(trigger: .onEnded) { direction in
                     withAnimation(.easeInOut(duration: 0.25)) {
@@ -124,6 +102,10 @@ struct AdrenalineProfileView: View {
                     }
                 }
             }
+        }
+        .overlay{
+            ProfileBar()
+                .frame(width: screenWidth)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -172,10 +154,10 @@ struct PersonalInfoView: View {
     
     private var bubbleHeight: CGFloat {
         switch dynamicTypeSize {
-            case .xSmall, .small, .medium:
-                return 85
-            default:
-                return bubbleHeightScaled * 1.2
+        case .xSmall, .small, .medium:
+            return 85
+        default:
+            return bubbleHeightScaled * 1.2
         }
     }
     
@@ -202,7 +184,7 @@ struct PersonalInfoView: View {
     
     private func updateFollowed() {
         guard let first = userViewData.firstName, let last = userViewData.lastName,
-                let userEmail = userViewData.email else { return }
+              let userEmail = userViewData.email else { return }
         addFollowedByEmail(first, last, userEmail)
         guard let (email, _) = getStoredCredentials() else { return }
         guard let user = getUser(email) else { return }
@@ -237,8 +219,8 @@ struct PersonalInfoView: View {
         VStack {
             ZStack {
                 Rectangle()
-                    .frame(width: screenWidth * 0.95, height: bubbleHeight)
-                    .foregroundColor(currentMode == .light ? .white : .black)
+                    .fill(.ultraThinMaterial)
+                    .frame(width: screenWidth * 0.9, height: bubbleHeight)
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 10)
                 HStack {
@@ -324,7 +306,7 @@ struct PersonalInfoView: View {
                         }
                     }
                 }
-                    .frame(width: screenWidth * 0.8)
+                .frame(width: screenWidth * 0.8)
             }
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
@@ -347,57 +329,6 @@ struct PersonalInfoView: View {
                     starred = true
                 } else {
                     starred = false
-                }
-            }
-        }
-    }
-}
-
-struct SettingsPage: View {
-    @Environment(\.dismiss) private var dismiss
-    @Binding var userViewData: UserViewData
-    private let screenWidth = UIScreen.main.bounds.width
-    private var textFieldWidth: CGFloat {
-        screenWidth * 0.5
-    }
-    var body: some View {
-        ScrollView {
-            VStack {
-                BackgroundBubble(vPadding: 20, hPadding: 20) {
-                    Text("Settings").font(.title2).fontWeight(.semibold)
-                }
-                ProfileImage(diverID: (userViewData.diveMeetsID ?? ""))
-                    .scaleEffect(0.75)
-                    .frame(width: 160, height: 160)
-                Text((userViewData.firstName ?? "") + " " + (userViewData.lastName ?? ""))
-                    .font(.title3).fontWeight(.semibold)
-                Text(userViewData.email ?? "")
-                    .foregroundColor(.secondary)
-                if let phoneNum = userViewData.phone {
-                    Text(phoneNum)
-                        .foregroundColor(.secondary)
-                }
-                NavigationLink {
-                    EditProfile(userViewData: $userViewData)
-                } label: {
-                    BackgroundBubble(shadow: 5) {
-                        HStack {
-                            Text("Edit Profile")
-                                .foregroundColor(.primary)
-                                .fontWeight(.semibold)
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.primary)
-                        }
-                        .padding()
-                    }
-                }
-            }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
                 }
             }
         }
