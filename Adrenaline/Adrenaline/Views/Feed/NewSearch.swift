@@ -71,7 +71,21 @@ struct NewSearchView: View {
     @State var users: [GraphUser] = []
     @State var selectedItem: SearchItem? = nil
     @State var searchScope: SearchScope = .all
+    @State var recentSearches: [SearchItem] = []
     @Namespace var namespace
+    
+    private func updateRecentSearches(item: SearchItem) {
+        if let index = recentSearches.firstIndex(of: item) {
+            recentSearches.remove(at: index)
+        }
+        
+        recentSearches.insert(item, at: 0)
+        
+        // Keeps the three most recent searches
+        if recentSearches.count == 4 {
+            recentSearches.removeLast()
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -83,11 +97,13 @@ struct NewSearchView: View {
         .searchable(text: $text) {
             ForEach(suggestions) { suggestion in
                 Button {
-                    text = suggestion.text
+                    text = suggestion.title
                 } label: {
-                    Text(suggestion.text)
+                    ListRow(title: suggestion.title,
+                            icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
+                        .foregroundColor(.primary)
                 }
-                .searchCompletion(suggestion.text)
+                .searchCompletion(suggestion.title)
             }
         }
         .searchScopes($searchScope) {
@@ -124,6 +140,7 @@ struct NewSearchView: View {
                     Button {
                         showItem = true
                         selectedItem = item
+                        updateRecentSearches(item: item)
                     } label:  {
                         ListRow(title: item.title, icon: "magnifyingglass")
                     }
@@ -183,7 +200,7 @@ struct NewSearchView: View {
         } else if searchScope == .users {
             return searchItems.filter {
                 if case .user(_) = $0 {
-                    return true
+                    return $0.title.localizedCaseInsensitiveContains(text)
                 } else {
                     return false
                 }
@@ -192,7 +209,7 @@ struct NewSearchView: View {
             return searchItems.filter {
                 if case .feedItem(let item) = $0,
                    type(of: item) == MeetFeedItem.self {
-                    return true
+                    return $0.title.localizedCaseInsensitiveContains(text)
                 } else {
                     return false
                 }
@@ -201,21 +218,21 @@ struct NewSearchView: View {
             return searchItems.filter {
                 if case .feedItem(let item) = $0,
                    type(of: item) == MediaFeedItem.self || type(of: item) == ImageFeedItem.self {
-                    return true
+                    return $0.title.localizedCaseInsensitiveContains(text)
                 } else {
                     return false
                 }
             }
         } else {
-            return searchItems
+            return searchItems.filter { $0.title.localizedCaseInsensitiveContains(text) }
         }
     }
     
-    var suggestions: [Suggestion] {
+    var suggestions: [SearchItem] {
         if text.isEmpty {
-            return suggestionsData
+            return recentSearches
         } else {
-            return suggestionsData.filter { $0.text.localizedCaseInsensitiveContains(text) }
+            return results.filter { $0.title.localizedCaseInsensitiveContains(text) }
         }
     }
 }
