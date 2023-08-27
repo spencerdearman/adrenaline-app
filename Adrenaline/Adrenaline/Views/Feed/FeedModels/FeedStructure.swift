@@ -19,7 +19,7 @@ class FeedItem: Identifiable {
 }
 
 enum Media {
-    case video(VideoPlayer<EmptyView>)
+    case video(VideoItem)
     case text(String)
 }
 

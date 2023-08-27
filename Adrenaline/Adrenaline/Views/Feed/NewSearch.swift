@@ -61,7 +61,7 @@ struct NewSearchView: View {
                              namespace: namespace, feedModel: $feedModel),
                 MediaFeedItem(media: Media.text("Hello World"),
                               namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                MediaFeedItem(media: Media.video(VideoItem()),
                               namespace: namespace, feedModel: $feedModel)]
             feedModel.selectedItem = feedItems[0].id
         }

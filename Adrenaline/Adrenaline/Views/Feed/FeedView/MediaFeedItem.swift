@@ -57,8 +57,8 @@ struct MediaFeedItemCollapsedView: View {
                         .foregroundColor(.secondary)
                     
                     Group {
-                        if case .video(let videoPlayer) = media {
-                            videoPlayer
+                        if case .video(let videoItem) = media {
+                            videoItem.view
                                 .padding()
                                 .matchedGeometryEffect(id: "body" + id, in: namespace)
                         }
@@ -186,8 +186,8 @@ struct MediaFeedItemExpandedView: View {
             )
             .overlay(
                 VStack(alignment: .leading, spacing: 16) {
-                    if case .video(let videoPlayer) = media {
-                        videoPlayer
+                    if case .video(let videoItem) = media {
+                        videoItem.view
                             .padding()
                             .matchedGeometryEffect(id: "body" + id, in: namespace)
                     } else if case .text(let string) = media {
