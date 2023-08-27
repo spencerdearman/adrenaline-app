@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileBar: View {
     private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     var title = ""
     @State var showSheet = false
     @State var showAccount = true
@@ -42,26 +43,10 @@ struct ProfileBar: View {
                     .backgroundStyle(cornerRadius: 18, opacity: 0.4)
                     .transition(.scale.combined(with: .slide))
                 }
-//
-//                Button {
-//                    withAnimation {
-//                        if isLogged {
-//                            showAccount = true
-//                        }
-//                    }
-//                } label: {
-//                    Image(systemName: "gear")
-//                    .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
-//                    .cornerRadius(10)
-//                    .padding(8)
-//                    .background(.ultraThinMaterial)
-//                    .backgroundStyle(cornerRadius: 18, opacity: 0.4)
-//                    .transition(.scale.combined(with: .slide))
-//                }
                 .accessibilityElement()
                 .accessibilityLabel("Account")
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            .frame(maxWidth: .infinity, maxHeight: screenHeight, alignment: .topTrailing)
             .padding()
         }
     }

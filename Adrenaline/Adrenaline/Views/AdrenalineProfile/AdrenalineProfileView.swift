@@ -47,78 +47,65 @@ struct AdrenalineProfileView: View {
     
     var body: some View {
         ZStack {
+            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+            Image(currentMode == .light ? "ProfileBackground-Light" : "ProfileBackground-Dark")
+                .frame(height: screenHeight * 0.7)
+                .offset(x: screenWidth * 0.2, y: -screenHeight * 0.4)
+                .scaleEffect(0.7)
             if let user = user {
-                // Universal Base View
-                ZStack {
-                    AnimatedBlobView(
-                        colors: [.white, Custom.coolBlue])
-                        .frame(width: 400, height: 414)
-                        .offset(x: -screenWidth * 0.3, y: -screenHeight * 0.3)
-                        .scaleEffect(1.6)
-                    AnimatedBlobView(
-                        colors: [Custom.coolBlue, Custom.lightBlue])
-                        .frame(width: 400, height: 414)
-                        .offset(x: screenWidth * 0.3, y: -screenHeight * 0.15)
-                        .scaleEffect(1.4)
-                    AnimatedBlobView(
-                        colors: [.white, Custom.lightBlue])
-                    .frame(width: 400, height: 414)
-                    .offset(x: -screenWidth * 0.4, y: -screenHeight * 0.2)
-                        .scaleEffect(0.8)
+                VStack {
+                    ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                        .frame(width: 200, height: 130)
+                        .scaleEffect(0.9)
+                        .padding(.top, 50)
+                        .padding(.bottom, 30)
+                        .onAppear {
+                            offset = screenHeight * 0.45
+                        }
+                    PersonalInfoView(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
                 }
-                
-//                VStack {
-//                    ProfileImage(diverID: (user.diveMeetsID ?? ""))
-//                        .frame(width: 200, height: 150)
-//                        .scaleEffect(0.9)
-//                        .padding(.top, 50)
-//                        .padding(.bottom, 30)
-//                        .onAppear {
-//                            offset = screenHeight * 0.45
-//                        }
-//                    PersonalInfoView(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
-//                }
-//                .offset(y: -screenHeight * 0.3)
-//                .padding([.leading, .trailing, .top])
-//                .frame(width: screenWidth * 0.9)
-//                ZStack{
-//                    Rectangle()
-//                        .foregroundColor(Custom.darkGray)
-//                        .cornerRadius(50)
-//                        .shadow(radius: 10)
-//                        .frame(width: screenWidth, height: screenHeight * 1.05)
-//                    VStack {
-//                        if let type = user.accountType {
-//                            if type == AccountType.athlete.rawValue {
-//                                DiverView(userViewData: $userViewData,
-//                                          loginSuccessful: $loginSuccessful)
-//                            } else if type == AccountType.coach.rawValue {
-//                                CoachView(userViewData: $userViewData,
-//                                          loginSuccessful: $loginSuccessful)
-//                            } else if type == AccountType.spectator.rawValue {
-//                                Text("This is a spectator profile")
-//                            } else {
-//                                Text("The account type has not been specified")
-//                            }
-//                        }
-//                    }
-//                }
-//                .offset(y: offset)
-//                .onSwipeGesture(trigger: .onEnded) { direction in
-//                    withAnimation(.easeInOut(duration: 0.25)) {
-//                        if direction == .up {
-//                            offset = screenHeight * 0.13
-//                        } else if direction == .down {
-//                            offset = screenHeight * 0.45
-//                        }
-//                    }
-//                }
+                .offset(y: -screenHeight * 0.25)
+                .padding([.leading, .trailing, .top])
+                .frame(width: screenWidth * 0.9)
+
+                ZStack{
+                    Rectangle()
+                        .foregroundColor(Custom.darkGray)
+                        .cornerRadius(50)
+                        .shadow(radius: 10)
+                        .frame(width: screenWidth, height: screenHeight * 0.8)
+                    VStack {
+                        if let type = user.accountType {
+                            if type == AccountType.athlete.rawValue {
+                                DiverView(userViewData: $userViewData,
+                                          loginSuccessful: $loginSuccessful)
+                            } else if type == AccountType.coach.rawValue {
+                                CoachView(userViewData: $userViewData,
+                                          loginSuccessful: $loginSuccessful)
+                            } else if type == AccountType.spectator.rawValue {
+                                Text("This is a spectator profile")
+                            } else {
+                                Text("The account type has not been specified")
+                            }
+                        }
+                    }
+                }
+                .frame(width: screenWidth)
+                .offset(y: offset)
+                .onSwipeGesture(trigger: .onEnded) { direction in
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        if direction == .up {
+                            offset = screenHeight * 0.13
+                        } else if direction == .down {
+                            offset = screenHeight * 0.45
+                        }
+                    }
+                }
             }
         }
         .overlay{
-                ProfileBar()
-                    .frame(width: screenWidth)
-                    .frame(maxWidth: .infinity, alignment: .top)
+            ProfileBar()
+                .frame(width: screenWidth)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -167,10 +154,10 @@ struct PersonalInfoView: View {
     
     private var bubbleHeight: CGFloat {
         switch dynamicTypeSize {
-            case .xSmall, .small, .medium:
-                return 85
-            default:
-                return bubbleHeightScaled * 1.2
+        case .xSmall, .small, .medium:
+            return 85
+        default:
+            return bubbleHeightScaled * 1.2
         }
     }
     
@@ -197,7 +184,7 @@ struct PersonalInfoView: View {
     
     private func updateFollowed() {
         guard let first = userViewData.firstName, let last = userViewData.lastName,
-                let userEmail = userViewData.email else { return }
+              let userEmail = userViewData.email else { return }
         addFollowedByEmail(first, last, userEmail)
         guard let (email, _) = getStoredCredentials() else { return }
         guard let user = getUser(email) else { return }
@@ -319,7 +306,7 @@ struct PersonalInfoView: View {
                         }
                     }
                 }
-                    .frame(width: screenWidth * 0.8)
+                .frame(width: screenWidth * 0.8)
             }
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
@@ -342,57 +329,6 @@ struct PersonalInfoView: View {
                     starred = true
                 } else {
                     starred = false
-                }
-            }
-        }
-    }
-}
-
-struct SettingsPage: View {
-    @Environment(\.dismiss) private var dismiss
-    @Binding var userViewData: UserViewData
-    private let screenWidth = UIScreen.main.bounds.width
-    private var textFieldWidth: CGFloat {
-        screenWidth * 0.5
-    }
-    var body: some View {
-        ScrollView {
-            VStack {
-                BackgroundBubble(vPadding: 20, hPadding: 20) {
-                    Text("Settings").font(.title2).fontWeight(.semibold)
-                }
-                ProfileImage(diverID: (userViewData.diveMeetsID ?? ""))
-                    .scaleEffect(0.75)
-                    .frame(width: 160, height: 160)
-                Text((userViewData.firstName ?? "") + " " + (userViewData.lastName ?? ""))
-                    .font(.title3).fontWeight(.semibold)
-                Text(userViewData.email ?? "")
-                    .foregroundColor(.secondary)
-                if let phoneNum = userViewData.phone {
-                    Text(phoneNum)
-                        .foregroundColor(.secondary)
-                }
-                NavigationLink {
-                    EditProfile(userViewData: $userViewData)
-                } label: {
-                    BackgroundBubble(shadow: 5) {
-                        HStack {
-                            Text("Edit Profile")
-                                .foregroundColor(.primary)
-                                .fontWeight(.semibold)
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.primary)
-                        }
-                        .padding()
-                    }
-                }
-            }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
                 }
             }
         }

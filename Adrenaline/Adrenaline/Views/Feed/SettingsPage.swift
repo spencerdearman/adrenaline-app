@@ -16,7 +16,6 @@ struct SettingsView: View {
     @AppStorage("isLiteMode") var isLiteMode = true
     
     var body: some View {
-        NavigationView {
             List {
                 Section {
                     VStack {
@@ -88,7 +87,6 @@ struct SettingsView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Account")
-        }
     }
 }
 struct AccountView_Previews: PreviewProvider {

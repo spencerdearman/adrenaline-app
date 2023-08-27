@@ -20,10 +20,10 @@ struct ProfileImage: View {
                     image
                         .resizable()
                         .scaledToFit()
-                        .frame(width:200, height:300)
+                        .frame(width:170, height:300)
                         .clipShape(Circle())
                         .overlay {
-                            Circle().stroke(.white, lineWidth: 4)
+                            Circle().stroke(.ultraThinMaterial, lineWidth: 15)
                         }
                         .shadow(radius: 7)
                 } else if phase.error != nil {
