@@ -11,11 +11,19 @@ import AVKit
 
 
 // FeedItems should not be initialized, only used for inheritance
-class FeedItem: Identifiable {
+class FeedItem: Hashable, Identifiable {
     var id: String = UUID().uuidString
     var isExpanded: Bool = false
     var collapsedView: any View = EmptyView()
     var expandedView: any View = EmptyView()
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: FeedItem, rhs: FeedItem) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 enum Media {
