@@ -9,12 +9,20 @@ import SwiftUI
 import UIKit
 import AVKit
 
+enum SearchScope: String, CaseIterable {
+    case all
+    case users
+    case meets
+    case posts
+}
+
 struct NewSearchView: View {
     @State var text = ""
     @State var showItem = false
     @State var feedModel : FeedModel = FeedModel()
     @State var feedItems: [FeedItem] = []
     @State var selectedItem: FeedItem = FeedItem()
+    @State var searchScope: SearchScope? = nil
     @Namespace var namespace
     
     var body: some View {
@@ -32,6 +40,11 @@ struct NewSearchView: View {
                     Text(suggestion.text)
                 }
                 .searchCompletion(suggestion.text)
+            }
+        }
+        .searchScopes($searchScope) {
+            ForEach(SearchScope.allCases, id: \.self) { scope in
+                Text(scope.rawValue.capitalized)
             }
         }
     }
@@ -104,7 +117,7 @@ struct NewSearchView: View {
         if text.isEmpty {
             return suggestionsData
         } else {
-            return suggestionsData.filter { $0.text.lowercased().contains(text.lowercased()) }
+            return suggestionsData.filter { $0.text.localizedCaseInsensitiveContains(text) }
         }
     }
 }
