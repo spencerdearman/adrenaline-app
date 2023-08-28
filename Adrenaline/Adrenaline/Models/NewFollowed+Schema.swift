@@ -47,5 +47,5 @@ extension NewFollowed {
 
 extension NewFollowed: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
-  public typealias IdentifierProtocol = DefaultModelIdentifier<NewUser>
+  public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }

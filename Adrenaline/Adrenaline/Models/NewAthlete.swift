@@ -40,8 +40,8 @@ public struct NewAthlete: Model {
       springboardRating: Double? = nil,
       platformRating: Double? = nil,
       totalRating: Double? = nil,
-      dives: List<Dive> = [],
-      videos: List<Video> = []) {
+      dives: List<Dive>? = [],
+      videos: List<Video>? = []) {
     self.init(id: id,
       user: user,
       team: team,
@@ -79,8 +79,8 @@ public struct NewAthlete: Model {
       springboardRating: Double? = nil,
       platformRating: Double? = nil,
       totalRating: Double? = nil,
-      dives: List<Dive> = [],
-      videos: List<Video> = [],
+      dives: List<Dive>? = [],
+      videos: List<Video>? = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
