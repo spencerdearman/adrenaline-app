@@ -111,9 +111,6 @@ struct NewSearchView: View {
                 Text(scope.rawValue.capitalized)
             }
         }
-        .onChange(of: searchScope) { _ in
-            print(searchScope)
-        }
         .onAppear {
             searchItems = [
                 .feedItem(MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
@@ -163,10 +160,6 @@ struct NewSearchView: View {
                     .frame(maxHeight: .infinity, alignment: .top)
                     .offset(y: -200)
                     .blur(radius: 20)
-            )
-            .background(
-                Image("Blob 1").offset(x: -100, y: -200)
-                    .accessibility(hidden: true)
             )
             .sheet(isPresented: $showItem) {
                 presentedFeedItems
