@@ -65,11 +65,9 @@ enum SearchItem: Hashable, Identifiable {
 struct NewSearchView: View {
     @Environment(\.graphUsers) private var graphUsers
     @State var text = ""
-    @State var showItem = false
-    @State var feedModel : FeedModel = FeedModel()
+    @State var feedModel : FeedModel = FeedModel(isAnimated: false)
     @State var searchItems: [SearchItem] = []
     @State var users: [GraphUser] = []
-    @State var selectedItem: SearchItem? = nil
     @State var searchScope: SearchScope = .all
     @State var recentSearches: [SearchItem] = []
     @Namespace var namespace
@@ -135,8 +133,12 @@ struct NewSearchView: View {
                         Divider()
                     }
                     Button {
-                        showItem = true
-                        selectedItem = item
+                        feedModel.showTile = true
+                        if case .feedItem(let feedItem) = item {
+                            feedModel.selectedItem = feedItem.id
+                        } else if case .user(let user) = item {
+                            feedModel.selectedItem = user.id.uuidString
+                        }
                         updateRecentSearches(item: item)
                     } label:  {
                         ListRow(title: item.title, icon: "magnifyingglass")
@@ -161,7 +163,7 @@ struct NewSearchView: View {
                     .offset(y: -200)
                     .blur(radius: 20)
             )
-            .sheet(isPresented: $showItem) {
+            .sheet(isPresented: $feedModel.showTile) {
                 presentedFeedItems
             }
         }

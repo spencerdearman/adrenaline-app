@@ -109,7 +109,7 @@ struct MediaFeedItemExpandedView: View {
     var id: String
     var namespace: Namespace.ID
     var media: Media
-    var isAnimated = true
+    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -133,11 +133,11 @@ struct MediaFeedItemExpandedView: View {
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))
             .scaleEffect(-viewState.width/500 + 1)
             .background(.ultraThinMaterial)
-            .gesture(isAnimated ? drag : nil)
+            .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
             
             Button {
-                isAnimated ?
+                feedModel.isAnimated ?
                 withAnimation(.closeCard) {
                     feedModel.showTile = false
                     feedModel.selectedItem = ""
