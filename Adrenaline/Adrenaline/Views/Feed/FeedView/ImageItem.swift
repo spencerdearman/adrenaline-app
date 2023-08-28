@@ -105,7 +105,6 @@ struct ImageFeedItemExpandedView: View {
     var id: String
     var namespace: Namespace.ID
     var image: Image
-    var isAnimated = true
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -121,7 +120,7 @@ struct ImageFeedItemExpandedView: View {
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))
             .scaleEffect(-viewState.width/500 + 1)
             .background(.ultraThinMaterial)
-            .gesture(isAnimated ? drag : nil)
+            .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
             
             CloseButtonWithFeedModel(feedModel: $feedModel)
