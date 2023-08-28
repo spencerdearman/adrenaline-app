@@ -48,16 +48,24 @@ func saveToDataStore<M: Model>(object: M) async throws -> M {
 func saveUser(user: GraphUser) async throws -> NewUser {
     let newUser = NewUser(from: user)
     let savedUser = try await saveToDataStore(object: newUser)
-    print("Saved user: \(savedUser.email)")
+    print("Saved user: \(savedUser)")
     
     return savedUser
+}
+
+func saveAthlete(athlete: GraphAthlete) async throws -> NewAthlete {
+    let newAthlete = NewAthlete(from: athlete)
+    let savedAthlete = try await saveToDataStore(object: newAthlete)
+    print("Saved athlete: \(savedAthlete)")
+    
+    return savedAthlete
 }
 
 func updateUserField(email: String, key: String, value: Any) async throws {
     let users: [NewUser] = try await query(where: NewUser.keys.email == email)
     print(users)
     for user in users {
-        var updatedUser = user
+        let updatedUser = user
         switch key {
             case "firstName":
                 updatedUser.firstName = value as! String
@@ -86,6 +94,69 @@ func updateUserField(email: String, key: String, value: Any) async throws {
     }
 }
 
+func updateAthleteField(user: NewUser, key: String, value: Any) async throws {
+    let athletes: [NewAthlete] = try await query(where: NewAthlete.keys.user == user as! EnumPersistable)
+    print(athletes)
+    for athlete in athletes {
+        var updatedAthlete = athlete
+        switch key {
+        case "team":
+            updatedAthlete.team = value as? NewTeam
+            break
+        case "college":
+            updatedAthlete.college = value as! College?
+            break
+        case "heightFeet":
+            updatedAthlete.heightFeet = value as! Int
+            break
+        case "heightInches":
+            updatedAthlete.heightInches = value as! Int
+            break
+        case "weight":
+            updatedAthlete.weight = value as! Int
+            break
+        case "weightUnit":
+            updatedAthlete.weightUnit = value as! String
+            break
+        case "gender":
+            updatedAthlete.gender = value as! String
+            break
+        case "age":
+            updatedAthlete.age = value as! Int
+            break
+        case "graduationYear":
+            updatedAthlete.graduationYear = value as! Int
+            break
+        case "highSchool":
+            updatedAthlete.highSchool = value as! String
+            break
+        case "hometown":
+            updatedAthlete.hometown = value as! String
+            break
+        case "springboardRating":
+            updatedAthlete.springboardRating = value as? Double
+            break
+        case "platformRating":
+            updatedAthlete.platformRating = value as? Double
+            break
+        case "totalRating":
+            updatedAthlete.totalRating = value as? Double
+            break
+        case "dives":
+                updatedAthlete.dives = value as? List<Dive> ?? []
+            break
+        case "videos":
+            updatedAthlete.videos = value as? List<Video> ?? []
+            break
+        default:
+            print("Invalid key in NewAthlete")
+            return
+        }
+        
+        let _ = try await saveToDataStore(object: updatedAthlete)
+    }
+}
+
 func deleteFromDataStore<M: Model>(object: M) async throws {
     try await Amplify.DataStore.delete(object)
 }
@@ -97,5 +168,84 @@ func deleteUserByEmail(email: String) async throws {
             try await deleteFromDataStore(object: newUser)
             print("Deleted user: \(user.email)")
         }
+    }
+}
+
+struct GraphAthlete: Codable, Identifiable {
+    var id: UUID = UUID()
+    var user: NewUser
+    var team: NewTeam?
+    var college: College?
+    var heightFeet: Int
+    var heightInches: Int
+    var weight: Int
+    var weightUnit: String
+    var gender: String
+    var age: Int
+    var graduationYear: Int
+    var highSchool: String
+    var hometown: String
+    var springboardRating: Double?
+    var platformRating: Double?
+    var totalRating: Double?
+    var dives: List<Dive>?
+    var videos: List<Video>?
+    var createdAt: Temporal.DateTime?
+    var updatedAt: Temporal.DateTime?
+}
+
+extension GraphAthlete {
+    // construct from API Data
+    init(from : NewAthlete) {
+        
+        guard let i = UUID(uuidString: from.id) else {
+            preconditionFailure("Can not create user, Invalid ID : \(from.id) (expected UUID)")
+        }
+        
+        id = i
+        user = from.user
+        team = from.team
+        college = from.college
+        heightFeet = from.heightFeet
+        heightInches = from.heightInches
+        weight = from.weight
+        weightUnit = from.weightUnit
+        gender = from.gender
+        age = from.age
+        graduationYear = from.graduationYear
+        highSchool = from.highSchool
+        hometown = from.hometown
+        springboardRating = from.springboardRating
+        platformRating = from.platformRating
+        totalRating = from.totalRating
+        dives = from.dives
+        videos = from.videos
+        createdAt = from.createdAt
+        updatedAt = from.updatedAt
+    }
+}
+
+extension NewAthlete {
+    init(from athlete: GraphAthlete) {
+        self.init(id: athlete.id.uuidString,
+                  user: athlete.user,
+                  team: athlete.team,
+                  college: athlete.college,
+                  heightFeet: athlete.heightFeet,
+                  heightInches: athlete.heightInches,
+                  weight: athlete.weight,
+                  weightUnit: athlete.weightUnit,
+                  gender: athlete.gender,
+                  age: athlete.age,
+                  graduationYear: athlete.graduationYear,
+                  highSchool: athlete.highSchool,
+                  hometown: athlete.hometown,
+                  springboardRating: athlete.springboardRating,
+                  platformRating: athlete.platformRating,
+                  totalRating: athlete.totalRating,
+                  dives: athlete.dives ?? [],
+                  videos: athlete.videos ?? [],
+                  createdAt: athlete.createdAt,
+                  updatedAt: athlete.updatedAt)
     }
 }
