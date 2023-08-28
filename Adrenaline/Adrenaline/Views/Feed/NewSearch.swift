@@ -164,15 +164,25 @@ struct NewSearchView: View {
                     .blur(radius: 20)
             )
             .sheet(isPresented: $feedModel.showTile) {
-                presentedFeedItems
+                presentedSearchItems
             }
         }
     }
     
-    var presentedFeedItems: some View {
-        ForEach(feedItems) { item in
-            if item.id == feedModel.selectedItem {
-                AnyView(item.expandedView)
+    var presentedSearchItems: some View {
+        ForEach(searchItems) { item in
+            if case .feedItem(let feedItem) = item,
+               feedItem.id == feedModel.selectedItem {
+                AnyView(feedItem.expandedView)
+            } else if case .user(let user) = item,
+                      user.id.uuidString == feedModel.selectedItem {
+                AnyView(
+                    ZStack {
+                        Text(user.email)
+                        
+                        CloseButtonWithFeedModel(feedModel: $feedModel)
+                    }
+                )
             }
         }
     }

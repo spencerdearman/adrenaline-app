@@ -120,19 +120,7 @@ struct MeetFeedItemExpandedView: View {
             .gesture(isAnimated ? drag : nil)
             .ignoresSafeArea()
             
-            Button {
-                isAnimated ?
-                withAnimation(.closeCard) {
-                    feedModel.showTile = false
-                    feedModel.selectedItem = ""
-                }
-                : presentationMode.wrappedValue.dismiss()
-            } label: {
-                CloseButton()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(25)
-            .ignoresSafeArea()
+            CloseButtonWithFeedModel(feedModel: $feedModel)
         }
         .frame(maxWidth: screenWidth)
         .zIndex(1)
