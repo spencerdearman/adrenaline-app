@@ -98,14 +98,14 @@ struct FeedBase: View {
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Logan"), namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                MediaFeedItem(media: Media.video(VideoItem()),
                               namespace: namespace, feedModel: $feedModel),
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Beck"), namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                MediaFeedItem(media: Media.video(VideoItem()),
                               namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                MediaFeedItem(media: Media.video(VideoItem()),
                               namespace: namespace, feedModel: $feedModel)
             ]
         }
