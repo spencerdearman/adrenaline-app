@@ -23,8 +23,8 @@ enum WeightUnit: String, CaseIterable {
 }
 
 enum Gender: String, CaseIterable {
-    case male = "Male"
-    case female = "Female"
+    case male = "M"
+    case female = "F"
 }
 
 struct AthleteRecruitingView: View {
@@ -470,13 +470,13 @@ where E.RawValue == String, E.AllCases: RandomAccessCollection {
     @Binding var selection: E
     
     
-    private let cornerRadius: CGFloat = 30
+    private let cornerRadius: CGFloat = 15
     private let selectedGray = Color(red: 0.85, green: 0.85, blue: 0.85, opacity: 0.4)
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: cornerRadius)
-                .fill(.thinMaterial)
+                .fill(.ultraThinMaterial)
             HStack(spacing: 0) {
                 ForEach(E.allCases, id: \.self) { e in
                     ZStack {
@@ -492,6 +492,7 @@ where E.RawValue == String, E.AllCases: RandomAccessCollection {
                             .padding(.trailing, e == E.allCases.first ? -cornerRadius : 0)
                             .padding(.leading, e == E.allCases.last ? -cornerRadius : 0)
                         Text(e.rawValue)
+                            .foregroundColor(.secondary)
                     }
                     .contentShape(RoundedRectangle(cornerRadius: cornerRadius))
                     .onTapGesture {
