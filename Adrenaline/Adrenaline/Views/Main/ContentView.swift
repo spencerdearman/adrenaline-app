@@ -19,6 +19,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @State private var tabBarState: Visibility = .visible
     @State var showSplash: Bool = false
+    @State var email: String = "dearmanspencer"
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -58,7 +59,8 @@ struct ContentView: View {
                 //.navigationViewStyle(StackNavigationViewStyle())
                 //ToolsMenu()
                 
-                RankingsView(tabBarState: $tabBarState)
+//                RankingsView(tabBarState: $tabBarState)
+                NewSignupSequence(email: $email)
                     .tabItem {
                         Label("Rankings", systemImage: "trophy")
                     }
