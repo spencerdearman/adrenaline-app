@@ -6,6 +6,44 @@
 //
 
 import SwiftUI
+import Amplify
+
+extension Formatter {
+    static let heightFtFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.zeroSymbol = ""
+        formatter.maximum = 1
+        return formatter
+    }()
+    
+    static let heightInFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.zeroSymbol = ""
+        formatter.maximum = 2
+        return formatter
+    }()
+    
+    static let weightFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.zeroSymbol = ""
+        formatter.maximum = 3
+        return formatter
+    }()
+    
+    static let yearFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.zeroSymbol = ""
+        formatter.maximum = 4
+        return formatter
+    }()
+    
+    static let ageFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.zeroSymbol = ""
+        formatter.maximum = 2
+        return formatter
+    }()
+}
 
 struct NewSignupSequence: View {
     @Environment(\.colorScheme) var currentMode
@@ -26,14 +64,15 @@ struct NewSignupSequence: View {
     @State var phone: String = ""
     
     // Variables for Recruiting
-    @State var heightIndex: Int = 24
-    @State var height: String = ""
-    @State var weight: String = ""
+    @State var heightFeet: Int = 0
+    @State var heightInches: Int = 0
+    @State var weight: Int = 0
     @State var weightUnit: WeightUnit = .lb
+    @State var weightUnitString: String = ""
     @State var gender: Gender = .male
-    @State var ageIndex: Int = 5
-    @State var age: String = ""
-    @State var gradYear: String = ""
+    @State var genderString: String = ""
+    @State var age: Int = 0
+    @State var gradYear: Int = 0
     @State var highSchool: String = ""
     @State var hometown: String = ""
     
@@ -44,6 +83,7 @@ struct NewSignupSequence: View {
         screenWidth * 0.5
     }
     
+    // Formatting
     private func removePhoneFormatting(string: String) -> String {
         return string.filter { $0.isNumber }
     }
@@ -62,18 +102,6 @@ struct NewSignupSequence: View {
         }
         
         return String(chars.prefix(14))
-    }
-    
-    private var heightStrings: [(String, String, String)] {
-        var result: [(String, String, String)] = []
-        
-        for ft in 4..<8 {
-            for inches in 0..<12 {
-                result.append(("\(ft)-\(inches)", String(ft), String(inches)))
-            }
-        }
-        
-        return result
     }
     
     var body: some View {
@@ -164,7 +192,6 @@ struct NewSignupSequence: View {
                         print("Selected Next")
                         pageIndex = 1
                     }
-                    
                     do {
                         let newUser = try await saveUser(user: newUser)
                         print("Saved New User")
@@ -181,73 +208,94 @@ struct NewSignupSequence: View {
     
     var athleteInfoForm: some View {
         Group {
-            
-            BubbleSelectView(selection: $weightUnit)
-                .frame(width: textFieldWidth / 2)
-                .onChange(of: weightUnit) { _ in
-            
-                }
-            
-            ZStack {
-            Rectangle()
-                .fill(.ultraThinMaterial)
-                .cornerRadius(30)
-                .frame(width: screenWidth * 0.5, height: screenHeight * 0.1)
-                HStack {
-                    Text("Height")
-                        .foregroundColor(.secondary)
-                    
-                    NoStickPicker(selection: $heightIndex,
-                                  rowCount: heightStrings.count) { i in
-                        let label = UILabel()
-                        let (_, ft, inches) = heightStrings[i]
-                        let string = "\(ft)\' \(inches)\""
-                        label.attributedText = NSMutableAttributedString(
-                            string: string)
-                        label.font = UIFont.systemFont(ofSize: pickerFontSize)
-                        label.sizeToFit()
-                        label.layer.masksToBounds = true
-                        return label
+            HStack {
+                TextField("Height (ft)", value: $heightFeet, formatter: .heightFtFormatter)
+                    .keyboardType(.numberPad)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .customField(icon: "hexagon.fill")
+                    .focused($isFirstFocused)
+                    .onChange(of: heightFeet) { _ in
+                        heightFeet = heightFeet
                     }
-                                  .pickerStyle(.wheel)
-                                  .frame(width: textFieldWidth / 2)
-                                  .padding(.trailing)
-//                                  .onChange(of: heightIndex) { _ in
-//                                      setHeight()
-//                                  }
-//                                  .onAppear {
-//                                      setHeight()
-//                                  }
-                }
-                .padding([.leading, .trailing])
+                TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
+                    .keyboardType(.numberPad)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .customField(icon: "hexagon.fill")
+                    .focused($isFirstFocused)
+                    .onChange(of: heightInches) { _ in
+                        heightInches = heightInches
+                    }
             }
-            .frame(height: screenHeight * 0.1)
             
-            TextField("Height", text: $firstName)
+            HStack {
+                TextField("Weight", value: $weight, formatter: .weightFormatter)
+                    .keyboardType(.numberPad)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .customField(icon: "hexagon.fill")
+                    .focused($isLastFocused)
+                
+                BubbleSelectView(selection: $weightUnit)
+                    .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
+                    .scaleEffect(1.08)
+                    .onAppear {
+                        weightUnitString = weightUnit.rawValue
+                    }
+                    .onChange(of: weightUnit) { _ in
+                        weightUnitString = weightUnit.rawValue
+                    }
+            }
+            
+            HStack {
+                TextField("Age", value: $age, formatter: .ageFormatter)
+                    .keyboardType(.numberPad)
+                    .customField(icon: "hexagon.fill")
+                    .focused($isPhoneFocused)
+                    .onChange(of: age) { _ in
+                        age = age
+                    }
+                
+                BubbleSelectView(selection: $gender)
+                    .frame(width: textFieldWidth / 2)
+                    .scaleEffect(1.05)
+                    .onAppear {
+                        genderString = gender.rawValue
+                    }
+                    .onChange(of: gender) { _ in
+                        genderString = gender.rawValue
+                    }
+            }
+            
+            TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
+                .keyboardType(.numberPad)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "hexagon.fill")
                 .focused($isFirstFocused)
-                .onChange(of: firstName) { _ in
-                    newUser.firstName = firstName
+                .onChange(of: gradYear) { _ in
+                    gradYear = gradYear
                 }
             
-            TextField("Last Name", text: $lastName)
+            TextField("High School", text: $highSchool)
+                .keyboardType(.numberPad)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "hexagon.fill")
-                .focused($isLastFocused)
-                .onChange(of: lastName) { _ in
-                    newUser.lastName = lastName
+                .focused($isFirstFocused)
+                .onChange(of: highSchool) { _ in
+                    highSchool = highSchool
                 }
             
-            TextField("Phone Number", text: $phone)
+            TextField("Hometown", text: $hometown)
                 .keyboardType(.numberPad)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
                 .customField(icon: "hexagon.fill")
-                .focused($isPhoneFocused)
-                .onChange(of: phone) { _ in
-                    phone = formatPhoneString(string: phone)
-                    newUser.phone = removePhoneFormatting(string: phone)
+                .focused($isFirstFocused)
+                .onChange(of: hometown) { _ in
+                    hometown = hometown
                 }
             
             Divider()
@@ -257,6 +305,40 @@ struct NewSignupSequence: View {
                     withAnimation(.openCard) {
                         print("Selected Next")
                         pageIndex = 1
+                    }
+                    
+                    do {
+                        guard let savedUser = savedUser else { return }
+                        
+                        // Create or retrieve the team and college items
+                        let team = NewTeam(name: "DEFAULT")
+                        let savedTeam = try await Amplify.DataStore.save(team)
+                        
+                        let college = College(name: "DEFAULT", imageLink: "")
+                        let savedCollege = try await Amplify.DataStore.save(college)
+                        
+                        // Create the athlete item using the saved user, team, and college
+                        let athlete = NewAthlete(
+                            user: savedUser,
+                            team: savedTeam, // Assign the saved team
+                            college: savedCollege, // Assign the saved college
+                            heightFeet: heightFeet,
+                            heightInches: heightInches,
+                            weight: weight,
+                            weightUnit: weightUnitString,
+                            gender: genderString,
+                            age: age,
+                            graduationYear: gradYear,
+                            highSchool: highSchool,
+                            hometown: hometown)
+                        
+                        // Save the athlete item
+                        let savedItem = try await Amplify.DataStore.save(athlete)
+                        print("Saved item: \(savedItem)")
+                    } catch let error as DataStoreError {
+                        print("Error creating item: \(error)")
+                    } catch {
+                        print("Unexpected error: \(error)")
                     }
                 }
             } label: {
