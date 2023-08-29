@@ -59,6 +59,10 @@
 		4D13F3BD2A999F930081823D /* SettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13F3BC2A999F930081823D /* SettingsPage.swift */; };
 		4D13F3BF2A99A04E0081823D /* BlobView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13F3BE2A99A04E0081823D /* BlobView.swift */; };
 		4D13F3C12A99B6700081823D /* ProfileBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13F3C02A99B6700081823D /* ProfileBar.swift */; };
+		4D13F3C42A9D563F0081823D /* Authenticator in Frameworks */ = {isa = PBXBuildFile; productRef = 4D13F3C32A9D563F0081823D /* Authenticator */; };
+		4D13F3C62A9D56D20081823D /* NewSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13F3C52A9D56D20081823D /* NewSignIn.swift */; };
+		4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13F3C72A9D57C20081823D /* ColorfulButton.swift */; };
+		4D13F3CA2A9D95260081823D /* NewSignupSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D13F3C92A9D95260081823D /* NewSignupSequence.swift */; };
 		4D1A31B02A95BE8700128F81 /* FeedStructure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */; };
 		4D1A31B32A96AFA300128F81 /* FeedBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B22A96AFA200128F81 /* FeedBase.swift */; };
 		4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1A31B42A96B44F00128F81 /* LogoView.swift */; };
@@ -201,6 +205,9 @@
 		4D13F3BC2A999F930081823D /* SettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPage.swift; sourceTree = "<group>"; };
 		4D13F3BE2A99A04E0081823D /* BlobView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobView.swift; sourceTree = "<group>"; };
 		4D13F3C02A99B6700081823D /* ProfileBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBar.swift; sourceTree = "<group>"; };
+		4D13F3C52A9D56D20081823D /* NewSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSignIn.swift; sourceTree = "<group>"; };
+		4D13F3C72A9D57C20081823D /* ColorfulButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorfulButton.swift; sourceTree = "<group>"; };
+		4D13F3C92A9D95260081823D /* NewSignupSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSignupSequence.swift; sourceTree = "<group>"; };
 		4D1A31AF2A95BE8700128F81 /* FeedStructure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedStructure.swift; sourceTree = "<group>"; };
 		4D1A31B22A96AFA200128F81 /* FeedBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedBase.swift; sourceTree = "<group>"; };
 		4D1A31B42A96B44F00128F81 /* LogoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoView.swift; sourceTree = "<group>"; };
@@ -289,6 +296,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D13F3C42A9D563F0081823D /* Authenticator in Frameworks */,
 				4DF9F7FE2A85E3730049CCD3 /* AWSAPIPlugin in Frameworks */,
 				4DF9F8062A85E3730049CCD3 /* Amplify in Frameworks */,
 				4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */,
@@ -670,6 +678,9 @@
 				4DF9F80C2A85E7BA0049CCD3 /* AppLogic.swift */,
 				4DF9F80E2A85EFF50049CCD3 /* UserBadge.swift */,
 				4DF9F8102A85F0040049CCD3 /* LandingView.swift */,
+				4D13F3C52A9D56D20081823D /* NewSignIn.swift */,
+				4D13F3C72A9D57C20081823D /* ColorfulButton.swift */,
+				4D13F3C92A9D95260081823D /* NewSignupSequence.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -698,6 +709,7 @@
 				4DF9F8012A85E3730049CCD3 /* AWSDataStorePlugin */,
 				4DF9F8032A85E3730049CCD3 /* AWSS3StoragePlugin */,
 				4DF9F8052A85E3730049CCD3 /* Amplify */,
+				4D13F3C32A9D563F0081823D /* Authenticator */,
 			);
 			productName = DiveMeets;
 			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
@@ -731,6 +743,7 @@
 				4DEF7D3429BEE796003EAD70 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */,
 				4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */,
+				4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */,
 			);
 			productRefGroup = 4D74FE9429AE7B9800401178 /* Products */;
 			projectDirPath = "";
@@ -802,6 +815,7 @@
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
 				00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */,
 				00DAFEE22A8EED2500497917 /* VideoStore.swift in Sources */,
+				4D13F3C62A9D56D20081823D /* NewSignIn.swift in Sources */,
 				4D13F3BF2A99A04E0081823D /* BlobView.swift in Sources */,
 				0037877929D4F40900D3CD59 /* Cache.swift in Sources */,
 				4D74FEC629AEC95500401178 /* MeetPageView.swift in Sources */,
@@ -836,6 +850,7 @@
 				4D1A31CB2A971E4500128F81 /* VideoButton.swift in Sources */,
 				0097478F2A24549A004E7C73 /* MeetPageParser.swift in Sources */,
 				4DCA5B1A2A9175EE00C2A6BB /* CoachUser.swift in Sources */,
+				4D13F3CA2A9D95260081823D /* NewSignupSequence.swift in Sources */,
 				4D261CB42A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift in Sources */,
 				0095BD2D29B1491D004D7EFD /* SearchView.swift in Sources */,
 				009F41BD2A6AD9E400348C68 /* Model.xcdatamodeld in Sources */,
@@ -880,6 +895,7 @@
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				4D1A31CD2A971FEA00128F81 /* MediaFeedItem.swift in Sources */,
 				4DCA5B1D2A9175EE00C2A6BB /* NewUserNewFollowed.swift in Sources */,
+				4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */,
 				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
@@ -1097,6 +1113,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/aws-amplify/amplify-ui-swift-authenticator";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/globulus/swiftui-gif";
@@ -1124,6 +1148,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4D13F3C32A9D563F0081823D /* Authenticator */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */;
+			productName = Authenticator;
+		};
 		4D76438B2A70F733000F35CB /* SwiftUIGIF */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */;
