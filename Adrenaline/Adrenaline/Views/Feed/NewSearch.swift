@@ -8,66 +8,53 @@
 import SwiftUI
 import UIKit
 import AVKit
+import Amplify
 
 enum SearchScope: String, CaseIterable {
-    case all, users, meets, posts
+    case all, users, meets, teams, colleges
 }
 
 enum SearchItem: Hashable, Identifiable {
-    static func == (lhs: SearchItem, rhs: SearchItem) -> Bool {
-        if case .feedItem(let left) = lhs,
-           case .feedItem(let right) = rhs {
-            return left == right
-        } else if case .user(let left) = lhs,
-                  case .user(let right) = rhs {
-            return left == right
+    var id: String {
+        if case .meet(let meet) = self {
+            return meet.id.uuidString
+        } else if case .user(let user) = self {
+            return user.id.uuidString
+        } else if case .team(let team) = self {
+            return team.id.uuidString
+        } else if case .college(let college) = self {
+            return college.id.uuidString
         } else {
-            return false
+            return ""
         }
-    }
-    
-    var id: Self {
-        return self
     }
     
     var title: String {
         if case .user(let user) = self {
             return user.email
-        } else if case .feedItem(let feedItem) = self {
-            switch feedItem {
-                case is MeetFeedItem:
-                    let item = feedItem as! MeetFeedItem
-                    return "Meet: \(item.meet.name)"
-                case is MediaFeedItem:
-                    let item = feedItem as! MediaFeedItem
-                    
-                    if case .text(let text) = item.media {
-                        return "Text: \(text)"
-                    } else {
-                        return "Video: \(feedItem.id)"
-                    }
-                case is ImageFeedItem:
-                    return "Image: \(feedItem.id)"
-                case is SuggestedFeedItem:
-                    return "Suggested: \(feedItem.id)"
-                default:
-                    return "Unknown: \(feedItem.id)"
-            }
+        } else if case .meet(let meet) = self {
+            return meet.name
+        } else if case .team(let team) = self {
+            return team.name
+        } else if case .college(let college) = self {
+            return college.name
         } else {
             return ""
         }
     }
     
     case user(GraphUser)
-    case feedItem(FeedItem)
+    case meet(GraphMeet)
+    case team(GraphTeam)
+    case college(GraphCollege)
 }
 
 struct NewSearchView: View {
     @Environment(\.graphUsers) private var graphUsers
     @State var text = ""
-    @State var feedModel : FeedModel = FeedModel(isAnimated: false)
+    @State var showResult: Bool = false
+    @State var selectedItem: SearchItem? = nil
     @State var searchItems: [SearchItem] = []
-    @State var users: [GraphUser] = []
     @State var searchScope: SearchScope = .all
     @State var recentSearches: [SearchItem] = []
     @Namespace var namespace
@@ -111,17 +98,19 @@ struct NewSearchView: View {
         }
         .onAppear {
             searchItems = [
-                .feedItem(MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
-                                       namespace: namespace, feedModel: $feedModel)),
-                .feedItem(MediaFeedItem(media: Media.text("Hello World"),
-                                        namespace: namespace, feedModel: $feedModel)),
-                .feedItem(MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-                                        namespace: namespace, feedModel: $feedModel))]
-            if case .feedItem(let item) = searchItems[0] {
-                feedModel.selectedItem = item.id
-            }
-            users = graphUsers
-            searchItems += users.map { .user($0) }
+                .meet(GraphMeet(meetID: 1, name: "Test Meet 1", startDate: Temporal.Date(Date()),
+                                endDate: Temporal.Date(Date()),
+                                city: "Pittsburgh", state: "PA", country: "United States",
+                                link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9080", meetType: 2)),
+                .meet(GraphMeet(meetID: 2, name: "Test Meet 2", startDate: Temporal.Date(Date()),
+                                endDate: Temporal.Date(Date()),
+                                city: "Oakton", state: "VA", country: "United States",
+                                link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9088", meetType: 2)),
+                .team(GraphTeam(name: "Pitt Aquatic Club")),
+                .college(GraphCollege(name: "University of Chicago",
+                                      imageLink: "https://www.google.com"))]
+            
+            searchItems += graphUsers.map { .user($0) }
         }
     }
     
@@ -133,12 +122,8 @@ struct NewSearchView: View {
                         Divider()
                     }
                     Button {
-                        feedModel.showTile = true
-                        if case .feedItem(let feedItem) = item {
-                            feedModel.selectedItem = feedItem.id
-                        } else if case .user(let user) = item {
-                            feedModel.selectedItem = user.id.uuidString
-                        }
+                        showResult = true
+                        selectedItem = item
                         updateRecentSearches(item: item)
                     } label:  {
                         ListRow(title: item.title, icon: "magnifyingglass")
@@ -163,41 +148,79 @@ struct NewSearchView: View {
                     .offset(y: -200)
                     .blur(radius: 20)
             )
-            .sheet(isPresented: $feedModel.showTile) {
+            .sheet(isPresented: $showResult) {
                 presentedSearchItems
             }
         }
     }
     
-    var presentedSearchItems: some View {
-        ForEach(searchItems) { item in
-            if case .feedItem(let feedItem) = item,
-               feedItem.id == feedModel.selectedItem {
-                AnyView(feedItem.expandedView)
-            } else if case .user(let user) = item,
-                      user.id.uuidString == feedModel.selectedItem {
-                AnyView(
-                    ZStack {
-                        Text(user.email)
-                        
-                        CloseButtonWithFeedModel(feedModel: $feedModel)
-                    }
-                )
+    var closeButton: some View {
+        return Button {
+            showResult = false
+            selectedItem = nil
+        } label: {
+            CloseButton()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .padding(25)
+        .ignoresSafeArea()
+    }
+    
+    private func getSearchItemView(item: SearchItem) -> any View {
+        if case .meet(let meet) = item,
+           let selected = selectedItem,
+           meet.id.uuidString == selected.id {
+            return ZStack {
+                NavigationView {
+                    MeetPageView(meetLink: meet.link)
+                }
             }
+        } else if case .user(let user) = item,
+                  let selected = selectedItem,
+                  user.id.uuidString == selected.id {
+                return ZStack {
+                    Text(user.email)
+                    
+                    closeButton
+                }
+        } else if case .team(let team) = item,
+                  let selected = selectedItem,
+                  team.id.uuidString == selected.id {
+            return ZStack {
+                Text(team.name)
+                
+                closeButton
+            }
+        } else if case .college(let college) = item,
+                  let selected = selectedItem,
+                  college.id.uuidString == selected.id {
+            return ZStack {
+                Text(college.name)
+                
+                closeButton
+            }
+        } else {
+            return EmptyView()
         }
     }
     
-    var feedItems: [FeedItem] {
-        var result: [FeedItem] = []
-        
-        for item in searchItems {
-            if case .feedItem(let feedItem) = item {
-                result.append(feedItem)
-            }
+    var presentedSearchItems: some View {
+        ForEach(searchItems) { item in
+            AnyView(getSearchItemView(item: item))
         }
-        
-        return result
     }
+    
+//    var feedItems: [FeedItem] {
+//        var result: [FeedItem] = []
+//
+//        for item in searchItems {
+//            if case .feedItem(let feedItem) = item {
+//                result.append(feedItem)
+//            }
+//        }
+//
+//        return result
+//    }
     
     var results: [SearchItem] {
         if text.isEmpty {
@@ -212,17 +235,23 @@ struct NewSearchView: View {
             }
         } else if searchScope == .meets {
             return searchItems.filter {
-                if case .feedItem(let item) = $0,
-                   type(of: item) == MeetFeedItem.self {
+                if case .meet(_) = $0 {
                     return $0.title.localizedCaseInsensitiveContains(text)
                 } else {
                     return false
                 }
             }
-        } else if searchScope == .posts {
+        } else if searchScope == .teams {
             return searchItems.filter {
-                if case .feedItem(let item) = $0,
-                   type(of: item) == MediaFeedItem.self || type(of: item) == ImageFeedItem.self {
+                if case .team(_) = $0 {
+                    return $0.title.localizedCaseInsensitiveContains(text)
+                } else {
+                    return false
+                }
+            }
+        } else if searchScope == .colleges {
+            return searchItems.filter {
+                if case .college(_) = $0 {
                     return $0.title.localizedCaseInsensitiveContains(text)
                 } else {
                     return false
