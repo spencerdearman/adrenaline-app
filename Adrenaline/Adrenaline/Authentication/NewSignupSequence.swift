@@ -12,37 +12,44 @@ extension Formatter {
     static let heightFtFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.zeroSymbol = ""
-        formatter.maximum = 1
+        formatter.maximum = 7
         return formatter
     }()
     
     static let heightInFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.zeroSymbol = ""
-        formatter.maximum = 2
+        formatter.maximum = 11
         return formatter
     }()
     
     static let weightFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.zeroSymbol = ""
-        formatter.maximum = 3
+        formatter.maximum = 500
         return formatter
     }()
     
     static let yearFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.zeroSymbol = ""
-        formatter.maximum = 4
+        formatter.maximum = 2999
         return formatter
     }()
     
     static let ageFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.zeroSymbol = ""
-        formatter.maximum = 2
+        formatter.maximum = 99
         return formatter
     }()
+}
+
+struct ButtonInfo: Identifiable {
+    let id = UUID()
+    let key: String
+    let value: String
+    var selected: Bool = false
 }
 
 struct NewSignupSequence: View {
@@ -54,6 +61,8 @@ struct NewSignupSequence: View {
     @State var newUser: GraphUser = GraphUser(firstName: "", lastName: "", email: "", accountType: "")
     @State var appear = [false, false, false]
     @Binding var email: String
+    @State var selectedDict: [String: Bool] = [:]
+    @State var selected: Bool = false
     
     // Variables for BasicInfo
     @FocusState var isFirstFocused: Bool
@@ -62,6 +71,14 @@ struct NewSignupSequence: View {
     @State var firstName: String = ""
     @State var lastName: String = ""
     @State var phone: String = ""
+    
+    // Variables for DiveMeets
+    @State var searchSubmitted: Bool = false
+    @State private var parsedLinks: DiverProfileRecords = [:]
+    @State private var dmSearchSubmitted: Bool = false
+    @State private var linksParsed: Bool = false
+    @State private var personTimedOut: Bool = false
+    @State var sortedRecords: [(String, String)] = []
     
     // Variables for Recruiting
     @State var heightFeet: Int = 0
@@ -104,6 +121,18 @@ struct NewSignupSequence: View {
         return String(chars.prefix(14))
     }
     
+    // Converts keys and lists of values into tuples of key and value
+    private func getSortedRecords(_ records: DiverProfileRecords) -> [(String, String)] {
+        var result: [(String, String)] = []
+        for (key, value) in records {
+            for link in value {
+                result.append((key, link))
+            }
+        }
+        
+        return result.sorted(by: { $0.0 < $1.0 })
+    }
+    
     var body: some View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
@@ -122,6 +151,52 @@ struct NewSignupSequence: View {
                     }
                     .matchedGeometryEffect(id: "form", in: namespace)
                 case 1:
+                    Group {
+                        if searchSubmitted && !personTimedOut && !linksParsed {
+                            ZStack {
+                                SwiftUIWebView(firstName: $firstName, lastName: $lastName,
+                                               parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
+                                               linksParsed: $linksParsed, timedOut: $personTimedOut)
+                                VStack(alignment: .leading, spacing: 20) {
+                                    if currentMode == .light {
+                                        Image("LoginBackground")
+                                    } else {
+                                        Image("LoginBackground-Dark")
+                                    }
+                                    Text("Loading...")
+                                        .font(.largeTitle).bold()
+                                        .foregroundColor(.primary)
+                                        .slideFadeIn(show: appear[0], offset: 30)
+                                }
+                            }
+                        } else {
+                            if linksParsed || personTimedOut {
+                                Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
+                                    .scaleEffect(0.7)
+                                VStack(alignment: .leading, spacing: 20) {
+                                    diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                                }
+                                .frame(height: screenHeight * 0.5)
+                                .matchedGeometryEffect(id: "form", in: namespace)
+                            } else {
+                                ZStack {
+                                    Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
+                                        .scaleEffect(0.7)
+                                    VStack(alignment: .leading, spacing: 20) {
+                                        Text("Searching")
+                                            .font(.largeTitle).bold()
+                                            .foregroundColor(.primary)
+                                            .slideFadeIn(show: appear[0], offset: 30)
+                                    }
+                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                }
+                            }
+                        }
+                    }
+                    .onDisappear {
+                        searchSubmitted = false
+                    }
+                case 2:
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Recruiting Info")
                             .font(.largeTitle).bold()
@@ -163,6 +238,7 @@ struct NewSignupSequence: View {
                 .customField(icon: "hexagon.fill")
                 .focused($isFirstFocused)
                 .onChange(of: firstName) { _ in
+                    firstName = firstName
                     newUser.firstName = firstName
                 }
             
@@ -172,6 +248,7 @@ struct NewSignupSequence: View {
                 .customField(icon: "hexagon.fill")
                 .focused($isLastFocused)
                 .onChange(of: lastName) { _ in
+                    lastName = lastName
                     newUser.lastName = lastName
                 }
             
@@ -187,10 +264,80 @@ struct NewSignupSequence: View {
             Divider()
             
             Button {
+                searchSubmitted = true
+                pageIndex = 1
+            } label: {
+                ColorfulButton(title: "Continue")
+            }
+        }
+    }
+    
+    var diveMeetsInfoForm: some View {
+        Group {
+            if sortedRecords.count == 1 {
+                Text("Is this you?")
+                    .font(.largeTitle).bold()
+                    .foregroundColor(.primary)
+                    .slideFadeIn(show: appear[0], offset: 30)
+            } else if sortedRecords.count > 1 {
+                Text("Are you one of these profiles?")
+                    .font(.largeTitle).bold()
+                    .foregroundColor(.primary)
+                    .slideFadeIn(show: appear[0], offset: 30)
+            } else {
+                Text("No DiveMeets Profile Found")
+                    .font(.largeTitle).bold()
+                    .foregroundColor(.primary)
+                    .slideFadeIn(show: appear[0], offset: 30)
+            }
+            if sortedRecords.count >= 1 {
+                ScrollView {
+                    ForEach(sortedRecords, id: \.1) { record in
+                        let (key, value) = record
+                        Button {
+                            selectedDict[value] = true
+                            newUser.diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                        } label: {
+                            ZStack {
+                                Rectangle()
+                                    .fill(.ultraThinMaterial)
+                                    .cornerRadius(30)
+                                    .onAppear {
+                                        selectedDict[value] = false
+                                    }
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 30)
+                                            .stroke(selectedDict[value] == true ? Color.secondary : .clear, lineWidth: 2)
+                                    )
+                                    .padding(5)
+                                
+                                HStack {
+                                    Spacer()
+                                    ProfileImage(
+                                        diverID: String(value
+                                            .components(separatedBy: "=").last ?? ""))
+                                    .scaleEffect(0.4)
+                                    .frame(width: 100, height: 100)
+                                    Spacer()
+                                    Text(key)
+                                        .foregroundColor(.primary)
+                                        .font(.title2).fontWeight(.semibold)
+                                        .padding()
+                                    Spacer()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            Divider()
+            
+            Button {
                 Task {
                     withAnimation {
                         print("Selected Next")
-                        pageIndex = 1
+                        pageIndex = 2
                     }
                     do {
                         let newUser = try await saveUser(user: newUser)
@@ -203,6 +350,20 @@ struct NewSignupSequence: View {
             } label: {
                 ColorfulButton(title: "Continue")
             }
+            
+            Text("**Previous**")
+                .font(.footnote)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .foregroundColor(.primary.opacity(0.7))
+                .accentColor(.primary.opacity(0.7))
+                .onTapGesture {
+                    withAnimation(.openCard) {
+                        pageIndex = 0
+                    }
+                }
+        }
+        .onAppear {
+            sortedRecords = getSortedRecords(parsedLinks)
         }
     }
     
@@ -351,7 +512,7 @@ struct NewSignupSequence: View {
                 .accentColor(.primary.opacity(0.7))
                 .onTapGesture {
                     withAnimation(.openCard) {
-                        pageIndex = 0
+                        pageIndex = 1
                     }
                 }
         }
