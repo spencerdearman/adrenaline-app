@@ -210,18 +210,6 @@ struct NewSearchView: View {
         }
     }
     
-//    var feedItems: [FeedItem] {
-//        var result: [FeedItem] = []
-//
-//        for item in searchItems {
-//            if case .feedItem(let feedItem) = item {
-//                result.append(feedItem)
-//            }
-//        }
-//
-//        return result
-//    }
-    
     var results: [SearchItem] {
         if text.isEmpty {
             return searchItems
