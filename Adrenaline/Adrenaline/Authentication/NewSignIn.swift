@@ -55,37 +55,13 @@ struct NewSignIn: View {
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .customField(icon: "envelope.open.fill")
-                .overlay(
-                    GeometryReader { proxy in
-                        let offset = proxy.frame(in: .named("stack")).minY + 32
-                        Color.clear.preference(key: CirclePreferenceKey.self, value: offset)
-                    }
-                        .onPreferenceChange(CirclePreferenceKey.self) { value in
-                            circleInitialY = value
-                            circleY = value
-                        }
-                )
                 .focused($isEmailFocused)
-                .onChange(of: isEmailFocused) { isEmailFocused in
-                    if isEmailFocused {
-                        withAnimation {
-                            circleY = circleInitialY
-                        }
-                    }
-                }
+                .customField(icon: "envelope.open.fill")
             
             SecureField("Password", text: $state.password)
                 .textContentType(.password)
                 .customField(icon: "key.fill")
                 .focused($isPasswordFocused)
-                .onChange(of: isPasswordFocused, perform: { isPasswordFocused in
-                    if isPasswordFocused {
-                        withAnimation {
-                            circleY = circleInitialY + 70
-                        }
-                    }
-                })
             
             Button {
                 Task {
@@ -256,6 +232,7 @@ struct CirclePreferenceKey: PreferenceKey {
 
 struct TextFieldModifier: ViewModifier {
     var icon: String
+    var iconColor: Color? = nil
     
     func body(content: Content) -> some View {
         content
@@ -263,6 +240,7 @@ struct TextFieldModifier: ViewModifier {
                 HStack {
                     Image(systemName: icon)
                         .frame(width: 36, height: 36)
+                        .foregroundColor(iconColor != nil ? iconColor : .gray.opacity(0.5))
                         .background(.thinMaterial)
                         .cornerRadius(14)
                         .modifier(OutlineOverlay(cornerRadius: 14))
@@ -282,7 +260,7 @@ struct TextFieldModifier: ViewModifier {
 }
 
 extension View {
-    func customField(icon: String) -> some View {
-        self.modifier(TextFieldModifier(icon: icon))
+    func customField(icon: String, iconColor: Color? = nil) -> some View {
+            self.modifier(TextFieldModifier(icon: icon, iconColor: iconColor))
     }
 }

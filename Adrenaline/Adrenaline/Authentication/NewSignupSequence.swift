@@ -18,7 +18,7 @@ extension Formatter {
     
     static let heightInFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.zeroSymbol = ""
+        formatter.negativeInfinitySymbol = ""
         formatter.maximum = 11
         return formatter
     }()
@@ -56,6 +56,8 @@ struct NewSignupSequence: View {
     @Environment(\.colorScheme) var currentMode
     @Namespace var namespace
     @ScaledMetric var pickerFontSize: CGFloat = 18
+    @State var signupCompleted: Bool = false
+    @State var buttonPressed: Bool = false
     @State private var savedUser: NewUser? = nil
     @State var pageIndex: Int = 0
     @State var newUser: GraphUser = GraphUser(firstName: "", lastName: "", email: "", accountType: "")
@@ -82,7 +84,7 @@ struct NewSignupSequence: View {
     
     // Variables for Recruiting
     @State var heightFeet: Int = 0
-    @State var heightInches: Int = 0
+    @State var heightInches: Double = -.infinity
     @State var weight: Int = 0
     @State var weightUnit: WeightUnit = .lb
     @State var weightUnitString: String = ""
@@ -149,7 +151,7 @@ struct NewSignupSequence: View {
                         
                         basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
                     }
-                    .matchedGeometryEffect(id: "form", in: namespace)
+                    .matchedGeometryEffect(id: "form1", in: namespace)
                 case 1:
                     Group {
                         if searchSubmitted && !personTimedOut && !linksParsed {
@@ -171,25 +173,19 @@ struct NewSignupSequence: View {
                             }
                         } else {
                             if linksParsed || personTimedOut {
-                                Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
-                                    .scaleEffect(0.7)
                                 VStack(alignment: .leading, spacing: 20) {
                                     diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
                                 }
                                 .frame(height: screenHeight * 0.5)
                                 .matchedGeometryEffect(id: "form", in: namespace)
                             } else {
-                                ZStack {
-                                    Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
-                                        .scaleEffect(0.7)
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        Text("Searching")
-                                            .font(.largeTitle).bold()
-                                            .foregroundColor(.primary)
-                                            .slideFadeIn(show: appear[0], offset: 30)
-                                    }
-                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                VStack(alignment: .leading, spacing: 20) {
+                                    Text("Searching")
+                                        .font(.largeTitle).bold()
+                                        .foregroundColor(.primary)
+                                        .slideFadeIn(show: appear[0], offset: 30)
                                 }
+                                .matchedGeometryEffect(id: "form", in: namespace)
                             }
                         }
                     }
@@ -204,6 +200,16 @@ struct NewSignupSequence: View {
                             .slideFadeIn(show: appear[0], offset: 30)
                         
                         athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                case 3:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Welcome to Adrenaline!")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        welcomeForm.slideFadeIn(show: appear[2], offset: 10)
                     }
                     .matchedGeometryEffect(id: "form", in: namespace)
                 default:
@@ -230,12 +236,16 @@ struct NewSignupSequence: View {
         }
     }
     
+    var basicAllFieldsFilled: Bool {
+        !firstName.isEmpty && !lastName.isEmpty && !phone.isEmpty
+    }
+    
     var basicInfoForm: some View {
         Group {
             TextField("First Name", text: $firstName)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .customField(icon: "hexagon.fill")
+                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && firstName.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .onChange(of: firstName) { _ in
                     firstName = firstName
@@ -245,7 +255,7 @@ struct NewSignupSequence: View {
             TextField("Last Name", text: $lastName)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .customField(icon: "hexagon.fill")
+                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && lastName.isEmpty ? Custom.error : nil))
                 .focused($isLastFocused)
                 .onChange(of: lastName) { _ in
                     lastName = lastName
@@ -254,7 +264,7 @@ struct NewSignupSequence: View {
             
             TextField("Phone Number", text: $phone)
                 .keyboardType(.numberPad)
-                .customField(icon: "hexagon.fill")
+                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && phone.isEmpty ? Custom.error : nil))
                 .focused($isPhoneFocused)
                 .onChange(of: phone) { _ in
                     phone = formatPhoneString(string: phone)
@@ -265,7 +275,12 @@ struct NewSignupSequence: View {
             
             Button {
                 searchSubmitted = true
-                pageIndex = 1
+                if basicAllFieldsFilled {
+                    buttonPressed = false
+                    pageIndex = 1
+                } else {
+                    buttonPressed = true
+                }
             } label: {
                 ColorfulButton(title: "Continue")
             }
@@ -351,20 +366,53 @@ struct NewSignupSequence: View {
                 ColorfulButton(title: "Continue")
             }
             
-            Text("**Previous**")
-                .font(.footnote)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .foregroundColor(.primary.opacity(0.7))
-                .accentColor(.primary.opacity(0.7))
-                .onTapGesture {
-                    withAnimation(.openCard) {
-                        pageIndex = 0
+            HStack {
+                Text("**Previous**")
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        withAnimation(.openCard) {
+                            pageIndex = 0
+                        }
                     }
-                }
+                
+                Spacer()
+                
+                Text("**Skip**")
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        Task {
+                            withAnimation {
+                                print("Selected Next")
+                                pageIndex = 2
+                            }
+                            do {
+                                let newUser = try await saveUser(user: newUser)
+                                print("Saved New User")
+                                savedUser = newUser
+                            } catch {
+                                print("Could not save user to DataStore: \(error)")
+                            }
+                        }
+                        withAnimation(.openCard) {
+                            pageIndex = 2
+                        }
+                    }
+            }
+            
         }
         .onAppear {
             sortedRecords = getSortedRecords(parsedLinks)
         }
+    }
+    
+    var athleteAllFieldsFilled: Bool {
+        heightFeet != 0 && heightInches != -1 && weight != 0 && age != 0 && gradYear != 0 && !highSchool.isEmpty && !hometown.isEmpty
     }
     
     var athleteInfoForm: some View {
@@ -374,7 +422,7 @@ struct NewSignupSequence: View {
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .customField(icon: "hexagon.fill")
+                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightFeet == 0 ? Custom.error : nil))
                     .focused($isFirstFocused)
                     .onChange(of: heightFeet) { _ in
                         heightFeet = heightFeet
@@ -383,7 +431,7 @@ struct NewSignupSequence: View {
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .customField(icon: "hexagon.fill")
+                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightInches == 0 ? Custom.error : nil))
                     .focused($isFirstFocused)
                     .onChange(of: heightInches) { _ in
                         heightInches = heightInches
@@ -395,7 +443,7 @@ struct NewSignupSequence: View {
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .customField(icon: "hexagon.fill")
+                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && weight == 0 ? Custom.error : nil))
                     .focused($isLastFocused)
                 
                 BubbleSelectView(selection: $weightUnit)
@@ -412,7 +460,7 @@ struct NewSignupSequence: View {
             HStack {
                 TextField("Age", value: $age, formatter: .ageFormatter)
                     .keyboardType(.numberPad)
-                    .customField(icon: "hexagon.fill")
+                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && age == 0 ? Custom.error : nil))
                     .focused($isPhoneFocused)
                     .onChange(of: age) { _ in
                         age = age
@@ -433,7 +481,7 @@ struct NewSignupSequence: View {
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .customField(icon: "hexagon.fill")
+                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && gradYear == 0 ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .onChange(of: gradYear) { _ in
                     gradYear = gradYear
@@ -443,7 +491,7 @@ struct NewSignupSequence: View {
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .customField(icon: "hexagon.fill")
+                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && highSchool.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .onChange(of: highSchool) { _ in
                     highSchool = highSchool
@@ -453,7 +501,7 @@ struct NewSignupSequence: View {
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .customField(icon: "hexagon.fill")
+                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && hometown.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .onChange(of: hometown) { _ in
                     hometown = hometown
@@ -464,8 +512,12 @@ struct NewSignupSequence: View {
             Button {
                 Task {
                     withAnimation(.openCard) {
-                        print("Selected Next")
-                        pageIndex = 1
+                        if athleteAllFieldsFilled {
+                            buttonPressed = false
+                            pageIndex = 3
+                        } else {
+                            buttonPressed = true
+                        }
                     }
                     
                     do {
@@ -484,7 +536,7 @@ struct NewSignupSequence: View {
                             team: savedTeam, // Assign the saved team
                             college: savedCollege, // Assign the saved college
                             heightFeet: heightFeet,
-                            heightInches: heightInches,
+                            heightInches: Int(heightInches),
                             weight: weight,
                             weightUnit: weightUnitString,
                             gender: genderString,
@@ -518,6 +570,16 @@ struct NewSignupSequence: View {
         }
     }
     
+    var welcomeForm: some View {
+        Group {
+            Button {
+                signupCompleted = true
+            } label: {
+                ColorfulButton(title: "Take me to my profile")
+            }
+        }
+    }
+    
     func animate() {
         withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.8).delay(0.2)) {
             appear[0] = true
@@ -530,9 +592,3 @@ struct NewSignupSequence: View {
         }
     }
 }
-//
-//struct NewSignupSequence_Previews: PreviewProvider {
-//    static var previews: some View {
-//        NewSignupSequence()
-//    }
-//}
