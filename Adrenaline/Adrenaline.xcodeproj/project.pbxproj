@@ -341,7 +341,6 @@
 				00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */,
 				00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */,
 				00FFDAE72A66FBE10090727B /* AthleteRecruitingView.swift */,
-				4D261CB32A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift */,
 				4D7643882A70CB39000F35CB /* AppLaunchSequence.swift */,
 			);
 			path = SignupSequence;
@@ -681,6 +680,7 @@
 				4D13F3C52A9D56D20081823D /* NewSignIn.swift */,
 				4D13F3C72A9D57C20081823D /* ColorfulButton.swift */,
 				4D13F3C92A9D95260081823D /* NewSignupSequence.swift */,
+				4D261CB32A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";

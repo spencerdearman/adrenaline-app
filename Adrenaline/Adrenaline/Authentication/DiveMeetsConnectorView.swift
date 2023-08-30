@@ -41,7 +41,7 @@ struct DiveMeetsConnectorView: View {
                 }
             } else {
                 ZStack{
-                    bgColor.ignoresSafeArea()
+                    Color.clear.ignoresSafeArea()
                     VStack {
                         Text("Searching")
                         ProgressView()
@@ -58,20 +58,6 @@ struct DiveMeetsConnectorView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    // If user backs up into BasicInfoView, it drops them from db so they can be
-                    // added again if they fill out the information and proceed
-                    if let email = signupData.email {
-                        dropUser(email)
-                    }
-                    dismiss()
-                }) {
-                    NavigationViewBackButton()
-                }
-            }
-        }
     }
 }
 
@@ -191,32 +177,11 @@ struct IsThisYouView: View {
                                         .padding([.leading, .trailing])
                     }
                     .padding()
-                    NavigationLink {
-                        signupData.accountType == .athlete
-                                       ? AnyView(AthleteRecruitingView(signupData: $signupData,
-                                                                       diveMeetsID: $diveMeetsID,
-                                                                       showSplash: $showSplash))
-                                       : AnyView(AdrenalineProfileView(
-                                        userEmail: signupData.email ?? "",
-                                        loginSuccessful: $loginSuccessful))
-                    } label: {
-                        ZStack {
-                            Rectangle()
-                                .foregroundColor(Custom.darkGray)
-                                .frame(width: screenWidth * 0.2, height: screenWidth * 0.09)
-                                .mask(RoundedRectangle(cornerRadius: 50))
-                                .shadow(radius: 6)
-                            Text("Skip")
-                                .foregroundColor(.primary)
-                        }
-                    }
-                    Spacer()
                 }
             }
         }
         .onAppear {
             sortedRecords = getSortedRecords(records)
-            blockingNetwork = false
         }
     }
 }
