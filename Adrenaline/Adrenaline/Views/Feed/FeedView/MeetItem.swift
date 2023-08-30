@@ -101,7 +101,6 @@ struct MeetFeedItemExpandedView: View {
     var id: String
     var namespace: Namespace.ID
     var meet: MeetEvent
-    var isAnimated = true
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -117,22 +116,10 @@ struct MeetFeedItemExpandedView: View {
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))
             .scaleEffect(-viewState.width/500 + 1)
             .background(.ultraThinMaterial)
-            .gesture(isAnimated ? drag : nil)
+            .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
             
-            Button {
-                isAnimated ?
-                withAnimation(.closeCard) {
-                    feedModel.showTile = false
-                    feedModel.selectedItem = ""
-                }
-                : presentationMode.wrappedValue.dismiss()
-            } label: {
-                CloseButton()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(25)
-            .ignoresSafeArea()
+            CloseButtonWithFeedModel(feedModel: $feedModel)
         }
         .frame(maxWidth: screenWidth)
         .zIndex(1)

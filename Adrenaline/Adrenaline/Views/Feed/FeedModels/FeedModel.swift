@@ -18,6 +18,8 @@ struct FeedModel {
     // Detail View
     var showTile: Bool = false
     var selectedItem: String = ""
+    
+    var isAnimated: Bool = true
 }
 
 extension Animation {
