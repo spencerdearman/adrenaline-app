@@ -51,6 +51,9 @@ enum SearchItem: Hashable, Identifiable {
 
 struct NewSearchView: View {
     @Environment(\.graphUsers) private var graphUsers
+    @Environment(\.graphMeets) private var graphMeets
+    @Environment(\.graphTeams) private var graphTeams
+    @Environment(\.graphColleges) private var graphColleges
     @State var text = ""
     @State var showResult: Bool = false
     @State var selectedItem: SearchItem? = nil
@@ -106,11 +109,15 @@ struct NewSearchView: View {
                                 endDate: Temporal.Date(Date()),
                                 city: "Oakton", state: "VA", country: "United States",
                                 link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9088", meetType: 2)),
-                .team(GraphTeam(name: "Pitt Aquatic Club")),
-                .college(GraphCollege(name: "University of Chicago",
-                                      imageLink: "https://www.google.com"))]
+//                .team(GraphTeam(name: "Pitt Aquatic Club")),
+//                .college(GraphCollege(name: "University of Chicago",
+//                                      imageLink: "https://www.google.com"))
+            ]
             
+            searchItems += graphMeets.map { .meet($0) }
             searchItems += graphUsers.map { .user($0) }
+            searchItems += graphTeams.map { .team($0) }
+            searchItems += graphColleges.map { .college($0) }
         }
     }
     
