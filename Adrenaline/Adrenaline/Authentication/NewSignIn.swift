@@ -16,6 +16,7 @@ struct NewSignIn: View {
     @State var circleInitialY = CGFloat.zero
     @State var circleY = CGFloat.zero
     @State var displaySignIn: Bool = true
+    @Binding var email: String
     @FocusState var isEmailFocused: Bool
     @FocusState var isPasswordFocused: Bool
     @State var appear = [false, false, false]
@@ -57,6 +58,9 @@ struct NewSignIn: View {
                 .disableAutocorrection(true)
                 .focused($isEmailFocused)
                 .customField(icon: "envelope.open.fill")
+                .onChange(of: state.username) { _ in
+                    email = state.username
+                }
             
             SecureField("Password", text: $state.password)
                 .textContentType(.password)
@@ -64,6 +68,7 @@ struct NewSignIn: View {
                 .focused($isPasswordFocused)
             
             Button {
+                email = state.username
                 Task {
                     try? await state.signIn()
                 }

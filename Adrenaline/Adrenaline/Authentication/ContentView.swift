@@ -47,7 +47,7 @@ struct ContentView: View {
             if appLogic.initialized {
                 Authenticator(
                     signInContent: { state in
-                        NewSignIn(state: state)
+                        NewSignIn(state: state, email: $email)
                     }
                 ) { state in
                     if !signupCompleted {
