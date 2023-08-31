@@ -256,8 +256,7 @@ struct RankingListDiverView: View {
                     .padding(.trailing, 40)
                 if let email = athlete.email {
                     NavigationLink(
-                        destination: OldAdrenalineProfileView(showBackButton: true, userEmail: email,
-                                                           loginSuccessful: .constant(false))) {
+                        destination: OldAdrenalineProfileView()) {
                                                                Text((athlete.firstName ?? "") +
                                                                     " "  +
                                                                     (athlete.lastName ?? ""))

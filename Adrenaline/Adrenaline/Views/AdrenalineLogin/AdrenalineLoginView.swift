@@ -117,8 +117,7 @@ struct LoginPage: View {
             ZStack {
                 VStack {
                     if loginSuccessful {
-                        OldAdrenalineProfileView(userEmail: email,
-                                              loginSuccessful: $loginSuccessful)
+                        OldAdrenalineProfileView()
                         .zIndex(1)
                         .onAppear {
                             withAnimation {
@@ -257,12 +256,6 @@ struct LoginContent: View {
                 })
                 .buttonStyle(.bordered)
                 .cornerRadius(cornerRadius)
-                NavigationLink(destination: AccountTypeSelectView(signupData: $signupData,
-                                                                  showSplash: $showSplash)) {
-                    Text("Create an account")
-                }
-                                                                  .cornerRadius(40)
-                                                                  .foregroundColor(Custom.medBlue)
             }
             .frame(width: screenWidth * 0.75)
             .padding(.bottom, maxHeightOffset)

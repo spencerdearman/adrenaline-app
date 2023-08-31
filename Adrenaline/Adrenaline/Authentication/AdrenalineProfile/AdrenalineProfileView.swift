@@ -12,6 +12,39 @@ import Authenticator
 func getCollegeImageFilename(name: String) -> String {
     return name.replacingOccurrences(of: " ", with: "_")
 }
+enum AccountType: String, CaseIterable {
+    case athlete = "Athlete"
+    case coach = "Coach"
+    case spectator = "Spectator"
+}
+
+enum WeightUnit: String, CaseIterable {
+    case lb = "lb"
+    case kg = "kg"
+}
+
+enum Gender: String, CaseIterable {
+    case male = "M"
+    case female = "F"
+}
+
+enum BasicInfoField: Int, Hashable, CaseIterable {
+    case first
+    case last
+    case email
+    case phone
+    case password
+    case repeatPassword
+}
+
+struct UserViewData: Equatable {
+    var firstName: String?
+    var lastName: String?
+    var email: String?
+    var phone: String?
+    var diveMeetsID: String?
+    var accountType: String?
+}
 
 struct AdrenalineProfileView: View {
     @ObservedObject var state: SignedInState

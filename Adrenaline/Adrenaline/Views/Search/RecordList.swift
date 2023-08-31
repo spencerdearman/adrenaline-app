@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum SearchDiveMeetsOrAdrenaline: String, CaseIterable {
+    case diveMeets = "DiveMeets"
+    case adrenaline = "Adrenaline"
+}
+
 struct RecordList: View {
     @Environment(\.colorScheme) var currentMode
     @State var loginSuccessful: Bool = false
@@ -76,9 +81,7 @@ struct RecordList: View {
                         ForEach(Array(adrenalineRecords), id: \.key) { record in // Convert dictionary to array with 'Array(adrenalineRecords)'
                             if let value = record.value { // Unwrap the optional User value
                                 NavigationLink(
-                                    destination: OldAdrenalineProfileView(
-                                        showBackButton: true, userEmail: value.email ?? "",
-                                        loginSuccessful: $loginSuccessful)) {
+                                    destination: OldAdrenalineProfileView()) {
                                             InnerRecordListContent(key: record.key, resultSelected: $resultSelected)
                                         }
                                         .simultaneousGesture(TapGesture().onEnded {
