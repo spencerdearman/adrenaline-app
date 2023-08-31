@@ -66,28 +66,24 @@ struct AdrenalineProfileView: View {
                 .offset(y: -screenHeight * 0.25)
                 .padding([.leading, .trailing, .top])
                 .frame(width: screenWidth * 0.9)
-
+                
                 ZStack{
                     Rectangle()
                         .foregroundColor(Custom.darkGray)
                         .cornerRadius(50)
                         .shadow(radius: 10)
                         .frame(width: screenWidth, height: screenHeight * 0.8)
-//                    VStack {
-//                        if let type = user.accountType {
-//                            if type == AccountType.athlete.rawValue {
-//                                DiverView(userViewData: $userViewData,
-//                                          loginSuccessful: $loginSuccessful)
-//                            } else if type == AccountType.coach.rawValue {
-//                                CoachView(userViewData: $userViewData,
-//                                          loginSuccessful: $loginSuccessful)
-//                            } else if type == AccountType.spectator.rawValue {
-//                                Text("This is a spectator profile")
-//                            } else {
-//                                Text("The account type has not been specified")
-//                            }
-//                        }
-//                    }
+                    VStack {
+                        let type = user.accountType
+                        if type == AccountType.athlete.rawValue {
+                            DiverView(graphUser: user)
+                        } else if type == AccountType.coach.rawValue {
+                            CoachView(graphUser: user)
+                        } else if type == AccountType.spectator.rawValue {
+                            Text("This is a spectator profile")
+                        } else {
+                            Text("The account type has not been specified")
+                        }                    }
                 }
                 .frame(width: screenWidth)
                 .offset(y: offset)
@@ -134,13 +130,13 @@ struct PersonalInfoView: View {
     @State var isShowingStar: Bool = true
     @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
     @ScaledMetric private var bubbleHeightScaled: CGFloat = 85
-
+    
     private let screenWidth = UIScreen.main.bounds.width
-
+    
     private var collegeIconPadding: CGFloat {
         collegeIconPaddingScaled * 2.2
     }
-
+    
     private var bubbleHeight: CGFloat {
         switch dynamicTypeSize {
         case .xSmall, .small, .medium:
@@ -149,17 +145,17 @@ struct PersonalInfoView: View {
             return bubbleHeightScaled * 1.2
         }
     }
-
+    
     private func isFollowedByUser(email: String, user: User) -> Bool {
         for followed in user.followedArray {
             if followed.email == email {
                 return true
             }
         }
-
+        
         return false
     }
-
+    
     var body: some View {
         VStack {
             ZStack {
@@ -204,24 +200,24 @@ struct PersonalInfoView: View {
                                     WhiteDivider()
                                 }
                                 HStack (alignment: .firstTextBaseline) {
-//                                    if user.accountType == "Athlete" {
-                                        HStack {
-                                            Image(systemName: "mappin.and.ellipse")
-                                            if let hometown = athlete?.hometown, !hometown.isEmpty {
-                                                Text(hometown)
-                                            } else {
-                                                Text("?")
-                                            }
+                                    //                                    if user.accountType == "Athlete" {
+                                    HStack {
+                                        Image(systemName: "mappin.and.ellipse")
+                                        if let hometown = athlete?.hometown, !hometown.isEmpty {
+                                            Text(hometown)
+                                        } else {
+                                            Text("?")
                                         }
-                                        HStack {
-                                            Image(systemName: "person.fill")
-                                            if let age = athlete?.age {
-                                                Text(String(age))
-                                            } else {
-                                                Text("?")
-                                            }
+                                    }
+                                    HStack {
+                                        Image(systemName: "person.fill")
+                                        if let age = athlete?.age {
+                                            Text(String(age))
+                                        } else {
+                                            Text("?")
                                         }
-//                                    }
+                                    }
+                                    //                                    }
                                     if user.diveMeetsID != "" {
                                         HStack {
                                             Image(systemName: "figure.pool.swim")
@@ -441,59 +437,10 @@ struct PersonalInfoView: View {
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
-    @Environment(\.updateUserField) private var updateUserField
-    @Environment(\.updateAthleteField) private var updateAthleteField
-    @Binding var userViewData: UserViewData
-    @State var diveMeetsID: String = ""
-    private let parser: ProfileParser = ProfileParser()
-    private let screenWidth = UIScreen.main.bounds.width
-    private var textFieldWidth: CGFloat {
-        screenWidth * 0.5
-    }
+    var graphUser: GraphUser
     var body: some View {
         VStack {
-            BackgroundBubble(vPadding: 40, hPadding: 40) {
-                VStack {
-                    Text("Please Enter DiveMeets ID")
-                        .foregroundColor(.primary)
-                        .font(.title2).fontWeight(.semibold)
-                    TextField("DiveMeets ID", text: $diveMeetsID)
-                        .textFieldStyle(.roundedBorder)
-                        .textContentType(.telephoneNumber)
-                        .keyboardType(.numberPad)
-                    .frame(width: textFieldWidth) }
-            }
-            BackgroundBubble(onTapGesture: {
-                if let email = userViewData.email {
-                    updateUserField(email, "diveMeetsID", diveMeetsID)
-                    Task {
-                        if await parser.parseProfile(diveMeetsID: diveMeetsID),
-                           let info = parser.profileData.info {
-                            if let age = info.age { updateAthleteField(email, "age", Int16(age)) }
-                            if let hometown = info.cityState {
-                                updateAthleteField(email, "hometown", hometown)
-                            }
-                        } else {
-                            print("Failed to get profile info from new DiveMeets link")
-                        }
-
-                        userViewData.diveMeetsID = diveMeetsID
-                    }
-                }
-                presentationMode.wrappedValue.dismiss()
-            }) {
-                Text("Done")
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-            }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
-                }
-            }
+            Text("ReMake the DiveMeets Link")
         }
     }
 }
