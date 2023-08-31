@@ -56,17 +56,24 @@ struct NewSignupSequence: View {
     @Environment(\.colorScheme) var currentMode
     @Namespace var namespace
     @ScaledMetric var pickerFontSize: CGFloat = 18
+    
+    // Key Bindings
     @Binding var signupCompleted: Bool
-    @State var buttonPressed: Bool = false
-    @State var savedUser: NewUser? = nil
-    @State var pageIndex: Int = 0
-    @State var newUser: GraphUser = GraphUser(firstName: "", lastName: "", email: "", accountType: "")
-    @State var appear = [false, false, false]
     @Binding var email: String
+    
+    // User States
+    @State var savedUser: NewUser? = nil
+    @State var newUser: GraphUser = GraphUser(firstName: "", lastName: "",
+                                              email: "", accountType: "")
+    
+    // General States
+    @State var buttonPressed: Bool = false
+    @State var pageIndex: Int = 0
+    @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
     
-    //Variables for Account Type
+    // Variables for Account Type
     @State var accountType: String = ""
     
     // Variables for BasicInfo
@@ -76,6 +83,8 @@ struct NewSignupSequence: View {
     @State var firstName: String = ""
     @State var lastName: String = ""
     @State var phone: String = ""
+    @State var userCreationSuccessful: Bool = false
+    @State var showBasicError: Bool = false
     
     // Variables for DiveMeets
     @State var searchSubmitted: Bool = false
@@ -97,6 +106,8 @@ struct NewSignupSequence: View {
     @State var gradYear: Int = 0
     @State var highSchool: String = ""
     @State var hometown: String = ""
+    @State var athleteCreationSuccessful: Bool = false
+    @State var showAthleteError: Bool = false
     
     // Measurement Variables
     private let screenWidth = UIScreen.main.bounds.width
@@ -109,7 +120,6 @@ struct NewSignupSequence: View {
     private func removePhoneFormatting(string: String) -> String {
         return string.filter { $0.isNumber }
     }
-    
     private func formatPhoneString(string: String) -> String {
         var chars = removePhoneFormatting(string: string)
         if chars.count > 0 {
@@ -125,8 +135,6 @@ struct NewSignupSequence: View {
         
         return String(chars.prefix(14))
     }
-    
-    // Converts keys and lists of values into tuples of key and value
     private func getSortedRecords(_ records: DiverProfileRecords) -> [(String, String)] {
         var result: [(String, String)] = []
         for (key, value) in records {
@@ -462,20 +470,30 @@ struct NewSignupSequence: View {
             Divider()
             
             Button {
+                showBasicError = false
                 Task {
-                    withAnimation {
-                        print("Selected Next")
-                        pageIndex = 3
-                    }
                     do {
                         savedUser = try await saveUser(user: newUser)
+                        userCreationSuccessful = true
                         print("Saved New User")
                     } catch {
+                        showBasicError = true
                         print("Could not save user to DataStore: \(error)")
+                    }
+                    if userCreationSuccessful {
+                        withAnimation {
+                            print("Selected Next")
+                            pageIndex = 3
+                        }
                     }
                 }
             } label: {
                 ColorfulButton(title: "Continue")
+            }
+            
+            if showBasicError {
+                Text("Error creating user profile, please check information")
+                    .foregroundColor(.primary).fontWeight(.semibold)
             }
             
             HStack {
@@ -622,36 +640,25 @@ struct NewSignupSequence: View {
             Divider()
             
             Button {
+                withAnimation(.closeCard) {
+                    showAthleteError = false
+                }
                 Task {
-                    withAnimation(.openCard) {
-                        if athleteAllFieldsFilled {
-                            buttonPressed = false
-                            pageIndex = 4
-                        } else {
-                            buttonPressed = true
-                        }
-                    }
-                    
                     do {
-                        let emailPredicate = NewUser.keys.email == email
-                        let user = await queryAWSUsers(where: emailPredicate)
-                        let savedUser = user[0]
-//                        guard let savedUser = savedUser else { return }
+                        guard let savedUser = savedUser else { return }
                         print("Printing the saved User: \(savedUser)")
-                        
-                        // Create or retrieve the team and college items
+
                         let team = NewTeam(name: "DEFAULT")
                         let savedTeam = try await Amplify.DataStore.save(team)
-                        
-//
+
                         let college = College(name: "DEFAULT", imageLink: "NIL")
                         let savedCollege = try await Amplify.DataStore.save(college)
-//
+
                         // Create the athlete item using the saved user, team, and college
                         let athlete = NewAthlete(
                             user: savedUser,
-                            team: savedTeam, // Assign the saved team
-                            college: savedCollege, // Assign the saved college
+                            team: savedTeam,
+                            college: savedCollege,
                             heightFeet: heightFeet,
                             heightInches: Int(heightInches),
                             weight: weight,
@@ -664,17 +671,43 @@ struct NewSignupSequence: View {
                         
                         // Save the athlete item
                         let savedItem = try await Amplify.DataStore.save(athlete)
-                        try await updateUserField(email: email, key: "athlete", value: savedItem)
+                        withAnimation(.openCard) {
+                            athleteCreationSuccessful = true
+                        }
                         print("Saved item: \(savedItem)")
                     } catch let error as DataStoreError {
+                        withAnimation(.closeCard) {
+                            athleteCreationSuccessful = false
+                        }
                         print("Error creating item: \(error)")
                     } catch {
+                        withAnimation(.closeCard) {
+                            athleteCreationSuccessful = false
+                        }
                         print("Unexpected error: \(error)")
+                    }
+                    withAnimation(.openCard) {
+                        if athleteAllFieldsFilled {
+                            if athleteCreationSuccessful {
+                                buttonPressed = false
+                                pageIndex = 4
+                            } else {
+                                showAthleteError = true
+                            }
+                        } else {
+                            buttonPressed = true
+                        }
                     }
                 }
             } label: {
                 ColorfulButton(title: "Continue")
             }
+            
+            if showAthleteError {
+                Text("Error creating athlete profile, please check information")
+                    .foregroundColor(.primary).fontWeight(.semibold)
+            }
+            
             Text("**Previous**")
                 .font(.footnote)
                 .frame(maxWidth: .infinity, alignment: .center)
