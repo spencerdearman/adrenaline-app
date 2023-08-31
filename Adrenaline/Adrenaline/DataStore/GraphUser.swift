@@ -9,6 +9,10 @@ import Foundation
 import Amplify
 
 struct GraphUser: Hashable, Codable, Identifiable {
+    static func == (lhs: GraphUser, rhs: GraphUser) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     var id: UUID = UUID()
     var firstName: String
     var lastName: String
@@ -16,7 +20,7 @@ struct GraphUser: Hashable, Codable, Identifiable {
     var phone: String?
     var diveMeetsID: String?
     var accountType: String
-    var followed: [GraphUserGraphFollowed]?
+    var followed: List<NewUserNewFollowed>?
     var createdAt: Temporal.DateTime?
     var updatedAt: Temporal.DateTime?
     var athleteId: String?
@@ -45,9 +49,7 @@ extension GraphUser {
         diveMeetsID = from.diveMeetsID
         accountType = from.accountType
         
-        if let list = from.followed {
-            followed = list.map { GraphUserGraphFollowed(from: $0) }
-        }
+        followed = from.followed
         createdAt = from.createdAt
         updatedAt = from.updatedAt
         athleteId = from.newUserAthleteId
@@ -57,12 +59,12 @@ extension GraphUser {
 
 extension NewUser {
     convenience init(from user: GraphUser) {
-        var passFollowed: List<NewUserNewFollowed> = []
-        if let followed = user.followed {
-            passFollowed = List<NewUserNewFollowed>.init(elements: followed.map {
-                NewUserNewFollowed(from: $0)
-            })
-        }
+//        var passFollowed: List<NewUserNewFollowed> = []
+//        if let followed = user.followed {
+//            passFollowed = List<NewUserNewFollowed>.init(elements: followed.map {
+//                NewUserNewFollowed(from: $0)
+//            })
+//        }
         
         self.init(id: user.id.uuidString,
                   firstName: user.firstName,
@@ -73,7 +75,7 @@ extension NewUser {
                   accountType: user.accountType,
                   athlete: nil,
                   coach: nil,
-                  followed: passFollowed,
+                  followed: user.followed ?? [],
                   createdAt: nil,
                   updatedAt: nil,
                   newUserAthleteId: user.athleteId,
