@@ -194,7 +194,7 @@ struct LandingView: View {
 //                        //                    }
 //                    }
 //                }
-                NewSignupSequence(email: $email)
+//                NewSignupSequence(email: $email)
             }
         }
         .onAppear {

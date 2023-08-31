@@ -605,7 +605,6 @@
 		4D8B9C1329F89A54002B53AD /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				00F9667A29AFDA1500F3720B /* ContentView.swift */,
 				00F9665E29AEEF0800F3720B /* FloatingMenuBar.swift */,
 				007EAFEC2A4B639600061113 /* MovingSplashView.swift */,
 			);
@@ -695,6 +694,7 @@
 				4DF9F80C2A85E7BA0049CCD3 /* AppLogic.swift */,
 				4DF9F80E2A85EFF50049CCD3 /* UserBadge.swift */,
 				4DF9F8102A85F0040049CCD3 /* LandingView.swift */,
+				00F9667A29AFDA1500F3720B /* ContentView.swift */,
 				4D13F3C52A9D56D20081823D /* NewSignIn.swift */,
 				4D13F3C72A9D57C20081823D /* ColorfulButton.swift */,
 				4D13F3C92A9D95260081823D /* NewSignupSequence.swift */,

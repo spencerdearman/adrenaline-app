@@ -56,7 +56,7 @@ struct NewSignupSequence: View {
     @Environment(\.colorScheme) var currentMode
     @Namespace var namespace
     @ScaledMetric var pickerFontSize: CGFloat = 18
-    @State var signupCompleted: Bool = false
+    @Binding var signupCompleted: Bool
     @State var buttonPressed: Bool = false
     @State private var savedUser: NewUser? = nil
     @State var pageIndex: Int = 0
@@ -527,9 +527,10 @@ struct NewSignupSequence: View {
                         let team = NewTeam(name: "DEFAULT")
                         let savedTeam = try await Amplify.DataStore.save(team)
                         
-                        let college = College(name: "DEFAULT", imageLink: "")
+//
+                        let college = College(name: "DEFAULT", imageLink: "NIL")
                         let savedCollege = try await Amplify.DataStore.save(college)
-                        
+//
                         // Create the athlete item using the saved user, team, and college
                         let athlete = NewAthlete(
                             user: savedUser,
@@ -564,7 +565,7 @@ struct NewSignupSequence: View {
                 .accentColor(.primary.opacity(0.7))
                 .onTapGesture {
                     withAnimation(.openCard) {
-                        pageIndex = 1
+                        pageIndex = 2
                     }
                 }
         }
@@ -573,7 +574,9 @@ struct NewSignupSequence: View {
     var welcomeForm: some View {
         Group {
             Button {
-                signupCompleted = true
+                withAnimation(.closeCard) {
+                    signupCompleted = true
+                }
             } label: {
                 ColorfulButton(title: "Take me to my profile")
             }
