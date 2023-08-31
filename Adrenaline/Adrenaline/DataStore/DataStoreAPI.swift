@@ -17,16 +17,15 @@ func query<M: Model>(where predicate: QueryPredicate? = nil,
     return queryResult
 }
 
+
 // Returns GraphUser class list
 func queryUsers(where predicate: QueryPredicate? = nil,
                 sortBy: QuerySortInput? = nil) async -> [GraphUser] {
     do {
         let queryResult: [NewUser] = try await query(where: predicate, sortBy: sortBy)
-        
         let result = queryResult.map { newUser in
             GraphUser.init(from: newUser)
         }
-        
         return result
     } catch let error as DataStoreError {
         print("Failed to load data from DataStore : \(error)")

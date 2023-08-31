@@ -72,6 +72,13 @@ struct ContentView: View {
                                 .tabItem {
                                     Label("Search", systemImage: "magnifyingglass")
                                 }
+                                .onAppear{
+                                    Task {
+                                        let emailPredicate = NewUser.keys.email == email
+                                        let user = await queryUsers(where: emailPredicate)
+                                        print(user)
+                                    }
+                                }
                         }
                         .ignoresSafeArea(.keyboard)
                     }
