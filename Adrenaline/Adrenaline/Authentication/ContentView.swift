@@ -21,9 +21,12 @@ struct ContentView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.scenePhase) var scenePhase
     @State private var tabBarState: Visibility = .visible
-    @State var showSplash: Bool = false
-    @State var signupCompleted: Bool = false
-    @State var email: String = ""
+    @AppStorage("signupCompleted") var signupCompleted: Bool = false
+    @AppStorage("email") var email: String = ""
+    @State var showAccount: Bool = false
+    @State var diveMeetsID: String = ""
+    @State var graphUser: GraphUser?
+    @State var newAthlete: NewAthlete?
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -52,20 +55,14 @@ struct ContentView: View {
                 ) { state in
                     if !signupCompleted {
                         NewSignupSequence(signupCompleted: $signupCompleted, email: $email)
-//                            .onAppear{
-//                                Task {
-//                                    await state.signOut()
-//                                }
-//                            }
                     } else {
                         TabView {
-                            FeedBase()
+                            FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount)
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
-                            NavigationView {
-                                AdrenalineProfileView(state: state, email: $email)
-                            }
+                            
+                            Text("Rankings View")
                             .tabItem {
                                 Label("Rankings", systemImage: "trophy")
                             }
@@ -87,6 +84,29 @@ struct ContentView: View {
                                 .tabItem {
                                     Label("Search", systemImage: "magnifyingglass")
                                 }
+                        }
+                        .fullScreenCover(isPresented: $showAccount, content: {
+                            NavigationView {
+                                AdrenalineProfileView(state: state, email: $email, graphUser: $graphUser, newAthlete: $newAthlete, showAccount: $showAccount)
+                            }
+                        })
+                        .onAppear {
+                            Task {
+                                let emailPredicate = NewUser.keys.email == email
+                                let users = await queryUsers(where: emailPredicate)
+                                if users.count >= 1 {
+                                    graphUser = users[0]
+                                    print(graphUser)
+                                    let userPredicate = users[0].athleteId ?? "" == NewAthlete.keys.id.rawValue
+                                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
+                                    print(athletes)
+                                    if athletes.count >= 1 {
+                                        newAthlete = athletes[0]
+                                        print(newAthlete)
+                                    }
+                                }
+                                diveMeetsID = graphUser?.diveMeetsID ?? ""
+                            }
                         }
                         .ignoresSafeArea(.keyboard)
                     }

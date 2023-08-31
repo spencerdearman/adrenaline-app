@@ -6,13 +6,16 @@
 //
 
 import SwiftUI
+import Amplify
 
 struct NavigationBar: View {
+    @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
+    var diveMeetsID:  Binding<String>
     @State var showSheet = false
-    @State var showAccount = true
     @State var isLogged = true
+    @Binding var showAccount: Bool
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
     
@@ -52,24 +55,24 @@ struct NavigationBar: View {
                 
                 Button {
                     withAnimation {
-                        if isLogged {
-                            showAccount = true
-                        }
+                        showAccount = true
                     }
                 } label: {
-                    AsyncImage(url: URL(string:
-                    "https://secure.meetcontrol.com/divemeets/system/profilephotos/56961.jpg?&x=511121484"),
-                               transaction: .init(animation: .easeOut)) { phase in
-                        switch phase {
-                        case .empty:
-                            Color.white
-                        case .success(let image):
-                            image.resizable()
-                        case .failure(_):
-                            Color.gray
-                        @unknown default:
-                            Color.gray
-                        }
+                    Group {
+                            AsyncImage(url: URL(string:
+                                                    "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID).jpg?&x=511121484"),
+                                       transaction: .init(animation: .easeOut)) { phase in
+                                switch phase {
+                                case .empty:
+                                    Color.white
+                                case .success(let image):
+                                    image.resizable()
+                                case .failure(_):
+                                    Color.gray
+                                @unknown default:
+                                    Color.gray
+                                }
+                            }
                     }
                     .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
                     .cornerRadius(10)
