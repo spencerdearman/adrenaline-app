@@ -53,54 +53,55 @@ struct AdrenalineProfileView: View {
                 .offset(x: screenWidth * 0.2, y: -screenHeight * 0.4)
                 .scaleEffect(0.7)
             if let user = user {
-                VStack {
-                    ProfileImage(diverID: (user.diveMeetsID ?? ""))
-                        .frame(width: 200, height: 130)
-                        .scaleEffect(0.9)
-                        .padding(.top, 50)
-                        .padding(.bottom, 30)
-                        .onAppear {
-                            offset = screenHeight * 0.45
-                        }
-                    PersonalInfoView(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
-                }
-                .offset(y: -screenHeight * 0.25)
-                .padding([.leading, .trailing, .top])
-                .frame(width: screenWidth * 0.9)
-
-                ZStack{
-                    Rectangle()
-                        .foregroundColor(Custom.darkGray)
-                        .cornerRadius(50)
-                        .shadow(radius: 10)
-                        .frame(width: screenWidth, height: screenHeight * 0.8)
-                    VStack {
-                        if let type = user.accountType {
-                            if type == AccountType.athlete.rawValue {
-                                DiverView(userViewData: $userViewData,
-                                          loginSuccessful: $loginSuccessful)
-                            } else if type == AccountType.coach.rawValue {
-                                CoachView(userViewData: $userViewData,
-                                          loginSuccessful: $loginSuccessful)
-                            } else if type == AccountType.spectator.rawValue {
-                                Text("This is a spectator profile")
-                            } else {
-                                Text("The account type has not been specified")
-                            }
-                        }
-                    }
-                }
-                .frame(width: screenWidth)
-                .offset(y: offset)
-                .onSwipeGesture(trigger: .onEnded) { direction in
-                    withAnimation(.easeInOut(duration: 0.25)) {
-                        if direction == .up {
-                            offset = screenHeight * 0.13
-                        } else if direction == .down {
-                            offset = screenHeight * 0.45
-                        }
-                    }
-                }
+                Text("Hello")
+//                VStack {
+//                    ProfileImage(diverID: (user.diveMeetsID ?? ""))
+//                        .frame(width: 200, height: 130)
+//                        .scaleEffect(0.9)
+//                        .padding(.top, 50)
+//                        .padding(.bottom, 30)
+//                        .onAppear {
+//                            offset = screenHeight * 0.45
+//                        }
+//                    PersonalInfoView(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
+//                }
+//                .offset(y: -screenHeight * 0.25)
+//                .padding([.leading, .trailing, .top])
+//                .frame(width: screenWidth * 0.9)
+//
+//                ZStack{
+//                    Rectangle()
+//                        .foregroundColor(Custom.darkGray)
+//                        .cornerRadius(50)
+//                        .shadow(radius: 10)
+//                        .frame(width: screenWidth, height: screenHeight * 0.8)
+//                    VStack {
+//                        if let type = user.accountType {
+//                            if type == AccountType.athlete.rawValue {
+//                                DiverView(userViewData: $userViewData,
+//                                          loginSuccessful: $loginSuccessful)
+//                            } else if type == AccountType.coach.rawValue {
+//                                CoachView(userViewData: $userViewData,
+//                                          loginSuccessful: $loginSuccessful)
+//                            } else if type == AccountType.spectator.rawValue {
+//                                Text("This is a spectator profile")
+//                            } else {
+//                                Text("The account type has not been specified")
+//                            }
+//                        }
+//                    }
+//                }
+//                .frame(width: screenWidth)
+//                .offset(y: offset)
+//                .onSwipeGesture(trigger: .onEnded) { direction in
+//                    withAnimation(.easeInOut(duration: 0.25)) {
+//                        if direction == .up {
+//                            offset = screenHeight * 0.13
+//                        } else if direction == .down {
+//                            offset = screenHeight * 0.45
+//                        }
+//                    }
+//                }
             }
         }
         .overlay{
