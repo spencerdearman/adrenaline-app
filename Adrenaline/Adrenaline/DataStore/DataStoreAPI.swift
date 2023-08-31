@@ -273,4 +273,9 @@ extension NewAthlete {
                   createdAt: athlete.createdAt,
                   updatedAt: athlete.updatedAt)
     }
+func clearLocalDataStore() async throws {
+    try await Amplify.DataStore.start()
+    try await Amplify.DataStore.stop()
+    try await Amplify.DataStore.clear()
+    try await Amplify.DataStore.start()
 }
