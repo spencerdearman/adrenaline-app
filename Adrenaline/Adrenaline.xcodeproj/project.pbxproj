@@ -85,6 +85,7 @@
 		4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */; };
 		4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D26F43B2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift */; };
 		4D3FD9CF2A5DFAF6003E1FF7 /* SearchBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3FD9CE2A5DFAF6003E1FF7 /* SearchBackgroundView.swift */; };
+		4D502E612AA0345600D25B7B /* OldAdrenalineProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D502E602AA0345600D25B7B /* OldAdrenalineProfile.swift */; };
 		4D50E7902A29106E009BFBFA /* diveTable.json in Resources */ = {isa = PBXBuildFile; fileRef = 4D50E78F2A29106E009BFBFA /* diveTable.json */; };
 		4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D50E7912A2939B9009BFBFA /* ToolsMenu.swift */; };
 		4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D50E7932A293A22009BFBFA /* DiveTableData.swift */; };
@@ -230,6 +231,7 @@
 		4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsGraph.swift; sourceTree = "<group>"; };
 		4D26F43B2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIWheelPicker.swift; sourceTree = "<group>"; };
 		4D3FD9CE2A5DFAF6003E1FF7 /* SearchBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBackgroundView.swift; sourceTree = "<group>"; };
+		4D502E602AA0345600D25B7B /* OldAdrenalineProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldAdrenalineProfile.swift; sourceTree = "<group>"; };
 		4D50E78F2A29106E009BFBFA /* diveTable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = diveTable.json; sourceTree = "<group>"; };
 		4D50E7912A2939B9009BFBFA /* ToolsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsMenu.swift; sourceTree = "<group>"; };
 		4D50E7932A293A22009BFBFA /* DiveTableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiveTableData.swift; sourceTree = "<group>"; };
@@ -630,6 +632,7 @@
 			isa = PBXGroup;
 			children = (
 				4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */,
+				4D502E602AA0345600D25B7B /* OldAdrenalineProfile.swift */,
 				4DD880BA2A761089008F69F2 /* AthleteProfile.swift */,
 				4DD880B82A76103D008F69F2 /* CoachProfile.swift */,
 				4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */,
@@ -873,6 +876,7 @@
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
 				4D753DE02A214F640029138B /* EventResultPage.swift in Sources */,
 				0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */,
+				4D502E612AA0345600D25B7B /* OldAdrenalineProfile.swift in Sources */,
 				009F41BA2A6AC51A00348C68 /* UsersDBTestView.swift in Sources */,
 				4DCA5B102A9175EE00C2A6BB /* NewAthlete+Schema.swift in Sources */,
 				4DCA5B1F2A9175EE00C2A6BB /* NewEvent.swift in Sources */,

@@ -17,15 +17,10 @@ struct AdrenalineProfileView: View {
     @ObservedObject var state: SignedInState
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.getUser) private var getUser
-    @Environment(\.getAthlete) private var getAthlete
-    var firstSignIn: Bool = false
-    var showBackButton: Bool = false
     @State private var offset: CGFloat = 0
     @State var user: User?
     @State var graphUser: GraphUser?
     @State var newAthlete: NewAthlete?
-    //@State var userViewData: UserViewData = UserViewData()
     @Binding var email: String
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -131,12 +126,6 @@ struct AdrenalineProfileView: View {
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Environment(\.getUser) private var getUser
-    @Environment(\.getAthlete) private var getAthlete
-    @Environment(\.addFollowedByEmail) private var addFollowedByEmail
-    @Environment(\.getFollowedByEmail) private var getFollowedByEmail
-    @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
-    @Environment(\.addFollowedToUser) private var addFollowedToUser
     @Binding var graphUser: GraphUser?
     @Binding var email: String
     @Binding var athlete: NewAthlete?
@@ -161,32 +150,6 @@ struct PersonalInfoView: View {
         }
     }
 
-    func formatLocationString(_ input: String) -> String {
-        var formattedString = input
-
-        if let spaceIndex = input.lastIndex(of: " ") {
-            formattedString.insert(",", at: spaceIndex)
-        }
-        if formattedString.count >= 2 {
-            let lastTwo = formattedString.suffix(2).uppercased()
-            formattedString.replaceSubrange(
-                formattedString.index(formattedString.endIndex,
-                                      offsetBy: -2)..<formattedString.endIndex, with: lastTwo)
-        }
-        return formattedString
-    }
-//
-//    private func updateFollowed() {
-//        guard let first = userViewData.firstName, let last = userViewData.lastName,
-//              let userEmail = userViewData.email else { return }
-//        addFollowedByEmail(first, last, userEmail)
-//        guard let (email, _) = getStoredCredentials() else { return }
-//        guard let user = getUser(email) else { return }
-//        guard let followed = getFollowedByEmail(userEmail) else { return }
-//
-//        addFollowedToUser(user, followed)
-//    }
-
     private func isFollowedByUser(email: String, user: User) -> Bool {
         for followed in user.followedArray {
             if followed.email == email {
@@ -196,18 +159,6 @@ struct PersonalInfoView: View {
 
         return false
     }
-//
-//    private func updateCollege() {
-//        if graphUser.accountType == "Athlete",
-//           let a = getAthlete(userViewData.email ?? "") {
-//            athlete = a
-//            if let college = a.committedCollege {
-//                selectedCollege = getCollegeImageFilename(name: college)
-//            } else {
-//                selectedCollege = ""
-//            }
-//        }
-//    }
 
     var body: some View {
         VStack {
@@ -257,7 +208,7 @@ struct PersonalInfoView: View {
                                         HStack {
                                             Image(systemName: "mappin.and.ellipse")
                                             if let hometown = athlete?.hometown, !hometown.isEmpty {
-                                                Text(formatLocationString(hometown))
+                                                Text(hometown)
                                             } else {
                                                 Text("?")
                                             }
@@ -487,65 +438,65 @@ struct PersonalInfoView: View {
 //    }
 //}
 
-//struct DiveMeetsLink: View {
-//    @Environment(\.dismiss) private var dismiss
-//    @Environment(\.presentationMode) var presentationMode
-//    @Environment(\.updateUserField) private var updateUserField
-//    @Environment(\.updateAthleteField) private var updateAthleteField
-//    @Binding var userViewData: UserViewData
-//    @State var diveMeetsID: String = ""
-//    private let parser: ProfileParser = ProfileParser()
-//    private let screenWidth = UIScreen.main.bounds.width
-//    private var textFieldWidth: CGFloat {
-//        screenWidth * 0.5
-//    }
-//    var body: some View {
-//        VStack {
-//            BackgroundBubble(vPadding: 40, hPadding: 40) {
-//                VStack {
-//                    Text("Please Enter DiveMeets ID")
-//                        .foregroundColor(.primary)
-//                        .font(.title2).fontWeight(.semibold)
-//                    TextField("DiveMeets ID", text: $diveMeetsID)
-//                        .textFieldStyle(.roundedBorder)
-//                        .textContentType(.telephoneNumber)
-//                        .keyboardType(.numberPad)
-//                    .frame(width: textFieldWidth) }
-//            }
-//            BackgroundBubble(onTapGesture: {
-//                if let email = userViewData.email {
-//                    updateUserField(email, "diveMeetsID", diveMeetsID)
-//                    Task {
-//                        if await parser.parseProfile(diveMeetsID: diveMeetsID),
-//                           let info = parser.profileData.info {
-//                            if let age = info.age { updateAthleteField(email, "age", Int16(age)) }
-//                            if let hometown = info.cityState {
-//                                updateAthleteField(email, "hometown", hometown)
-//                            }
-//                        } else {
-//                            print("Failed to get profile info from new DiveMeets link")
-//                        }
-//
-//                        userViewData.diveMeetsID = diveMeetsID
-//                    }
-//                }
-//                presentationMode.wrappedValue.dismiss()
-//            }) {
-//                Text("Done")
-//                    .fontWeight(.semibold)
-//                    .foregroundColor(.primary)
-//            }
-//        }
-//        .navigationBarBackButtonHidden(true)
-//        .toolbar {
-//            ToolbarItem(placement: .navigationBarLeading) {
-//                Button(action: { dismiss() }) {
-//                    NavigationViewBackButton()
-//                }
-//            }
-//        }
-//    }
-//}
+struct DiveMeetsLink: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.updateUserField) private var updateUserField
+    @Environment(\.updateAthleteField) private var updateAthleteField
+    @Binding var userViewData: UserViewData
+    @State var diveMeetsID: String = ""
+    private let parser: ProfileParser = ProfileParser()
+    private let screenWidth = UIScreen.main.bounds.width
+    private var textFieldWidth: CGFloat {
+        screenWidth * 0.5
+    }
+    var body: some View {
+        VStack {
+            BackgroundBubble(vPadding: 40, hPadding: 40) {
+                VStack {
+                    Text("Please Enter DiveMeets ID")
+                        .foregroundColor(.primary)
+                        .font(.title2).fontWeight(.semibold)
+                    TextField("DiveMeets ID", text: $diveMeetsID)
+                        .textFieldStyle(.roundedBorder)
+                        .textContentType(.telephoneNumber)
+                        .keyboardType(.numberPad)
+                    .frame(width: textFieldWidth) }
+            }
+            BackgroundBubble(onTapGesture: {
+                if let email = userViewData.email {
+                    updateUserField(email, "diveMeetsID", diveMeetsID)
+                    Task {
+                        if await parser.parseProfile(diveMeetsID: diveMeetsID),
+                           let info = parser.profileData.info {
+                            if let age = info.age { updateAthleteField(email, "age", Int16(age)) }
+                            if let hometown = info.cityState {
+                                updateAthleteField(email, "hometown", hometown)
+                            }
+                        } else {
+                            print("Failed to get profile info from new DiveMeets link")
+                        }
+
+                        userViewData.diveMeetsID = diveMeetsID
+                    }
+                }
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Text("Done")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { dismiss() }) {
+                    NavigationViewBackButton()
+                }
+            }
+        }
+    }
+}
 
 struct BackgroundSpheres: View {
     @State var width: CGFloat = 0
