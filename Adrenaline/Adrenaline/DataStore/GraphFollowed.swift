@@ -45,13 +45,13 @@ extension GraphFollowed {
 // Added later, not generated code
 extension NewFollowed {
     // construct from API Data
-    init(from : GraphFollowed)  {
-        id = from.id.uuidString
-        firstName = from.firstName
-        lastName = from.lastName
-        email = from.email
-        diveMeetsID = from.diveMeetsID
-        createdAt = from.createdAt
-        updatedAt = from.updatedAt
+    convenience init(from : GraphFollowed)  {
+        self.init(id: from.id.uuidString,
+                  firstName: from.firstName,
+                  lastName: from.lastName,
+                  email: from.email,
+                  diveMeetsID: from.diveMeetsID,
+                  createdAt: from.createdAt,
+                  updatedAt: from.updatedAt)
     }
 }

@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-public struct NewFollowed: Model {
+public class NewFollowed: Model {
   public let id: String
   public var firstName: String
   public var lastName: String
@@ -12,7 +12,7 @@ public struct NewFollowed: Model {
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
-  public init(id: String = UUID().uuidString,
+    public convenience init(id: String = UUID().uuidString,
       firstName: String,
       lastName: String,
       email: String? = nil,

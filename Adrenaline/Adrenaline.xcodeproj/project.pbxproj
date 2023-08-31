@@ -40,6 +40,8 @@
 		00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ADF5092A93304800C85C7F /* DataStoreAPI.swift */; };
 		00B5BB062AA0E1C800E587B5 /* GraphUserGraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */; };
 		00B5BB082AA0E1D000E587B5 /* GraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */; };
+		00B5BB0A2AA0E80D00E587B5 /* FollowingTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */; };
+		00B5BB0C2AA0E8A000E587B5 /* FollowingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */; };
 		00B6A5D62A6651A700C4DFDA /* AccountTypeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */; };
 		00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */; };
 		00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */; };
@@ -187,6 +189,8 @@
 		00ADF5092A93304800C85C7F /* DataStoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreAPI.swift; sourceTree = "<group>"; };
 		00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphUserGraphFollowed.swift; sourceTree = "<group>"; };
 		00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFollowed.swift; sourceTree = "<group>"; };
+		00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingTestView.swift; sourceTree = "<group>"; };
+		00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingAPI.swift; sourceTree = "<group>"; };
 		00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTypeSelectView.swift; sourceTree = "<group>"; };
 		00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoView.swift; sourceTree = "<group>"; };
 		00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TextFieldClearButton.swift; path = Adrenaline/Views/Util/TextFieldClearButton.swift; sourceTree = SOURCE_ROOT; };
@@ -341,6 +345,8 @@
 				00C62A4C2A9D69960064B21D /* GraphMeet.swift */,
 				00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */,
 				00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */,
+				00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */,
+				00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -877,6 +883,7 @@
 				000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */,
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
 				4DCA5B132A9175EE00C2A6BB /* NewUserNewFollowed+Schema.swift in Sources */,
+				00B5BB0C2AA0E8A000E587B5 /* FollowingAPI.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
 				4D753DE02A214F640029138B /* EventResultPage.swift in Sources */,
 				0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */,
@@ -886,6 +893,7 @@
 				4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */,
 				006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */,
 				4DCA5B122A9175EE00C2A6BB /* College.swift in Sources */,
+				00B5BB0A2AA0E80D00E587B5 /* FollowingTestView.swift in Sources */,
 				4D1A31B92A96DA1C00128F81 /* FeedModel.swift in Sources */,
 				0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */,
 				00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */,
