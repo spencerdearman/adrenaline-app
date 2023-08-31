@@ -17,6 +17,32 @@ func query<M: Model>(where predicate: QueryPredicate? = nil,
     return queryResult
 }
 
+func queryAWSUsers(where predicate: QueryPredicate? = nil,
+                sortBy: QuerySortInput? = nil) async -> [NewUser] {
+    do {
+        let queryResult: [NewUser] = try await query(where: predicate, sortBy: sortBy)
+        return queryResult
+    } catch let error as DataStoreError {
+        print("Failed to load data from DataStore : \(error)")
+    } catch {
+        print("Unexpected error while calling DataStore : \(error)")
+    }
+    return []
+}
+
+func queryAWSAthletes(where predicate: QueryPredicate? = nil,
+                sortBy: QuerySortInput? = nil) async -> [NewAthlete] {
+    do {
+        let queryResult: [NewAthlete] = try await query(where: predicate, sortBy: sortBy)
+        return queryResult
+    } catch let error as DataStoreError {
+        print("Failed to load data from DataStore : \(error)")
+    } catch {
+        print("Unexpected error while calling DataStore : \(error)")
+    }
+    return []
+}
+
 
 // Returns GraphUser class list
 func queryUsers(where predicate: QueryPredicate? = nil,
