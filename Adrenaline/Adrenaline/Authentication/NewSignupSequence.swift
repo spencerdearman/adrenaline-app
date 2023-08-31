@@ -66,6 +66,9 @@ struct NewSignupSequence: View {
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
     
+    //Variables for Account Type
+    @State var accountType: String = ""
+    
     // Variables for BasicInfo
     @FocusState var isFirstFocused: Bool
     @FocusState var isLastFocused: Bool
@@ -144,6 +147,17 @@ struct NewSignupSequence: View {
                 switch pageIndex {
                 case 0:
                     VStack(alignment: .leading, spacing: 20) {
+                        Text("Account Type")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .frame(height: screenHeight * 0.6)
+                    .matchedGeometryEffect(id: "form1", in: namespace)
+                case 1:
+                    VStack(alignment: .leading, spacing: 20) {
                         Text("Basic Info")
                             .font(.largeTitle).bold()
                             .foregroundColor(.primary)
@@ -152,7 +166,7 @@ struct NewSignupSequence: View {
                         basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
                     }
                     .matchedGeometryEffect(id: "form1", in: namespace)
-                case 1:
+                case 2:
                     Group {
                         if searchSubmitted && !personTimedOut && !linksParsed {
                             ZStack {
@@ -192,7 +206,7 @@ struct NewSignupSequence: View {
                     .onDisappear {
                         searchSubmitted = false
                     }
-                case 2:
+                case 3:
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Recruiting Info")
                             .font(.largeTitle).bold()
@@ -202,7 +216,7 @@ struct NewSignupSequence: View {
                         athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
                     }
                     .matchedGeometryEffect(id: "form", in: namespace)
-                case 3:
+                case 4:
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Welcome to Adrenaline!")
                             .font(.largeTitle).bold()
@@ -233,6 +247,105 @@ struct NewSignupSequence: View {
                 newUser.email = email
             }
             .frame(width: screenWidth * 0.9)
+        }
+    }
+    
+    var accountAllFieldsFilled: Bool {
+        accountType != ""
+    }
+    
+    var accountInfoForm: some View {
+        Group {
+            Button {
+                accountType = "Athlete"
+                newUser.accountType = "Athlete"
+            } label: {
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .cornerRadius(30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 30)
+                                .stroke(accountType == "Athlete" ? Color.secondary : .clear, lineWidth: 2)
+                        )
+                        .padding(5)
+                    
+                    VStack {
+                        Text("Athlete")
+                            .foregroundColor(.primary)
+                            .font(.title2).fontWeight(.semibold)
+                        Text("You are looking to follow the results of your sport and get noticed by college coaches")
+                            .scaleEffect(0.7)
+                    }
+                    .frame(height: screenHeight * 0.15)
+                }
+            }
+            .frame(height: screenHeight * 0.15)
+            
+            Button {
+                accountType = "Coach"
+                newUser.accountType = "Coach"
+            } label: {
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .cornerRadius(30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 30)
+                                .stroke(accountType == "Coach" ? Color.secondary : .clear, lineWidth: 2)
+                        )
+                        .padding(5)
+                    
+                    VStack {
+                        Text("Coach")
+                            .foregroundColor(.primary)
+                            .font(.title2).fontWeight(.semibold)
+                        Text("You are looking to follow the results of your sport and seek out athletes to bring to your program")
+                            .scaleEffect(0.7)
+                    }
+                    .frame(height: screenHeight * 0.15)
+                }
+            }
+            .frame(height: screenHeight * 0.15)
+            
+            Button {
+                accountType = "Spectator"
+                newUser.accountType = "Spectator"
+            } label: {
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .cornerRadius(30)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 30)
+                                .stroke(accountType == "Spectator" ? Color.secondary : .clear, lineWidth: 2)
+                        )
+                        .padding(5)
+                    
+                    VStack {
+                        Text("Spectator")
+                            .foregroundColor(.primary)
+                            .font(.title2).fontWeight(.semibold)
+                        Text("You are looking to follow the results of a sport without any interest in recruiting")
+                            .scaleEffect(0.7)
+                    }
+                    .frame(width: screenWidth * 0.5)
+                }
+            }
+            .frame(height: screenHeight * 0.15)
+            
+            Divider()
+            
+            Button {
+                if accountAllFieldsFilled {
+                    buttonPressed = false
+                    pageIndex = 1
+                } else {
+                    buttonPressed = true
+                }
+            } label: {
+                ColorfulButton(title: "Continue")
+            }
         }
     }
     
@@ -277,7 +390,7 @@ struct NewSignupSequence: View {
                 searchSubmitted = true
                 if basicAllFieldsFilled {
                     buttonPressed = false
-                    pageIndex = 1
+                    pageIndex = 2
                 } else {
                     buttonPressed = true
                 }
@@ -352,7 +465,7 @@ struct NewSignupSequence: View {
                 Task {
                     withAnimation {
                         print("Selected Next")
-                        pageIndex = 2
+                        pageIndex = 3
                     }
                     do {
                         savedUser = try await saveUser(user: newUser)
@@ -373,7 +486,7 @@ struct NewSignupSequence: View {
                     .accentColor(.primary.opacity(0.7))
                     .onTapGesture {
                         withAnimation(.openCard) {
-                            pageIndex = 0
+                            pageIndex = 1
                         }
                     }
                 
@@ -399,7 +512,7 @@ struct NewSignupSequence: View {
                             }
                         }
                         withAnimation(.openCard) {
-                            pageIndex = 2
+                            pageIndex = 3
                         }
                     }
             }
@@ -513,7 +626,7 @@ struct NewSignupSequence: View {
                     withAnimation(.openCard) {
                         if athleteAllFieldsFilled {
                             buttonPressed = false
-                            pageIndex = 3
+                            pageIndex = 4
                         } else {
                             buttonPressed = true
                         }

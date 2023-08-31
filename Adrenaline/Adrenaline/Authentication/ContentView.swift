@@ -23,7 +23,7 @@ struct ContentView: View {
     @State private var tabBarState: Visibility = .visible
     @State var showSplash: Bool = false
     @State var signupCompleted: Bool = true
-    @State var email: String = "dearmanspencer@gmail.com"
+    @State var email: String = ""
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
