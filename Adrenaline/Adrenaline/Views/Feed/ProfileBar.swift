@@ -10,16 +10,26 @@ import Authenticator
 
 struct ProfileBar: View {
     @ObservedObject var state: SignedInState
+    @Binding var showAccount: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     var title = ""
     @State var showSheet = false
-    @State var showAccount = true
     @State var isLogged = true
     
     var body: some View {
         ZStack {
+            
             HStack(spacing: 16) {
+                Button {
+                    withAnimation(.closeCard) {
+                        showAccount = false
+                    }
+                } label: {
+                    CloseButton()
+                }
+                .offset(x: -screenWidth * 0.57)
+                
                 Button {
                     showSheet.toggle()
                 } label: {

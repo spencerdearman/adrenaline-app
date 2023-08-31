@@ -51,10 +51,10 @@ struct AdrenalineProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
     @State private var offset: CGFloat = 0
-    @State var user: User?
-    @State var graphUser: GraphUser?
-    @State var newAthlete: NewAthlete?
     @Binding var email: String
+    @Binding var graphUser: GraphUser?
+    @Binding var newAthlete: NewAthlete?
+    @Binding var showAccount: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -132,26 +132,26 @@ struct AdrenalineProfileView: View {
             }
         }
         .overlay{
-            ProfileBar(state: state)
+            ProfileBar(state: state, showAccount: $showAccount)
                 .frame(width: screenWidth)
         }
-        .onAppear {
-            Task {
-                let emailPredicate = NewUser.keys.email == email
-                let users = await queryUsers(where: emailPredicate)
-                if users.count >= 1 {
-                    graphUser = users[0]
-                    print(graphUser)
-                    let userPredicate = users[0].athleteId ?? "" == NewAthlete.keys.id.rawValue
-                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
-                    print(athletes)
-                    if athletes.count >= 1 {
-                        newAthlete = athletes[0]
-                        print(newAthlete)
-                    }
-                }
-            }
-        }
+//        .onAppear {
+//            Task {
+//                let emailPredicate = NewUser.keys.email == email
+//                let users = await queryUsers(where: emailPredicate)
+//                if users.count >= 1 {
+//                    graphUser = users[0]
+//                    print(graphUser)
+//                    let userPredicate = users[0].athleteId ?? "" == NewAthlete.keys.id.rawValue
+//                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
+//                    print(athletes)
+//                    if athletes.count >= 1 {
+//                        newAthlete = athletes[0]
+//                        print(newAthlete)
+//                    }
+//                }
+//            }
+//        }
     }
 }
 

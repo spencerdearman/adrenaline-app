@@ -13,6 +13,8 @@ import AVKit
 struct FeedBase: View {
     @Environment(\.colorScheme) var currentMode
     @Namespace var namespace
+    @Binding var diveMeetsID: String
+    @Binding var showAccount: Bool
     @State var feedModel: FeedModel = FeedModel()
     @State var showDetail: Bool = false
     @State var showTab: Bool = true
@@ -119,8 +121,7 @@ struct FeedBase: View {
         }
         .overlay{
             if feedModel.showTab {
-                NavigationBar(title: "Adrenaline",
-                              contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
+                NavigationBar(title: "Adrenaline", diveMeetsID: $diveMeetsID, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
                     .frame(width: screenWidth)
             }
         }
@@ -136,8 +137,8 @@ struct ScrollPreferenceKey: PreferenceKey {
 }
 
 
-struct FeedBase_Previews: PreviewProvider {
-    static var previews: some View {
-        FeedBase()
-    }
-}
+//struct FeedBase_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FeedBase()
+//    }
+//}

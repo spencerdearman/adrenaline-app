@@ -120,6 +120,7 @@ struct NewSignupSequence: View {
     private func removePhoneFormatting(string: String) -> String {
         return string.filter { $0.isNumber }
     }
+    
     private func formatPhoneString(string: String) -> String {
         var chars = removePhoneFormatting(string: string)
         if chars.count > 0 {
@@ -135,6 +136,7 @@ struct NewSignupSequence: View {
         
         return String(chars.prefix(14))
     }
+    
     private func getSortedRecords(_ records: DiverProfileRecords) -> [(String, String)] {
         var result: [(String, String)] = []
         for (key, value) in records {
@@ -226,7 +228,7 @@ struct NewSignupSequence: View {
                     .matchedGeometryEffect(id: "form", in: namespace)
                 case 4:
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Welcome to Adrenaline!")
+                        Text("Welcome to Adrenaline \(newUser.firstName)!")
                             .font(.largeTitle).bold()
                             .foregroundColor(.primary)
                             .slideFadeIn(show: appear[0], offset: 30)
@@ -398,7 +400,31 @@ struct NewSignupSequence: View {
                 searchSubmitted = true
                 if basicAllFieldsFilled {
                     buttonPressed = false
-                    pageIndex = 2
+                    if newUser.accountType != "Spectator" {
+                        withAnimation(.openCard) {
+                            pageIndex = 2
+                        }
+                    } else {
+                        Task {
+                            do {
+                                savedUser = try await saveUser(user: newUser)
+                                userCreationSuccessful = true
+                                print("Saved New User")
+                            } catch {
+                                showBasicError = true
+                                print("Could not save user to DataStore: \(error)")
+                            }
+                            if userCreationSuccessful {
+                                withAnimation {
+                                    print("Selected Next")
+                                    pageIndex = 3
+                                }
+                            }
+                        }
+                        withAnimation(.openCard) {
+                            pageIndex = 4
+                        }
+                    }
                 } else {
                     buttonPressed = true
                 }
@@ -468,7 +494,7 @@ struct NewSignupSequence: View {
             }
             
             Divider()
-            
+
             Button {
                 showBasicError = false
                 Task {
@@ -476,6 +502,12 @@ struct NewSignupSequence: View {
                         savedUser = try await saveUser(user: newUser)
                         userCreationSuccessful = true
                         print("Saved New User")
+                        
+                        if newUser.accountType == "Coach" {
+                            let coach = CoachUser(user: savedUser)
+                            let savedCoach = try await Amplify.DataStore.save(coach)
+                            print("Saved Coach Profile \(coach)")
+                        }
                     } catch {
                         showBasicError = true
                         print("Could not save user to DataStore: \(error)")
@@ -483,7 +515,11 @@ struct NewSignupSequence: View {
                     if userCreationSuccessful {
                         withAnimation {
                             print("Selected Next")
-                            pageIndex = 3
+                            if newUser.accountType == "Athlete" {
+                                pageIndex = 3
+                            } else {
+                                pageIndex = 4
+                            }
                         }
                     }
                 }
