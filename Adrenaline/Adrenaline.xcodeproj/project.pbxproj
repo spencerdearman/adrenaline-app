@@ -38,6 +38,8 @@
 		009F41BD2A6AD9E400348C68 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 009F41BB2A6AD9E400348C68 /* Model.xcdatamodeld */; };
 		009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009F41BE2A6ADD8100348C68 /* ModelDataController.swift */; };
 		00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ADF5092A93304800C85C7F /* DataStoreAPI.swift */; };
+		00B5BB062AA0E1C800E587B5 /* GraphUserGraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */; };
+		00B5BB082AA0E1D000E587B5 /* GraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */; };
 		00B6A5D62A6651A700C4DFDA /* AccountTypeSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */; };
 		00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */; };
 		00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */; };
@@ -183,6 +185,8 @@
 		009F41BC2A6AD9E400348C68 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		009F41BE2A6ADD8100348C68 /* ModelDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDataController.swift; sourceTree = "<group>"; };
 		00ADF5092A93304800C85C7F /* DataStoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreAPI.swift; sourceTree = "<group>"; };
+		00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphUserGraphFollowed.swift; sourceTree = "<group>"; };
+		00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFollowed.swift; sourceTree = "<group>"; };
 		00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTypeSelectView.swift; sourceTree = "<group>"; };
 		00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoView.swift; sourceTree = "<group>"; };
 		00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TextFieldClearButton.swift; path = Adrenaline/Views/Util/TextFieldClearButton.swift; sourceTree = SOURCE_ROOT; };
@@ -335,6 +339,8 @@
 				00C62A482A9D62860064B21D /* GraphTeam.swift */,
 				00C62A4A2A9D62930064B21D /* GraphCollege.swift */,
 				00C62A4C2A9D69960064B21D /* GraphMeet.swift */,
+				00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */,
+				00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -782,6 +788,7 @@
 				4DF9F80D2A85E7BA0049CCD3 /* AppLogic.swift in Sources */,
 				4D13F3C12A99B6700081823D /* ProfileBar.swift in Sources */,
 				0040A6B72A550C8E004C84BF /* NoStickPicker.swift in Sources */,
+				00B5BB062AA0E1C800E587B5 /* GraphUserGraphFollowed.swift in Sources */,
 				4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */,
 				4D1A31C12A96EBD800128F81 /* Modifiers.swift in Sources */,
 				00B6A5D82A6659C000C4DFDA /* BasicInfoView.swift in Sources */,
@@ -896,6 +903,7 @@
 				4D1A31CD2A971FEA00128F81 /* MediaFeedItem.swift in Sources */,
 				00C62A492A9D62860064B21D /* GraphTeam.swift in Sources */,
 				4DCA5B1D2A9175EE00C2A6BB /* NewUserNewFollowed.swift in Sources */,
+				00B5BB082AA0E1D000E587B5 /* GraphFollowed.swift in Sources */,
 				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
