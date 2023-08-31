@@ -22,7 +22,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @State private var tabBarState: Visibility = .visible
     @State var showSplash: Bool = false
-    @State var signupCompleted: Bool = true
+    @State var signupCompleted: Bool = false
     @State var email: String = ""
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -52,6 +52,11 @@ struct ContentView: View {
                 ) { state in
                     if !signupCompleted {
                         NewSignupSequence(signupCompleted: $signupCompleted, email: $email)
+//                            .onAppear{
+//                                Task {
+//                                    await state.signOut()
+//                                }
+//                            }
                     } else {
                         TabView {
                             FeedBase()
