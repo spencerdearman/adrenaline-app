@@ -13,7 +13,7 @@ public struct College: Model {
   public init(id: String = UUID().uuidString,
       name: String,
       imageLink: String,
-      athletes: List<NewAthlete> = []) {
+      athletes: List<NewAthlete>? = nil) {
     self.init(id: id,
       name: name,
       imageLink: imageLink,
@@ -24,7 +24,7 @@ public struct College: Model {
   internal init(id: String = UUID().uuidString,
       name: String,
       imageLink: String,
-      athletes: List<NewAthlete> = [],
+      athletes: List<NewAthlete>? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id

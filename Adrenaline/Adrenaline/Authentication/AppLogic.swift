@@ -17,6 +17,7 @@ import AWSS3StoragePlugin
 //Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
+    @Published var initialized: Bool = false
     @Published var users: [GraphUser] = []
     var videoStore: VideoStore = VideoStore()
     
@@ -34,6 +35,7 @@ class AppLogic: ObservableObject {
             //Initializing Amplify
             try Amplify.configure()
             print("Amplify initialized")
+            initialized = true
             
             // asynchronously
             Task {
