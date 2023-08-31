@@ -25,7 +25,7 @@ class AppLogic: ObservableObject {
         do {
             // reduce verbosity of AWS SDK
             SDKLoggingSystem.initialize(logLevel: .warning)
-            Amplify.Logging.logLevel = .verbose
+            Amplify.Logging.logLevel = .info
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))

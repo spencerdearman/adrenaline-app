@@ -112,26 +112,26 @@ struct LivePersonBubbleView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     HStack(alignment: .firstTextBaseline) {
-                        NavigationLink(destination: ProfileView(profileLink: elements[3])) {
-                            VStack(alignment: .leading) {
-                                Text(elements[1])
-                                Text(elements[2])
-                            }
-                            .scaledToFit()
-                            .dynamicTypeSize(.xSmall ... .xLarge)
-                        }
+//                        NavigationLink(destination: ProfileView(profileLink: elements[3])) {
+//                            VStack(alignment: .leading) {
+//                                Text(elements[1])
+//                                Text(elements[2])
+//                            }
+//                            .scaledToFit()
+//                            .dynamicTypeSize(.xSmall ... .xLarge)
+//                        }
                         
-                        if isSynchro {
-                            Text("/")
-                            NavigationLink(destination: ProfileView(profileLink: elements[11])) {
-                                VStack(alignment: .leading) {
-                                    Text(elements[9])
-                                    Text(elements[10])
-                                }
-                                .scaledToFit()
-                                .dynamicTypeSize(.xSmall ... .xLarge)
-                            }
-                        }
+//                        if isSynchro {
+//                            Text("/")
+//                            NavigationLink(destination: ProfileView(profileLink: elements[11])) {
+//                                VStack(alignment: .leading) {
+//                                    Text(elements[9])
+//                                    Text(elements[10])
+//                                }
+//                                .scaledToFit()
+//                                .dynamicTypeSize(.xSmall ... .xLarge)
+//                            }
+//                        }
                         Spacer()
                     }
                     .foregroundColor(.primary)

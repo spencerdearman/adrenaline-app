@@ -513,7 +513,6 @@
 			children = (
 				4D1A31B12A96AF9300128F81 /* Feed */,
 				4D0A01742A7377FD00615326 /* AdrenalineLogin */,
-				4DB1DC782A67112B0016EE14 /* AdrenalineProfile */,
 				4D8B9C1229F898DD002B53AD /* Home */,
 				4D8B9C1429F89A72002B53AD /* LiveResults */,
 				4D8B9C1129F898D5002B53AD /* Login */,
@@ -681,6 +680,7 @@
 				4D13F3C72A9D57C20081823D /* ColorfulButton.swift */,
 				4D13F3C92A9D95260081823D /* NewSignupSequence.swift */,
 				4D261CB32A688A5E00CB4CF3 /* DiveMeetsConnectorView.swift */,
+				4DB1DC782A67112B0016EE14 /* AdrenalineProfile */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";

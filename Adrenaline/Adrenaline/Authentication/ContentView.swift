@@ -22,7 +22,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scenePhase
     @State private var tabBarState: Visibility = .visible
     @State var showSplash: Bool = false
-    @State var signupCompleted: Bool = false
+    @State var signupCompleted: Bool = true
     @State var email: String = "dearmanspencer@gmail.com"
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -58,12 +58,22 @@ struct ContentView: View {
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
-                            Text("Chat View")
-                                .tabItem {
-                                    Label("Rankings", systemImage: "trophy")
-                                }
+                            NavigationView {
+                                AdrenalineProfileView(state: state, email: $email)
+                            }
+                            .tabItem {
+                                Label("Rankings", systemImage: "trophy")
+                            }
                             
-                            Text("Meets View")
+                            VStack {
+                                Text("Meets View")
+                                Text("**Clear Datastore**")
+                                    .onTapGesture {
+                                        Task {
+                                            try await Amplify.DataStore.clear()
+                                        }
+                                    }
+                            }
                                 .tabItem {
                                     Label("Profile", systemImage: "person")
                                 }
@@ -77,6 +87,10 @@ struct ContentView: View {
                                         let emailPredicate = NewUser.keys.email == email
                                         let user = await queryUsers(where: emailPredicate)
                                         print(user)
+                                        
+                                        let userPredicate = user[0].athleteId ?? "" == NewAthlete.keys.id.rawValue
+                                        let athlete = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
+                                        print(athlete)
                                     }
                                 }
                         }

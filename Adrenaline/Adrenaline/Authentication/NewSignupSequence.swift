@@ -58,7 +58,7 @@ struct NewSignupSequence: View {
     @ScaledMetric var pickerFontSize: CGFloat = 18
     @Binding var signupCompleted: Bool
     @State var buttonPressed: Bool = false
-    @State private var savedUser: NewUser? = nil
+    @State var savedUser: NewUser? = nil
     @State var pageIndex: Int = 0
     @State var newUser: GraphUser = GraphUser(firstName: "", lastName: "", email: "", accountType: "")
     @State var appear = [false, false, false]
@@ -355,9 +355,8 @@ struct NewSignupSequence: View {
                         pageIndex = 2
                     }
                     do {
-                        let newUser = try await saveUser(user: newUser)
+                        savedUser = try await saveUser(user: newUser)
                         print("Saved New User")
-                        savedUser = newUser
                     } catch {
                         print("Could not save user to DataStore: \(error)")
                     }
@@ -521,7 +520,11 @@ struct NewSignupSequence: View {
                     }
                     
                     do {
-                        guard let savedUser = savedUser else { return }
+                        let emailPredicate = NewUser.keys.email == email
+                        let user = await queryAWSUsers(where: emailPredicate)
+                        let savedUser = user[0]
+//                        guard let savedUser = savedUser else { return }
+                        print("Printing the saved User: \(savedUser)")
                         
                         // Create or retrieve the team and college items
                         let team = NewTeam(name: "DEFAULT")
@@ -548,6 +551,7 @@ struct NewSignupSequence: View {
                         
                         // Save the athlete item
                         let savedItem = try await Amplify.DataStore.save(athlete)
+                        try await updateUserField(email: email, key: "athlete", value: savedItem)
                         print("Saved item: \(savedItem)")
                     } catch let error as DataStoreError {
                         print("Error creating item: \(error)")

@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import Authenticator
 
 struct ProfileBar: View {
+    @ObservedObject var state: SignedInState
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     var title = ""
@@ -33,7 +35,7 @@ struct ProfileBar: View {
                 }
                 
                 NavigationLink {
-                    SettingsView()
+                    SettingsView(state: state)
                 } label: {
                     Image(systemName: "gear")
                     .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)

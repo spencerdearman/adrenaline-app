@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
+import Authenticator
 
 struct SettingsView: View {
     @State var isPinned = false
     @State var isDeleted = false
     
     @Environment(\.presentationMode) var presentationMode
-    @AppStorage("isLogged") var isLogged = false
-    @AppStorage("isLiteMode") var isLiteMode = true
+    @ObservedObject var state: SignedInState
     
     var body: some View {
             List {
@@ -82,6 +82,9 @@ struct SettingsView: View {
                 }
                 .tint(.red)
                 .onTapGesture {
+                    Task {
+                        await state.signOut()
+                    }
                     presentationMode.wrappedValue.dismiss()
                 }
             }
@@ -89,8 +92,8 @@ struct SettingsView: View {
             .navigationTitle("Account")
     }
 }
-struct AccountView_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsView()
-    }
-}
+//struct AccountView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingsView()
+//    }
+//}
