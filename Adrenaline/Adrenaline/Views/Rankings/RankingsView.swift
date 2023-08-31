@@ -254,20 +254,20 @@ struct RankingListDiverView: View {
                 Text(String(number))
                     .padding(.leading)
                     .padding(.trailing, 40)
-//                if let email = athlete.email {
-//                    NavigationLink(
-//                        destination: AdrenalineProfileView(showBackButton: true, userEmail: email,
-//                                                           loginSuccessful: .constant(false))) {
-//                                                               Text((athlete.firstName ?? "") +
-//                                                                    " "  +
-//                                                                    (athlete.lastName ?? ""))
-//                                                               .foregroundColor(Custom.coolBlue)
-//                                                           }
-//                } else {
-//                    Text((athlete.firstName ?? "") + " "  + (athlete.lastName ?? ""))
-//                    .foregroundColor(.primary)
-//                }
-//
+                if let email = athlete.email {
+                    NavigationLink(
+                        destination: OldAdrenalineProfileView(showBackButton: true, userEmail: email,
+                                                           loginSuccessful: .constant(false))) {
+                                                               Text((athlete.firstName ?? "") +
+                                                                    " "  +
+                                                                    (athlete.lastName ?? ""))
+                                                               .foregroundColor(Custom.coolBlue)
+                                                           }
+                } else {
+                    Text((athlete.firstName ?? "") + " "  + (athlete.lastName ?? ""))
+                    .foregroundColor(.primary)
+                }
+                
                 Spacer()
                 Text(String(format: "%.1f", rating))
                     .padding(.trailing)
