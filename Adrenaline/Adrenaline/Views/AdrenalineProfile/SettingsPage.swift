@@ -9,11 +9,13 @@ import SwiftUI
 import Authenticator
 
 struct SettingsView: View {
-    @State var isPinned = false
-    @State var isDeleted = false
-    
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var state: SignedInState
+    @State var isPinned = false
+    @State var isDeleted = false
+    @Binding var email: String
+    @Binding var graphUser: GraphUser?
+    @Binding var newAthlete: NewAthlete?
     
     var body: some View {
             List {
@@ -42,7 +44,7 @@ struct SettingsView: View {
                                 .offset(x: -100, y: 20)
                                 .scaleEffect(1.6)
                                 .rotationEffect(Angle(degrees: 60)))
-                        Text("Spencer Dearman")
+                        Text("\(graphUser?.firstName ?? "") \(graphUser?.lastName ?? "")")
                             .font(.title.weight(.semibold))
                     }
                     .frame(maxWidth: .infinity)

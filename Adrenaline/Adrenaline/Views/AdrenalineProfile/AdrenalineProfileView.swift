@@ -99,7 +99,7 @@ struct AdrenalineProfileView: View {
             }
         }
         .overlay{
-            ProfileBar(state: state, showAccount: $showAccount)
+            ProfileBar(state: state, showAccount: $showAccount, email: $email, graphUser: $graphUser, newAthlete: $newAthlete)
                 .frame(width: screenWidth)
         }
     }
