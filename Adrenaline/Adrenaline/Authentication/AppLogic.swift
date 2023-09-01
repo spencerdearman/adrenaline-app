@@ -19,9 +19,6 @@ class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
     @Published var initialized: Bool = false
     @Published var users: [GraphUser] = []
-    @Published var meets: [GraphMeet] = []
-    @Published var teams: [GraphTeam] = []
-    @Published var colleges: [GraphCollege] = []
     var videoStore: VideoStore = VideoStore()
     
     func configureAmplify() {
@@ -101,53 +98,18 @@ class AppLogic: ObservableObject {
 //extension AppLogic {
     // Other functions for authentication, sign in, sign out, etc.
     
-    @MainActor
-    private func queryData() async {
-        // load data at start of app when user signed in
-        if self.users.isEmpty {
-            self.users = await queryUsers()
-        }
-        
-        if self.meets.isEmpty {
-            do {
-                let newMeets: [NewMeet] = try await query()
-                self.meets = newMeets.map { GraphMeet(from: $0) }
-            } catch {
-                print("Failed to query meets")
-            }
-        }
-        
-        if self.teams.isEmpty {
-            do {
-                let newTeams: [NewTeam] = try await query()
-                self.teams = newTeams.map { GraphTeam(from: $0) }
-            } catch {
-                print("Failed to query teams")
-            }
-        }
-        
-        if self.colleges.isEmpty {
-            do {
-                let colleges: [College] = try await query()
-                self.colleges = colleges.map { GraphCollege(from: $0) }
-            } catch {
-                print("Failed to query colleges")
-            }
-        }
-    }
-    
     // Changing the internal state, this triggers an UI update on the main thread
     @MainActor
     func updateUI(forSignInStatus: Bool) async {
         self.isSignedIn = forSignInStatus
         print("Changing signed in Status: " + String(self.isSignedIn))
         
-        // Skip data load if user is not signed in
-        if !forSignInStatus {
-            return
+        // load landmarks at start of app when user signed in
+        if (forSignInStatus && self.users.isEmpty) {
+            self.users = await queryUsers()
+        } else {
+            self.users = []
         }
-        
-        await queryData()
     }
     
     // Sign in with Cognito web user interface

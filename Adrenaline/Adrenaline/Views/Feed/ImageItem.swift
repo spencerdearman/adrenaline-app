@@ -105,6 +105,7 @@ struct ImageFeedItemExpandedView: View {
     var id: String
     var namespace: Namespace.ID
     var image: Image
+    var isAnimated = true
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -120,10 +121,22 @@ struct ImageFeedItemExpandedView: View {
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))
             .scaleEffect(-viewState.width/500 + 1)
             .background(.ultraThinMaterial)
-            .gesture(feedModel.isAnimated ? drag : nil)
+            .gesture(isAnimated ? drag : nil)
             .ignoresSafeArea()
             
-            CloseButtonWithFeedModel(feedModel: $feedModel)
+            Button {
+                isAnimated ?
+                withAnimation(.closeCard) {
+                    feedModel.showTile = false
+                    feedModel.selectedItem = ""
+                }
+                : presentationMode.wrappedValue.dismiss()
+            } label: {
+                CloseButton()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            .padding(25)
+            .ignoresSafeArea()
         }
         .frame(maxWidth: screenWidth)
         .zIndex(1)
