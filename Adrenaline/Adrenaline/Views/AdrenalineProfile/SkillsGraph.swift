@@ -13,6 +13,19 @@ var cachedStats: [String: ProfileDiveStatisticsData] = [:]
 //                 [diveMeetsID: ([one], [three], [platform], [overall])]
 var cachedMetrics: [String: ([Double], [Double], [Double], [Double])] = [:]
 
+enum EventType: Int, CaseIterable {
+    case one = 1
+    case three = 3
+    case platform = 5
+}
+
+enum SkillGraph: String, CaseIterable {
+    case overall = "Overall"
+    case one = "1-Meter"
+    case three = "3-Meter"
+    case platform = "Platform"
+}
+
 struct SkillsGraph: View {
     @StateObject private var parser = ProfileParser()
     var profileLink: String = ""

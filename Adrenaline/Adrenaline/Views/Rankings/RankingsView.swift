@@ -132,12 +132,12 @@ struct RankingListView: View {
         let list = gender == .male ? maleRatings : femaleRatings
         let keep = list.map {
             switch rankingType {
-            case .springboard:
-                return ($0.0, $0.1)
-            case .combined:
-                return ($0.0, $0.3)
-            case .platform:
-                return ($0.0, $0.2)
+                case .springboard:
+                    return ($0.0, $0.1)
+                case .combined:
+                    return ($0.0, $0.3)
+                case .platform:
+                    return ($0.0, $0.2)
             }
         }
         
@@ -255,13 +255,17 @@ struct RankingListDiverView: View {
                     .padding(.leading)
                     .padding(.trailing, 40)
                 if let email = athlete.email {
-                    Text((athlete.firstName ?? "") +
-                         " "  +
-                         (athlete.lastName ?? ""))
-                    .foregroundColor(Custom.coolBlue)
+                    NavigationLink(
+                        destination: AdrenalineProfileView(showBackButton: true, userEmail: email,
+                                                           loginSuccessful: .constant(false))) {
+                                                               Text((athlete.firstName ?? "") +
+                                                                    " "  +
+                                                                    (athlete.lastName ?? ""))
+                                                               .foregroundColor(Custom.coolBlue)
+                                                           }
                 } else {
                     Text((athlete.firstName ?? "") + " "  + (athlete.lastName ?? ""))
-                        .foregroundColor(.primary)
+                    .foregroundColor(.primary)
                 }
                 
                 Spacer()
