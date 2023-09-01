@@ -97,6 +97,8 @@
 		4D76438E2A71A4D1000F35CB /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D76438D2A71A4D1000F35CB /* Account.swift */; };
 		4D8B9C1929F8D395002B53AD /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B9C1829F8D395002B53AD /* Home.swift */; };
 		4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9DD0992A058EF700F6D31C /* Event.swift */; };
+		4DA4816D2AA266E5003DFA3B /* ConfirmSignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */; };
+		4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816E2AA266FF003DFA3B /* SignUp.swift */; };
 		4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */; };
 		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
@@ -170,10 +172,6 @@
 		009F41BC2A6AD9E400348C68 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		009F41BE2A6ADD8100348C68 /* ModelDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDataController.swift; sourceTree = "<group>"; };
 		00ADF5092A93304800C85C7F /* DataStoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreAPI.swift; sourceTree = "<group>"; };
-		00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphUserGraphFollowed.swift; sourceTree = "<group>"; };
-		00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFollowed.swift; sourceTree = "<group>"; };
-		00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTypeSelectView.swift; sourceTree = "<group>"; };
-		00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoView.swift; sourceTree = "<group>"; };
 		00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TextFieldClearButton.swift; path = Adrenaline/Views/CustomStructures/TextFieldClearButton.swift; sourceTree = SOURCE_ROOT; };
 		00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentImageLoader.swift; sourceTree = "<group>"; };
 		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = collegeLogos.json; sourceTree = "<group>"; };
@@ -235,6 +233,8 @@
 		4D76438D2A71A4D1000F35CB /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		4D8B9C1829F8D395002B53AD /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		4D9DD0992A058EF700F6D31C /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSignupView.swift; sourceTree = "<group>"; };
+		4DA4816E2AA266FF003DFA3B /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineProfileView.swift; sourceTree = "<group>"; };
 		4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBubbleGenerator.swift; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -397,6 +397,8 @@
 			children = (
 				4D13F3C52A9D56D20081823D /* NewSignIn.swift */,
 				4D13F3C92A9D95260081823D /* NewSignupSequence.swift */,
+				4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */,
+				4DA4816E2AA266FF003DFA3B /* SignUp.swift */,
 			);
 			path = SignupSequence;
 			sourceTree = "<group>";
@@ -749,7 +751,6 @@
 				4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */,
 				4D13F3BD2A999F930081823D /* SettingsPage.swift in Sources */,
 				00F1129D2A51C7A100557265 /* JudgeScoreCalculator.swift in Sources */,
-				00C62A4B2A9D62930064B21D /* GraphCollege.swift in Sources */,
 				4D502E682AA194DC00D25B7B /* Enums.swift in Sources */,
 				4D74FEAF29AEB02100401178 /* Meet.swift in Sources */,
 				4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */,
@@ -804,6 +805,7 @@
 				4D1A31BD2A96DC6400128F81 /* AnimatableFont.swift in Sources */,
 				006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */,
 				4D1A31B02A95BE8700128F81 /* FeedStructure.swift in Sources */,
+				4DA4816D2AA266E5003DFA3B /* ConfirmSignupView.swift in Sources */,
 				4D1A31D52A985F4000128F81 /* ImageItem.swift in Sources */,
 				4DCA5B142A9175EE00C2A6BB /* Dive+Schema.swift in Sources */,
 				008CB5652A61000400935537 /* NavigationViewBackButton.swift in Sources */,
@@ -814,6 +816,7 @@
 				4DCA5B172A9175EE00C2A6BB /* NewAthlete.swift in Sources */,
 				4DCA5B1C2A9175EE00C2A6BB /* NewFollowed+Schema.swift in Sources */,
 				000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */,
+				4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */,
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
 				4DCA5B132A9175EE00C2A6BB /* NewUserNewFollowed+Schema.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
@@ -841,7 +844,6 @@
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				4D1A31CD2A971FEA00128F81 /* MediaFeedItem.swift in Sources */,
 				4DCA5B1D2A9175EE00C2A6BB /* NewUserNewFollowed.swift in Sources */,
-				00B5BB082AA0E1D000E587B5 /* GraphFollowed.swift in Sources */,
 				4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */,
 				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,

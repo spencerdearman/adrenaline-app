@@ -51,6 +51,10 @@ struct ContentView: View {
                 Authenticator(
                     signInContent: { state in
                         NewSignIn(state: state, email: $email)
+                    }, signUpContent: { state in
+                        SignUp(state: state)
+                    }, confirmSignUpContent: { state in
+                        ConfirmSignUp(state: state)
                     }
                 ) { state in
                     if !signupCompleted {

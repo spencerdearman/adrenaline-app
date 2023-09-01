@@ -15,7 +15,6 @@ struct NewSignIn: View {
     @State var password = ""
     @State var circleInitialY = CGFloat.zero
     @State var circleY = CGFloat.zero
-    @State var displaySignIn: Bool = true
     @Binding var email: String
     @FocusState var isEmailFocused: Bool
     @FocusState var isPasswordFocused: Bool
@@ -88,133 +87,12 @@ struct NewSignIn: View {
                 .accentColor(.primary.opacity(0.7))
                 .onTapGesture {
                     withAnimation {
-                        displaySignIn = true
+                        state.move(to: .signUp)
                     }
                 }
         }
     }
     
-    func animate() {
-        withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.8).delay(0.2)) {
-            appear[0] = true
-        }
-        withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.8).delay(0.4)) {
-            appear[1] = true
-        }
-        withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.8).delay(0.6)) {
-            appear[2] = true
-        }
-    }
-}
-
-struct NewSignUp: View {
-    @Environment(\.colorScheme) var currentMode
-    @ObservedObject var state: SignUpState
-    @State var text = ""
-    @State var password = ""
-    @State var circleInitialY = CGFloat.zero
-    @State var circleY = CGFloat.zero
-    @State var displaySignIn: Bool = true
-    @FocusState var isEmailFocused: Bool
-    @FocusState var isPasswordFocused: Bool
-    @State var appear = [false, false, false]
-    private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
-
-    var body: some View {
-        ZStack {
-            Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
-                .scaleEffect(0.7)
-
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Sign Up")
-                    .font(.largeTitle).bold()
-                    .foregroundColor(.primary)
-                    .slideFadeIn(show: appear[0], offset: 30)
-                    .onAppear{
-                        print(state.fields.self)
-                    }
-
-                //form.slideFadeIn(show: appear[2], offset: 10)
-            }
-            .padding(20)
-            .padding(.vertical, 20)
-            .background(.ultraThinMaterial)
-            .cornerRadius(30)
-            .modifier(OutlineModifier(cornerRadius: 30))
-            .onAppear {
-                animate()
-
-            }
-            .frame(width: screenWidth * 0.9)
-        }
-    }
-
-//    var form: some View {
-//        Group {
-//            TextField("Email Address", text: $state.fields.first(where: { $0.field.attributeType == .username })?.value ?? "")
-//                .textContentType(.emailAddress)
-//                .keyboardType(.emailAddress)
-//                .autocapitalization(.none)
-//                .disableAutocorrection(true)
-//                .customField(icon: "envelope.open.fill")
-//                .overlay(
-//                    GeometryReader { proxy in
-//                        let offset = proxy.frame(in: .named("stack")).minY + 32
-//                        Color.clear.preference(key: CirclePreferenceKey.self, value: offset)
-//                    }
-//                        .onPreferenceChange(CirclePreferenceKey.self) { value in
-//                            circleInitialY = value
-//                            circleY = value
-//                        }
-//                )
-//                .focused($isEmailFocused)
-//                .onChange(of: isEmailFocused) { isEmailFocused in
-//                    if isEmailFocused {
-//                        withAnimation {
-//                            circleY = circleInitialY
-//                        }
-//                    }
-//                }
-//
-//            SecureField("Password", text: $state.password)
-//                .textContentType(.password)
-//                .customField(icon: "key.fill")
-//                .focused($isPasswordFocused)
-//                .onChange(of: isPasswordFocused, perform: { isPasswordFocused in
-//                    if isPasswordFocused {
-//                        withAnimation {
-//                            circleY = circleInitialY + 70
-//                        }
-//                    }
-//                })
-//
-//            Button {
-//                Task {
-//                    try? await state.signIn()
-//                }
-//            } label: {
-//                ColorfulButton(title: "Sign In")
-//            }
-//
-//            if state.isBusy {
-//                ProgressView()
-//            }
-//
-//            Divider()
-//
-//            Text("No account yet? **Sign up**")
-//                .font(.footnote)
-//                .foregroundColor(.primary.opacity(0.7))
-//                .accentColor(.primary.opacity(0.7))
-//                .onTapGesture {
-//                    withAnimation {
-//                        displaySignIn = false
-//                    }
-//                }
-//        }
-//    }
-
     func animate() {
         withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.8).delay(0.2)) {
             appear[0] = true
