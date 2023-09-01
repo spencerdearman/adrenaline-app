@@ -18,5 +18,4 @@ struct Custom {
     static let specialGray = Color("specialGray")
     static let darkGray = Color("DarkGray")
     static let accentThinMaterial = Color("AccentGrayThinMaterial")
-    static let error = Color("ErrorRed")
 }

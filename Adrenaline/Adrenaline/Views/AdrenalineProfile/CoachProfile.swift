@@ -13,7 +13,8 @@ var cachedJudging: [String: ProfileJudgingData] = [:]
 var cachedDivers: [String: ProfileCoachDiversData] = [:]
 
 struct CoachView: View {
-    var graphUser: GraphUser
+    @Binding var userViewData: UserViewData
+    @Binding var loginSuccessful: Bool
     @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
     
     private let linkHead: String =
@@ -29,9 +30,10 @@ struct CoachView: View {
         VStack {
             Spacer()
             // Showing DiveMeets Linking Screen
-            if (graphUser.diveMeetsID == nil || graphUser.diveMeetsID == "") {
+            if (userViewData.diveMeetsID == nil || userViewData.diveMeetsID == "") &&
+                loginSuccessful {
                 NavigationLink(destination: {
-                    DiveMeetsLink(graphUser: graphUser)
+                    DiveMeetsLink(userViewData: $userViewData)
                 }, label: {
                     ZStack {
                         Rectangle()
@@ -50,7 +52,7 @@ struct CoachView: View {
                 Spacer()
                 Spacer()
             } else {
-                CoachProfileContent(graphUser: graphUser)
+                CoachProfileContent(userViewData: $userViewData)
                     .padding(.top, screenHeight * 0.05)
             }
             Spacer()
@@ -70,13 +72,13 @@ struct CoachProfileContent: View {
     @State var profileLink: String = ""
     @State var judgingData: ProfileJudgingData? = nil
     @State var coachDiversData: ProfileCoachDiversData? = nil
-    var graphUser: GraphUser
+    @Binding var userViewData: UserViewData
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     private var diveMeetsID: String {
-        graphUser.diveMeetsID ?? ""
+        userViewData.diveMeetsID ?? ""
     }
     
     var body: some View {
@@ -94,7 +96,7 @@ struct CoachProfileContent: View {
         .scrollScale(0.7)
         .frame(height: 40)
         .onAppear {
-            profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (diveMeetsID)
+            profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (userViewData.diveMeetsID ?? "")
             Task {
                 if !cachedJudging.keys.contains(diveMeetsID) ||
                     !cachedDivers.keys.contains(diveMeetsID) {

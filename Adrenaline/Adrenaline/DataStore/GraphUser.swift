@@ -16,15 +16,11 @@ struct GraphUser: Hashable, Codable, Identifiable {
     var phone: String?
     var diveMeetsID: String?
     var accountType: String
-    var followed: [GraphUserGraphFollowed]?
-    var createdAt: Temporal.DateTime?
-    var updatedAt: Temporal.DateTime?
+    var followed: [String] = []
+    var createdAt: String?
+    var updatedAt: String?
     var athleteId: String?
     var coachId: String?
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
 }
 
 
@@ -37,6 +33,12 @@ extension GraphUser {
             preconditionFailure("Can not create user, Invalid ID : \(from.id) (expected UUID)")
         }
         
+        // assume all fields are non null.
+        // real life project must spend more time thinking about null values and
+        // maybe convert the above code (original Landmark class) to optionals
+        // I am not doing it for this workshop as this would imply too many changes in UI code
+        // MARK: - TODO
+        
         id = i
         firstName = from.firstName
         lastName = from.lastName
@@ -44,12 +46,10 @@ extension GraphUser {
         phone = from.phone
         diveMeetsID = from.diveMeetsID
         accountType = from.accountType
-        
-        if let list = from.followed {
-            followed = list.map { GraphUserGraphFollowed(from: $0) }
-        }
-        createdAt = from.createdAt
-        updatedAt = from.updatedAt
+        // TODO: fix this later
+        followed = []
+        createdAt = from.createdAt?.iso8601String
+        updatedAt = from.updatedAt?.iso8601String
         athleteId = from.newUserAthleteId
         coachId = from.newUserCoachId
     }
@@ -57,13 +57,6 @@ extension GraphUser {
 
 extension NewUser {
     convenience init(from user: GraphUser) {
-        var passFollowed: List<NewUserNewFollowed> = []
-        if let followed = user.followed {
-            passFollowed = List<NewUserNewFollowed>.init(elements: followed.map {
-                NewUserNewFollowed(from: $0)
-            })
-        }
-        
         self.init(id: user.id.uuidString,
                   firstName: user.firstName,
                   lastName: user.lastName,
@@ -73,7 +66,8 @@ extension NewUser {
                   accountType: user.accountType,
                   athlete: nil,
                   coach: nil,
-                  followed: passFollowed,
+                  // TODO: fix this
+                  followed: [],
                   createdAt: nil,
                   updatedAt: nil,
                   newUserAthleteId: user.athleteId,
