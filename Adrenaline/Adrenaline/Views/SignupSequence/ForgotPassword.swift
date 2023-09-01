@@ -1,5 +1,5 @@
 //
-//  ConfirmSignupView.swift
+//  ForgotPassword.swift
 //  Adrenaline
 //
 //  Created by Spencer Dearman on 9/1/23.
@@ -8,9 +8,9 @@
 import SwiftUI
 import Authenticator
 
-struct ConfirmSignUp: View {
+struct ForgotPassword: View {
     @Environment(\.colorScheme) var currentMode
-    @ObservedObject var state: ConfirmSignUpState
+    @ObservedObject var state: ResetPasswordState
     @State var appear = [false, false, false]
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -21,7 +21,7 @@ struct ConfirmSignUp: View {
                 .scaleEffect(0.7)
             
             VStack(alignment: .leading, spacing: 20) {
-                Text("Sign Up")
+                Text("Forgot Password")
                     .font(.largeTitle).bold()
                     .foregroundColor(.primary)
                     .slideFadeIn(show: appear[0], offset: 30)
@@ -43,22 +43,34 @@ struct ConfirmSignUp: View {
     
     var form: some View {
         Group {
-            TextField("Confirmation Code", text: $state.confirmationCode)
+            TextField("Email", text: $state.username)
                 .customField(icon: "envelope.open.fill")
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
             
             Button {
                 Task {
-                    try? await state.confirmSignUp()
+                    try? await state.resetPassword()
                 }
             } label: {
-                ColorfulButton(title: "Confirm Email")
+                ColorfulButton(title: "Send Code")
             }
             
             if state.isBusy {
                 ProgressView()
             }
+            
+            Divider()
+            
+            Text("Return to **Sign In**")
+                .font(.footnote)
+                .foregroundColor(.primary.opacity(0.7))
+                .accentColor(.primary.opacity(0.7))
+                .onTapGesture {
+                    withAnimation {
+                        state.move(to: .signIn)
+                    }
+                }
         }
     }
     
@@ -74,4 +86,3 @@ struct ConfirmSignUp: View {
         }
     }
 }
-

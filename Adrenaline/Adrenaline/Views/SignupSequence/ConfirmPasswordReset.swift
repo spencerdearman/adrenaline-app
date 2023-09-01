@@ -1,5 +1,5 @@
 //
-//  ConfirmSignupView.swift
+//  ConfirmPasswordReset.swift
 //  Adrenaline
 //
 //  Created by Spencer Dearman on 9/1/23.
@@ -8,10 +8,11 @@
 import SwiftUI
 import Authenticator
 
-struct ConfirmSignUp: View {
+struct ConfirmPasswordReset: View {
     @Environment(\.colorScheme) var currentMode
-    @ObservedObject var state: ConfirmSignUpState
+    @ObservedObject var state: ConfirmResetPasswordState
     @State var appear = [false, false, false]
+    @Binding var signupCompleted: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -21,7 +22,7 @@ struct ConfirmSignUp: View {
                 .scaleEffect(0.7)
             
             VStack(alignment: .leading, spacing: 20) {
-                Text("Sign Up")
+                Text("Reset Password")
                     .font(.largeTitle).bold()
                     .foregroundColor(.primary)
                     .slideFadeIn(show: appear[0], offset: 30)
@@ -43,17 +44,29 @@ struct ConfirmSignUp: View {
     
     var form: some View {
         Group {
-            TextField("Confirmation Code", text: $state.confirmationCode)
+            TextField("Verification Code", text: $state.confirmationCode)
                 .customField(icon: "envelope.open.fill")
                 .autocapitalization(.none)
-                .disableAutocorrection(true)
             
+            TextField("New Password", text: $state.newPassword)
+                .textContentType(.password)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .customField(icon: "key.fill")
+
+            TextField("Confirm Password", text: $state.confirmPassword)
+                .textContentType(.password)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .customField(icon: "key.fill")
+
             Button {
                 Task {
-                    try? await state.confirmSignUp()
+                    try await state.confirmResetPassword()
+                    signupCompleted = true
                 }
             } label: {
-                ColorfulButton(title: "Confirm Email")
+                ColorfulButton(title: "Submit")
             }
             
             if state.isBusy {
@@ -74,4 +87,3 @@ struct ConfirmSignUp: View {
         }
     }
 }
-

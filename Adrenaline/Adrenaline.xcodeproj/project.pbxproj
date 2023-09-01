@@ -99,6 +99,8 @@
 		4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9DD0992A058EF700F6D31C /* Event.swift */; };
 		4DA4816D2AA266E5003DFA3B /* ConfirmSignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */; };
 		4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816E2AA266FF003DFA3B /* SignUp.swift */; };
+		4DA481712AA27B4A003DFA3B /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */; };
+		4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481722AA27C73003DFA3B /* ConfirmPasswordReset.swift */; };
 		4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */; };
 		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
@@ -235,6 +237,8 @@
 		4D9DD0992A058EF700F6D31C /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSignupView.swift; sourceTree = "<group>"; };
 		4DA4816E2AA266FF003DFA3B /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
+		4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
+		4DA481722AA27C73003DFA3B /* ConfirmPasswordReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmPasswordReset.swift; sourceTree = "<group>"; };
 		4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineProfileView.swift; sourceTree = "<group>"; };
 		4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBubbleGenerator.swift; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -399,6 +403,8 @@
 				4D13F3C92A9D95260081823D /* NewSignupSequence.swift */,
 				4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */,
 				4DA4816E2AA266FF003DFA3B /* SignUp.swift */,
+				4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */,
+				4DA481722AA27C73003DFA3B /* ConfirmPasswordReset.swift */,
 			);
 			path = SignupSequence;
 			sourceTree = "<group>";
@@ -791,6 +797,7 @@
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
 				0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */,
+				4DA481712AA27B4A003DFA3B /* ForgotPassword.swift in Sources */,
 				4DCA5B1B2A9175EE00C2A6BB /* NewUser.swift in Sources */,
 				4DCA5B0B2A9175EE00C2A6BB /* Dive.swift in Sources */,
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
@@ -820,6 +827,7 @@
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
 				4DCA5B132A9175EE00C2A6BB /* NewUserNewFollowed+Schema.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
+				4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */,
 				4D753DE02A214F640029138B /* EventResultPage.swift in Sources */,
 				0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */,
 				4D502E632AA03D4A00D25B7B /* BubbleSelectView.swift in Sources */,

@@ -16,6 +16,7 @@ struct NewSignIn: View {
     @State var circleInitialY = CGFloat.zero
     @State var circleY = CGFloat.zero
     @Binding var email: String
+    @Binding var signupCompleted: Bool
     @FocusState var isEmailFocused: Bool
     @FocusState var isPasswordFocused: Bool
     @State var appear = [false, false, false]
@@ -70,6 +71,7 @@ struct NewSignIn: View {
                 email = state.username
                 Task {
                     try? await state.signIn()
+                    signupCompleted = true
                 }
             } label: {
                 ColorfulButton(title: "Sign In")
@@ -81,15 +83,29 @@ struct NewSignIn: View {
             
             Divider()
             
-            Text("No account yet? **Sign Up**")
-                .font(.footnote)
-                .foregroundColor(.primary.opacity(0.7))
-                .accentColor(.primary.opacity(0.7))
-                .onTapGesture {
-                    withAnimation {
-                        state.move(to: .signUp)
+            HStack {
+                Text("**Forgot Password?**")
+                    .font(.footnote)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        withAnimation {
+                            state.move(to: .resetPassword)
+                        }
                     }
-                }
+                
+                Spacer()
+                
+                Text("No account yet? **Sign Up**")
+                    .font(.footnote)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        withAnimation {
+                            state.move(to: .signUp)
+                        }
+                    }
+            }
         }
     }
     
