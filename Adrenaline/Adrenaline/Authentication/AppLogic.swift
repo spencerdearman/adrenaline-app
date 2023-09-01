@@ -36,18 +36,16 @@ class AppLogic: ObservableObject {
             // When DataStore send a "ready" event, all syncing should be finished and all data
             // should be available
             let _ = Amplify.Hub.listen(to: .dataStore) { event in
-                print(event.eventName)
-                if event.eventName == HubPayload.EventName.DataStore.ready {
-                    // Sets boolean to true when ready event is received
-                    DispatchQueue.main.async {
+                DispatchQueue.main.sync {
+//                    print(event.eventName)
+                    if event.eventName == HubPayload.EventName.DataStore.ready {
+                        // Sets boolean to true when ready event is received
                         self.dataStoreReady = true
-                    }
-                } else if event.eventName == HubPayload.EventName.DataStore.outboxStatus {
-                    // Ignores this event, as it only carries status of queued tasks
-                    return
-                } else {
-                    // If other events are received, assume not ready
-                    DispatchQueue.main.async {
+                    } else if event.eventName == HubPayload.EventName.DataStore.outboxStatus {
+                        // Ignores this event, as it only carries status of queued tasks
+                        return
+                    } else {
+                        // If other events are received, assume not ready
                         self.dataStoreReady = false
                     }
                 }
