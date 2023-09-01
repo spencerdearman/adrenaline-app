@@ -48,7 +48,8 @@ struct ContentView: View {
             TabView {
 //                    LandingView()
 //                    Home()
-                    FeedBase()
+//                    FeedBase()
+                FollowingTestView()
                     .tabItem {
                         Label("Home", systemImage: "house")
                     }
