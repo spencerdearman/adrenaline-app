@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0005FA472AA24355004A65CA /* GraphUserGraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0005FA462AA24355004A65CA /* GraphUserGraphFollowed.swift */; };
 		000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE892A94481D006393B7 /* HideTabBarGesture.swift */; };
 		000AAE8C2A9448A8006393B7 /* HideTabBarScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */; };
 		000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DC29E0EF9100B184E9 /* LiveResults.swift */; };
@@ -22,6 +23,11 @@
 		0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6B82A58E024004C84BF /* SwipeActions.swift */; };
 		0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */; };
 		0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */; };
+		0059AD302AA241D40076AF00 /* GraphMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2C2AA241D40076AF00 /* GraphMeet.swift */; };
+		0059AD312AA241D40076AF00 /* GraphUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2D2AA241D40076AF00 /* GraphUser.swift */; };
+		0059AD322AA241D40076AF00 /* GraphTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2E2AA241D40076AF00 /* GraphTeam.swift */; };
+		0059AD332AA241D40076AF00 /* GraphCollege.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2F2AA241D40076AF00 /* GraphCollege.swift */; };
+		0059AD352AA242440076AF00 /* GraphAthlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD342AA242440076AF00 /* GraphAthlete.swift */; };
 		006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */; };
 		0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5A92A426D9E0040600E /* TileSwapView.swift */; };
 		0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5AB2A4377920040600E /* SwipeModifier.swift */; };
@@ -36,7 +42,6 @@
 		009F41BD2A6AD9E400348C68 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 009F41BB2A6AD9E400348C68 /* Model.xcdatamodeld */; };
 		009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009F41BE2A6ADD8100348C68 /* ModelDataController.swift */; };
 		00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ADF5092A93304800C85C7F /* DataStoreAPI.swift */; };
-		00B5BB062AA0E1C800E587B5 /* GraphUserGraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */; };
 		00B5BB082AA0E1D000E587B5 /* GraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */; };
 		00B5BB0A2AA0E80D00E587B5 /* FollowingTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */; };
 		00B5BB0C2AA0E8A000E587B5 /* FollowingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */; };
@@ -145,6 +150,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0005FA462AA24355004A65CA /* GraphUserGraphFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphUserGraphFollowed.swift; sourceTree = "<group>"; };
 		000AAE892A94481D006393B7 /* HideTabBarGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarGesture.swift; sourceTree = "<group>"; };
 		000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarScrollView.swift; sourceTree = "<group>"; };
 		000D28DC29E0EF9100B184E9 /* LiveResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResults.swift; sourceTree = "<group>"; };
@@ -160,6 +166,11 @@
 		0040A6B82A58E024004C84BF /* SwipeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActions.swift; sourceTree = "<group>"; };
 		0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsView.swift; sourceTree = "<group>"; };
 		0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsParser.swift; sourceTree = "<group>"; };
+		0059AD2C2AA241D40076AF00 /* GraphMeet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphMeet.swift; sourceTree = "<group>"; };
+		0059AD2D2AA241D40076AF00 /* GraphUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphUser.swift; sourceTree = "<group>"; };
+		0059AD2E2AA241D40076AF00 /* GraphTeam.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphTeam.swift; sourceTree = "<group>"; };
+		0059AD2F2AA241D40076AF00 /* GraphCollege.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCollege.swift; sourceTree = "<group>"; };
+		0059AD342AA242440076AF00 /* GraphAthlete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphAthlete.swift; sourceTree = "<group>"; };
 		006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
 		0065C5A92A426D9E0040600E /* TileSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSwapView.swift; sourceTree = "<group>"; };
 		0065C5AB2A4377920040600E /* SwipeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeModifier.swift; sourceTree = "<group>"; };
@@ -174,12 +185,9 @@
 		009F41BC2A6AD9E400348C68 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		009F41BE2A6ADD8100348C68 /* ModelDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDataController.swift; sourceTree = "<group>"; };
 		00ADF5092A93304800C85C7F /* DataStoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreAPI.swift; sourceTree = "<group>"; };
-		00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphUserGraphFollowed.swift; sourceTree = "<group>"; };
 		00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphFollowed.swift; sourceTree = "<group>"; };
 		00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingTestView.swift; sourceTree = "<group>"; };
 		00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingAPI.swift; sourceTree = "<group>"; };
-		00B6A5D52A6651A700C4DFDA /* AccountTypeSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountTypeSelectView.swift; sourceTree = "<group>"; };
-		00B6A5D72A6659C000C4DFDA /* BasicInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicInfoView.swift; sourceTree = "<group>"; };
 		00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TextFieldClearButton.swift; path = Adrenaline/Views/CustomStructures/TextFieldClearButton.swift; sourceTree = SOURCE_ROOT; };
 		00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentImageLoader.swift; sourceTree = "<group>"; };
 		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = collegeLogos.json; sourceTree = "<group>"; };
@@ -319,14 +327,15 @@
 			isa = PBXGroup;
 			children = (
 				00ADF5092A93304800C85C7F /* DataStoreAPI.swift */,
-				00C62A462A9D62530064B21D /* GraphUser.swift */,
-				00C62A482A9D62860064B21D /* GraphTeam.swift */,
-				00C62A4A2A9D62930064B21D /* GraphCollege.swift */,
-				00C62A4C2A9D69960064B21D /* GraphMeet.swift */,
-				00B5BB052AA0E1C800E587B5 /* GraphUserGraphFollowed.swift */,
-				00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */,
-				00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */,
 				00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */,
+				00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */,
+				0059AD342AA242440076AF00 /* GraphAthlete.swift */,
+				0059AD2F2AA241D40076AF00 /* GraphCollege.swift */,
+				00B5BB072AA0E1D000E587B5 /* GraphFollowed.swift */,
+				0059AD2C2AA241D40076AF00 /* GraphMeet.swift */,
+				0059AD2E2AA241D40076AF00 /* GraphTeam.swift */,
+				0059AD2D2AA241D40076AF00 /* GraphUser.swift */,
+				0005FA462AA24355004A65CA /* GraphUserGraphFollowed.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -759,11 +768,11 @@
 				00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */,
 				4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */,
 				4D50E7962A293DEC009BFBFA /* DiveStatisticsParser.swift in Sources */,
+				0059AD302AA241D40076AF00 /* GraphMeet.swift in Sources */,
 				4D8B9C1929F8D395002B53AD /* Home.swift in Sources */,
 				4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */,
 				4D13F3BD2A999F930081823D /* SettingsPage.swift in Sources */,
 				00F1129D2A51C7A100557265 /* JudgeScoreCalculator.swift in Sources */,
-				00C62A4B2A9D62930064B21D /* GraphCollege.swift in Sources */,
 				4D502E682AA194DC00D25B7B /* Enums.swift in Sources */,
 				4D74FEAF29AEB02100401178 /* Meet.swift in Sources */,
 				4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */,
@@ -774,6 +783,7 @@
 				4D1A31C32A97006500128F81 /* MeetItem.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
 				4DCA5B092A9175EE00C2A6BB /* NewEvent+Schema.swift in Sources */,
+				0059AD352AA242440076AF00 /* GraphAthlete.swift in Sources */,
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
 				00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */,
@@ -798,8 +808,10 @@
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
 				002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */,
+				0059AD332AA241D40076AF00 /* GraphCollege.swift in Sources */,
 				4DCA5B0E2A9175EE00C2A6BB /* AmplifyModels.swift in Sources */,
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,
+				0005FA472AA24355004A65CA /* GraphUserGraphFollowed.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
@@ -809,6 +821,7 @@
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
 				4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */,
+				0059AD312AA241D40076AF00 /* GraphUser.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
 				4D1A31CB2A971E4500128F81 /* VideoButton.swift in Sources */,
 				0097478F2A24549A004E7C73 /* MeetPageParser.swift in Sources */,
@@ -860,6 +873,7 @@
 				00B5BB082AA0E1D000E587B5 /* GraphFollowed.swift in Sources */,
 				4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */,
 				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
+				0059AD322AA241D40076AF00 /* GraphTeam.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
 				4DCA5B202A9175EE00C2A6BB /* Video.swift in Sources */,
