@@ -841,7 +841,10 @@
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				4D1A31CD2A971FEA00128F81 /* MediaFeedItem.swift in Sources */,
 				4DCA5B1D2A9175EE00C2A6BB /* NewUserNewFollowed.swift in Sources */,
+<<<<<<< HEAD
 				00B5BB082AA0E1D000E587B5 /* GraphFollowed.swift in Sources */,
+=======
+>>>>>>> ff559e23c0087b52045185f4722fbc192fd8e05b
 				4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */,
 				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
