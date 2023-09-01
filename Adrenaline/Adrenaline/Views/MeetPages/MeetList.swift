@@ -94,9 +94,6 @@ struct MeetList: View {
             if meets != [] {
                 
                 ZStack {
-                    Rectangle()
-                        .fill(Custom.darkGray)
-                        .mask(RoundedRectangle(cornerRadius: 40))
                     VStack {
                         if nameShowing {
                             Text("Meets")
@@ -109,7 +106,7 @@ struct MeetList: View {
                                 ForEach($meets, id: \.id) { $meet in
                                     ZStack {
                                         RoundedRectangle(cornerRadius: cornerRadius)
-                                            .fill(Custom.specialGray)
+                                            .fill(.ultraThinMaterial)
                                             .shadow(radius: 5)
                                         DisclosureGroup(
                                             isExpanded: $meet.isExpanded,

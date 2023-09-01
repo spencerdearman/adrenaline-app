@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct DiverView: View {
-    @Binding var userViewData: UserViewData
-    @Binding var loginSuccessful: Bool
+    var graphUser: GraphUser
     @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -24,11 +23,10 @@ struct DiverView: View {
     var body: some View {
         VStack {
             // Showing DiveMeets Linking Screen
-            if (userViewData.diveMeetsID == nil || userViewData.diveMeetsID == "") &&
-                loginSuccessful {
+            if (graphUser.diveMeetsID == nil || graphUser.diveMeetsID == "") {
                 Spacer()
                 NavigationLink(destination: {
-                    DiveMeetsLink(userViewData: $userViewData)
+                    DiveMeetsLink(graphUser: graphUser)
                 }, label: {
                     ZStack {
                         Rectangle()
@@ -47,7 +45,7 @@ struct DiverView: View {
                 Spacer()
                 Spacer()
             } else {
-                ProfileContent(userViewData: $userViewData, loginSuccessful: $loginSuccessful)
+                ProfileContent(graphUser: graphUser)
                     .padding(.top, screenHeight * 0.05)
             }
             Spacer()
@@ -58,8 +56,7 @@ struct DiverView: View {
 struct ProfileContent: View {
     @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
     @State var selectedPage: Int = 0
-    @Binding var userViewData: UserViewData
-    @Binding var loginSuccessful: Bool
+    var graphUser: GraphUser
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -78,7 +75,7 @@ struct ProfileContent: View {
         .scrollScale(0.7)
         .frame(height: 40)
         .onAppear {
-            if loginSuccessful, scoreValues.last != "Favorites" {
+            if scoreValues.last != "Favorites" {
                 scoreValues.append("Favorites")
             }
         }
@@ -86,19 +83,19 @@ struct ProfileContent: View {
         Group {
             switch selectedPage {
                 case 0:
-                    MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
+                    MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false)
                 case 1:
-                    MetricsView(userViewData: $userViewData)
+                    MetricsView(graphUser: graphUser)
                 case 2:
                     RecruitingView()
                 case 3:
-                    StatisticsView(diveMeetsID: userViewData.diveMeetsID)
+                    StatisticsView(diveMeetsID: graphUser.diveMeetsID)
                 case 4:
                     VideosView()
                 case 5:
-                    FavoritesView(userViewData: $userViewData)
+                    FavoritesView(graphUser: graphUser)
                 default:
-                    MeetListView(diveMeetsID: userViewData.diveMeetsID, nameShowing: false)
+                    MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false)
             }
         }
         .offset(y: -screenHeight * 0.05)
@@ -130,12 +127,12 @@ struct MeetListView: View {
 }
 
 struct MetricsView: View {
-    @Binding var userViewData: UserViewData
+    var graphUser: GraphUser
     
     private let screenWidth = UIScreen.main.bounds.width
     
     var body: some View {
-        if let diveMeetsID = userViewData.diveMeetsID {
+        if let diveMeetsID = graphUser.diveMeetsID {
             SkillsGraph(
                 profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
                 diveMeetsID)
@@ -247,11 +244,8 @@ struct StatisticsView: View {
                         }
                     }
                 } label: {
-                    BackgroundBubble(shadow: 5) {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
-                            .font(.title)
-                            .foregroundColor(.primary)
-                    }
+                    Text("**Filter**")
+                        .foregroundColor(.secondary)
                 }
             }
             .padding(.trailing, 20)
@@ -261,7 +255,7 @@ struct StatisticsView: View {
                     ForEach(filteredStats, id: \.self) { stat in
                         ZStack {
                             Rectangle()
-                                .foregroundColor(currentMode == .light ? .white : .black)
+                                .fill(.ultraThinMaterial)
                                 .mask(RoundedRectangle(cornerRadius: 40))
                                 .shadow(radius: 5)
                             
@@ -316,7 +310,7 @@ struct StatisticsView: View {
 struct FavoritesView: View {
     @Environment(\.getUser) private var getUser
     @State private var followedUsers: [Followed] = []
-    @Binding var userViewData: UserViewData
+    var graphUser: GraphUser
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     
     private let cornerRadius: CGFloat = 30
@@ -365,13 +359,6 @@ struct FavoritesView: View {
             }
             .padding(.top)
             .padding(.bottom, maxHeightOffset)
-        }
-        .onAppear {
-            // We can use userViewData email here instead of logged in user because this view
-            // should only be visible when viewing the logged in profile
-            guard let email = userViewData.email else { return }
-            guard let user = getUser(email) else { return }
-            followedUsers = user.followedArray
         }
     }
 }
