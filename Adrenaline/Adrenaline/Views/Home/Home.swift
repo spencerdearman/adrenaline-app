@@ -160,13 +160,8 @@ struct Home: View {
         if networkIsConnected {
             NavigationView {
                 ZStack {
-                    HomeColorfulView()
                     VStack {
                         VStack {
-                            BackgroundBubble(vPadding: 15, hPadding: 30) {
-                                Text("Home")
-                                    .font(.title2).bold()
-                            }
                             ZStack {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: cornerRadius)
