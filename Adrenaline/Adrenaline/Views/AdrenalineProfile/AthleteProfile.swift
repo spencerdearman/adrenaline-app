@@ -244,11 +244,8 @@ struct StatisticsView: View {
                         }
                     }
                 } label: {
-                    BackgroundBubble(shadow: 5) {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
-                            .font(.title)
-                            .foregroundColor(.primary)
-                    }
+                    Text("**Filter**")
+                        .foregroundColor(.secondary)
                 }
             }
             .padding(.trailing, 20)
@@ -258,7 +255,7 @@ struct StatisticsView: View {
                     ForEach(filteredStats, id: \.self) { stat in
                         ZStack {
                             Rectangle()
-                                .foregroundColor(currentMode == .light ? .white : .black)
+                                .fill(.ultraThinMaterial)
                                 .mask(RoundedRectangle(cornerRadius: 40))
                                 .shadow(radius: 5)
                             

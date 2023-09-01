@@ -11,6 +11,9 @@ import Authenticator
 struct ProfileBar: View {
     @ObservedObject var state: SignedInState
     @Binding var showAccount: Bool
+    @Binding var email: String
+    @Binding var graphUser: GraphUser?
+    @Binding var newAthlete: NewAthlete?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     var title = ""
@@ -45,7 +48,7 @@ struct ProfileBar: View {
                 }
                 
                 NavigationLink {
-                    SettingsView(state: state)
+                    SettingsView(state: state, email: $email, graphUser: $graphUser, newAthlete: $newAthlete)
                 } label: {
                     Image(systemName: "gear")
                     .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)

@@ -78,10 +78,6 @@ struct NewSearchView: View {
                 .offset(y: -200)
                 .blur(radius: 20)
         )
-        .background(
-            Image("Blob 1").offset(x: -100, y: -200)
-                .accessibility(hidden: true)
-        )
         .sheet(isPresented: $showItem) {
             ForEach($feedItems) { item in
                 if item.id == feedModel.selectedItem {

@@ -233,7 +233,6 @@ struct GraphAthlete: Codable, Identifiable {
     var updatedAt: Temporal.DateTime?
 }
 
-
 // Added later, not generated code
 extension GraphUser {
     // construct from API Data
