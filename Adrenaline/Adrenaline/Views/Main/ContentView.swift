@@ -67,20 +67,21 @@ struct ContentView: View {
                                 Label("Chat", systemImage: "message")
                             }
                             
-                            VStack {
-                                Text("Rankings View")
-                                Text("**Clear Datastore**")
-                                    .onTapGesture {
-                                        Task {
-                                            try await Amplify.DataStore.clear()
-                                        }
-                                    }
-                            }
+//                            VStack {
+//                                Text("Rankings View")
+//                                Text("**Clear Datastore**")
+//                                    .onTapGesture {
+//                                        Task {
+//                                            try await Amplify.DataStore.clear()
+//                                        }
+//                                    }
+//                            }
+                            RankingsView(tabBarState: $tabBarState)
                                 .tabItem {
                                     Label("Rankings", systemImage: "trophy")
                                 }
                             
-                            Text("Meets")
+                            Home()
                                 .tabItem {
                                     Label("Meets", systemImage: "figure.pool.swim")
                                 }
