@@ -51,6 +51,7 @@ struct AdrenalineProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
     @State private var offset: CGFloat = 0
+    @State private var swiped: Bool = false
     @Binding var email: String
     @Binding var graphUser: GraphUser?
     @Binding var newAthlete: NewAthlete?
@@ -100,12 +101,11 @@ struct AdrenalineProfileView: View {
                 .padding([.leading, .trailing, .top])
                 .frame(width: screenWidth * 0.9)
                 
-                ZStack{
+                ZStack {
                     Rectangle()
-                        .foregroundColor(Custom.darkGray)
+                        .fill(.ultraThinMaterial)
                         .cornerRadius(50)
                         .shadow(radius: 10)
-                        .frame(width: screenWidth, height: screenHeight * 0.8)
                     VStack {
                         let type = user.accountType
                         if type == AccountType.athlete.rawValue {
@@ -118,40 +118,23 @@ struct AdrenalineProfileView: View {
                             Text("The account type has not been specified")
                         }                    }
                 }
-                .frame(width: screenWidth)
-                .offset(y: offset)
-                .onSwipeGesture(trigger: .onEnded) { direction in
+                .frame(width: screenWidth, height: swiped ? screenHeight * 0.85: screenHeight * 0.6)
+                .onSwipeGesture(trigger: .onChanged) { direction in
                     withAnimation(.easeInOut(duration: 0.25)) {
                         if direction == .up {
-                            offset = screenHeight * 0.13
+                            swiped = true
                         } else if direction == .down {
-                            offset = screenHeight * 0.45
+                            swiped = false
                         }
                     }
                 }
+                .offset(y: swiped ? screenHeight * 0.07 : screenHeight * 0.25)
             }
         }
         .overlay{
             ProfileBar(state: state, showAccount: $showAccount)
                 .frame(width: screenWidth)
         }
-//        .onAppear {
-//            Task {
-//                let emailPredicate = NewUser.keys.email == email
-//                let users = await queryUsers(where: emailPredicate)
-//                if users.count >= 1 {
-//                    graphUser = users[0]
-//                    print(graphUser)
-//                    let userPredicate = users[0].athleteId ?? "" == NewAthlete.keys.id.rawValue
-//                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
-//                    print(athletes)
-//                    if athletes.count >= 1 {
-//                        newAthlete = athletes[0]
-//                        print(newAthlete)
-//                    }
-//                }
-//            }
-//        }
     }
 }
 

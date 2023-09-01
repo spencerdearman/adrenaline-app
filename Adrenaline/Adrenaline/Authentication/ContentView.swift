@@ -62,13 +62,13 @@ struct ContentView: View {
                                     Label("Home", systemImage: "house")
                                 }
                             
-                            Text("Rankings View")
+                            Text("Chat View")
                             .tabItem {
-                                Label("Rankings", systemImage: "trophy")
+                                Label("Chat", systemImage: "message")
                             }
                             
                             VStack {
-                                Text("Meets View")
+                                Text("Rankings View")
                                 Text("**Clear Datastore**")
                                     .onTapGesture {
                                         Task {
@@ -77,12 +77,12 @@ struct ContentView: View {
                                     }
                             }
                                 .tabItem {
-                                    Label("Profile", systemImage: "person")
+                                    Label("Rankings", systemImage: "trophy")
                                 }
                             
-                            Text("Rankings View")
+                            Text("Meets")
                                 .tabItem {
-                                    Label("Search", systemImage: "magnifyingglass")
+                                    Label("Meets", systemImage: "figure.pool.swim")
                                 }
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
