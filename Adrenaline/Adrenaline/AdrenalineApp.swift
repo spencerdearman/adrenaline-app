@@ -456,7 +456,7 @@ struct AdrenalineApp: App {
                                 entityName: "DivingMeet")
                             let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
                             
-                            try await meetParser.parseMeets(storedMeets: meets)
+//                            try await meetParser.parseMeets(storedMeets: meets)
                             
                             // Check that each set of meets is not nil and add each to the database
                             if let upcoming = meetParser.upcomingMeets {
