@@ -55,6 +55,11 @@ struct ContentView: View {
                 ) { state in
                     if !signupCompleted {
                         NewSignupSequence(signupCompleted: $signupCompleted, email: $email)
+                            .onAppear {
+                                Task {
+                                    try await Amplify.DataStore.clear()
+                                }
+                            }
                     } else {
                         TabView {
                             FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount)
@@ -67,15 +72,6 @@ struct ContentView: View {
                                 Label("Chat", systemImage: "message")
                             }
                             
-//                            VStack {
-//                                Text("Rankings View")
-//                                Text("**Clear Datastore**")
-//                                    .onTapGesture {
-//                                        Task {
-//                                            try await Amplify.DataStore.clear()
-//                                        }
-//                                    }
-//                            }
                             RankingsView(tabBarState: $tabBarState)
                                 .tabItem {
                                     Label("Rankings", systemImage: "trophy")
