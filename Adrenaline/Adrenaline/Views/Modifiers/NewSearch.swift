@@ -8,14 +8,72 @@
 import SwiftUI
 import UIKit
 import AVKit
+import Amplify
+
+enum SearchScope: String, CaseIterable {
+    case all, users, meets, teams, colleges
+}
+
+enum SearchItem: Hashable, Identifiable {
+    var id: String {
+        if case .meet(let meet) = self {
+            return meet.id.uuidString
+        } else if case .user(let user) = self {
+            return user.id.uuidString
+        } else if case .team(let team) = self {
+            return team.id.uuidString
+        } else if case .college(let college) = self {
+            return college.id.uuidString
+        } else {
+            return ""
+        }
+    }
+    
+    var title: String {
+        if case .user(let user) = self {
+            return user.email
+        } else if case .meet(let meet) = self {
+            return meet.name
+        } else if case .team(let team) = self {
+            return team.name
+        } else if case .college(let college) = self {
+            return college.name
+        } else {
+            return ""
+        }
+    }
+    
+    case user(GraphUser)
+    case meet(GraphMeet)
+    case team(GraphTeam)
+    case college(GraphCollege)
+}
 
 struct NewSearchView: View {
+    @Environment(\.graphUsers) private var graphUsers
+    @Environment(\.graphMeets) private var graphMeets
+    @Environment(\.graphTeams) private var graphTeams
+    @Environment(\.graphColleges) private var graphColleges
     @State var text = ""
-    @State var showItem = false
-    @State var feedModel : FeedModel = FeedModel()
-    @State var feedItems: [FeedItem] = []
-    @State var selectedItem: FeedItem = FeedItem()
+    @State var showResult: Bool = false
+    @State var selectedItem: SearchItem? = nil
+    @State var searchItems: [SearchItem] = []
+    @State var searchScope: SearchScope = .all
+    @State var recentSearches: [SearchItem] = []
     @Namespace var namespace
+    
+    private func updateRecentSearches(item: SearchItem) {
+        if let index = recentSearches.firstIndex(of: item) {
+            recentSearches.remove(at: index)
+        }
+        
+        recentSearches.insert(item, at: 0)
+        
+        // Keeps the three most recent searches
+        if recentSearches.count == 4 {
+            recentSearches.removeLast()
+        }
+    }
     
     var body: some View {
         NavigationView {
@@ -27,80 +85,183 @@ struct NewSearchView: View {
         .searchable(text: $text) {
             ForEach(suggestions) { suggestion in
                 Button {
-                    text = suggestion.text
+                    text = suggestion.title
                 } label: {
-                    Text(suggestion.text)
+                    ListRow(title: suggestion.title,
+                            icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
+                        .foregroundColor(.primary)
                 }
-                .searchCompletion(suggestion.text)
+                .searchCompletion(suggestion.title)
             }
+        }
+        .searchScopes($searchScope) {
+            ForEach(SearchScope.allCases, id: \.self) { scope in
+                Text(scope.rawValue.capitalized)
+            }
+        }
+        .onAppear {
+            searchItems = [
+                .meet(GraphMeet(meetID: 1, name: "Test Meet 1", startDate: Temporal.Date(Date()),
+                                endDate: Temporal.Date(Date()),
+                                city: "Pittsburgh", state: "PA", country: "United States",
+                                link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9080", meetType: 2)),
+                .meet(GraphMeet(meetID: 2, name: "Test Meet 2", startDate: Temporal.Date(Date()),
+                                endDate: Temporal.Date(Date()),
+                                city: "Oakton", state: "VA", country: "United States",
+                                link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9088", meetType: 2)),
+//                .team(GraphTeam(name: "Pitt Aquatic Club")),
+//                .college(GraphCollege(name: "University of Chicago",
+//                                      imageLink: "https://www.google.com"))
+            ]
+            
+            searchItems += graphMeets.map { .meet($0) }
+            searchItems += graphUsers.map { .user($0) }
+            searchItems += graphTeams.map { .team($0) }
+            searchItems += graphColleges.map { .college($0) }
         }
     }
     
     var content: some View {
-        VStack {
-            ForEach(results) { item in
-                if results.count != 0 {
-                    Divider()
+        ScrollView(showsIndicators: false) {
+            VStack {
+                ForEach(results) { item in
+                    if results.count != 0 {
+                        Divider()
+                    }
+                    Button {
+                        showResult = true
+                        selectedItem = item
+                        updateRecentSearches(item: item)
+                    } label:  {
+                        ListRow(title: item.title, icon: "magnifyingglass")
+                    }
+                    .buttonStyle(.plain)
                 }
-                Button {
-                    showItem = true
-                    selectedItem = item
-                } label:  {
-                    ListRow(title: "ITEM TITLE", icon: "magnifyingglass")
+                
+                if results.isEmpty {
+                    Text("No results found")
                 }
-                .buttonStyle(.plain)
             }
-            
-            if results.isEmpty {
-                Text("No results found")
-            }
-        }
-        .onAppear {
-            feedItems = [
-                MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
-                             namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.text("Hello World"),
-                              namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-                              namespace: namespace, feedModel: $feedModel)]
-            feedModel.selectedItem = feedItems[0].id
-        }
-        .padding(20)
-        .background(.ultraThinMaterial)
-        .backgroundStyle(cornerRadius: 30)
-        .padding(20)
-        .navigationTitle("Search")
-        .background(
-            Rectangle()
-                .fill(.regularMaterial)
-                .frame(height: 200)
-                .frame(maxHeight: .infinity, alignment: .top)
-                .offset(y: -200)
-                .blur(radius: 20)
-        )
-        .sheet(isPresented: $showItem) {
-            ForEach($feedItems) { item in
-                if item.id == feedModel.selectedItem {
-                    AnyView(item.expandedView.wrappedValue)
-                }
+            .padding(20)
+            .background(.ultraThinMaterial)
+            .backgroundStyle(cornerRadius: 30)
+            .padding(20)
+            .navigationTitle("Search")
+            .background(
+                Rectangle()
+                    .fill(.regularMaterial)
+                    .frame(height: 200)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .offset(y: -200)
+                    .blur(radius: 20)
+            )
+            .sheet(isPresented: $showResult) {
+                presentedSearchItems
             }
         }
     }
     
-    var results: [FeedItem] {
-        if text.isEmpty {
-            return feedItems
+    var closeButton: some View {
+        return Button {
+            showResult = false
+            selectedItem = nil
+        } label: {
+            CloseButton()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .padding(25)
+        .ignoresSafeArea()
+    }
+    
+    private func getSearchItemView(item: SearchItem) -> any View {
+        if case .meet(let meet) = item,
+           let selected = selectedItem,
+           meet.id.uuidString == selected.id {
+            return ZStack {
+                NavigationView {
+                    MeetPageView(meetLink: meet.link)
+                }
+            }
+        } else if case .user(let user) = item,
+                  let selected = selectedItem,
+                  user.id.uuidString == selected.id {
+                return ZStack {
+                    Text(user.email)
+                    
+                    closeButton
+                }
+        } else if case .team(let team) = item,
+                  let selected = selectedItem,
+                  team.id.uuidString == selected.id {
+            return ZStack {
+                Text(team.name)
+                
+                closeButton
+            }
+        } else if case .college(let college) = item,
+                  let selected = selectedItem,
+                  college.id.uuidString == selected.id {
+            return ZStack {
+                Text(college.name)
+                
+                closeButton
+            }
         } else {
-            //THIS IS WHERE FILTRATION HAPPENS
-            return feedItems
+            return EmptyView()
         }
     }
     
-    var suggestions: [Suggestion] {
+    var presentedSearchItems: some View {
+        ForEach(searchItems) { item in
+            AnyView(getSearchItemView(item: item))
+        }
+    }
+    
+    var results: [SearchItem] {
         if text.isEmpty {
-            return suggestionsData
+            return searchItems
+        } else if searchScope == .users {
+            return searchItems.filter {
+                if case .user(_) = $0 {
+                    return $0.title.localizedCaseInsensitiveContains(text)
+                } else {
+                    return false
+                }
+            }
+        } else if searchScope == .meets {
+            return searchItems.filter {
+                if case .meet(_) = $0 {
+                    return $0.title.localizedCaseInsensitiveContains(text)
+                } else {
+                    return false
+                }
+            }
+        } else if searchScope == .teams {
+            return searchItems.filter {
+                if case .team(_) = $0 {
+                    return $0.title.localizedCaseInsensitiveContains(text)
+                } else {
+                    return false
+                }
+            }
+        } else if searchScope == .colleges {
+            return searchItems.filter {
+                if case .college(_) = $0 {
+                    return $0.title.localizedCaseInsensitiveContains(text)
+                } else {
+                    return false
+                }
+            }
         } else {
-            return suggestionsData.filter { $0.text.contains(text) }
+            return searchItems.filter { $0.title.localizedCaseInsensitiveContains(text) }
+        }
+    }
+    
+    var suggestions: [SearchItem] {
+        if text.isEmpty {
+            return recentSearches
+        } else {
+            return results.filter { $0.title.localizedCaseInsensitiveContains(text) }
         }
     }
 }
@@ -110,7 +271,7 @@ struct SearchView_Previews: PreviewProvider {
         NewSearchView()
     }
 }
-    
+
 struct Suggestion: Identifiable {
     let id = UUID()
     var text: String

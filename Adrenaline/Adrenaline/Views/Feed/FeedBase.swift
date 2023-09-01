@@ -100,14 +100,14 @@ struct FeedBase: View {
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Logan"), namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                MediaFeedItem(media: Media.video(VideoItem()),
                               namespace: namespace, feedModel: $feedModel),
                 MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Beck"), namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                MediaFeedItem(media: Media.video(VideoItem()),
                               namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+                MediaFeedItem(media: Media.video(VideoItem()),
                               namespace: namespace, feedModel: $feedModel)
             ]
         }
@@ -126,6 +126,27 @@ struct FeedBase: View {
             }
         }
         .statusBar(hidden: !showStatusBar)
+    }
+}
+
+struct CloseButtonWithFeedModel: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var feedModel: FeedModel
+    
+    var body: some View {
+        Button {
+            feedModel.isAnimated ?
+            withAnimation(.closeCard) {
+                feedModel.showTile = false
+                feedModel.selectedItem = ""
+            }
+            : presentationMode.wrappedValue.dismiss()
+        } label: {
+            CloseButton()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .padding(25)
+        .ignoresSafeArea()
     }
 }
 

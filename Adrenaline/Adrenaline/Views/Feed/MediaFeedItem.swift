@@ -57,8 +57,8 @@ struct MediaFeedItemCollapsedView: View {
                         .foregroundColor(.secondary)
                     
                     Group {
-                        if case .video(let videoPlayer) = media {
-                            videoPlayer
+                        if case .video(let videoItem) = media {
+                            videoItem.view
                                 .padding()
                                 .matchedGeometryEffect(id: "body" + id, in: namespace)
                         }
@@ -109,7 +109,7 @@ struct MediaFeedItemExpandedView: View {
     var id: String
     var namespace: Namespace.ID
     var media: Media
-    var isAnimated = true
+    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -133,22 +133,10 @@ struct MediaFeedItemExpandedView: View {
             .modifier(OutlineModifier(cornerRadius: viewState.width / 3))
             .scaleEffect(-viewState.width/500 + 1)
             .background(.ultraThinMaterial)
-            .gesture(isAnimated ? drag : nil)
+            .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
             
-            Button {
-                isAnimated ?
-                withAnimation(.closeCard) {
-                    feedModel.showTile = false
-                    feedModel.selectedItem = ""
-                }
-                : presentationMode.wrappedValue.dismiss()
-            } label: {
-                CloseButton()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            .padding(25)
-            .ignoresSafeArea()
+            CloseButtonWithFeedModel(feedModel: $feedModel)
         }
         .frame(maxWidth: screenWidth)
         .zIndex(1)
@@ -186,8 +174,8 @@ struct MediaFeedItemExpandedView: View {
             )
             .overlay(
                 VStack(alignment: .leading, spacing: 16) {
-                    if case .video(let videoPlayer) = media {
-                        videoPlayer
+                    if case .video(let videoItem) = media {
+                        videoItem.view
                             .padding()
                             .matchedGeometryEffect(id: "body" + id, in: namespace)
                     } else if case .text(let string) = media {
