@@ -1,5 +1,5 @@
 //
-//  Modifiers.swift
+//  FeedModifiers.swift
 //  Adrenaline
 //
 //  Created by Spencer Dearman on 8/23/23.
