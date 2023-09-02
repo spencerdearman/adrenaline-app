@@ -101,6 +101,10 @@
 		4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816E2AA266FF003DFA3B /* SignUp.swift */; };
 		4DA481712AA27B4A003DFA3B /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */; };
 		4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481722AA27C73003DFA3B /* ConfirmPasswordReset.swift */; };
+		4DA481752AA2E9D2003DFA3B /* GraphCollege.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481742AA2E9D2003DFA3B /* GraphCollege.swift */; };
+		4DA481772AA2E9EE003DFA3B /* GraphMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481762AA2E9EE003DFA3B /* GraphMeet.swift */; };
+		4DA481792AA2EA0A003DFA3B /* GraphTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481782AA2EA0A003DFA3B /* GraphTeam.swift */; };
+		4DA4817B2AA2EA21003DFA3B /* GraphUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4817A2AA2EA21003DFA3B /* GraphUser.swift */; };
 		4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */; };
 		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
@@ -239,6 +243,10 @@
 		4DA4816E2AA266FF003DFA3B /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
 		4DA481722AA27C73003DFA3B /* ConfirmPasswordReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmPasswordReset.swift; sourceTree = "<group>"; };
+		4DA481742AA2E9D2003DFA3B /* GraphCollege.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphCollege.swift; sourceTree = "<group>"; };
+		4DA481762AA2E9EE003DFA3B /* GraphMeet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphMeet.swift; sourceTree = "<group>"; };
+		4DA481782AA2EA0A003DFA3B /* GraphTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphTeam.swift; sourceTree = "<group>"; };
+		4DA4817A2AA2EA21003DFA3B /* GraphUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphUser.swift; sourceTree = "<group>"; };
 		4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineProfileView.swift; sourceTree = "<group>"; };
 		4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBubbleGenerator.swift; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -644,6 +652,10 @@
 			isa = PBXGroup;
 			children = (
 				4DF9F80C2A85E7BA0049CCD3 /* AppLogic.swift */,
+				4DA481742AA2E9D2003DFA3B /* GraphCollege.swift */,
+				4DA481762AA2E9EE003DFA3B /* GraphMeet.swift */,
+				4DA481782AA2EA0A003DFA3B /* GraphTeam.swift */,
+				4DA4817A2AA2EA21003DFA3B /* GraphUser.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
@@ -741,6 +753,7 @@
 				4DCA5B112A9175EE00C2A6BB /* NewMeet+Schema.swift in Sources */,
 				4DCA5B162A9175EE00C2A6BB /* CoachUser+Schema.swift in Sources */,
 				4D753DE32A2158370029138B /* EventPageParser.swift in Sources */,
+				4DA481792AA2EA0A003DFA3B /* GraphTeam.swift in Sources */,
 				4DF9F80D2A85E7BA0049CCD3 /* AppLogic.swift in Sources */,
 				4D13F3C12A99B6700081823D /* ProfileBar.swift in Sources */,
 				0040A6B72A550C8E004C84BF /* NoStickPicker.swift in Sources */,
@@ -764,6 +777,7 @@
 				00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */,
 				4DCA5B0A2A9175EE00C2A6BB /* Video+Schema.swift in Sources */,
 				000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */,
+				4DA4817B2AA2EA21003DFA3B /* GraphUser.swift in Sources */,
 				4D1A31C32A97006500128F81 /* MeetItem.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
 				4DCA5B092A9175EE00C2A6BB /* NewEvent+Schema.swift in Sources */,
@@ -778,6 +792,7 @@
 				00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */,
 				4DCA5B0F2A9175EE00C2A6BB /* NewFollowed.swift in Sources */,
 				4DCA5B0C2A9175EE00C2A6BB /* JudgeScore+Schema.swift in Sources */,
+				4DA481752AA2E9D2003DFA3B /* GraphCollege.swift in Sources */,
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
@@ -824,6 +839,7 @@
 				4DCA5B1C2A9175EE00C2A6BB /* NewFollowed+Schema.swift in Sources */,
 				000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */,
 				4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */,
+				4DA481772AA2E9EE003DFA3B /* GraphMeet.swift in Sources */,
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
 				4DCA5B132A9175EE00C2A6BB /* NewUserNewFollowed+Schema.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
