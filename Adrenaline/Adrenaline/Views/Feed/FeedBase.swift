@@ -129,6 +129,27 @@ struct FeedBase: View {
     }
 }
 
+struct CloseButtonWithFeedModel: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Binding var feedModel: FeedModel
+
+    var body: some View {
+        Button {
+            feedModel.isAnimated ?
+            withAnimation(.closeCard) {
+                feedModel.showTile = false
+                feedModel.selectedItem = ""
+            }
+            : presentationMode.wrappedValue.dismiss()
+        } label: {
+            CloseButton()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .padding(25)
+        .ignoresSafeArea()
+    }
+}
+
 struct ScrollPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {

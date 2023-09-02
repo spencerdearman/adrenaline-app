@@ -153,6 +153,18 @@ private struct GraphUsersKey: EnvironmentKey {
     static let defaultValue: [GraphUser] = []
 }
 
+private struct GraphMeetsKey: EnvironmentKey {
+    static let defaultValue: [GraphMeet] = []
+}
+
+private struct GraphTeamsKey: EnvironmentKey {
+    static let defaultValue: [GraphTeam] = []
+}
+
+private struct GraphCollegesKey: EnvironmentKey {
+    static let defaultValue: [GraphCollege] = []
+}
+
 private struct VideoStoreKey: EnvironmentKey {
     static let defaultValue: VideoStore = VideoStore()
 }
@@ -328,6 +340,21 @@ extension EnvironmentValues {
         set { self[GraphUsersKey.self] = newValue }
     }
     
+    var graphMeets: [GraphMeet] {
+        get { self[GraphMeetsKey.self] }
+        set { self[GraphMeetsKey.self] = newValue }
+    }
+
+    var graphTeams: [GraphTeam] {
+        get { self[GraphTeamsKey.self] }
+        set { self[GraphTeamsKey.self] = newValue }
+    }
+
+    var graphColleges: [GraphCollege] {
+        get { self[GraphCollegesKey.self] }
+        set { self[GraphCollegesKey.self] = newValue }
+    }
+    
     var videoStore: VideoStore {
         get { self[VideoStoreKey.self] }
         set { self[VideoStoreKey.self] = newValue }
@@ -363,6 +390,9 @@ struct AdrenalineApp: App {
                 .environmentObject(appLogic)
                 .environment(\.authenticated, appLogic.isSignedIn)
                 .environment(\.graphUsers, appLogic.users)
+                .environment(\.graphMeets, appLogic.meets)
+                .environment(\.graphTeams, appLogic.teams)
+                .environment(\.graphColleges, appLogic.colleges)
                 .environment(\.videoStore, appLogic.videoStore)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
