@@ -113,4 +113,11 @@ type JudgeScore @model @auth(rules: [{allow: private}]) {
   dive: Dive! @belongsTo
   score: Float!
 }
+
+type Message @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  senderName: String!
+  body: String!
+  creationDate: AWSDate!
+}
  

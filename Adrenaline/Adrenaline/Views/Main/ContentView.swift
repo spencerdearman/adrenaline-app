@@ -50,7 +50,15 @@ struct ContentView: View {
             if appLogic.initialized {
                 Authenticator(
                     signInContent: { state in
-                        NewSignIn(state: state, email: $email)
+                        NewSignIn(state: state, email: $email, signupCompleted: $signupCompleted)
+                    }, signUpContent: { state in
+                        SignUp(state: state, email: $email, signupCompleted: $signupCompleted)
+                    }, confirmSignUpContent: { state in
+                        ConfirmSignUp(state: state)
+                    }, resetPasswordContent: { state in
+                        ForgotPassword(state: state)
+                    }, confirmResetPasswordContent: { state in
+                        ConfirmPasswordReset(state: state, signupCompleted: $signupCompleted)
                     }
                 ) { state in
                     if !signupCompleted {
@@ -65,6 +73,9 @@ struct ContentView: View {
                             FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount)
                                 .tabItem {
                                     Label("Home", systemImage: "house")
+                                }
+                                .onAppear{
+                                    print(email)
                                 }
                             
                             Text("Chat View")
