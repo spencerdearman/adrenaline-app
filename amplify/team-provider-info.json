@@ -1,74 +1,15 @@
 {
-  "main": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-adrenaline-main-153503-authRole",
-      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-main-153503-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-main-153503-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-adrenaline-main-153503-deployment",
-      "UnauthRoleName": "amplify-adrenaline-main-153503-unauthRole",
-      "StackName": "amplify-adrenaline-main-153503",
-      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-main-153503/84fcecc0-3a10-11ee-b5db-0a91dd24a88b",
-      "AmplifyAppId": "d28uzwoi4f7qhz"
-    },
-    "categories": {
-      "auth": {
-        "adrenaline7ea715e2": {}
-      },
-      "storage": {
-        "adrenaline": {}
-      },
-      "api": {
-        "adrenaline": {}
-      }
-    }
-  },
   "logan": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-adrenaline-logan-210210-authRole",
-      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-logan-210210-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-logan-210210-authRole",
+      "AuthRoleName": "amplify-adrenaline-logan-202623-authRole",
+      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-logan-202623-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-logan-202623-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-adrenaline-logan-210210-deployment",
-      "UnauthRoleName": "amplify-adrenaline-logan-210210-unauthRole",
-      "StackName": "amplify-adrenaline-logan-210210",
-      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-logan-210210/8638b510-4087-11ee-a0d0-0e06ab0e67eb",
+      "DeploymentBucketName": "amplify-adrenaline-logan-202623-deployment",
+      "UnauthRoleName": "amplify-adrenaline-logan-202623-unauthRole",
+      "StackName": "amplify-adrenaline-logan-202623",
+      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-logan-202623/54572640-41f3-11ee-874d-12d457cbab57",
       "AmplifyAppId": "d28uzwoi4f7qhz"
-    },
-    "categories": {
-      "auth": {
-        "adrenaline7ea715e2": {}
-      },
-      "api": {
-        "adrenaline": {}
-      },
-      "storage": {
-        "adrenaline": {}
-      }
-    }
-  },
-  "feed": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-adrenaline-feed-105112-authRole",
-      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-feed-105112-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-feed-105112-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-adrenaline-feed-105112-deployment",
-      "UnauthRoleName": "amplify-adrenaline-feed-105112-unauthRole",
-      "StackName": "amplify-adrenaline-feed-105112",
-      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-feed-105112/812c3ea0-41c4-11ee-a7c7-126331f9bc1f",
-      "AmplifyAppId": "d28uzwoi4f7qhz"
-    },
-    "categories": {
-      "auth": {
-        "adrenaline7ea715e2": {}
-      },
-      "api": {
-        "adrenaline": {}
-      },
-      "storage": {
-        "adrenaline": {}
-      }
     }
   }
 }
