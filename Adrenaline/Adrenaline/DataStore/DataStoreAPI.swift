@@ -86,6 +86,20 @@ func saveAthlete(athlete: GraphAthlete) async throws -> NewAthlete {
     return savedAthlete
 }
 
+func saveFollowed(followed: NewFollowed) async throws -> NewFollowed {
+    let result: [NewFollowed] = try await query(where: NewFollowed.keys.email == followed.email)
+    
+    if result.count == 0 {
+        return try await saveToDataStore(object: followed)
+    }
+    else if result.count == 1 {
+        return result[0]
+    }
+    else {
+        throw NSError()
+    }
+}
+
 func updateUserField(email: String, key: String, value: Any) async throws {
     let users: [NewUser] = try await query(where: NewUser.keys.email == email)
     print(users)

@@ -10,9 +10,14 @@ import Amplify
 
 func addFollowedToUser(user: NewUser, followed: NewFollowed) async {
     do {
+        // Saves if email doesn't exist, otherwise returns cloud object to avoid duplication
+        let savedFollowed = try await saveFollowed(followed: followed)
+        
+        // Skips add if user already follows the followed object
         let combos = user.followed ?? []
-        if combos.elements.contains(where: { $0.id == followed.id }) { return }
-        let combo = NewUserNewFollowed(newUser: user, newFollowed: followed)
+        if combos.elements.contains(where: { $0.id == savedFollowed.id }) { return }
+        
+        let combo = NewUserNewFollowed(newUser: user, newFollowed: savedFollowed)
         try await Amplify.DataStore.save(combo)
         
         if let list = user.followed {
@@ -21,14 +26,14 @@ func addFollowedToUser(user: NewUser, followed: NewFollowed) async {
             user.followed = List<NewUserNewFollowed>.init(elements: [combo])
         }
         
-        if let list = followed.users {
-            followed.users = List<NewUserNewFollowed>.init(elements: list.elements + [combo])
+        if let list = savedFollowed.users {
+            savedFollowed.users = List<NewUserNewFollowed>.init(elements: list.elements + [combo])
         } else {
-            followed.users = List<NewUserNewFollowed>.init(elements: [combo])
+            savedFollowed.users = List<NewUserNewFollowed>.init(elements: [combo])
         }
         
         try await Amplify.DataStore.save(user)
-        try await Amplify.DataStore.save(followed)
+        try await Amplify.DataStore.save(savedFollowed)
     } catch {
         print("Failed to add followed to user")
     }
