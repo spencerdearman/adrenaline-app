@@ -28,7 +28,7 @@ struct FollowingTestView: View {
                 Button(action: {
                     Task {
                         let followed = NewFollowed(email: "dearmanspencer@gmail.com")
-                        await addFollowedToUser(user: spencer, followed: followed)
+                        await addFollowedToUser(user: logan, followed: followed)
                     }
                 }) {
                     Image(systemName: "arrow.right")
@@ -37,20 +37,40 @@ struct FollowingTestView: View {
             }
             HStack {
                 Text("Logan")
-                Button(action: {}) {
+                Button(action: {
+                    Task {
+                        let followed = NewFollowed(email: "lsherwin10@gmail.com")
+                        await addFollowedToUser(user: andrew, followed: followed)
+                    }
+                }) {
                     Image(systemName: "arrow.left")
                 }
-                Button(action: {}) {
+                Button(action: {
+                    Task {
+                        let followed = NewFollowed(email: "achen@gmail.com")
+                        await addFollowedToUser(user: logan, followed: followed)
+                    }
+                }) {
                     Image(systemName: "arrow.right")
                 }
                 Text("Andrew")
             }
             HStack {
                 Text("Spencer")
-                Button(action: {}) {
+                Button(action: {
+                    Task {
+                        let followed = NewFollowed(email: "dearmanspencer@gmail.com")
+                        await addFollowedToUser(user: andrew, followed: followed)
+                    }
+                }) {
                     Image(systemName: "arrow.left")
                 }
-                Button(action: {}) {
+                Button(action: {
+                    Task {
+                        let followed = NewFollowed(email: "achen@gmail.com")
+                        await addFollowedToUser(user: spencer, followed: followed)
+                    }
+                }) {
                     Image(systemName: "arrow.right")
                 }
                 Text("Andrew")
