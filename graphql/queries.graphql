@@ -1041,10 +1041,7 @@ query SyncCoachUsers(
 query GetNewFollowed($id: ID!) {
   getNewFollowed(id: $id) {
     id
-    firstName
-    lastName
     email
-    diveMeetsID
     users {
       items {
         id
@@ -1078,10 +1075,7 @@ query ListNewFolloweds(
   listNewFolloweds(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
@@ -1114,10 +1108,7 @@ query SyncNewFolloweds(
   ) {
     items {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
@@ -2216,10 +2207,7 @@ query GetNewUserNewFollowed($id: ID!) {
     }
     newFollowed {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
@@ -2274,10 +2262,7 @@ query ListNewUserNewFolloweds(
       }
       newFollowed {
         id
-        firstName
-        lastName
         email
-        diveMeetsID
         createdAt
         updatedAt
         _version
@@ -2333,10 +2318,7 @@ query SyncNewUserNewFolloweds(
       }
       newFollowed {
         id
-        firstName
-        lastName
         email
-        diveMeetsID
         createdAt
         updatedAt
         _version
@@ -2394,10 +2376,7 @@ query NewUserNewFollowedsByNewUserId(
       }
       newFollowed {
         id
-        firstName
-        lastName
         email
-        diveMeetsID
         createdAt
         updatedAt
         _version
@@ -2455,10 +2434,7 @@ query NewUserNewFollowedsByNewFollowedId(
       }
       newFollowed {
         id
-        firstName
-        lastName
         email
-        diveMeetsID
         createdAt
         updatedAt
         _version

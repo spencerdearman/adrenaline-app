@@ -1554,10 +1554,7 @@ mutation CreateNewFollowed(
 ) {
   createNewFollowed(input: $input, condition: $condition) {
     id
-    firstName
-    lastName
     email
-    diveMeetsID
     users {
       items {
         id
@@ -1589,10 +1586,7 @@ mutation UpdateNewFollowed(
 ) {
   updateNewFollowed(input: $input, condition: $condition) {
     id
-    firstName
-    lastName
     email
-    diveMeetsID
     users {
       items {
         id
@@ -1624,10 +1618,7 @@ mutation DeleteNewFollowed(
 ) {
   deleteNewFollowed(input: $input, condition: $condition) {
     id
-    firstName
-    lastName
     email
-    diveMeetsID
     users {
       items {
         id
@@ -3124,10 +3115,7 @@ mutation CreateNewUserNewFollowed(
     }
     newFollowed {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
@@ -3216,10 +3204,7 @@ mutation UpdateNewUserNewFollowed(
     }
     newFollowed {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
@@ -3308,10 +3293,7 @@ mutation DeleteNewUserNewFollowed(
     }
     newFollowed {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
