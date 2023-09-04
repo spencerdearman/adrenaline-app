@@ -19,8 +19,8 @@ struct FollowingTestView: View {
                 Text("Logan")
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(firstName: "Logan", lastName: "Sherwin")
-                        let _ = try await saveToDataStore(object: followed)
+                        let followed = NewFollowed(firstName: "Logan", lastName: "Sherwin",
+                                                   email: "lsherwin10@gmail.com")
                         await addFollowedToUser(user: spencer, followed: followed)
                     }
                 }) {
@@ -28,9 +28,9 @@ struct FollowingTestView: View {
                 }
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(firstName: "Spencer", lastName: "Dearman")
-                        let _ = try await saveToDataStore(object: followed)
-                        await addFollowedToUser(user: logan, followed: followed)
+                        let followed = NewFollowed(firstName: "Spencer", lastName: "Dearman",
+                                                   email: "dearmanspencer@gmail.com")
+                        await addFollowedToUser(user: spencer, followed: followed)
                     }
                 }) {
                     Image(systemName: "arrow.right")
