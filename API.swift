@@ -2331,8 +2331,8 @@ public struct DeleteCoachUserInput: GraphQLMapConvertible {
 public struct CreateNewFollowedInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID? = nil, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, version: Int? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "_version": version]
+  public init(id: GraphQLID? = nil, email: String, version: Int? = nil) {
+    graphQLMap = ["id": id, "email": email, "_version": version]
   }
 
   public var id: GraphQLID? {
@@ -2344,39 +2344,12 @@ public struct CreateNewFollowedInput: GraphQLMapConvertible {
     }
   }
 
-  public var firstName: String {
+  public var email: String {
     get {
-      return graphQLMap["firstName"] as! String
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "firstName")
-    }
-  }
-
-  public var lastName: String {
-    get {
-      return graphQLMap["lastName"] as! String
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "lastName")
-    }
-  }
-
-  public var email: String? {
-    get {
-      return graphQLMap["email"] as! String?
+      return graphQLMap["email"] as! String
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "email")
-    }
-  }
-
-  public var diveMeetsId: String? {
-    get {
-      return graphQLMap["diveMeetsID"] as! String?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "diveMeetsID")
     }
   }
 
@@ -2393,26 +2366,8 @@ public struct CreateNewFollowedInput: GraphQLMapConvertible {
 public struct ModelNewFollowedConditionInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, email: ModelStringInput? = nil, diveMeetsId: ModelStringInput? = nil, and: [ModelNewFollowedConditionInput?]? = nil, or: [ModelNewFollowedConditionInput?]? = nil, not: ModelNewFollowedConditionInput? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "and": and, "or": or, "not": not, "_deleted": deleted]
-  }
-
-  public var firstName: ModelStringInput? {
-    get {
-      return graphQLMap["firstName"] as! ModelStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "firstName")
-    }
-  }
-
-  public var lastName: ModelStringInput? {
-    get {
-      return graphQLMap["lastName"] as! ModelStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "lastName")
-    }
+  public init(email: ModelStringInput? = nil, and: [ModelNewFollowedConditionInput?]? = nil, or: [ModelNewFollowedConditionInput?]? = nil, not: ModelNewFollowedConditionInput? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["email": email, "and": and, "or": or, "not": not, "_deleted": deleted]
   }
 
   public var email: ModelStringInput? {
@@ -2421,15 +2376,6 @@ public struct ModelNewFollowedConditionInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "email")
-    }
-  }
-
-  public var diveMeetsId: ModelStringInput? {
-    get {
-      return graphQLMap["diveMeetsID"] as! ModelStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "diveMeetsID")
     }
   }
 
@@ -2473,8 +2419,8 @@ public struct ModelNewFollowedConditionInput: GraphQLMapConvertible {
 public struct UpdateNewFollowedInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID, firstName: String? = nil, lastName: String? = nil, email: String? = nil, diveMeetsId: String? = nil, version: Int? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "_version": version]
+  public init(id: GraphQLID, email: String? = nil, version: Int? = nil) {
+    graphQLMap = ["id": id, "email": email, "_version": version]
   }
 
   public var id: GraphQLID {
@@ -2486,39 +2432,12 @@ public struct UpdateNewFollowedInput: GraphQLMapConvertible {
     }
   }
 
-  public var firstName: String? {
-    get {
-      return graphQLMap["firstName"] as! String?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "firstName")
-    }
-  }
-
-  public var lastName: String? {
-    get {
-      return graphQLMap["lastName"] as! String?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "lastName")
-    }
-  }
-
   public var email: String? {
     get {
       return graphQLMap["email"] as! String?
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "email")
-    }
-  }
-
-  public var diveMeetsId: String? {
-    get {
-      return graphQLMap["diveMeetsID"] as! String?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "diveMeetsID")
     }
   }
 
@@ -4937,8 +4856,8 @@ public struct ModelCoachUserFilterInput: GraphQLMapConvertible {
 public struct ModelNewFollowedFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelIDInput? = nil, firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, email: ModelStringInput? = nil, diveMeetsId: ModelStringInput? = nil, and: [ModelNewFollowedFilterInput?]? = nil, or: [ModelNewFollowedFilterInput?]? = nil, not: ModelNewFollowedFilterInput? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "and": and, "or": or, "not": not, "_deleted": deleted]
+  public init(id: ModelIDInput? = nil, email: ModelStringInput? = nil, and: [ModelNewFollowedFilterInput?]? = nil, or: [ModelNewFollowedFilterInput?]? = nil, not: ModelNewFollowedFilterInput? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "email": email, "and": and, "or": or, "not": not, "_deleted": deleted]
   }
 
   public var id: ModelIDInput? {
@@ -4950,39 +4869,12 @@ public struct ModelNewFollowedFilterInput: GraphQLMapConvertible {
     }
   }
 
-  public var firstName: ModelStringInput? {
-    get {
-      return graphQLMap["firstName"] as! ModelStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "firstName")
-    }
-  }
-
-  public var lastName: ModelStringInput? {
-    get {
-      return graphQLMap["lastName"] as! ModelStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "lastName")
-    }
-  }
-
   public var email: ModelStringInput? {
     get {
       return graphQLMap["email"] as! ModelStringInput?
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "email")
-    }
-  }
-
-  public var diveMeetsId: ModelStringInput? {
-    get {
-      return graphQLMap["diveMeetsID"] as! ModelStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "diveMeetsID")
     }
   }
 
@@ -6573,8 +6465,8 @@ public struct ModelSubscriptionCoachUserFilterInput: GraphQLMapConvertible {
 public struct ModelSubscriptionNewFollowedFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelSubscriptionIDInput? = nil, firstName: ModelSubscriptionStringInput? = nil, lastName: ModelSubscriptionStringInput? = nil, email: ModelSubscriptionStringInput? = nil, diveMeetsId: ModelSubscriptionStringInput? = nil, and: [ModelSubscriptionNewFollowedFilterInput?]? = nil, or: [ModelSubscriptionNewFollowedFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "and": and, "or": or, "_deleted": deleted]
+  public init(id: ModelSubscriptionIDInput? = nil, email: ModelSubscriptionStringInput? = nil, and: [ModelSubscriptionNewFollowedFilterInput?]? = nil, or: [ModelSubscriptionNewFollowedFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "email": email, "and": and, "or": or, "_deleted": deleted]
   }
 
   public var id: ModelSubscriptionIDInput? {
@@ -6586,39 +6478,12 @@ public struct ModelSubscriptionNewFollowedFilterInput: GraphQLMapConvertible {
     }
   }
 
-  public var firstName: ModelSubscriptionStringInput? {
-    get {
-      return graphQLMap["firstName"] as! ModelSubscriptionStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "firstName")
-    }
-  }
-
-  public var lastName: ModelSubscriptionStringInput? {
-    get {
-      return graphQLMap["lastName"] as! ModelSubscriptionStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "lastName")
-    }
-  }
-
   public var email: ModelSubscriptionStringInput? {
     get {
       return graphQLMap["email"] as! ModelSubscriptionStringInput?
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "email")
-    }
-  }
-
-  public var diveMeetsId: ModelSubscriptionStringInput? {
-    get {
-      return graphQLMap["diveMeetsID"] as! ModelSubscriptionStringInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "diveMeetsID")
     }
   }
 
@@ -23294,7 +23159,7 @@ public final class DeleteCoachUserMutation: GraphQLMutation {
 
 public final class CreateNewFollowedMutation: GraphQLMutation {
   public static let operationString =
-    "mutation CreateNewFollowed($input: CreateNewFollowedInput!, $condition: ModelNewFollowedConditionInput) {\n  createNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    diveMeetsID\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation CreateNewFollowed($input: CreateNewFollowedInput!, $condition: ModelNewFollowedConditionInput) {\n  createNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    email\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: CreateNewFollowedInput
   public var condition: ModelNewFollowedConditionInput?
@@ -23340,10 +23205,7 @@ public final class CreateNewFollowedMutation: GraphQLMutation {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("email", type: .scalar(String.self)),
-        GraphQLField("diveMeetsID", type: .scalar(String.self)),
+        GraphQLField("email", type: .nonNull(.scalar(String.self))),
         GraphQLField("users", type: .object(User.selections)),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -23358,8 +23220,8 @@ public final class CreateNewFollowedMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -23380,39 +23242,12 @@ public final class CreateNewFollowedMutation: GraphQLMutation {
         }
       }
 
-      public var firstName: String {
+      public var email: String {
         get {
-          return snapshot["firstName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "firstName")
-        }
-      }
-
-      public var lastName: String {
-        get {
-          return snapshot["lastName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "lastName")
-        }
-      }
-
-      public var email: String? {
-        get {
-          return snapshot["email"] as? String
+          return snapshot["email"]! as! String
         }
         set {
           snapshot.updateValue(newValue, forKey: "email")
-        }
-      }
-
-      public var diveMeetsId: String? {
-        get {
-          return snapshot["diveMeetsID"] as? String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "diveMeetsID")
         }
       }
 
@@ -23639,7 +23474,7 @@ public final class CreateNewFollowedMutation: GraphQLMutation {
 
 public final class UpdateNewFollowedMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdateNewFollowed($input: UpdateNewFollowedInput!, $condition: ModelNewFollowedConditionInput) {\n  updateNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    diveMeetsID\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation UpdateNewFollowed($input: UpdateNewFollowedInput!, $condition: ModelNewFollowedConditionInput) {\n  updateNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    email\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: UpdateNewFollowedInput
   public var condition: ModelNewFollowedConditionInput?
@@ -23685,10 +23520,7 @@ public final class UpdateNewFollowedMutation: GraphQLMutation {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("email", type: .scalar(String.self)),
-        GraphQLField("diveMeetsID", type: .scalar(String.self)),
+        GraphQLField("email", type: .nonNull(.scalar(String.self))),
         GraphQLField("users", type: .object(User.selections)),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -23703,8 +23535,8 @@ public final class UpdateNewFollowedMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -23725,39 +23557,12 @@ public final class UpdateNewFollowedMutation: GraphQLMutation {
         }
       }
 
-      public var firstName: String {
+      public var email: String {
         get {
-          return snapshot["firstName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "firstName")
-        }
-      }
-
-      public var lastName: String {
-        get {
-          return snapshot["lastName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "lastName")
-        }
-      }
-
-      public var email: String? {
-        get {
-          return snapshot["email"] as? String
+          return snapshot["email"]! as! String
         }
         set {
           snapshot.updateValue(newValue, forKey: "email")
-        }
-      }
-
-      public var diveMeetsId: String? {
-        get {
-          return snapshot["diveMeetsID"] as? String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "diveMeetsID")
         }
       }
 
@@ -23984,7 +23789,7 @@ public final class UpdateNewFollowedMutation: GraphQLMutation {
 
 public final class DeleteNewFollowedMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeleteNewFollowed($input: DeleteNewFollowedInput!, $condition: ModelNewFollowedConditionInput) {\n  deleteNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    diveMeetsID\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation DeleteNewFollowed($input: DeleteNewFollowedInput!, $condition: ModelNewFollowedConditionInput) {\n  deleteNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    email\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: DeleteNewFollowedInput
   public var condition: ModelNewFollowedConditionInput?
@@ -24030,10 +23835,7 @@ public final class DeleteNewFollowedMutation: GraphQLMutation {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("email", type: .scalar(String.self)),
-        GraphQLField("diveMeetsID", type: .scalar(String.self)),
+        GraphQLField("email", type: .nonNull(.scalar(String.self))),
         GraphQLField("users", type: .object(User.selections)),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -24048,8 +23850,8 @@ public final class DeleteNewFollowedMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -24070,39 +23872,12 @@ public final class DeleteNewFollowedMutation: GraphQLMutation {
         }
       }
 
-      public var firstName: String {
+      public var email: String {
         get {
-          return snapshot["firstName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "firstName")
-        }
-      }
-
-      public var lastName: String {
-        get {
-          return snapshot["lastName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "lastName")
-        }
-      }
-
-      public var email: String? {
-        get {
-          return snapshot["email"] as? String
+          return snapshot["email"]! as! String
         }
         set {
           snapshot.updateValue(newValue, forKey: "email")
-        }
-      }
-
-      public var diveMeetsId: String? {
-        get {
-          return snapshot["diveMeetsID"] as? String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "diveMeetsID")
         }
       }
 
@@ -39098,7 +38873,7 @@ public final class DeleteMessageMutation: GraphQLMutation {
 
 public final class CreateNewUserNewFollowedMutation: GraphQLMutation {
   public static let operationString =
-    "mutation CreateNewUserNewFollowed($input: CreateNewUserNewFollowedInput!, $condition: ModelNewUserNewFollowedConditionInput) {\n  createNewUserNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation CreateNewUserNewFollowed($input: CreateNewUserNewFollowedInput!, $condition: ModelNewUserNewFollowedConditionInput) {\n  createNewUserNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: CreateNewUserNewFollowedInput
   public var condition: ModelNewUserNewFollowedConditionInput?
@@ -39858,10 +39633,7 @@ public final class CreateNewUserNewFollowedMutation: GraphQLMutation {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -39876,8 +39648,8 @@ public final class CreateNewUserNewFollowedMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -39898,39 +39670,12 @@ public final class CreateNewUserNewFollowedMutation: GraphQLMutation {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -40041,7 +39786,7 @@ public final class CreateNewUserNewFollowedMutation: GraphQLMutation {
 
 public final class UpdateNewUserNewFollowedMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdateNewUserNewFollowed($input: UpdateNewUserNewFollowedInput!, $condition: ModelNewUserNewFollowedConditionInput) {\n  updateNewUserNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation UpdateNewUserNewFollowed($input: UpdateNewUserNewFollowedInput!, $condition: ModelNewUserNewFollowedConditionInput) {\n  updateNewUserNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: UpdateNewUserNewFollowedInput
   public var condition: ModelNewUserNewFollowedConditionInput?
@@ -40801,10 +40546,7 @@ public final class UpdateNewUserNewFollowedMutation: GraphQLMutation {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -40819,8 +40561,8 @@ public final class UpdateNewUserNewFollowedMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -40841,39 +40583,12 @@ public final class UpdateNewUserNewFollowedMutation: GraphQLMutation {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -40984,7 +40699,7 @@ public final class UpdateNewUserNewFollowedMutation: GraphQLMutation {
 
 public final class DeleteNewUserNewFollowedMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeleteNewUserNewFollowed($input: DeleteNewUserNewFollowedInput!, $condition: ModelNewUserNewFollowedConditionInput) {\n  deleteNewUserNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation DeleteNewUserNewFollowed($input: DeleteNewUserNewFollowedInput!, $condition: ModelNewUserNewFollowedConditionInput) {\n  deleteNewUserNewFollowed(input: $input, condition: $condition) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: DeleteNewUserNewFollowedInput
   public var condition: ModelNewUserNewFollowedConditionInput?
@@ -41744,10 +41459,7 @@ public final class DeleteNewUserNewFollowedMutation: GraphQLMutation {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -41762,8 +41474,8 @@ public final class DeleteNewUserNewFollowedMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -41784,39 +41496,12 @@ public final class DeleteNewUserNewFollowedMutation: GraphQLMutation {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -52364,7 +52049,7 @@ public final class SyncCoachUsersQuery: GraphQLQuery {
 
 public final class GetNewFollowedQuery: GraphQLQuery {
   public static let operationString =
-    "query GetNewFollowed($id: ID!) {\n  getNewFollowed(id: $id) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    diveMeetsID\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "query GetNewFollowed($id: ID!) {\n  getNewFollowed(id: $id) {\n    __typename\n    id\n    email\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var id: GraphQLID
 
@@ -52408,10 +52093,7 @@ public final class GetNewFollowedQuery: GraphQLQuery {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("email", type: .scalar(String.self)),
-        GraphQLField("diveMeetsID", type: .scalar(String.self)),
+        GraphQLField("email", type: .nonNull(.scalar(String.self))),
         GraphQLField("users", type: .object(User.selections)),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -52426,8 +52108,8 @@ public final class GetNewFollowedQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -52448,39 +52130,12 @@ public final class GetNewFollowedQuery: GraphQLQuery {
         }
       }
 
-      public var firstName: String {
+      public var email: String {
         get {
-          return snapshot["firstName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "firstName")
-        }
-      }
-
-      public var lastName: String {
-        get {
-          return snapshot["lastName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "lastName")
-        }
-      }
-
-      public var email: String? {
-        get {
-          return snapshot["email"] as? String
+          return snapshot["email"]! as! String
         }
         set {
           snapshot.updateValue(newValue, forKey: "email")
-        }
-      }
-
-      public var diveMeetsId: String? {
-        get {
-          return snapshot["diveMeetsID"] as? String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "diveMeetsID")
         }
       }
 
@@ -52707,7 +52362,7 @@ public final class GetNewFollowedQuery: GraphQLQuery {
 
 public final class ListNewFollowedsQuery: GraphQLQuery {
   public static let operationString =
-    "query ListNewFolloweds($filter: ModelNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  listNewFolloweds(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query ListNewFolloweds($filter: ModelNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  listNewFolloweds(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelNewFollowedFilterInput?
   public var limit: Int?
@@ -52811,10 +52466,7 @@ public final class ListNewFollowedsQuery: GraphQLQuery {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -52829,8 +52481,8 @@ public final class ListNewFollowedsQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -52851,39 +52503,12 @@ public final class ListNewFollowedsQuery: GraphQLQuery {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -52994,7 +52619,7 @@ public final class ListNewFollowedsQuery: GraphQLQuery {
 
 public final class SyncNewFollowedsQuery: GraphQLQuery {
   public static let operationString =
-    "query SyncNewFolloweds($filter: ModelNewFollowedFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncNewFolloweds(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query SyncNewFolloweds($filter: ModelNewFollowedFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncNewFolloweds(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelNewFollowedFilterInput?
   public var limit: Int?
@@ -53100,10 +52725,7 @@ public final class SyncNewFollowedsQuery: GraphQLQuery {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -53118,8 +52740,8 @@ public final class SyncNewFollowedsQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -53140,39 +52762,12 @@ public final class SyncNewFollowedsQuery: GraphQLQuery {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -63846,7 +63441,7 @@ public final class SyncMessagesQuery: GraphQLQuery {
 
 public final class GetNewUserNewFollowedQuery: GraphQLQuery {
   public static let operationString =
-    "query GetNewUserNewFollowed($id: ID!) {\n  getNewUserNewFollowed(id: $id) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "query GetNewUserNewFollowed($id: ID!) {\n  getNewUserNewFollowed(id: $id) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var id: GraphQLID
 
@@ -64604,10 +64199,7 @@ public final class GetNewUserNewFollowedQuery: GraphQLQuery {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -64622,8 +64214,8 @@ public final class GetNewUserNewFollowedQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -64644,39 +64236,12 @@ public final class GetNewUserNewFollowedQuery: GraphQLQuery {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -64787,7 +64352,7 @@ public final class GetNewUserNewFollowedQuery: GraphQLQuery {
 
 public final class ListNewUserNewFollowedsQuery: GraphQLQuery {
   public static let operationString =
-    "query ListNewUserNewFolloweds($filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  listNewUserNewFolloweds(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        diveMeetsID\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query ListNewUserNewFolloweds($filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  listNewUserNewFolloweds(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        email\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelNewUserNewFollowedFilterInput?
   public var limit: Int?
@@ -65184,10 +64749,7 @@ public final class ListNewUserNewFollowedsQuery: GraphQLQuery {
           public static let selections: [GraphQLSelection] = [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-            GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("email", type: .scalar(String.self)),
-            GraphQLField("diveMeetsID", type: .scalar(String.self)),
+            GraphQLField("email", type: .nonNull(.scalar(String.self))),
             GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -65201,8 +64763,8 @@ public final class ListNewUserNewFollowedsQuery: GraphQLQuery {
             self.snapshot = snapshot
           }
 
-          public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+          public init(id: GraphQLID, email: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
           }
 
           public var __typename: String {
@@ -65223,39 +64785,12 @@ public final class ListNewUserNewFollowedsQuery: GraphQLQuery {
             }
           }
 
-          public var firstName: String {
+          public var email: String {
             get {
-              return snapshot["firstName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "firstName")
-            }
-          }
-
-          public var lastName: String {
-            get {
-              return snapshot["lastName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "lastName")
-            }
-          }
-
-          public var email: String? {
-            get {
-              return snapshot["email"] as? String
+              return snapshot["email"]! as! String
             }
             set {
               snapshot.updateValue(newValue, forKey: "email")
-            }
-          }
-
-          public var diveMeetsId: String? {
-            get {
-              return snapshot["diveMeetsID"] as? String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "diveMeetsID")
             }
           }
 
@@ -65311,7 +64846,7 @@ public final class ListNewUserNewFollowedsQuery: GraphQLQuery {
 
 public final class SyncNewUserNewFollowedsQuery: GraphQLQuery {
   public static let operationString =
-    "query SyncNewUserNewFolloweds($filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncNewUserNewFolloweds(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        diveMeetsID\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query SyncNewUserNewFolloweds($filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncNewUserNewFolloweds(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        email\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelNewUserNewFollowedFilterInput?
   public var limit: Int?
@@ -65710,10 +65245,7 @@ public final class SyncNewUserNewFollowedsQuery: GraphQLQuery {
           public static let selections: [GraphQLSelection] = [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-            GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("email", type: .scalar(String.self)),
-            GraphQLField("diveMeetsID", type: .scalar(String.self)),
+            GraphQLField("email", type: .nonNull(.scalar(String.self))),
             GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -65727,8 +65259,8 @@ public final class SyncNewUserNewFollowedsQuery: GraphQLQuery {
             self.snapshot = snapshot
           }
 
-          public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+          public init(id: GraphQLID, email: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
           }
 
           public var __typename: String {
@@ -65749,39 +65281,12 @@ public final class SyncNewUserNewFollowedsQuery: GraphQLQuery {
             }
           }
 
-          public var firstName: String {
+          public var email: String {
             get {
-              return snapshot["firstName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "firstName")
-            }
-          }
-
-          public var lastName: String {
-            get {
-              return snapshot["lastName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "lastName")
-            }
-          }
-
-          public var email: String? {
-            get {
-              return snapshot["email"] as? String
+              return snapshot["email"]! as! String
             }
             set {
               snapshot.updateValue(newValue, forKey: "email")
-            }
-          }
-
-          public var diveMeetsId: String? {
-            get {
-              return snapshot["diveMeetsID"] as? String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "diveMeetsID")
             }
           }
 
@@ -65837,7 +65342,7 @@ public final class SyncNewUserNewFollowedsQuery: GraphQLQuery {
 
 public final class NewUserNewFollowedsByNewUserIdQuery: GraphQLQuery {
   public static let operationString =
-    "query NewUserNewFollowedsByNewUserId($newUserId: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  newUserNewFollowedsByNewUserId(\n    newUserId: $newUserId\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        diveMeetsID\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query NewUserNewFollowedsByNewUserId($newUserId: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  newUserNewFollowedsByNewUserId(\n    newUserId: $newUserId\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        email\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var newUserId: GraphQLID
   public var sortDirection: ModelSortDirection?
@@ -66238,10 +65743,7 @@ public final class NewUserNewFollowedsByNewUserIdQuery: GraphQLQuery {
           public static let selections: [GraphQLSelection] = [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-            GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("email", type: .scalar(String.self)),
-            GraphQLField("diveMeetsID", type: .scalar(String.self)),
+            GraphQLField("email", type: .nonNull(.scalar(String.self))),
             GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -66255,8 +65757,8 @@ public final class NewUserNewFollowedsByNewUserIdQuery: GraphQLQuery {
             self.snapshot = snapshot
           }
 
-          public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+          public init(id: GraphQLID, email: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
           }
 
           public var __typename: String {
@@ -66277,39 +65779,12 @@ public final class NewUserNewFollowedsByNewUserIdQuery: GraphQLQuery {
             }
           }
 
-          public var firstName: String {
+          public var email: String {
             get {
-              return snapshot["firstName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "firstName")
-            }
-          }
-
-          public var lastName: String {
-            get {
-              return snapshot["lastName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "lastName")
-            }
-          }
-
-          public var email: String? {
-            get {
-              return snapshot["email"] as? String
+              return snapshot["email"]! as! String
             }
             set {
               snapshot.updateValue(newValue, forKey: "email")
-            }
-          }
-
-          public var diveMeetsId: String? {
-            get {
-              return snapshot["diveMeetsID"] as? String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "diveMeetsID")
             }
           }
 
@@ -66365,7 +65840,7 @@ public final class NewUserNewFollowedsByNewUserIdQuery: GraphQLQuery {
 
 public final class NewUserNewFollowedsByNewFollowedIdQuery: GraphQLQuery {
   public static let operationString =
-    "query NewUserNewFollowedsByNewFollowedId($newFollowedId: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  newUserNewFollowedsByNewFollowedId(\n    newFollowedId: $newFollowedId\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        diveMeetsID\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query NewUserNewFollowedsByNewFollowedId($newFollowedId: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewUserNewFollowedFilterInput, $limit: Int, $nextToken: String) {\n  newUserNewFollowedsByNewFollowedId(\n    newFollowedId: $newFollowedId\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      newUserId\n      newFollowedId\n      newUser {\n        __typename\n        id\n        firstName\n        lastName\n        email\n        phone\n        diveMeetsID\n        accountType\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newUserAthleteId\n        newUserCoachId\n      }\n      newFollowed {\n        __typename\n        id\n        email\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var newFollowedId: GraphQLID
   public var sortDirection: ModelSortDirection?
@@ -66766,10 +66241,7 @@ public final class NewUserNewFollowedsByNewFollowedIdQuery: GraphQLQuery {
           public static let selections: [GraphQLSelection] = [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-            GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-            GraphQLField("email", type: .scalar(String.self)),
-            GraphQLField("diveMeetsID", type: .scalar(String.self)),
+            GraphQLField("email", type: .nonNull(.scalar(String.self))),
             GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
             GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -66783,8 +66255,8 @@ public final class NewUserNewFollowedsByNewFollowedIdQuery: GraphQLQuery {
             self.snapshot = snapshot
           }
 
-          public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+          public init(id: GraphQLID, email: String, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+            self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
           }
 
           public var __typename: String {
@@ -66805,39 +66277,12 @@ public final class NewUserNewFollowedsByNewFollowedIdQuery: GraphQLQuery {
             }
           }
 
-          public var firstName: String {
+          public var email: String {
             get {
-              return snapshot["firstName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "firstName")
-            }
-          }
-
-          public var lastName: String {
-            get {
-              return snapshot["lastName"]! as! String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "lastName")
-            }
-          }
-
-          public var email: String? {
-            get {
-              return snapshot["email"] as? String
+              return snapshot["email"]! as! String
             }
             set {
               snapshot.updateValue(newValue, forKey: "email")
-            }
-          }
-
-          public var diveMeetsId: String? {
-            get {
-              return snapshot["diveMeetsID"] as? String
-            }
-            set {
-              snapshot.updateValue(newValue, forKey: "diveMeetsID")
             }
           }
 
@@ -82898,7 +82343,7 @@ public final class OnDeleteCoachUserSubscription: GraphQLSubscription {
 
 public final class OnCreateNewFollowedSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnCreateNewFollowed($filter: ModelSubscriptionNewFollowedFilterInput) {\n  onCreateNewFollowed(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    diveMeetsID\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnCreateNewFollowed($filter: ModelSubscriptionNewFollowedFilterInput) {\n  onCreateNewFollowed(filter: $filter) {\n    __typename\n    id\n    email\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionNewFollowedFilterInput?
 
@@ -82942,10 +82387,7 @@ public final class OnCreateNewFollowedSubscription: GraphQLSubscription {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("email", type: .scalar(String.self)),
-        GraphQLField("diveMeetsID", type: .scalar(String.self)),
+        GraphQLField("email", type: .nonNull(.scalar(String.self))),
         GraphQLField("users", type: .object(User.selections)),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -82960,8 +82402,8 @@ public final class OnCreateNewFollowedSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -82982,39 +82424,12 @@ public final class OnCreateNewFollowedSubscription: GraphQLSubscription {
         }
       }
 
-      public var firstName: String {
+      public var email: String {
         get {
-          return snapshot["firstName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "firstName")
-        }
-      }
-
-      public var lastName: String {
-        get {
-          return snapshot["lastName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "lastName")
-        }
-      }
-
-      public var email: String? {
-        get {
-          return snapshot["email"] as? String
+          return snapshot["email"]! as! String
         }
         set {
           snapshot.updateValue(newValue, forKey: "email")
-        }
-      }
-
-      public var diveMeetsId: String? {
-        get {
-          return snapshot["diveMeetsID"] as? String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "diveMeetsID")
         }
       }
 
@@ -83241,7 +82656,7 @@ public final class OnCreateNewFollowedSubscription: GraphQLSubscription {
 
 public final class OnUpdateNewFollowedSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnUpdateNewFollowed($filter: ModelSubscriptionNewFollowedFilterInput) {\n  onUpdateNewFollowed(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    diveMeetsID\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnUpdateNewFollowed($filter: ModelSubscriptionNewFollowedFilterInput) {\n  onUpdateNewFollowed(filter: $filter) {\n    __typename\n    id\n    email\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionNewFollowedFilterInput?
 
@@ -83285,10 +82700,7 @@ public final class OnUpdateNewFollowedSubscription: GraphQLSubscription {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("email", type: .scalar(String.self)),
-        GraphQLField("diveMeetsID", type: .scalar(String.self)),
+        GraphQLField("email", type: .nonNull(.scalar(String.self))),
         GraphQLField("users", type: .object(User.selections)),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -83303,8 +82715,8 @@ public final class OnUpdateNewFollowedSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -83325,39 +82737,12 @@ public final class OnUpdateNewFollowedSubscription: GraphQLSubscription {
         }
       }
 
-      public var firstName: String {
+      public var email: String {
         get {
-          return snapshot["firstName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "firstName")
-        }
-      }
-
-      public var lastName: String {
-        get {
-          return snapshot["lastName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "lastName")
-        }
-      }
-
-      public var email: String? {
-        get {
-          return snapshot["email"] as? String
+          return snapshot["email"]! as! String
         }
         set {
           snapshot.updateValue(newValue, forKey: "email")
-        }
-      }
-
-      public var diveMeetsId: String? {
-        get {
-          return snapshot["diveMeetsID"] as? String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "diveMeetsID")
         }
       }
 
@@ -83584,7 +82969,7 @@ public final class OnUpdateNewFollowedSubscription: GraphQLSubscription {
 
 public final class OnDeleteNewFollowedSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnDeleteNewFollowed($filter: ModelSubscriptionNewFollowedFilterInput) {\n  onDeleteNewFollowed(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    diveMeetsID\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnDeleteNewFollowed($filter: ModelSubscriptionNewFollowedFilterInput) {\n  onDeleteNewFollowed(filter: $filter) {\n    __typename\n    id\n    email\n    users {\n      __typename\n      items {\n        __typename\n        id\n        newUserId\n        newFollowedId\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n      }\n      nextToken\n      startedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionNewFollowedFilterInput?
 
@@ -83628,10 +83013,7 @@ public final class OnDeleteNewFollowedSubscription: GraphQLSubscription {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-        GraphQLField("email", type: .scalar(String.self)),
-        GraphQLField("diveMeetsID", type: .scalar(String.self)),
+        GraphQLField("email", type: .nonNull(.scalar(String.self))),
         GraphQLField("users", type: .object(User.selections)),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -83646,8 +83028,8 @@ public final class OnDeleteNewFollowedSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -83668,39 +83050,12 @@ public final class OnDeleteNewFollowedSubscription: GraphQLSubscription {
         }
       }
 
-      public var firstName: String {
+      public var email: String {
         get {
-          return snapshot["firstName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "firstName")
-        }
-      }
-
-      public var lastName: String {
-        get {
-          return snapshot["lastName"]! as! String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "lastName")
-        }
-      }
-
-      public var email: String? {
-        get {
-          return snapshot["email"] as? String
+          return snapshot["email"]! as! String
         }
         set {
           snapshot.updateValue(newValue, forKey: "email")
-        }
-      }
-
-      public var diveMeetsId: String? {
-        get {
-          return snapshot["diveMeetsID"] as? String
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "diveMeetsID")
         }
       }
 
@@ -98654,7 +98009,7 @@ public final class OnDeleteMessageSubscription: GraphQLSubscription {
 
 public final class OnCreateNewUserNewFollowedSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnCreateNewUserNewFollowed($filter: ModelSubscriptionNewUserNewFollowedFilterInput) {\n  onCreateNewUserNewFollowed(filter: $filter) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnCreateNewUserNewFollowed($filter: ModelSubscriptionNewUserNewFollowedFilterInput) {\n  onCreateNewUserNewFollowed(filter: $filter) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionNewUserNewFollowedFilterInput?
 
@@ -99412,10 +98767,7 @@ public final class OnCreateNewUserNewFollowedSubscription: GraphQLSubscription {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -99430,8 +98782,8 @@ public final class OnCreateNewUserNewFollowedSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -99452,39 +98804,12 @@ public final class OnCreateNewUserNewFollowedSubscription: GraphQLSubscription {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -99595,7 +98920,7 @@ public final class OnCreateNewUserNewFollowedSubscription: GraphQLSubscription {
 
 public final class OnUpdateNewUserNewFollowedSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnUpdateNewUserNewFollowed($filter: ModelSubscriptionNewUserNewFollowedFilterInput) {\n  onUpdateNewUserNewFollowed(filter: $filter) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnUpdateNewUserNewFollowed($filter: ModelSubscriptionNewUserNewFollowedFilterInput) {\n  onUpdateNewUserNewFollowed(filter: $filter) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionNewUserNewFollowedFilterInput?
 
@@ -100353,10 +99678,7 @@ public final class OnUpdateNewUserNewFollowedSubscription: GraphQLSubscription {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -100371,8 +99693,8 @@ public final class OnUpdateNewUserNewFollowedSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -100393,39 +99715,12 @@ public final class OnUpdateNewUserNewFollowedSubscription: GraphQLSubscription {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
@@ -100536,7 +99831,7 @@ public final class OnUpdateNewUserNewFollowedSubscription: GraphQLSubscription {
 
 public final class OnDeleteNewUserNewFollowedSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnDeleteNewUserNewFollowed($filter: ModelSubscriptionNewUserNewFollowedFilterInput) {\n  onDeleteNewUserNewFollowed(filter: $filter) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      diveMeetsID\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnDeleteNewUserNewFollowed($filter: ModelSubscriptionNewUserNewFollowedFilterInput) {\n  onDeleteNewUserNewFollowed(filter: $filter) {\n    __typename\n    id\n    newUserId\n    newFollowedId\n    newUser {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      athlete {\n        __typename\n        id\n        heightFeet\n        heightInches\n        weight\n        weightUnit\n        gender\n        age\n        graduationYear\n        highSchool\n        hometown\n        springboardRating\n        platformRating\n        totalRating\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        newTeamAthletesId\n        collegeAthletesId\n        newAthleteUserId\n      }\n      coach {\n        __typename\n        id\n        createdAt\n        updatedAt\n        _version\n        _deleted\n        _lastChangedAt\n        coachUserUserId\n        coachUserTeamId\n      }\n      followed {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    newFollowed {\n      __typename\n      id\n      email\n      users {\n        __typename\n        nextToken\n        startedAt\n      }\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionNewUserNewFollowedFilterInput?
 
@@ -101294,10 +100589,7 @@ public final class OnDeleteNewUserNewFollowedSubscription: GraphQLSubscription {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
-          GraphQLField("email", type: .scalar(String.self)),
-          GraphQLField("diveMeetsID", type: .scalar(String.self)),
+          GraphQLField("email", type: .nonNull(.scalar(String.self))),
           GraphQLField("users", type: .object(User.selections)),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
@@ -101312,8 +100604,8 @@ public final class OnDeleteNewUserNewFollowedSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, email: String? = nil, diveMeetsId: String? = nil, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "firstName": firstName, "lastName": lastName, "email": email, "diveMeetsID": diveMeetsId, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, email: String, users: User? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "NewFollowed", "id": id, "email": email, "users": users.flatMap { $0.snapshot }, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -101334,39 +100626,12 @@ public final class OnDeleteNewUserNewFollowedSubscription: GraphQLSubscription {
           }
         }
 
-        public var firstName: String {
+        public var email: String {
           get {
-            return snapshot["firstName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "firstName")
-          }
-        }
-
-        public var lastName: String {
-          get {
-            return snapshot["lastName"]! as! String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "lastName")
-          }
-        }
-
-        public var email: String? {
-          get {
-            return snapshot["email"] as? String
+            return snapshot["email"]! as! String
           }
           set {
             snapshot.updateValue(newValue, forKey: "email")
-          }
-        }
-
-        public var diveMeetsId: String? {
-          get {
-            return snapshot["diveMeetsID"] as? String
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "diveMeetsID")
           }
         }
 
