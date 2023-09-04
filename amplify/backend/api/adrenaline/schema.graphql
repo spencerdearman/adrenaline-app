@@ -19,7 +19,7 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byNewUser", fields: ["id"])
 }
 
-type NewAthlete @model @auth(rules: [{allow: private}]) {
+type NewAthlete @model @auth(rules: [{ allow: private }]) {
   id: ID!
   user: NewUser! @belongsTo
   team: NewTeam @belongsTo
@@ -36,11 +36,11 @@ type NewAthlete @model @auth(rules: [{allow: private}]) {
   springboardRating: Float
   platformRating: Float
   totalRating: Float
-  dives: [Dive]! @hasMany
-  videos: [Video]! @hasMany
+  dives: [Dive!]! @hasMany
+  videos: [Video!]! @hasMany
 }
 
-type Video @model @auth(rules: [{allow: private}]) {
+type Video @model @auth(rules: [{ allow: private }]) {
   id: ID!
   athlete: NewAthlete! @belongsTo
   link: AWSURL!
@@ -49,33 +49,33 @@ type Video @model @auth(rules: [{allow: private}]) {
   uploadDate: AWSDateTime!
 }
 
-type CoachUser @model @auth(rules: [{allow: private}]) {
+type CoachUser @model @auth(rules: [{ allow: private }]) {
   id: ID!
   user: NewUser @belongsTo
   team: NewTeam @belongsTo
 }
 
-type NewFollowed @model @auth(rules: [{allow: private}]) {
+type NewFollowed @model @auth(rules: [{ allow: private }]) {
   id: ID!
   email: AWSEmail!
   users: [NewUser!]! @manyToMany(relationName: "NewUserNewFollowed")
 }
 
-type NewTeam @model @auth(rules: [{allow: private}]) {
+type NewTeam @model @auth(rules: [{ allow: private }]) {
   id: ID!
   name: String!
   coach: CoachUser @hasOne
   athletes: [NewAthlete!]! @hasMany
 }
 
-type College @model @auth(rules: [{allow: private}]) {
+type College @model @auth(rules: [{ allow: private }]) {
   id: ID!
   name: String!
   imageLink: AWSURL!
   athletes: [NewAthlete!]! @hasMany
 }
 
-type NewMeet @model @auth(rules: [{allow: private}]) {
+type NewMeet @model @auth(rules: [{ allow: private }]) {
   id: ID!
   meetID: Int!
   name: String!
@@ -90,7 +90,7 @@ type NewMeet @model @auth(rules: [{allow: private}]) {
   events: [NewEvent!]! @hasMany
 }
 
-type NewEvent @model @auth(rules: [{allow: private}]) {
+type NewEvent @model @auth(rules: [{ allow: private }]) {
   id: ID!
   meet: NewMeet! @belongsTo
   name: String!
@@ -100,7 +100,7 @@ type NewEvent @model @auth(rules: [{allow: private}]) {
   dives: [Dive!]! @hasMany
 }
 
-type Dive @model @auth(rules: [{allow: private}]) {
+type Dive @model @auth(rules: [{ allow: private }]) {
   id: ID!
   event: NewEvent! @belongsTo
   athlete: NewAthlete! @belongsTo
@@ -113,7 +113,7 @@ type Dive @model @auth(rules: [{allow: private}]) {
   scores: [JudgeScore!]! @hasMany
 }
 
-type JudgeScore @model @auth(rules: [{allow: private}]) {
+type JudgeScore @model @auth(rules: [{ allow: private }]) {
   id: ID!
   dive: Dive! @belongsTo
   score: Float!
