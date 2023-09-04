@@ -49,10 +49,7 @@ type CoachUser @model @auth(rules: [{allow: private}]) {
 
 type NewFollowed @model @auth(rules: [{allow: private}]) {
   id: ID!
-  firstName: String!
-  lastName: String!
-  email: AWSEmail
-  diveMeetsID: String
+  email: AWSEmail!
   users: [NewUser!]! @manyToMany(relationName: "NewUserNewFollowed")
 }
 
