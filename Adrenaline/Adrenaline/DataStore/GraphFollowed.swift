@@ -10,10 +10,7 @@ import Amplify
 
 struct GraphFollowed: Hashable, Codable, Identifiable {
     var id: UUID = UUID()
-    var firstName: String
-    var lastName: String
-    var email: String?
-    var diveMeetsID: String?
+    var email: String
     var users: [GraphUserGraphFollowed]?
     var createdAt: Temporal.DateTime?
     var updatedAt: Temporal.DateTime?
@@ -33,10 +30,7 @@ extension GraphFollowed {
         }
         
         id = i
-        firstName = from.firstName
-        lastName = from.lastName
         email = from.email
-        diveMeetsID = from.diveMeetsID
         createdAt = from.createdAt
         updatedAt = from.updatedAt
     }
@@ -47,10 +41,7 @@ extension NewFollowed {
     // construct from API Data
     convenience init(from : GraphFollowed)  {
         self.init(id: from.id.uuidString,
-                  firstName: from.firstName,
-                  lastName: from.lastName,
                   email: from.email,
-                  diveMeetsID: from.diveMeetsID,
                   createdAt: from.createdAt,
                   updatedAt: from.updatedAt)
     }

@@ -19,8 +19,7 @@ struct FollowingTestView: View {
                 Text("Logan")
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(firstName: "Logan", lastName: "Sherwin",
-                                                   email: "lsherwin10@gmail.com")
+                        let followed = NewFollowed(email: "lsherwin10@gmail.com")
                         await addFollowedToUser(user: spencer, followed: followed)
                     }
                 }) {
@@ -28,8 +27,7 @@ struct FollowingTestView: View {
                 }
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(firstName: "Spencer", lastName: "Dearman",
-                                                   email: "dearmanspencer@gmail.com")
+                        let followed = NewFollowed(email: "dearmanspencer@gmail.com")
                         await addFollowedToUser(user: spencer, followed: followed)
                     }
                 }) {
