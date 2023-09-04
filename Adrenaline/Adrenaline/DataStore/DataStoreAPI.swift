@@ -90,9 +90,11 @@ func saveFollowed(followed: NewFollowed) async throws -> NewFollowed {
     let result: [NewFollowed] = try await query(where: NewFollowed.keys.email == followed.email)
     
     if result.count == 0 {
+        print("Saving new followed")
         return try await saveToDataStore(object: followed)
     }
     else if result.count == 1 {
+        print("Returning existing followed")
         return result[0]
     }
     else {
