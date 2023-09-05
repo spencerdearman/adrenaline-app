@@ -45,5 +45,5 @@ extension NewTeam {
 
 extension NewTeam: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
-    public typealias IdentifierProtocol = DefaultModelIdentifier<NewTeam>
+  public typealias IdentifierProtocol = DefaultModelIdentifier<NewTeam>
 }
