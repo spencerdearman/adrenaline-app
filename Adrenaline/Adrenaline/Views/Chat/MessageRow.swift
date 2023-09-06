@@ -30,29 +30,17 @@ struct MessageRow: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            
-            HStack(alignment: .top) {
-                Image(systemName: "\(iconName).circle.fill")
-                    .font(.largeTitle)
-                    .foregroundColor(iconColor)
-                
-                VStack(alignment: .leading) {
-                    Text(message.senderName)
-                        .font(.headline)
-                    
-                    Text(message.body)
-                        .font(.body)
-                }
-            }
-            .padding(.horizontal, 16)
-            
-            Divider().padding(.leading, 16)
+            Text(message.body)
+                .font(.body)
+                .padding(10)
         }
+        .background(.thinMaterial)
+        .cornerRadius(30)
     }
 }
 
-//struct MessageRow_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MessageRow()
-//    }
-//}
+struct MessageRow_Previews: PreviewProvider {
+    static var previews: some View {
+        MessageRow(message: Message(senderName: "Spencer", body: "Hello!", creationDate: .now()), isCurrentUser: true)
+    }
+}

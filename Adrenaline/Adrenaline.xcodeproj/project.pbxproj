@@ -134,7 +134,6 @@
 		4DA481CA2AA78954003DFA3B /* College+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481AF2AA78954003DFA3B /* College+Schema.swift */; };
 		4DA481CD2AA789E4003DFA3B /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481CC2AA789E4003DFA3B /* MessagesView.swift */; };
 		4DA481CF2AA78A01003DFA3B /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481CE2AA78A01003DFA3B /* MessageRow.swift */; };
-		4DA481D12AA78A15003DFA3B /* SourceOfTruth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481D02AA78A15003DFA3B /* SourceOfTruth.swift */; };
 		4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */; };
 		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
@@ -281,7 +280,6 @@
 		4DA481AF2AA78954003DFA3B /* College+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "College+Schema.swift"; sourceTree = "<group>"; };
 		4DA481CC2AA789E4003DFA3B /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		4DA481CE2AA78A01003DFA3B /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
-		4DA481D02AA78A15003DFA3B /* SourceOfTruth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceOfTruth.swift; sourceTree = "<group>"; };
 		4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineProfileView.swift; sourceTree = "<group>"; };
 		4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBubbleGenerator.swift; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -654,7 +652,6 @@
 			children = (
 				4DA481CC2AA789E4003DFA3B /* MessagesView.swift */,
 				4DA481CE2AA78A01003DFA3B /* MessageRow.swift */,
-				4DA481D02AA78A15003DFA3B /* SourceOfTruth.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -844,7 +841,6 @@
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
 				4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */,
-				4DA481D12AA78A15003DFA3B /* SourceOfTruth.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
 				4D1A31CB2A971E4500128F81 /* VideoButton.swift in Sources */,
 				0097478F2A24549A004E7C73 /* MeetPageParser.swift in Sources */,
