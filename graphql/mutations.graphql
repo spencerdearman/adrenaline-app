@@ -3057,6 +3057,114 @@ mutation DeleteJudgeScore(
   }
 }
 
+mutation CreateSentMessage(
+  $input: CreateSentMessageInput!
+  $condition: ModelSentMessageConditionInput
+) {
+  createSentMessage(input: $input, condition: $condition) {
+    id
+    recipientName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdateSentMessage(
+  $input: UpdateSentMessageInput!
+  $condition: ModelSentMessageConditionInput
+) {
+  updateSentMessage(input: $input, condition: $condition) {
+    id
+    recipientName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeleteSentMessage(
+  $input: DeleteSentMessageInput!
+  $condition: ModelSentMessageConditionInput
+) {
+  deleteSentMessage(input: $input, condition: $condition) {
+    id
+    recipientName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation CreateReceivedMessage(
+  $input: CreateReceivedMessageInput!
+  $condition: ModelReceivedMessageConditionInput
+) {
+  createReceivedMessage(input: $input, condition: $condition) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdateReceivedMessage(
+  $input: UpdateReceivedMessageInput!
+  $condition: ModelReceivedMessageConditionInput
+) {
+  updateReceivedMessage(input: $input, condition: $condition) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeleteReceivedMessage(
+  $input: DeleteReceivedMessageInput!
+  $condition: ModelReceivedMessageConditionInput
+) {
+  deleteReceivedMessage(input: $input, condition: $condition) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 mutation CreateNewUserNewFollowed(
   $input: CreateNewUserNewFollowedInput!
   $condition: ModelNewUserNewFollowedConditionInput

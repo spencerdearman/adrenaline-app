@@ -2976,6 +2976,108 @@ subscription OnDeleteJudgeScore(
   }
 }
 
+subscription OnCreateSentMessage(
+  $filter: ModelSubscriptionSentMessageFilterInput
+) {
+  onCreateSentMessage(filter: $filter) {
+    id
+    recipientName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnUpdateSentMessage(
+  $filter: ModelSubscriptionSentMessageFilterInput
+) {
+  onUpdateSentMessage(filter: $filter) {
+    id
+    recipientName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnDeleteSentMessage(
+  $filter: ModelSubscriptionSentMessageFilterInput
+) {
+  onDeleteSentMessage(filter: $filter) {
+    id
+    recipientName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnCreateReceivedMessage(
+  $filter: ModelSubscriptionReceivedMessageFilterInput
+) {
+  onCreateReceivedMessage(filter: $filter) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnUpdateReceivedMessage(
+  $filter: ModelSubscriptionReceivedMessageFilterInput
+) {
+  onUpdateReceivedMessage(filter: $filter) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnDeleteReceivedMessage(
+  $filter: ModelSubscriptionReceivedMessageFilterInput
+) {
+  onDeleteReceivedMessage(filter: $filter) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 subscription OnCreateNewUserNewFollowed(
   $filter: ModelSubscriptionNewUserNewFollowedFilterInput
 ) {
