@@ -3057,65 +3057,11 @@ mutation DeleteJudgeScore(
   }
 }
 
-mutation CreateSentMessage(
-  $input: CreateSentMessageInput!
-  $condition: ModelSentMessageConditionInput
+mutation CreateMessage(
+  $input: CreateMessageInput!
+  $condition: ModelMessageConditionInput
 ) {
-  createSentMessage(input: $input, condition: $condition) {
-    id
-    recipientName
-    body
-    creationDate
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation UpdateSentMessage(
-  $input: UpdateSentMessageInput!
-  $condition: ModelSentMessageConditionInput
-) {
-  updateSentMessage(input: $input, condition: $condition) {
-    id
-    recipientName
-    body
-    creationDate
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation DeleteSentMessage(
-  $input: DeleteSentMessageInput!
-  $condition: ModelSentMessageConditionInput
-) {
-  deleteSentMessage(input: $input, condition: $condition) {
-    id
-    recipientName
-    body
-    creationDate
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation CreateReceivedMessage(
-  $input: CreateReceivedMessageInput!
-  $condition: ModelReceivedMessageConditionInput
-) {
-  createReceivedMessage(input: $input, condition: $condition) {
+  createMessage(input: $input, condition: $condition) {
     id
     senderName
     body
@@ -3129,11 +3075,11 @@ mutation CreateReceivedMessage(
   }
 }
 
-mutation UpdateReceivedMessage(
-  $input: UpdateReceivedMessageInput!
-  $condition: ModelReceivedMessageConditionInput
+mutation UpdateMessage(
+  $input: UpdateMessageInput!
+  $condition: ModelMessageConditionInput
 ) {
-  updateReceivedMessage(input: $input, condition: $condition) {
+  updateMessage(input: $input, condition: $condition) {
     id
     senderName
     body
@@ -3147,11 +3093,11 @@ mutation UpdateReceivedMessage(
   }
 }
 
-mutation DeleteReceivedMessage(
-  $input: DeleteReceivedMessageInput!
-  $condition: ModelReceivedMessageConditionInput
+mutation DeleteMessage(
+  $input: DeleteMessageInput!
+  $condition: ModelMessageConditionInput
 ) {
-  deleteReceivedMessage(input: $input, condition: $condition) {
+  deleteMessage(input: $input, condition: $condition) {
     id
     senderName
     body

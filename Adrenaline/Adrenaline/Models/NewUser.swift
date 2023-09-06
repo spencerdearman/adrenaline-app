@@ -13,8 +13,6 @@ public class NewUser: Model {
   public var athlete: NewAthlete?
   public var coach: CoachUser?
   public var followed: List<NewUserNewFollowed>?
-  public var SentMessages: List<SentMessage>?
-  public var ReceivedMessages: List<ReceivedMessage>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newUserAthleteId: String?
@@ -30,8 +28,6 @@ public class NewUser: Model {
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       followed: List<NewUserNewFollowed> = [],
-      SentMessages: List<SentMessage>? = [],
-      ReceivedMessages: List<ReceivedMessage>? = [],
       newUserAthleteId: String? = nil,
       newUserCoachId: String? = nil) {
     self.init(id: id,
@@ -44,8 +40,6 @@ public class NewUser: Model {
       athlete: athlete,
       coach: coach,
       followed: followed,
-      SentMessages: SentMessages,
-      ReceivedMessages: ReceivedMessages,
       createdAt: nil,
       updatedAt: nil,
       newUserAthleteId: newUserAthleteId,
@@ -61,8 +55,6 @@ public class NewUser: Model {
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       followed: List<NewUserNewFollowed> = [],
-      SentMessages: List<SentMessage>? = [],
-      ReceivedMessages: List<ReceivedMessage>? = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
       newUserAthleteId: String? = nil,
@@ -77,8 +69,6 @@ public class NewUser: Model {
       self.athlete = athlete
       self.coach = coach
       self.followed = followed
-      self.SentMessages = SentMessages
-      self.ReceivedMessages = ReceivedMessages
       self.createdAt = createdAt
       self.updatedAt = updatedAt
       self.newUserAthleteId = newUserAthleteId

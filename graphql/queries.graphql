@@ -2152,77 +2152,8 @@ query SyncJudgeScores(
   }
 }
 
-query GetSentMessage($id: ID!) {
-  getSentMessage(id: $id) {
-    id
-    recipientName
-    body
-    creationDate
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-query ListSentMessages(
-  $filter: ModelSentMessageFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listSentMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      recipientName
-      body
-      creationDate
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query SyncSentMessages(
-  $filter: ModelSentMessageFilterInput
-  $limit: Int
-  $nextToken: String
-  $lastSync: AWSTimestamp
-) {
-  syncSentMessages(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    lastSync: $lastSync
-  ) {
-    items {
-      id
-      recipientName
-      body
-      creationDate
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query GetReceivedMessage($id: ID!) {
-  getReceivedMessage(id: $id) {
+query GetMessage($id: ID!) {
+  getMessage(id: $id) {
     id
     senderName
     body
@@ -2236,12 +2167,12 @@ query GetReceivedMessage($id: ID!) {
   }
 }
 
-query ListReceivedMessages(
-  $filter: ModelReceivedMessageFilterInput
+query ListMessages(
+  $filter: ModelMessageFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listReceivedMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
       senderName
@@ -2260,13 +2191,13 @@ query ListReceivedMessages(
   }
 }
 
-query SyncReceivedMessages(
-  $filter: ModelReceivedMessageFilterInput
+query SyncMessages(
+  $filter: ModelMessageFilterInput
   $limit: Int
   $nextToken: String
   $lastSync: AWSTimestamp
 ) {
-  syncReceivedMessages(
+  syncMessages(
     filter: $filter
     limit: $limit
     nextToken: $nextToken

@@ -9,8 +9,6 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   athlete: NewAthlete @hasOne
   coach: CoachUser @hasOne
   followed: [NewFollowed!]! @manyToMany(relationName: "NewUserNewFollowed")
-  SentMessages: [SentMessage] @hasMany(indexName: "byNewUser", fields: ["id"])
-  ReceivedMessages: [ReceivedMessage] @hasMany(indexName: "byNewUser", fields: ["id"])
 }
 
 type NewAthlete @model @auth(rules: [{allow: private}]) {
@@ -116,20 +114,10 @@ type JudgeScore @model @auth(rules: [{allow: private}]) {
   score: Float!
 }
 
-type SentMessage @model @auth(rules: [{allow: private}]) {
-  id: ID!
-  recipientName: String!
-  body: String!
-  creationDate: AWSDate!
-  SendReceivedMessage: ReceivedMessage! @hasOne
-  newuserID: ID! @index(name: "byNewUser")
-}
-
-type ReceivedMessage @model @auth(rules: [{allow: private}]) {
+type Message @model @auth(rules: [{allow: private}]) {
   id: ID!
   senderName: String!
   body: String!
   creationDate: AWSDate!
-  newuserID: ID! @index(name: "byNewUser")
 }
  

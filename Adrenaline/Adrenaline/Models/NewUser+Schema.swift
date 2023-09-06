@@ -15,8 +15,6 @@ extension NewUser {
     case athlete
     case coach
     case followed
-    case SentMessages
-    case ReceivedMessages
     case createdAt
     case updatedAt
     case newUserAthleteId
@@ -51,8 +49,6 @@ extension NewUser {
       .hasOne(newUser.athlete, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.user, targetNames: ["newUserAthleteId"]),
       .hasOne(newUser.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.user, targetNames: ["newUserCoachId"]),
       .hasMany(newUser.followed, is: .optional, ofType: NewUserNewFollowed.self, associatedWith: NewUserNewFollowed.keys.newUser),
-      .hasMany(newUser.SentMessages, is: .optional, ofType: SentMessage.self, associatedWith: SentMessage.keys.newuserID),
-      .hasMany(newUser.ReceivedMessages, is: .optional, ofType: ReceivedMessage.self, associatedWith: ReceivedMessage.keys.newuserID),
       .field(newUser.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newUser.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newUser.newUserAthleteId, is: .optional, ofType: .string),
