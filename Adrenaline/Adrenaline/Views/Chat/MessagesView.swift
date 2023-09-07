@@ -20,11 +20,11 @@ struct MessagesView: View {
     
     var body: some View {
         VStack {
-            ScrollView {
+            ScrollView (showsIndicators: false) {
                 LazyVStack {
-                    ForEach(messages, id: \.0.id) { message, b in
+                    ForEach(messages.sorted(by: { $0.0.createdAt ?? .now() < $1.0.createdAt ?? .now() }), id: \.0.id) { message, b in
                         MessageRow(message: message, b: b)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .frame(maxWidth: .infinity, alignment: b ? .trailing : .leading)
                     }
                 }
             }
@@ -40,7 +40,7 @@ struct MessagesView: View {
                         didTapSend(message: text, sender: logan, recipient: andrew)
                         print(text)
                         text.removeAll()
-                        messages = await queryConversation(sender: andrew, recipient: logan)
+                        messages = await queryConversation(sender: logan, recipient: andrew)
                         print(messages)
                     }
                 } label: {
@@ -64,15 +64,13 @@ struct MessagesView: View {
                 let andrewPredicate = NewUser.keys.firstName == "Andrew"
                 let loganUsers = await queryAWSUsers(where: loganPredicate)
                 let andrewUsers = await queryAWSUsers(where: andrewPredicate)
-            
                 if loganUsers.count >= 1 {
                     logan = loganUsers[0]
-                    print("logan ")
-                    print("worked")
                 }
                 if andrewUsers.count >= 1 {
                     andrew = andrewUsers[0]
                 }
+                messages = await queryConversation(sender: logan, recipient: andrew)
             }
         }
         .padding(.horizontal, 16)
