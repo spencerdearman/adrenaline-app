@@ -13,62 +13,18 @@ struct MessagesView: View {
     @State var logan = NewUser(firstName: "Logan", lastName: "Sherwin", email: "lsherwin10@gmail.com", accountType: "Athlete")
     @State var andrew = NewUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com", accountType: "Athlete")
     @State var text: String = ""
-    @State var messages: [Message] = []
+    @State var messages: [(Message, Bool)] = []
     @Binding var email: String
     @State var currentUser: NewUser?
     
-    
-    func queryMessages(where predicate: QueryPredicate? = nil,
-                       sortBy: QuerySortInput? = nil) async -> [Message] {
-        do {
-            let queryResult: [Message] = try await query(where: predicate, sortBy: sortBy)
-            return queryResult
-        } catch let error as DataStoreError {
-            print("Failed to load data from DataStore : \(error)")
-        } catch {
-            print("Unexpected error while calling DataStore : \(error)")
-        }
-        return []
-    }
-    
-    func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
-        Task {
-            do {
-                print(message)
-                let message = Message(body: message, creationDate: .now())
-                let savedMessage = try await Amplify.DataStore.save(message)
-                
-                let tempSender = MessageNewUser(isSender: true,
-                                                newuserID: sender.id,
-                                                messageID: savedMessage.id)
-                let sender = try await Amplify.DataStore.save(tempSender)
-                print("sender: \(sender)")
-                
-                let tempRecipient = MessageNewUser(isSender: false,
-                                                   newuserID: recipient.id,
-                                                   messageID: savedMessage.id)
-                let recipient = try await Amplify.DataStore.save(tempRecipient)
-                print("recipient: \(recipient)")
-            } catch {
-                print(error)
-            }
-        }
-        print(text)
-        text.removeAll()
-    }
     
     var body: some View {
         VStack {
             ScrollView {
                 LazyVStack {
-                    ForEach(messages) { message in
-//                        if message.senderName == currentUser {
-//                            MessageRow(message: message, isCurrentUser: true)
-//                                .frame(maxWidth: .infinity, alignment: .trailing)
-//                        } else {
-//                            MessageRow(message: message, isCurrentUser: false)
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//                        }
+                    ForEach(messages, id: \.0.id) { message, b in
+                        MessageRow(message: message, b: b)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
                     }
                 }
             }
@@ -79,8 +35,14 @@ struct MessagesView: View {
                         text = newText
                     }
                 Button {
-//                    guard let currentUser = currentUser else { return }
-                    didTapSend(message: text, sender: andrew, recipient: logan)
+                    Task {
+                        //                    guard let currentUser = currentUser else { return }
+                        didTapSend(message: text, sender: logan, recipient: andrew)
+                        print(text)
+                        text.removeAll()
+                        messages = await queryConversation(sender: andrew, recipient: logan)
+                        print(messages)
+                    }
                 } label: {
                     Image(systemName: "arrow.up.circle.fill")
                         .foregroundColor(Custom.coolBlue)
