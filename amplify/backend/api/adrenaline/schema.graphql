@@ -1,3 +1,10 @@
+type MessageNewUser @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  isSender: Boolean
+  newuserID: ID! @index(name: "byNewUser")
+  messageID: ID! @index(name: "byMessage")
+}
+
 type NewUser @model @auth(rules: [{allow: private}]) {
   id: ID!
   firstName: String!
@@ -9,6 +16,7 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   athlete: NewAthlete @hasOne
   coach: CoachUser @hasOne
   followed: [NewFollowed!]! @manyToMany(relationName: "NewUserNewFollowed")
+  MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byNewUser", fields: ["id"])
 }
 
 type NewAthlete @model @auth(rules: [{allow: private}]) {
@@ -116,8 +124,8 @@ type JudgeScore @model @auth(rules: [{allow: private}]) {
 
 type Message @model @auth(rules: [{allow: private}]) {
   id: ID!
-  senderName: String!
   body: String!
   creationDate: AWSDate!
+  MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byMessage", fields: ["id"])
 }
  

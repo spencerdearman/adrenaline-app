@@ -105,35 +105,37 @@
 		4DA481772AA2E9EE003DFA3B /* GraphMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481762AA2E9EE003DFA3B /* GraphMeet.swift */; };
 		4DA481792AA2EA0A003DFA3B /* GraphTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481782AA2EA0A003DFA3B /* GraphTeam.swift */; };
 		4DA4817B2AA2EA21003DFA3B /* GraphUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4817A2AA2EA21003DFA3B /* GraphUser.swift */; };
-		4DA481B02AA78954003DFA3B /* NewEvent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481952AA78954003DFA3B /* NewEvent+Schema.swift */; };
-		4DA481B12AA78954003DFA3B /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481962AA78954003DFA3B /* Video+Schema.swift */; };
-		4DA481B22AA78954003DFA3B /* Dive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481972AA78954003DFA3B /* Dive.swift */; };
-		4DA481B32AA78954003DFA3B /* JudgeScore+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481982AA78954003DFA3B /* JudgeScore+Schema.swift */; };
-		4DA481B42AA78954003DFA3B /* NewUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481992AA78954003DFA3B /* NewUser+Schema.swift */; };
-		4DA481B52AA78954003DFA3B /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4819A2AA78954003DFA3B /* AmplifyModels.swift */; };
-		4DA481B62AA78954003DFA3B /* NewFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4819B2AA78954003DFA3B /* NewFollowed.swift */; };
-		4DA481B72AA78954003DFA3B /* NewAthlete+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4819C2AA78954003DFA3B /* NewAthlete+Schema.swift */; };
-		4DA481B82AA78954003DFA3B /* NewMeet+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4819D2AA78954003DFA3B /* NewMeet+Schema.swift */; };
-		4DA481B92AA78954003DFA3B /* College.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4819E2AA78954003DFA3B /* College.swift */; };
-		4DA481BA2AA78954003DFA3B /* NewUserNewFollowed+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4819F2AA78954003DFA3B /* NewUserNewFollowed+Schema.swift */; };
-		4DA481BB2AA78954003DFA3B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A02AA78954003DFA3B /* Message.swift */; };
-		4DA481BC2AA78954003DFA3B /* Dive+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A12AA78954003DFA3B /* Dive+Schema.swift */; };
-		4DA481BD2AA78954003DFA3B /* JudgeScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A22AA78954003DFA3B /* JudgeScore.swift */; };
-		4DA481BE2AA78954003DFA3B /* CoachUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A32AA78954003DFA3B /* CoachUser+Schema.swift */; };
-		4DA481BF2AA78954003DFA3B /* NewAthlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A42AA78954003DFA3B /* NewAthlete.swift */; };
-		4DA481C02AA78954003DFA3B /* NewMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A52AA78954003DFA3B /* NewMeet.swift */; };
-		4DA481C12AA78954003DFA3B /* NewTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A62AA78954003DFA3B /* NewTeam.swift */; };
-		4DA481C22AA78954003DFA3B /* CoachUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A72AA78954003DFA3B /* CoachUser.swift */; };
-		4DA481C32AA78954003DFA3B /* NewUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A82AA78954003DFA3B /* NewUser.swift */; };
-		4DA481C42AA78954003DFA3B /* NewFollowed+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481A92AA78954003DFA3B /* NewFollowed+Schema.swift */; };
-		4DA481C52AA78954003DFA3B /* NewUserNewFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481AA2AA78954003DFA3B /* NewUserNewFollowed.swift */; };
-		4DA481C62AA78954003DFA3B /* NewTeam+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481AB2AA78954003DFA3B /* NewTeam+Schema.swift */; };
-		4DA481C72AA78954003DFA3B /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481AC2AA78954003DFA3B /* NewEvent.swift */; };
-		4DA481C82AA78954003DFA3B /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481AD2AA78954003DFA3B /* Video.swift */; };
-		4DA481C92AA78954003DFA3B /* Message+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481AE2AA78954003DFA3B /* Message+Schema.swift */; };
-		4DA481CA2AA78954003DFA3B /* College+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481AF2AA78954003DFA3B /* College+Schema.swift */; };
 		4DA481CD2AA789E4003DFA3B /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481CC2AA789E4003DFA3B /* MessagesView.swift */; };
 		4DA481CF2AA78A01003DFA3B /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481CE2AA78A01003DFA3B /* MessageRow.swift */; };
+		4DA482DC2AA98BE8003DFA3B /* NewEvent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */; };
+		4DA482DD2AA98BE8003DFA3B /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C02AA98BE8003DFA3B /* Video+Schema.swift */; };
+		4DA482DE2AA98BE8003DFA3B /* Dive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C12AA98BE8003DFA3B /* Dive.swift */; };
+		4DA482DF2AA98BE8003DFA3B /* JudgeScore+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C22AA98BE8003DFA3B /* JudgeScore+Schema.swift */; };
+		4DA482E02AA98BE8003DFA3B /* NewUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */; };
+		4DA482E12AA98BE8003DFA3B /* AmplifyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C42AA98BE8003DFA3B /* AmplifyModels.swift */; };
+		4DA482E22AA98BE8003DFA3B /* MessageNewUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C52AA98BE8003DFA3B /* MessageNewUser.swift */; };
+		4DA482E32AA98BE8003DFA3B /* NewFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C62AA98BE8003DFA3B /* NewFollowed.swift */; };
+		4DA482E42AA98BE8003DFA3B /* NewAthlete+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C72AA98BE8003DFA3B /* NewAthlete+Schema.swift */; };
+		4DA482E52AA98BE8003DFA3B /* NewMeet+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C82AA98BE8003DFA3B /* NewMeet+Schema.swift */; };
+		4DA482E62AA98BE8003DFA3B /* College.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C92AA98BE8003DFA3B /* College.swift */; };
+		4DA482E72AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482CA2AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift */; };
+		4DA482E82AA98BE8003DFA3B /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482CB2AA98BE8003DFA3B /* Message.swift */; };
+		4DA482E92AA98BE8003DFA3B /* Dive+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482CC2AA98BE8003DFA3B /* Dive+Schema.swift */; };
+		4DA482EA2AA98BE8003DFA3B /* JudgeScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482CD2AA98BE8003DFA3B /* JudgeScore.swift */; };
+		4DA482EB2AA98BE8003DFA3B /* CoachUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482CE2AA98BE8003DFA3B /* CoachUser+Schema.swift */; };
+		4DA482EC2AA98BE8003DFA3B /* NewAthlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482CF2AA98BE8003DFA3B /* NewAthlete.swift */; };
+		4DA482ED2AA98BE8003DFA3B /* NewMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D02AA98BE8003DFA3B /* NewMeet.swift */; };
+		4DA482EE2AA98BE8003DFA3B /* NewTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D12AA98BE8003DFA3B /* NewTeam.swift */; };
+		4DA482EF2AA98BE8003DFA3B /* CoachUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D22AA98BE8003DFA3B /* CoachUser.swift */; };
+		4DA482F02AA98BE8003DFA3B /* NewUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D32AA98BE8003DFA3B /* NewUser.swift */; };
+		4DA482F12AA98BE8003DFA3B /* NewFollowed+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D42AA98BE8003DFA3B /* NewFollowed+Schema.swift */; };
+		4DA482F22AA98BE8003DFA3B /* NewUserNewFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D52AA98BE8003DFA3B /* NewUserNewFollowed.swift */; };
+		4DA482F32AA98BE8003DFA3B /* NewTeam+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D62AA98BE8003DFA3B /* NewTeam+Schema.swift */; };
+		4DA482F42AA98BE8003DFA3B /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D72AA98BE8003DFA3B /* NewEvent.swift */; };
+		4DA482F52AA98BE8003DFA3B /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D82AA98BE8003DFA3B /* Video.swift */; };
+		4DA482F62AA98BE8003DFA3B /* Message+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D92AA98BE8003DFA3B /* Message+Schema.swift */; };
+		4DA482F72AA98BE8003DFA3B /* College+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482DA2AA98BE8003DFA3B /* College+Schema.swift */; };
+		4DA482F82AA98BE8003DFA3B /* MessageNewUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */; };
 		4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */; };
 		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
@@ -251,35 +253,37 @@
 		4DA481762AA2E9EE003DFA3B /* GraphMeet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphMeet.swift; sourceTree = "<group>"; };
 		4DA481782AA2EA0A003DFA3B /* GraphTeam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphTeam.swift; sourceTree = "<group>"; };
 		4DA4817A2AA2EA21003DFA3B /* GraphUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphUser.swift; sourceTree = "<group>"; };
-		4DA481952AA78954003DFA3B /* NewEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewEvent+Schema.swift"; sourceTree = "<group>"; };
-		4DA481962AA78954003DFA3B /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
-		4DA481972AA78954003DFA3B /* Dive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dive.swift; sourceTree = "<group>"; };
-		4DA481982AA78954003DFA3B /* JudgeScore+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JudgeScore+Schema.swift"; sourceTree = "<group>"; };
-		4DA481992AA78954003DFA3B /* NewUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewUser+Schema.swift"; sourceTree = "<group>"; };
-		4DA4819A2AA78954003DFA3B /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
-		4DA4819B2AA78954003DFA3B /* NewFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewFollowed.swift; sourceTree = "<group>"; };
-		4DA4819C2AA78954003DFA3B /* NewAthlete+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewAthlete+Schema.swift"; sourceTree = "<group>"; };
-		4DA4819D2AA78954003DFA3B /* NewMeet+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewMeet+Schema.swift"; sourceTree = "<group>"; };
-		4DA4819E2AA78954003DFA3B /* College.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = College.swift; sourceTree = "<group>"; };
-		4DA4819F2AA78954003DFA3B /* NewUserNewFollowed+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewUserNewFollowed+Schema.swift"; sourceTree = "<group>"; };
-		4DA481A02AA78954003DFA3B /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		4DA481A12AA78954003DFA3B /* Dive+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dive+Schema.swift"; sourceTree = "<group>"; };
-		4DA481A22AA78954003DFA3B /* JudgeScore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JudgeScore.swift; sourceTree = "<group>"; };
-		4DA481A32AA78954003DFA3B /* CoachUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoachUser+Schema.swift"; sourceTree = "<group>"; };
-		4DA481A42AA78954003DFA3B /* NewAthlete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewAthlete.swift; sourceTree = "<group>"; };
-		4DA481A52AA78954003DFA3B /* NewMeet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMeet.swift; sourceTree = "<group>"; };
-		4DA481A62AA78954003DFA3B /* NewTeam.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTeam.swift; sourceTree = "<group>"; };
-		4DA481A72AA78954003DFA3B /* CoachUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoachUser.swift; sourceTree = "<group>"; };
-		4DA481A82AA78954003DFA3B /* NewUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUser.swift; sourceTree = "<group>"; };
-		4DA481A92AA78954003DFA3B /* NewFollowed+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewFollowed+Schema.swift"; sourceTree = "<group>"; };
-		4DA481AA2AA78954003DFA3B /* NewUserNewFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserNewFollowed.swift; sourceTree = "<group>"; };
-		4DA481AB2AA78954003DFA3B /* NewTeam+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTeam+Schema.swift"; sourceTree = "<group>"; };
-		4DA481AC2AA78954003DFA3B /* NewEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewEvent.swift; sourceTree = "<group>"; };
-		4DA481AD2AA78954003DFA3B /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
-		4DA481AE2AA78954003DFA3B /* Message+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+Schema.swift"; sourceTree = "<group>"; };
-		4DA481AF2AA78954003DFA3B /* College+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "College+Schema.swift"; sourceTree = "<group>"; };
 		4DA481CC2AA789E4003DFA3B /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		4DA481CE2AA78A01003DFA3B /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
+		4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewEvent+Schema.swift"; sourceTree = "<group>"; };
+		4DA482C02AA98BE8003DFA3B /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
+		4DA482C12AA98BE8003DFA3B /* Dive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dive.swift; sourceTree = "<group>"; };
+		4DA482C22AA98BE8003DFA3B /* JudgeScore+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JudgeScore+Schema.swift"; sourceTree = "<group>"; };
+		4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewUser+Schema.swift"; sourceTree = "<group>"; };
+		4DA482C42AA98BE8003DFA3B /* AmplifyModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmplifyModels.swift; sourceTree = "<group>"; };
+		4DA482C52AA98BE8003DFA3B /* MessageNewUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageNewUser.swift; sourceTree = "<group>"; };
+		4DA482C62AA98BE8003DFA3B /* NewFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewFollowed.swift; sourceTree = "<group>"; };
+		4DA482C72AA98BE8003DFA3B /* NewAthlete+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewAthlete+Schema.swift"; sourceTree = "<group>"; };
+		4DA482C82AA98BE8003DFA3B /* NewMeet+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewMeet+Schema.swift"; sourceTree = "<group>"; };
+		4DA482C92AA98BE8003DFA3B /* College.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = College.swift; sourceTree = "<group>"; };
+		4DA482CA2AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewUserNewFollowed+Schema.swift"; sourceTree = "<group>"; };
+		4DA482CB2AA98BE8003DFA3B /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		4DA482CC2AA98BE8003DFA3B /* Dive+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dive+Schema.swift"; sourceTree = "<group>"; };
+		4DA482CD2AA98BE8003DFA3B /* JudgeScore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JudgeScore.swift; sourceTree = "<group>"; };
+		4DA482CE2AA98BE8003DFA3B /* CoachUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoachUser+Schema.swift"; sourceTree = "<group>"; };
+		4DA482CF2AA98BE8003DFA3B /* NewAthlete.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewAthlete.swift; sourceTree = "<group>"; };
+		4DA482D02AA98BE8003DFA3B /* NewMeet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewMeet.swift; sourceTree = "<group>"; };
+		4DA482D12AA98BE8003DFA3B /* NewTeam.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTeam.swift; sourceTree = "<group>"; };
+		4DA482D22AA98BE8003DFA3B /* CoachUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoachUser.swift; sourceTree = "<group>"; };
+		4DA482D32AA98BE8003DFA3B /* NewUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUser.swift; sourceTree = "<group>"; };
+		4DA482D42AA98BE8003DFA3B /* NewFollowed+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewFollowed+Schema.swift"; sourceTree = "<group>"; };
+		4DA482D52AA98BE8003DFA3B /* NewUserNewFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserNewFollowed.swift; sourceTree = "<group>"; };
+		4DA482D62AA98BE8003DFA3B /* NewTeam+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTeam+Schema.swift"; sourceTree = "<group>"; };
+		4DA482D72AA98BE8003DFA3B /* NewEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewEvent.swift; sourceTree = "<group>"; };
+		4DA482D82AA98BE8003DFA3B /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
+		4DA482D92AA98BE8003DFA3B /* Message+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+Schema.swift"; sourceTree = "<group>"; };
+		4DA482DA2AA98BE8003DFA3B /* College+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "College+Schema.swift"; sourceTree = "<group>"; };
+		4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageNewUser+Schema.swift"; sourceTree = "<group>"; };
 		4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineProfileView.swift; sourceTree = "<group>"; };
 		4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBubbleGenerator.swift; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -495,7 +499,7 @@
 				009F41B62A6ABA1700348C68 /* CoreData */,
 				00ADF5082A93303400C85C7F /* DataStore */,
 				4D74FEB329AEB4B200401178 /* Model */,
-				4DA481942AA78954003DFA3B /* Models */,
+				4DA482BE2AA98BE8003DFA3B /* Models */,
 				4D50E7722A24050E009BFBFA /* Parsers */,
 				4D74FE9C29AE7B9800401178 /* Preview Content */,
 				4D74FEB529AEB4CD00401178 /* Resources */,
@@ -613,40 +617,6 @@
 			path = CustomStructures;
 			sourceTree = "<group>";
 		};
-		4DA481942AA78954003DFA3B /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				4DA4819A2AA78954003DFA3B /* AmplifyModels.swift */,
-				4DA481A72AA78954003DFA3B /* CoachUser.swift */,
-				4DA481A32AA78954003DFA3B /* CoachUser+Schema.swift */,
-				4DA4819E2AA78954003DFA3B /* College.swift */,
-				4DA481AF2AA78954003DFA3B /* College+Schema.swift */,
-				4DA481972AA78954003DFA3B /* Dive.swift */,
-				4DA481A12AA78954003DFA3B /* Dive+Schema.swift */,
-				4DA481A22AA78954003DFA3B /* JudgeScore.swift */,
-				4DA481982AA78954003DFA3B /* JudgeScore+Schema.swift */,
-				4DA481A02AA78954003DFA3B /* Message.swift */,
-				4DA481AE2AA78954003DFA3B /* Message+Schema.swift */,
-				4DA481A42AA78954003DFA3B /* NewAthlete.swift */,
-				4DA4819C2AA78954003DFA3B /* NewAthlete+Schema.swift */,
-				4DA481AC2AA78954003DFA3B /* NewEvent.swift */,
-				4DA481952AA78954003DFA3B /* NewEvent+Schema.swift */,
-				4DA4819B2AA78954003DFA3B /* NewFollowed.swift */,
-				4DA481A92AA78954003DFA3B /* NewFollowed+Schema.swift */,
-				4DA481A52AA78954003DFA3B /* NewMeet.swift */,
-				4DA4819D2AA78954003DFA3B /* NewMeet+Schema.swift */,
-				4DA481A62AA78954003DFA3B /* NewTeam.swift */,
-				4DA481AB2AA78954003DFA3B /* NewTeam+Schema.swift */,
-				4DA481A82AA78954003DFA3B /* NewUser.swift */,
-				4DA481992AA78954003DFA3B /* NewUser+Schema.swift */,
-				4DA481AA2AA78954003DFA3B /* NewUserNewFollowed.swift */,
-				4DA4819F2AA78954003DFA3B /* NewUserNewFollowed+Schema.swift */,
-				4DA481AD2AA78954003DFA3B /* Video.swift */,
-				4DA481962AA78954003DFA3B /* Video+Schema.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
 		4DA481CB2AA789C4003DFA3B /* Chat */ = {
 			isa = PBXGroup;
 			children = (
@@ -655,6 +625,43 @@
 			);
 			path = Chat;
 			sourceTree = "<group>";
+		};
+		4DA482BE2AA98BE8003DFA3B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4DA482C42AA98BE8003DFA3B /* AmplifyModels.swift */,
+				4DA482D22AA98BE8003DFA3B /* CoachUser.swift */,
+				4DA482CE2AA98BE8003DFA3B /* CoachUser+Schema.swift */,
+				4DA482C92AA98BE8003DFA3B /* College.swift */,
+				4DA482DA2AA98BE8003DFA3B /* College+Schema.swift */,
+				4DA482C12AA98BE8003DFA3B /* Dive.swift */,
+				4DA482CC2AA98BE8003DFA3B /* Dive+Schema.swift */,
+				4DA482CD2AA98BE8003DFA3B /* JudgeScore.swift */,
+				4DA482C22AA98BE8003DFA3B /* JudgeScore+Schema.swift */,
+				4DA482CB2AA98BE8003DFA3B /* Message.swift */,
+				4DA482D92AA98BE8003DFA3B /* Message+Schema.swift */,
+				4DA482C52AA98BE8003DFA3B /* MessageNewUser.swift */,
+				4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */,
+				4DA482CF2AA98BE8003DFA3B /* NewAthlete.swift */,
+				4DA482C72AA98BE8003DFA3B /* NewAthlete+Schema.swift */,
+				4DA482D72AA98BE8003DFA3B /* NewEvent.swift */,
+				4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */,
+				4DA482C62AA98BE8003DFA3B /* NewFollowed.swift */,
+				4DA482D42AA98BE8003DFA3B /* NewFollowed+Schema.swift */,
+				4DA482D02AA98BE8003DFA3B /* NewMeet.swift */,
+				4DA482C82AA98BE8003DFA3B /* NewMeet+Schema.swift */,
+				4DA482D12AA98BE8003DFA3B /* NewTeam.swift */,
+				4DA482D62AA98BE8003DFA3B /* NewTeam+Schema.swift */,
+				4DA482D32AA98BE8003DFA3B /* NewUser.swift */,
+				4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */,
+				4DA482D52AA98BE8003DFA3B /* NewUserNewFollowed.swift */,
+				4DA482CA2AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift */,
+				4DA482D82AA98BE8003DFA3B /* Video.swift */,
+				4DA482C02AA98BE8003DFA3B /* Video+Schema.swift */,
+			);
+			name = Models;
+			path = Adrenaline/Models;
+			sourceTree = SOURCE_ROOT;
 		};
 		4DB1DC782A67112B0016EE14 /* AdrenalineProfile */ = {
 			isa = PBXGroup;
@@ -771,124 +778,127 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D753DE32A2158370029138B /* EventPageParser.swift in Sources */,
+				4DA482F12AA98BE8003DFA3B /* NewFollowed+Schema.swift in Sources */,
 				4DA481792AA2EA0A003DFA3B /* GraphTeam.swift in Sources */,
-				4DA481C52AA78954003DFA3B /* NewUserNewFollowed.swift in Sources */,
+				4DA482E62AA98BE8003DFA3B /* College.swift in Sources */,
 				4DF9F80D2A85E7BA0049CCD3 /* AppLogic.swift in Sources */,
 				4D13F3C12A99B6700081823D /* ProfileBar.swift in Sources */,
+				4DA482E12AA98BE8003DFA3B /* AmplifyModels.swift in Sources */,
 				0040A6B72A550C8E004C84BF /* NoStickPicker.swift in Sources */,
 				4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */,
 				4D1A31C12A96EBD800128F81 /* FeedModifiers.swift in Sources */,
 				00F9667B29AFDA1500F3720B /* ContentView.swift in Sources */,
-				4DA481C02AA78954003DFA3B /* NewMeet.swift in Sources */,
+				4DA482EC2AA98BE8003DFA3B /* NewAthlete.swift in Sources */,
 				4D60E8F92A1737A90011A295 /* ScoringParser.swift in Sources */,
 				00F2C3142A25B1B800B1CD01 /* EventParser.swift in Sources */,
 				00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */,
 				4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */,
 				4D50E7962A293DEC009BFBFA /* DiveStatisticsParser.swift in Sources */,
-				4DA481C62AA78954003DFA3B /* NewTeam+Schema.swift in Sources */,
-				4DA481BB2AA78954003DFA3B /* Message.swift in Sources */,
 				4D8B9C1929F8D395002B53AD /* Home.swift in Sources */,
 				4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */,
+				4DA482E82AA98BE8003DFA3B /* Message.swift in Sources */,
+				4DA482E52AA98BE8003DFA3B /* NewMeet+Schema.swift in Sources */,
 				4D13F3BD2A999F930081823D /* SettingsPage.swift in Sources */,
 				00F1129D2A51C7A100557265 /* JudgeScoreCalculator.swift in Sources */,
 				4D502E682AA194DC00D25B7B /* Enums.swift in Sources */,
 				4D74FEAF29AEB02100401178 /* Meet.swift in Sources */,
-				4DA481B72AA78954003DFA3B /* NewAthlete+Schema.swift in Sources */,
 				4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */,
+				4DA482DE2AA98BE8003DFA3B /* Dive.swift in Sources */,
 				0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */,
 				00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */,
-				4DA481C32AA78954003DFA3B /* NewUser.swift in Sources */,
 				000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */,
 				4DA4817B2AA2EA21003DFA3B /* GraphUser.swift in Sources */,
 				4D1A31C32A97006500128F81 /* MeetItem.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
-				4DA481B92AA78954003DFA3B /* College.swift in Sources */,
 				00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */,
+				4DA482F32AA98BE8003DFA3B /* NewTeam+Schema.swift in Sources */,
 				00DAFEE22A8EED2500497917 /* VideoStore.swift in Sources */,
 				4D13F3C62A9D56D20081823D /* NewSignIn.swift in Sources */,
 				4D13F3BF2A99A04E0081823D /* BlobView.swift in Sources */,
+				4DA482F82AA98BE8003DFA3B /* MessageNewUser+Schema.swift in Sources */,
 				0037877929D4F40900D3CD59 /* Cache.swift in Sources */,
 				4D74FEC629AEC95500401178 /* MeetPageView.swift in Sources */,
+				4DA482F72AA98BE8003DFA3B /* College+Schema.swift in Sources */,
 				00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */,
 				4DA481752AA2E9D2003DFA3B /* GraphCollege.swift in Sources */,
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
-				4DA481CA2AA78954003DFA3B /* College+Schema.swift in Sources */,
-				4DA481C92AA78954003DFA3B /* Message+Schema.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
+				4DA482DD2AA98BE8003DFA3B /* Video+Schema.swift in Sources */,
+				4DA482EE2AA98BE8003DFA3B /* NewTeam.swift in Sources */,
 				4D1A31D32A9857FA00128F81 /* NewSearch.swift in Sources */,
 				4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */,
 				4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */,
+				4DA482EF2AA98BE8003DFA3B /* CoachUser.swift in Sources */,
 				4D1A31B32A96AFA300128F81 /* FeedBase.swift in Sources */,
 				4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
-				4DA481BA2AA78954003DFA3B /* NewUserNewFollowed+Schema.swift in Sources */,
 				002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */,
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
+				4DA482EB2AA98BE8003DFA3B /* CoachUser+Schema.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
-				4DA481B52AA78954003DFA3B /* AmplifyModels.swift in Sources */,
 				0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */,
 				4DA481CD2AA789E4003DFA3B /* MessagesView.swift in Sources */,
-				4DA481B62AA78954003DFA3B /* NewFollowed.swift in Sources */,
 				4DA481712AA27B4A003DFA3B /* ForgotPassword.swift in Sources */,
-				4DA481C12AA78954003DFA3B /* NewTeam.swift in Sources */,
+				4DA482E42AA98BE8003DFA3B /* NewAthlete+Schema.swift in Sources */,
+				4DA482E72AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift in Sources */,
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
 				4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
+				4DA482E32AA98BE8003DFA3B /* NewFollowed.swift in Sources */,
+				4DA482E92AA98BE8003DFA3B /* Dive+Schema.swift in Sources */,
 				4D1A31CB2A971E4500128F81 /* VideoButton.swift in Sources */,
 				0097478F2A24549A004E7C73 /* MeetPageParser.swift in Sources */,
-				4DA481BD2AA78954003DFA3B /* JudgeScore.swift in Sources */,
 				4D13F3CA2A9D95260081823D /* NewSignupSequence.swift in Sources */,
 				009F41BD2A6AD9E400348C68 /* Model.xcdatamodeld in Sources */,
 				4D1A31BD2A96DC6400128F81 /* AnimatableFont.swift in Sources */,
 				006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */,
+				4DA482ED2AA98BE8003DFA3B /* NewMeet.swift in Sources */,
 				4D1A31B02A95BE8700128F81 /* FeedStructure.swift in Sources */,
-				4DA481B32AA78954003DFA3B /* JudgeScore+Schema.swift in Sources */,
 				4DA4816D2AA266E5003DFA3B /* ConfirmSignupView.swift in Sources */,
-				4DA481B22AA78954003DFA3B /* Dive.swift in Sources */,
 				4D1A31D52A985F4000128F81 /* ImageItem.swift in Sources */,
-				4DA481BF2AA78954003DFA3B /* NewAthlete.swift in Sources */,
 				008CB5652A61000400935537 /* NavigationViewBackButton.swift in Sources */,
 				4D1A31BF2A96EB1900128F81 /* NavigationBar.swift in Sources */,
 				0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */,
-				4DA481C22AA78954003DFA3B /* CoachUser.swift in Sources */,
 				000AAE8C2A9448A8006393B7 /* HideTabBarScrollView.swift in Sources */,
 				0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */,
-				4DA481B82AA78954003DFA3B /* NewMeet+Schema.swift in Sources */,
 				000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */,
 				4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */,
 				4DA481772AA2E9EE003DFA3B /* GraphMeet.swift in Sources */,
+				4DA482F52AA98BE8003DFA3B /* Video.swift in Sources */,
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
+				4DA482E22AA98BE8003DFA3B /* MessageNewUser.swift in Sources */,
+				4DA482F22AA98BE8003DFA3B /* NewUserNewFollowed.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
+				4DA482DC2AA98BE8003DFA3B /* NewEvent+Schema.swift in Sources */,
+				4DA482EA2AA98BE8003DFA3B /* JudgeScore.swift in Sources */,
 				4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */,
+				4DA482F02AA98BE8003DFA3B /* NewUser.swift in Sources */,
 				4D753DE02A214F640029138B /* EventResultPage.swift in Sources */,
 				0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */,
 				4D502E632AA03D4A00D25B7B /* BubbleSelectView.swift in Sources */,
 				009F41BA2A6AC51A00348C68 /* UsersDBTestView.swift in Sources */,
-				4DA481C82AA78954003DFA3B /* Video.swift in Sources */,
 				4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */,
 				006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */,
 				4D1A31B92A96DA1C00128F81 /* FeedModel.swift in Sources */,
-				4DA481B02AA78954003DFA3B /* NewEvent+Schema.swift in Sources */,
+				4DA482E02AA98BE8003DFA3B /* NewUser+Schema.swift in Sources */,
 				0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */,
-				4DA481BC2AA78954003DFA3B /* Dive+Schema.swift in Sources */,
 				00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */,
-				4DA481B12AA78954003DFA3B /* Video+Schema.swift in Sources */,
-				4DA481C42AA78954003DFA3B /* NewFollowed+Schema.swift in Sources */,
 				4D1A31C52A97087500128F81 /* CloseButton.swift in Sources */,
+				4DA482F42AA98BE8003DFA3B /* NewEvent.swift in Sources */,
 				0037877A29D4F40900D3CD59 /* ProfileMeetCache.swift in Sources */,
-				4DA481B42AA78954003DFA3B /* NewUser+Schema.swift in Sources */,
+				4DA482DF2AA98BE8003DFA3B /* JudgeScore+Schema.swift in Sources */,
 				00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */,
 				008CB5672A61B3EE00935537 /* ProfileParser.swift in Sources */,
-				4DA481C72AA78954003DFA3B /* NewEvent.swift in Sources */,
 				4DF9F80F2A85EFF50049CCD3 /* UserBadge.swift in Sources */,
+				4DA482F62AA98BE8003DFA3B /* Message+Schema.swift in Sources */,
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				4D1A31CD2A971FEA00128F81 /* MediaFeedItem.swift in Sources */,
 				4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */,
@@ -897,7 +907,6 @@
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
 				00F9665F29AEEF0900F3720B /* FloatingMenuBar.swift in Sources */,
-				4DA481BE2AA78954003DFA3B /* CoachUser+Schema.swift in Sources */,
 				4D74FE9729AE7B9800401178 /* AdrenalineApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

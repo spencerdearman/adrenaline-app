@@ -2,30 +2,35 @@
 import Amplify
 import Foundation
 
-public struct JudgeScore: Model {
+public struct MessageNewUser: Model {
   public let id: String
-  public var dive: Dive
-  public var score: Double
+  public var isSender: Bool?
+  public var newuserID: String
+  public var messageID: String
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
   public init(id: String = UUID().uuidString,
-      dive: Dive,
-      score: Double) {
+      isSender: Bool? = nil,
+      newuserID: String,
+      messageID: String) {
     self.init(id: id,
-      dive: dive,
-      score: score,
+      isSender: isSender,
+      newuserID: newuserID,
+      messageID: messageID,
       createdAt: nil,
       updatedAt: nil)
   }
   internal init(id: String = UUID().uuidString,
-      dive: Dive,
-      score: Double,
+      isSender: Bool? = nil,
+      newuserID: String,
+      messageID: String,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
-      self.dive = dive
-      self.score = score
+      self.isSender = isSender
+      self.newuserID = newuserID
+      self.messageID = messageID
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

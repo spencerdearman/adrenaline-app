@@ -10,10 +10,13 @@ import Foundation
 import Amplify
 
 struct MessagesView: View {
+    @State var logan = NewUser(firstName: "Logan", lastName: "Sherwin", email: "lsherwin10@gmail.com", accountType: "Athlete")
+    @State var andrew = NewUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com", accountType: "Athlete")
     @State var text: String = ""
     @State var messages: [Message] = []
+    @Binding var email: String
+    @State var currentUser: NewUser?
     
-    let currentUser = "Spencer"
     
     func queryMessages(where predicate: QueryPredicate? = nil,
                        sortBy: QuerySortInput? = nil) async -> [Message] {
@@ -28,17 +31,24 @@ struct MessagesView: View {
         return []
     }
     
-    func didTapSend(message: String) {
+    func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
         Task {
             do {
                 print(message)
-                let message = Message(senderName: currentUser,
-                                      body: message,
-                                      creationDate: .now())
-                let _ = try await Amplify.DataStore.save(message)
-                print("Message Saved: \(message)")
-                let messagePredicate = Message.keys.senderName == currentUser
-                messages = await queryMessages(where: messagePredicate)
+                let message = Message(body: message, creationDate: .now())
+                let savedMessage = try await Amplify.DataStore.save(message)
+                
+                let tempSender = MessageNewUser(isSender: true,
+                                                newuserID: sender.id,
+                                                messageID: savedMessage.id)
+                let sender = try await Amplify.DataStore.save(tempSender)
+                print("sender: \(sender)")
+                
+                let tempRecipient = MessageNewUser(isSender: false,
+                                                   newuserID: recipient.id,
+                                                   messageID: savedMessage.id)
+                let recipient = try await Amplify.DataStore.save(tempRecipient)
+                print("recipient: \(recipient)")
             } catch {
                 print(error)
             }
@@ -52,13 +62,13 @@ struct MessagesView: View {
             ScrollView {
                 LazyVStack {
                     ForEach(messages) { message in
-                        if message.senderName == currentUser {
-                            MessageRow(message: message, isCurrentUser: true)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                        } else {
-                            MessageRow(message: message, isCurrentUser: false)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+//                        if message.senderName == currentUser {
+//                            MessageRow(message: message, isCurrentUser: true)
+//                                .frame(maxWidth: .infinity, alignment: .trailing)
+//                        } else {
+//                            MessageRow(message: message, isCurrentUser: false)
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                        }
                     }
                 }
             }
@@ -69,7 +79,8 @@ struct MessagesView: View {
                         text = newText
                     }
                 Button {
-                    didTapSend(message: text)
+//                    guard let currentUser = currentUser else { return }
+                    didTapSend(message: text, sender: andrew, recipient: logan)
                 } label: {
                     Image(systemName: "arrow.up.circle.fill")
                         .foregroundColor(Custom.coolBlue)
@@ -84,17 +95,25 @@ struct MessagesView: View {
         }
         .onAppear {
             Task {
-                let messagePredicate = Message.keys.senderName == currentUser
-                messages = await queryMessages(where: messagePredicate)
+//                let _ = try await saveToDataStore(object: logan)
+//                let _ = try await saveToDataStore(object: andrew)
+                
+                let loganPredicate = NewUser.keys.firstName == "Logan"
+                let andrewPredicate = NewUser.keys.firstName == "Andrew"
+                let loganUsers = await queryAWSUsers(where: loganPredicate)
+                let andrewUsers = await queryAWSUsers(where: andrewPredicate)
+            
+                if loganUsers.count >= 1 {
+                    logan = loganUsers[0]
+                    print("logan ")
+                    print("worked")
+                }
+                if andrewUsers.count >= 1 {
+                    andrew = andrewUsers[0]
+                }
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-    }
-}
-
-struct MessagesView_Previews: PreviewProvider {
-    static var previews: some View {
-        MessagesView()
     }
 }
