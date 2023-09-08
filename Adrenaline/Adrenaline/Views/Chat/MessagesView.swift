@@ -40,11 +40,13 @@ struct Chat: View {
     var body: some View {
         ZStack {
             (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
-            Image(currentMode == .light ? "MessageBackground-Light" : "MessageBackground-Dark")
-                .frame(width: screenWidth, height: screenHeight * 0.8)
-                .rotationEffect(Angle(degrees: 90))
-                .scaleEffect(0.9)
-                .offset(x: screenWidth * 0.15)
+            if feedModel.showTab {
+                Image(currentMode == .light ? "MessageBackground-Light" : "MessageBackground-Dark")
+                    .frame(width: screenWidth, height: screenHeight * 0.8)
+                    .rotationEffect(Angle(degrees: 90))
+                    .scaleEffect(0.9)
+                    .offset(x: screenWidth * 0.15)
+            }
             Group {
                 switch selection {
                 case 0:
