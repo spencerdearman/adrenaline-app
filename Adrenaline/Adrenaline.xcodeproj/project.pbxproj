@@ -84,6 +84,7 @@
 		4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5220852A49D6EB00D59408 /* ExpandingBubbleView.swift */; };
 		4D541C0C2AAA540500EC47D8 /* ChatAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D541C0B2AAA540500EC47D8 /* ChatAPI.swift */; };
 		4D541C0E2AAAC62A00EC47D8 /* ProfileRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D541C0D2AAAC62A00EC47D8 /* ProfileRow.swift */; };
+		4D541C102AAACC7200EC47D8 /* ChatBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D541C0F2AAACC7200EC47D8 /* ChatBar.swift */; };
 		4D60E8F92A1737A90011A295 /* ScoringParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D60E8F82A1737A90011A295 /* ScoringParser.swift */; };
 		4D74FE9729AE7B9800401178 /* AdrenalineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */; };
 		4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74FE9829AE7B9800401178 /* ProfileView.swift */; };
@@ -234,6 +235,7 @@
 		4D5220852A49D6EB00D59408 /* ExpandingBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandingBubbleView.swift; sourceTree = "<group>"; };
 		4D541C0B2AAA540500EC47D8 /* ChatAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAPI.swift; sourceTree = "<group>"; };
 		4D541C0D2AAAC62A00EC47D8 /* ProfileRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRow.swift; sourceTree = "<group>"; };
+		4D541C0F2AAACC7200EC47D8 /* ChatBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBar.swift; sourceTree = "<group>"; };
 		4D60E8F82A1737A90011A295 /* ScoringParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringParser.swift; sourceTree = "<group>"; };
 		4D74FE9329AE7B9800401178 /* Adrenaline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Adrenaline.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineApp.swift; sourceTree = "<group>"; };
@@ -441,6 +443,7 @@
 				4D1A31BE2A96EB1900128F81 /* NavigationBar.swift */,
 				4D13F3C02A99B6700081823D /* ProfileBar.swift */,
 				4DF9F80E2A85EFF50049CCD3 /* UserBadge.swift */,
+				4D541C0F2AAACC7200EC47D8 /* ChatBar.swift */,
 			);
 			path = Overlays;
 			sourceTree = "<group>";
@@ -826,6 +829,7 @@
 				4DA482F82AA98BE8003DFA3B /* MessageNewUser+Schema.swift in Sources */,
 				0037877929D4F40900D3CD59 /* Cache.swift in Sources */,
 				4D74FEC629AEC95500401178 /* MeetPageView.swift in Sources */,
+				4D541C102AAACC7200EC47D8 /* ChatBar.swift in Sources */,
 				4DA482F72AA98BE8003DFA3B /* College+Schema.swift in Sources */,
 				00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */,
 				4DA481752AA2E9D2003DFA3B /* GraphCollege.swift in Sources */,

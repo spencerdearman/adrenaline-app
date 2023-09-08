@@ -28,7 +28,7 @@ struct ProfileRow: View {
                     .foregroundStyle(.secondary)
                 Text("\(user.firstName) \(user.lastName)")
                     .fontWeight(.semibold)
-                ProgressView(value: 100)
+                ProgressView(value: 1)
                     .accentColor(.white)
                     .frame(maxWidth: 132)
             }

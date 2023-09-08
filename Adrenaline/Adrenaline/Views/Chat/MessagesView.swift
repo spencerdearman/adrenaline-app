@@ -16,6 +16,7 @@ struct Chat: View {
     @Binding var showAccount: Bool
     
     // Main States
+    @Environment(\.colorScheme) var currentMode
     @Namespace var namespace
     @State var feedModel: FeedModel = FeedModel()
     @State var users: [NewUser] = []
@@ -37,15 +38,13 @@ struct Chat: View {
     
     var body: some View {
         ZStack {
+            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
             Group {
                 switch selection {
                 case 0:
                     VStack {
                         ScrollView {
                             scrollDetection
-                            Rectangle()
-                                .fill(.clear)
-                                .frame(height: 200)
                             VStack {
                                 LazyVGrid(columns: columns, spacing: 20) {
                                     ForEach(users.indices, id: \.self) { index in
@@ -80,9 +79,10 @@ struct Chat: View {
                     
                 case 1:
                     VStack {
-                        Text("\(recipient?.firstName ?? "") \(recipient?.lastName ?? "")")
-                            .fontWeight(.bold)
                         ScrollView (showsIndicators: false) {
+                            Rectangle()
+                                .fill(.clear)
+                                .frame(height: 100)
                             LazyVStack {
                                 ForEach(messages.sorted(by: { $0.0.createdAt ?? .now() < $1.0.createdAt ?? .now() }), id: \.0.id) { message, b in
                                     MessageRow(message: message, b: b)
@@ -176,6 +176,10 @@ struct Chat: View {
             if feedModel.showTab {
                 NavigationBar(title: "Messaging", diveMeetsID: $diveMeetsID, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
                     .frame(width: screenWidth)
+            } else {
+                if let recipient = recipient {
+                    ChatBar(selection: $selection, feedModel: $feedModel, user: recipient)
+                }
             }
         }
         .onAppear {
