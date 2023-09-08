@@ -22,9 +22,3 @@ struct MessageRow: View {
         .cornerRadius(30)
     }
 }
-
-//struct MessageRow_Previews: PreviewProvider {
-//    static var previews: some View {
-//        MessageRow(message: Message(body: "Hello!", creationDate: .now()))
-//    }
-//}

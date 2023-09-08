@@ -16,10 +16,13 @@ struct MessagesView: View {
     @State var messages: [(Message, Bool)] = []
     @Binding var email: String
     @State var currentUser: NewUser?
+    @State var recipient: NewUser?
     
     
     var body: some View {
         VStack {
+            Text("\(recipient?.firstName ?? "") \(recipient?.lastName ?? "")")
+                .fontWeight(.bold)
             ScrollView (showsIndicators: false) {
                 LazyVStack {
                     ForEach(messages.sorted(by: { $0.0.createdAt ?? .now() < $1.0.createdAt ?? .now() }), id: \.0.id) { message, b in
@@ -36,12 +39,35 @@ struct MessagesView: View {
                     }
                 Button {
                     Task {
-                        //                    guard let currentUser = currentUser else { return }
-                        didTapSend(message: text, sender: logan, recipient: andrew)
-                        print(text)
-                        text.removeAll()
-                        messages = await queryConversation(sender: logan, recipient: andrew)
-                        print(messages)
+                        //Actual Sending Procedure
+                        if let currentUser = currentUser, let recipient = recipient {
+                            //                    guard let currentUser = currentUser else { return }
+                            didTapSend(message: text, sender: currentUser, recipient: recipient)
+                            text.removeAll()
+                        } else {
+                            print("Errors retrieving users")
+                        }
+                        
+                        //Updating the CurrentUser Status
+                        let usersPredicate = NewUser.keys.email == email
+                        let users = await queryAWSUsers(where: usersPredicate)
+                        if users.count >= 1 {
+                            currentUser = users[0]
+                        }
+                        
+                        //Updating the Recipient Status
+                        let recipientPredicate = NewUser.keys.id == recipient?.id
+                        let recipients = await queryAWSUsers(where: recipientPredicate)
+                        if recipients.count >= 1 {
+                            recipient = recipients[0]
+                        }
+                        
+                        //Updating Messages
+                        if let currentUser = currentUser, let recipient = recipient {
+                            messages = await queryConversation(sender: currentUser, recipient: recipient)
+                        } else {
+                            print("Error updating the users")
+                        }
                     }
                 } label: {
                     Image(systemName: "arrow.up.circle.fill")
@@ -57,20 +83,26 @@ struct MessagesView: View {
         }
         .onAppear {
             Task {
-//                let _ = try await saveToDataStore(object: logan)
-//                let _ = try await saveToDataStore(object: andrew)
-                
+                let usersPredicate = NewUser.keys.email == email
+                let users = await queryAWSUsers(where: usersPredicate)
+                if users.count >= 1 {
+                    currentUser = users[0]
+                }
                 let loganPredicate = NewUser.keys.firstName == "Logan"
                 let andrewPredicate = NewUser.keys.firstName == "Andrew"
                 let loganUsers = await queryAWSUsers(where: loganPredicate)
                 let andrewUsers = await queryAWSUsers(where: andrewPredicate)
                 if loganUsers.count >= 1 {
-                    logan = loganUsers[0]
+                    recipient = loganUsers[0]
                 }
                 if andrewUsers.count >= 1 {
                     andrew = andrewUsers[0]
                 }
-                messages = await queryConversation(sender: logan, recipient: andrew)
+                if let currentUser = currentUser, let recipient = recipient {
+                    messages = await queryConversation(sender: currentUser, recipient: recipient)
+                } else {
+                    print("Error fetching users")
+                }
             }
         }
         .padding(.horizontal, 16)

@@ -9,10 +9,6 @@ import SwiftUI
 import Foundation
 import Amplify
 
-//Query the messages, cross reference the messageID with the MessageNewUser,
-//If the messageNewUser.newUser.userID matches the one you want, then import that one
-//Otherwise do not include it
-
 func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, Bool)]  {
     do {
         let senderMessageNewUsers = sender.MessageNewUsers
@@ -68,22 +64,22 @@ func queryMessages(where predicate: QueryPredicate? = nil,
 
 func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async -> [(Message, Bool)] {
     do {
-        // Initialize the initial predicate as nil
+        // Initialize Initial Predicate
         var finalPredicate: QueryPredicate?
 
-        // Create predicates for each message ID and combine them using OR logic
+        // Create Predicates For MessageID with Or
         for messageID in messageIDs {
             let idPredicate = Message.keys.id == messageID
             if let existingPredicate = finalPredicate {
-                // If the finalPredicate already exists, combine it with the new predicate using OR
-                finalPredicate = (idPredicate || existingPredicate) // Swap the order of operands
+                // Combining Predicates
+                finalPredicate = (idPredicate || existingPredicate)
             } else {
-                // If it's the first predicate, set it as the finalPredicate
+                // For First Predicate
                 finalPredicate = idPredicate
             }
         }
 
-        // Call the existing queryMessages function with the predicate
+        // Using Existing Function
         if let finalPredicate = finalPredicate {
             let tempMessages = await queryMessages(where: finalPredicate)
             var result: [(Message, Bool)] = []
@@ -94,11 +90,8 @@ func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async ->
             }
             return result
         } else {
-            // If no predicates were created, return an empty array
             return []
         }
-    } catch let error as DataStoreError {
-        print("Failed to load data from DataStore: \(error)")
     } catch {
         print("Unexpected error while calling DataStore: \(error)")
     }
@@ -109,7 +102,6 @@ func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async ->
 func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
     Task {
         do {
-            print(message)
             let message = Message(body: message, creationDate: .now())
             let savedMessage = try await Amplify.DataStore.save(message)
             
@@ -117,13 +109,11 @@ func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
                                             newuserID: sender.id,
                                             messageID: savedMessage.id)
             let sender = try await Amplify.DataStore.save(tempSender)
-            print("sender: \(sender)")
-            
+
             let tempRecipient = MessageNewUser(isSender: false,
                                                newuserID: recipient.id,
                                                messageID: savedMessage.id)
             let recipient = try await Amplify.DataStore.save(tempRecipient)
-            print("recipient: \(recipient)")
         } catch {
             print(error)
         }
