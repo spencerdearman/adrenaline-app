@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-public class NewUser: Model {
+public class NewUser: Model, Identifiable {
   public let id: String
   public var firstName: String
   public var lastName: String
@@ -13,6 +13,7 @@ public class NewUser: Model {
   public var athlete: NewAthlete?
   public var coach: CoachUser?
   public var followed: List<NewUserNewFollowed>?
+  public var MessageNewUsers: List<MessageNewUser>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newUserAthleteId: String?
@@ -28,6 +29,7 @@ public class NewUser: Model {
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       followed: List<NewUserNewFollowed> = [],
+      MessageNewUsers: List<MessageNewUser>? = [],
       newUserAthleteId: String? = nil,
       newUserCoachId: String? = nil) {
     self.init(id: id,
@@ -40,6 +42,7 @@ public class NewUser: Model {
       athlete: athlete,
       coach: coach,
       followed: followed,
+      MessageNewUsers: MessageNewUsers,
       createdAt: nil,
       updatedAt: nil,
       newUserAthleteId: newUserAthleteId,
@@ -55,6 +58,7 @@ public class NewUser: Model {
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       followed: List<NewUserNewFollowed> = [],
+      MessageNewUsers: List<MessageNewUser>? = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
       newUserAthleteId: String? = nil,
@@ -69,6 +73,7 @@ public class NewUser: Model {
       self.athlete = athlete
       self.coach = coach
       self.followed = followed
+      self.MessageNewUsers = MessageNewUsers
       self.createdAt = createdAt
       self.updatedAt = updatedAt
       self.newUserAthleteId = newUserAthleteId

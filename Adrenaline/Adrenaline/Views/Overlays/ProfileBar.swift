@@ -29,7 +29,12 @@ struct ProfileBar: View {
                         showAccount = false
                     }
                 } label: {
-                    CloseButton()
+                    Image(systemName: "xmark")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 .offset(x: -screenWidth * 0.57)
                 

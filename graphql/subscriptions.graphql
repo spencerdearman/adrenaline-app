@@ -2976,6 +2976,51 @@ subscription OnDeleteJudgeScore(
   }
 }
 
+subscription OnCreateMessage($filter: ModelSubscriptionMessageFilterInput) {
+  onCreateMessage(filter: $filter) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnUpdateMessage($filter: ModelSubscriptionMessageFilterInput) {
+  onUpdateMessage(filter: $filter) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnDeleteMessage($filter: ModelSubscriptionMessageFilterInput) {
+  onDeleteMessage(filter: $filter) {
+    id
+    senderName
+    body
+    creationDate
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 subscription OnCreateNewUserNewFollowed(
   $filter: ModelSubscriptionNewUserNewFollowedFilterInput
 ) {

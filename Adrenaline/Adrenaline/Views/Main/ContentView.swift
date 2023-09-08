@@ -74,11 +74,8 @@ struct ContentView: View {
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
-                                .onAppear{
-                                    print(email)
-                                }
                             
-                            Text("Chat View")
+                            Chat(email: $email, diveMeetsID: $diveMeetsID, showAccount: $showAccount)
                             .tabItem {
                                 Label("Chat", systemImage: "message")
                             }
@@ -104,13 +101,10 @@ struct ContentView: View {
                                 let users = await queryUsers(where: emailPredicate)
                                 if users.count >= 1 {
                                     graphUser = users[0]
-                                    print(graphUser)
                                     let userPredicate = users[0].athleteId ?? "" == NewAthlete.keys.id.rawValue
                                     let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
-                                    print(athletes)
                                     if athletes.count >= 1 {
                                         newAthlete = athletes[0]
-                                        print(newAthlete)
                                     }
                                 }
                                 diveMeetsID = graphUser?.diveMeetsID ?? ""

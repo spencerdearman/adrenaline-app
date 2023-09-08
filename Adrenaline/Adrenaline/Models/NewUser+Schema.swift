@@ -15,6 +15,7 @@ extension NewUser {
     case athlete
     case coach
     case followed
+    case MessageNewUsers
     case createdAt
     case updatedAt
     case newUserAthleteId
@@ -49,6 +50,7 @@ extension NewUser {
       .hasOne(newUser.athlete, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.user, targetNames: ["newUserAthleteId"]),
       .hasOne(newUser.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.user, targetNames: ["newUserCoachId"]),
       .hasMany(newUser.followed, is: .optional, ofType: NewUserNewFollowed.self, associatedWith: NewUserNewFollowed.keys.newUser),
+      .hasMany(newUser.MessageNewUsers, is: .optional, ofType: MessageNewUser.self, associatedWith: MessageNewUser.keys.newuserID),
       .field(newUser.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newUser.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newUser.newUserAthleteId, is: .optional, ofType: .string),
@@ -59,5 +61,5 @@ extension NewUser {
 
 extension NewUser: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
-    public typealias IdentifierProtocol = DefaultModelIdentifier<NewUser>
+  public typealias IdentifierProtocol = DefaultModelIdentifier<NewUser>
 }
