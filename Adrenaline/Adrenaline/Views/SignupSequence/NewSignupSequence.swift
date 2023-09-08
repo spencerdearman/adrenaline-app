@@ -506,7 +506,7 @@ struct NewSignupSequence: View {
                         if newUser.accountType == "Coach" {
                             let coach = CoachUser(user: savedUser)
                             let savedCoach = try await Amplify.DataStore.save(coach)
-                            print("Saved Coach Profile \(coach)")
+                            print("Saved Coach Profile \(savedCoach)")
                         }
                     } catch {
                         showBasicError = true

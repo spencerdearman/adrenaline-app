@@ -24,6 +24,7 @@ struct Chat: View {
     @State private var selection: Int = 0
     @State var appear = [false, false, false]
     @State var viewState: CGSize = .zero
+    @State var messageNotEmpty: Bool = false
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -39,41 +40,46 @@ struct Chat: View {
     var body: some View {
         ZStack {
             (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+            Image(currentMode == .light ? "MessageBackground-Light" : "MessageBackground-Dark")
+                .frame(width: screenWidth, height: screenHeight * 0.8)
+                .rotationEffect(Angle(degrees: 90))
+                .scaleEffect(0.9)
+                .offset(x: screenWidth * 0.15)
             Group {
                 switch selection {
                 case 0:
-                    VStack {
-                        ScrollView {
-                            scrollDetection
-                            VStack {
-                                LazyVGrid(columns: columns, spacing: 20) {
-                                    ForEach(users.indices, id: \.self) { index in
-                                        let user = users[index]
-                                        if index != 0 { Divider() }
-                                        ProfileRow(user: user)
-                                            .onTapGesture {
-                                                withAnimation {
-                                                    selection = 1
-                                                    feedModel.showTab = false
-                                                }
-                                                Task {
-                                                    let recipientPredicate = NewUser.keys.id == user.id
-                                                    let recipientUsers = await queryAWSUsers(where: recipientPredicate)
-                                                    if recipientUsers.count >= 1 {
-                                                        recipient = recipientUsers[0]
-                                                    }
+                    ScrollView {
+                        scrollDetection
+                        VStack {
+                            LazyVGrid(columns: columns, spacing: 20) {
+                                ForEach(users.indices, id: \.self) { index in
+                                    let user = users[index]
+                                    if index != 0 { Divider() }
+                                    ProfileRow(user: user)
+                                        .onTapGesture {
+                                            withAnimation {
+                                                selection = 1
+                                                feedModel.showTab = false
+                                            }
+                                            Task {
+                                                let recipientPredicate = NewUser.keys.id == user.id
+                                                let recipientUsers = await
+                                                queryAWSUsers(where: recipientPredicate)
+                                                if recipientUsers.count >= 1 {
+                                                    recipient = recipientUsers[0]
                                                 }
                                             }
-                                    }
-                                    .padding(.horizontal, 20)
+                                        }
                                 }
+                                .padding(.horizontal, 20)
                             }
-                            .padding(20)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 30)
-                            .padding(20)
-                            .padding(.vertical, 80)
                         }
+                        .padding(20)
+                        .background(.ultraThinMaterial)
+                        .modifier(OutlineOverlay(cornerRadius: 30))
+                        .backgroundStyle(cornerRadius: 30)
+                        .padding(20)
+                        .padding(.vertical, 80)
                     }
                     .matchedGeometryEffect(id: "form", in: namespace)
                     
@@ -84,52 +90,63 @@ struct Chat: View {
                                 .fill(.clear)
                                 .frame(height: 100)
                             LazyVStack {
-                                ForEach(messages.sorted(by: { $0.0.createdAt ?? .now() < $1.0.createdAt ?? .now() }), id: \.0.id) { message, b in
+                                ForEach(messages.sorted(by: { $0.0.createdAt ?? .now() <
+                                    $1.0.createdAt ?? .now() }), id: \.0.id) { message, b in
                                     MessageRow(message: message, b: b)
-                                        .frame(maxWidth: .infinity, alignment: b ? .trailing : .leading)
+                                        .frame(maxWidth: .infinity, alignment: b ? .trailing
+                                               : .leading)
                                 }
                             }
                         }
                         HStack {
                             TextField("Enter message", text: $text)
                                 .onChange(of: text) { newText in
+                                    if text != "" {
+                                        messageNotEmpty = true
+                                    } else {
+                                        messageNotEmpty = false
+                                    }
                                     text = newText
                                 }
                             Button {
-                                Task {
-                                    //Actual Sending Procedure
-                                    if let currentUser = currentUser, let recipient = recipient {
-                                        //                    guard let currentUser = currentUser else { return }
-                                        didTapSend(message: text, sender: currentUser, recipient: recipient)
-                                        text.removeAll()
-                                    } else {
-                                        print("Errors retrieving users")
-                                    }
-                                    
-                                    //Updating the CurrentUser Status
-                                    let usersPredicate = NewUser.keys.email == email
-                                    let users = await queryAWSUsers(where: usersPredicate)
-                                    if users.count >= 1 {
-                                        currentUser = users[0]
-                                    }
-                                    
-                                    //Updating the Recipient Status
-                                    let recipientPredicate = NewUser.keys.id == recipient?.id
-                                    let recipients = await queryAWSUsers(where: recipientPredicate)
-                                    if recipients.count >= 1 {
-                                        recipient = recipients[0]
-                                    }
-                                    
-                                    //Updating Messages
-                                    if let currentUser = currentUser, let recipient = recipient {
-                                        messages = await queryConversation(sender: currentUser, recipient: recipient)
-                                    } else {
-                                        print("Error updating the users")
+                                if messageNotEmpty {
+                                    Task {
+                                        //Actual Sending Procedure
+                                        if let currentUser = currentUser, let recipient = recipient {
+                                            didTapSend(message: text, sender: currentUser,
+                                                       recipient: recipient)
+                                            text.removeAll()
+                                        } else {
+                                            print("Errors retrieving users")
+                                        }
+                                        
+                                        //Updating the CurrentUser Status
+                                        let usersPredicate = NewUser.keys.email == email
+                                        let users = await queryAWSUsers(where: usersPredicate)
+                                        if users.count >= 1 {
+                                            currentUser = users[0]
+                                        }
+                                        
+                                        //Updating the Recipient Status
+                                        let recipientPredicate = NewUser.keys.id == recipient?.id
+                                        let recipients = await queryAWSUsers(where: recipientPredicate)
+                                        if recipients.count >= 1 {
+                                            recipient = recipients[0]
+                                        }
+                                        
+                                        //Updating Messages
+                                        if let currentUser = currentUser, let recipient = recipient {
+                                            messages = await queryConversation(sender: currentUser,
+                                                                               recipient: recipient)
+                                        } else {
+                                            print("Error updating the users")
+                                        }
                                     }
                                 }
                             } label: {
                                 Image(systemName: "arrow.up.circle.fill")
-                                    .foregroundColor(Custom.coolBlue)
+                                    .foregroundColor(messageNotEmpty ? .blue.opacity(0.7) :
+                                            .blue.opacity(0.4))
                                     .frame(width: 40, height: 40)
                                     .scaleEffect(1.6)
                             }
@@ -152,7 +169,8 @@ struct Chat: View {
                                 recipient = recipients[0]
                             }
                             if let currentUser = currentUser, let recipient = recipient {
-                                messages = await queryConversation(sender: currentUser, recipient: recipient)
+                                messages = await queryConversation(sender: currentUser,
+                                                                   recipient: recipient)
                             } else {
                                 print("Error fetching users")
                             }
@@ -174,8 +192,12 @@ struct Chat: View {
         }
         .overlay{
             if feedModel.showTab {
-                NavigationBar(title: "Messaging", diveMeetsID: $diveMeetsID, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
-                    .frame(width: screenWidth)
+                NavigationBar(title: "Messaging",
+                              diveMeetsID: $diveMeetsID,
+                              showAccount: $showAccount,
+                              contentHasScrolled: $contentHasScrolled,
+                              feedModel: $feedModel)
+                .frame(width: screenWidth)
             } else {
                 if let recipient = recipient {
                     ChatBar(selection: $selection, feedModel: $feedModel, user: recipient)

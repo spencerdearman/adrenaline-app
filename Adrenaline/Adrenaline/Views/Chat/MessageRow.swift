@@ -15,10 +15,11 @@ struct MessageRow: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(message.body)
+                .foregroundColor(b ? .white : .primary)
                 .font(.body)
                 .padding(10)
         }
-        .background(b ? .thinMaterial : .ultraThick)
+        .background(b ? .blue.opacity(0.7) : .gray.opacity(0.2))
         .cornerRadius(30)
     }
 }

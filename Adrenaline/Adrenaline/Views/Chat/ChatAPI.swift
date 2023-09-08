@@ -15,7 +15,8 @@ func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, 
         let recipientMessageNewUsers = recipient.MessageNewUsers
         try await senderMessageNewUsers?.fetch()
         try await recipientMessageNewUsers?.fetch()
-        if let senderMessageNewUsers = senderMessageNewUsers, let recipientMessageNewUsers = recipientMessageNewUsers {
+        if let senderMessageNewUsers = senderMessageNewUsers,
+            let recipientMessageNewUsers = recipientMessageNewUsers {
             let recipientIDSet = Set(recipientMessageNewUsers.map { $0.messageID })
             let matchingMessages = senderMessageNewUsers.filter {recipientIDSet.contains($0.messageID)}
             let matchingIDSet = Set(matchingMessages.map { $0.messageID })
@@ -64,10 +65,8 @@ func queryMessages(where predicate: QueryPredicate? = nil,
 
 func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async -> [(Message, Bool)] {
     do {
-        // Initialize Initial Predicate
         var finalPredicate: QueryPredicate?
-
-        // Create Predicates For MessageID with Or
+        
         for messageID in messageIDs {
             let idPredicate = Message.keys.id == messageID
             if let existingPredicate = finalPredicate {
@@ -79,7 +78,6 @@ func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async ->
             }
         }
 
-        // Using Existing Function
         if let finalPredicate = finalPredicate {
             let tempMessages = await queryMessages(where: finalPredicate)
             var result: [(Message, Bool)] = []
@@ -95,7 +93,6 @@ func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async ->
     } catch {
         print("Unexpected error while calling DataStore: \(error)")
     }
-    return []
 }
 
 
@@ -108,12 +105,12 @@ func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
             let tempSender = MessageNewUser(isSender: true,
                                             newuserID: sender.id,
                                             messageID: savedMessage.id)
-            let sender = try await Amplify.DataStore.save(tempSender)
+            let _ = try await Amplify.DataStore.save(tempSender)
 
             let tempRecipient = MessageNewUser(isSender: false,
                                                newuserID: recipient.id,
                                                messageID: savedMessage.id)
-            let recipient = try await Amplify.DataStore.save(tempRecipient)
+            let _ = try await Amplify.DataStore.save(tempRecipient)
         } catch {
             print(error)
         }

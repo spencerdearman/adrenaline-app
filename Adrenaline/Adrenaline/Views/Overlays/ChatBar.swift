@@ -10,6 +10,7 @@ import SwiftUI
 import Authenticator
 
 struct ChatBar: View {
+    @Environment(\.colorScheme) var currentMode
     @State var showSheet: Bool = false
     @Binding var selection: Int
     @Binding var feedModel: FeedModel
@@ -19,6 +20,11 @@ struct ChatBar: View {
     
     var body: some View {
         ZStack {
+            Rectangle()
+                .foregroundColor(currentMode == .light ? .white : .black)
+                .offset(y: -screenHeight * 0.4)
+                .frame(height: 90, alignment: .top)
+                
             HStack(spacing: 16) {
                 Button {
                     withAnimation(.closeCard) {
@@ -37,20 +43,6 @@ struct ChatBar: View {
                 Text("\(user.firstName) \(user.lastName)")
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity, alignment: .center)
-
-                Button {
-                    showSheet.toggle()
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                        .font(.system(size: 17, weight: .bold))
-                        .frame(width: 36, height: 36)
-                        .foregroundColor(.secondary)
-                        .background(.ultraThinMaterial)
-                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                }
-                .sheet(isPresented: $showSheet) {
-                    NewSearchView()
-                }
 
                 NavigationLink {
 
