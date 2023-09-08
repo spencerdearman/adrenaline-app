@@ -78,7 +78,7 @@ struct ContentView: View {
                                     print(email)
                                 }
                             
-                            MessagesView(email: $email)
+                            Chat(email: $email, diveMeetsID: $diveMeetsID, showAccount: $showAccount)
                             .tabItem {
                                 Label("Chat", systemImage: "message")
                             }

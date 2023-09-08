@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-public class NewUser: Model {
+public class NewUser: Model, Identifiable {
   public let id: String
   public var firstName: String
   public var lastName: String
