@@ -23,10 +23,12 @@
 		0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6B82A58E024004C84BF /* SwipeActions.swift */; };
 		0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */; };
 		0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */; };
+		0050AE892AABA43000697021 /* GraphCollege.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE882AABA43000697021 /* GraphCollege.swift */; };
+		0050AE8B2AABA4A600697021 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8A2AABA4A600697021 /* Video.swift */; };
+		0050AE8D2AABA56600697021 /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8C2AABA56600697021 /* Video+Schema.swift */; };
 		0059AD302AA241D40076AF00 /* GraphMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2C2AA241D40076AF00 /* GraphMeet.swift */; };
 		0059AD312AA241D40076AF00 /* GraphUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2D2AA241D40076AF00 /* GraphUser.swift */; };
 		0059AD322AA241D40076AF00 /* GraphTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2E2AA241D40076AF00 /* GraphTeam.swift */; };
-		0059AD332AA241D40076AF00 /* GraphCollege.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2F2AA241D40076AF00 /* GraphCollege.swift */; };
 		0059AD352AA242440076AF00 /* GraphAthlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD342AA242440076AF00 /* GraphAthlete.swift */; };
 		006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */; };
 		0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5A92A426D9E0040600E /* TileSwapView.swift */; };
@@ -139,7 +141,6 @@
 		4DA482F22AA98BE8003DFA3B /* NewUserNewFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D52AA98BE8003DFA3B /* NewUserNewFollowed.swift */; };
 		4DA482F32AA98BE8003DFA3B /* NewTeam+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D62AA98BE8003DFA3B /* NewTeam+Schema.swift */; };
 		4DA482F42AA98BE8003DFA3B /* NewEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D72AA98BE8003DFA3B /* NewEvent.swift */; };
-		4DA482F52AA98BE8003DFA3B /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D82AA98BE8003DFA3B /* Video.swift */; };
 		4DA482F62AA98BE8003DFA3B /* Message+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482D92AA98BE8003DFA3B /* Message+Schema.swift */; };
 		4DA482F72AA98BE8003DFA3B /* College+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482DA2AA98BE8003DFA3B /* College+Schema.swift */; };
 		4DA482F82AA98BE8003DFA3B /* MessageNewUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */; };
@@ -178,10 +179,12 @@
 		0040A6B82A58E024004C84BF /* SwipeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActions.swift; sourceTree = "<group>"; };
 		0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsView.swift; sourceTree = "<group>"; };
 		0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsParser.swift; sourceTree = "<group>"; };
+		0050AE882AABA43000697021 /* GraphCollege.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCollege.swift; sourceTree = "<group>"; };
+		0050AE8A2AABA4A600697021 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
+		0050AE8C2AABA56600697021 /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
 		0059AD2C2AA241D40076AF00 /* GraphMeet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphMeet.swift; sourceTree = "<group>"; };
 		0059AD2D2AA241D40076AF00 /* GraphUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphUser.swift; sourceTree = "<group>"; };
 		0059AD2E2AA241D40076AF00 /* GraphTeam.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphTeam.swift; sourceTree = "<group>"; };
-		0059AD2F2AA241D40076AF00 /* GraphCollege.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCollege.swift; sourceTree = "<group>"; };
 		0059AD342AA242440076AF00 /* GraphAthlete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphAthlete.swift; sourceTree = "<group>"; };
 		006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
 		0065C5A92A426D9E0040600E /* TileSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSwapView.swift; sourceTree = "<group>"; };
@@ -271,7 +274,6 @@
 		4DA481CC2AA789E4003DFA3B /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		4DA481CE2AA78A01003DFA3B /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
 		4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewEvent+Schema.swift"; sourceTree = "<group>"; };
-		4DA482C02AA98BE8003DFA3B /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
 		4DA482C12AA98BE8003DFA3B /* Dive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dive.swift; sourceTree = "<group>"; };
 		4DA482C22AA98BE8003DFA3B /* JudgeScore+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "JudgeScore+Schema.swift"; sourceTree = "<group>"; };
 		4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewUser+Schema.swift"; sourceTree = "<group>"; };
@@ -295,7 +297,6 @@
 		4DA482D52AA98BE8003DFA3B /* NewUserNewFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewUserNewFollowed.swift; sourceTree = "<group>"; };
 		4DA482D62AA98BE8003DFA3B /* NewTeam+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewTeam+Schema.swift"; sourceTree = "<group>"; };
 		4DA482D72AA98BE8003DFA3B /* NewEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewEvent.swift; sourceTree = "<group>"; };
-		4DA482D82AA98BE8003DFA3B /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		4DA482D92AA98BE8003DFA3B /* Message+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Message+Schema.swift"; sourceTree = "<group>"; };
 		4DA482DA2AA98BE8003DFA3B /* College+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "College+Schema.swift"; sourceTree = "<group>"; };
 		4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageNewUser+Schema.swift"; sourceTree = "<group>"; };
@@ -355,7 +356,7 @@
 				00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */,
 				00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */,
 				0059AD342AA242440076AF00 /* GraphAthlete.swift */,
-				0059AD2F2AA241D40076AF00 /* GraphCollege.swift */,
+				0050AE882AABA43000697021 /* GraphCollege.swift */,
 				007442892AAB195E00CEE032 /* GraphFollowed.swift */,
 				0059AD2C2AA241D40076AF00 /* GraphMeet.swift */,
 				0059AD2E2AA241D40076AF00 /* GraphTeam.swift */,
@@ -683,8 +684,8 @@
 				4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */,
 				4DA482D52AA98BE8003DFA3B /* NewUserNewFollowed.swift */,
 				4DA482CA2AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift */,
-				4DA482D82AA98BE8003DFA3B /* Video.swift */,
-				4DA482C02AA98BE8003DFA3B /* Video+Schema.swift */,
+				0050AE8A2AABA4A600697021 /* Video.swift */,
+				0050AE8C2AABA56600697021 /* Video+Schema.swift */,
 			);
 			name = Models;
 			path = Adrenaline/Models;
@@ -847,12 +848,10 @@
 				4D541C102AAACC7200EC47D8 /* ChatBar.swift in Sources */,
 				4DA482F72AA98BE8003DFA3B /* College+Schema.swift in Sources */,
 				00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */,
-				4DA481752AA2E9D2003DFA3B /* GraphCollege.swift in Sources */,
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
-				4DA482DD2AA98BE8003DFA3B /* Video+Schema.swift in Sources */,
 				4DA482EE2AA98BE8003DFA3B /* NewTeam.swift in Sources */,
 				4D1A31D32A9857FA00128F81 /* NewSearch.swift in Sources */,
 				4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */,
@@ -866,6 +865,7 @@
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,
 				0005FA472AA24355004A65CA /* GraphUserGraphFollowed.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
+				0050AE892AABA43000697021 /* GraphCollege.swift in Sources */,
 				4DA482EB2AA98BE8003DFA3B /* CoachUser+Schema.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
@@ -899,7 +899,6 @@
 				0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */,
 				000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */,
 				4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */,
-				4DA482F52AA98BE8003DFA3B /* Video.swift in Sources */,
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
 				4DA482E22AA98BE8003DFA3B /* MessageNewUser.swift in Sources */,
 				4D541C0C2AAA540500EC47D8 /* ChatAPI.swift in Sources */,
@@ -928,7 +927,9 @@
 				00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */,
 				008CB5672A61B3EE00935537 /* ProfileParser.swift in Sources */,
 				4DF9F80F2A85EFF50049CCD3 /* UserBadge.swift in Sources */,
+				0050AE8D2AABA56600697021 /* Video+Schema.swift in Sources */,
 				4DA482F62AA98BE8003DFA3B /* Message+Schema.swift in Sources */,
+				0050AE8B2AABA4A600697021 /* Video.swift in Sources */,
 				4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */,
 				4D1A31CD2A971FEA00128F81 /* MediaFeedItem.swift in Sources */,
 				4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */,
