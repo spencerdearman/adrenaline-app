@@ -8,10 +8,10 @@
 import Foundation
 import Amplify
 
-func addFollowedToUser(user: NewUser, followed: NewFollowed) async {
+func follow(follower user: NewUser, followingEmail: String) async {
     do {
         // Saves if email doesn't exist, otherwise returns cloud object to avoid duplication
-        let savedFollowed = try await saveFollowed(followed: followed)
+        let savedFollowed = try await saveFollowed(followed: NewFollowed(email: followingEmail))
         print("saved followed id: \(savedFollowed.id)")
         // Skips add if user already follows the followed object
         let combos = user.followed ?? []
@@ -41,6 +41,35 @@ func addFollowedToUser(user: NewUser, followed: NewFollowed) async {
         try await Amplify.DataStore.save(savedFollowed)
         print("saved followed")
     } catch {
-        print("Failed to add followed to user")
+        print("Failed to follow user")
+    }
+}
+
+func unfollow(follower user: NewUser, unfollowingEmail: String) async {
+    do {
+        guard let following = user.followed else { return }
+        try await following.fetch()
+        
+        if following.filter({ $0.newFollowed.email == unfollowingEmail }).isEmpty { return }
+        let newUserNewFollowed = following[0]
+        
+        // Removes NewFollowed from user's followed list
+        user.followed = List<NewUserNewFollowed>.init(elements: following.filter {
+            $0.newFollowed.email != unfollowingEmail
+        })
+        
+        let followed = newUserNewFollowed.newFollowed
+        guard let users = followed.users else { return }
+        try await users.fetch()
+        
+        // Removes NewUser from followed's users list
+        followed.users = List<NewUserNewFollowed>.init(elements: users.filter {
+            $0.newUser.email != user.email
+        })
+        
+        // Remove relationship NewUserNewFollowed
+        try await deleteFromDataStore(object: newUserNewFollowed)
+    } catch {
+        print("Failed to unfollow user")
     }
 }

@@ -17,38 +17,73 @@ struct FollowingTestView: View {
         VStack {
             HStack {
                 Text("Logan")
+                    .onTapGesture {
+                        Task {
+                            do {
+                                if let followed = logan.followed {
+                                    try await followed.fetch()
+                                    print(followed.elements)
+                                } else {
+                                    print([String]())
+                                }
+                            }
+                        }
+                    }
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(email: "lsherwin10@gmail.com")
-                        await addFollowedToUser(user: spencer, followed: followed)
+                        await unfollow(follower: spencer, unfollowingEmail: "lsherwin10@gmail.com")
+                    }
+                }) {
+                    Image(systemName: "delete.left")
+                }
+                Button(action: {
+                    Task {
+                        await follow(follower: spencer, followingEmail: "lsherwin10@gmail.com")
                     }
                 }) {
                     Image(systemName: "arrow.left")
                 }
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(email: "dearmanspencer@gmail.com")
-                        await addFollowedToUser(user: logan, followed: followed)
+                        await follow(follower: logan, followingEmail: "dearmanspencer@gmail.com")
                     }
                 }) {
                     Image(systemName: "arrow.right")
                 }
+                Button(action: {
+                    Task {
+                        await unfollow(follower: logan,
+                                       unfollowingEmail: "dearmanspencer@gmail.com")
+                    }
+                }) {
+                    Image(systemName: "delete.right")
+                }
                 Text("Spencer")
+                    .onTapGesture {
+                        Task {
+                            do {
+                                if let followed = spencer.followed {
+                                    try await followed.fetch()
+                                    print(followed.elements)
+                                } else {
+                                    print([String]())
+                                }
+                            }
+                        }
+                    }
             }
             HStack {
                 Text("Logan")
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(email: "lsherwin10@gmail.com")
-                        await addFollowedToUser(user: andrew, followed: followed)
+                        await follow(follower: andrew, followingEmail: "lsherwin10@gmail.com")
                     }
                 }) {
                     Image(systemName: "arrow.left")
                 }
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(email: "achen@gmail.com")
-                        await addFollowedToUser(user: logan, followed: followed)
+                        await follow(follower: logan, followingEmail: "achen@gmail.com")
                     }
                 }) {
                     Image(systemName: "arrow.right")
@@ -59,16 +94,14 @@ struct FollowingTestView: View {
                 Text("Spencer")
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(email: "dearmanspencer@gmail.com")
-                        await addFollowedToUser(user: andrew, followed: followed)
+                        await follow(follower: andrew, followingEmail: "dearmanspencer@gmail.com")
                     }
                 }) {
                     Image(systemName: "arrow.left")
                 }
                 Button(action: {
                     Task {
-                        let followed = NewFollowed(email: "achen@gmail.com")
-                        await addFollowedToUser(user: spencer, followed: followed)
+                        await follow(follower: spencer, followingEmail: "achen@gmail.com")
                     }
                 }) {
                     Image(systemName: "arrow.right")
@@ -93,8 +126,6 @@ struct FollowingTestView: View {
                     for user in users {
                         if user.firstName == "Logan" {
                             logan = NewUser(from: user)
-                            try await logan.followed?.fetch()
-                            print(logan.followed?.elements)
                         } else if user.firstName == "Spencer" {
                             spencer = NewUser(from: user)
                         } else if user.firstName == "Andrew" {
