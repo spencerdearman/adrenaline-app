@@ -6,10 +6,7 @@ extension NewFollowed {
   // MARK: - CodingKeys 
    public enum CodingKeys: String, ModelKey {
     case id
-    case firstName
-    case lastName
     case email
-    case diveMeetsID
     case users
     case createdAt
     case updatedAt
@@ -34,10 +31,7 @@ extension NewFollowed {
     
     model.fields(
       .field(newFollowed.id, is: .required, ofType: .string),
-      .field(newFollowed.firstName, is: .required, ofType: .string),
-      .field(newFollowed.lastName, is: .required, ofType: .string),
-      .field(newFollowed.email, is: .optional, ofType: .string),
-      .field(newFollowed.diveMeetsID, is: .optional, ofType: .string),
+      .field(newFollowed.email, is: .required, ofType: .string),
       .hasMany(newFollowed.users, is: .optional, ofType: NewUserNewFollowed.self, associatedWith: NewUserNewFollowed.keys.newFollowed),
       .field(newFollowed.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newFollowed.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
@@ -47,5 +41,5 @@ extension NewFollowed {
 
 extension NewFollowed: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
-  public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+    public typealias IdentifierProtocol = DefaultModelIdentifier<NewFollowed>
 }

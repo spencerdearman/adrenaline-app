@@ -86,6 +86,22 @@ func saveAthlete(athlete: GraphAthlete) async throws -> NewAthlete {
     return savedAthlete
 }
 
+func saveFollowed(followed: NewFollowed) async throws -> NewFollowed {
+    let result: [NewFollowed] = try await query(where: NewFollowed.keys.email == followed.email)
+    
+    if result.count == 0 {
+        print("Saving new followed")
+        return try await saveToDataStore(object: followed)
+    }
+    else if result.count == 1 {
+        print("Returning existing followed")
+        return result[0]
+    }
+    else {
+        throw NSError()
+    }
+}
+
 func updateUserField(email: String, key: String, value: Any) async throws {
     let users: [NewUser] = try await query(where: NewUser.keys.email == email)
     print(users)
@@ -196,81 +212,9 @@ func deleteUserByEmail(email: String) async throws {
     }
 }
 
-struct GraphAthlete: Codable, Identifiable {
-    var id: UUID = UUID()
-    var user: NewUser
-    var team: NewTeam?
-    var college: College?
-    var heightFeet: Int
-    var heightInches: Int
-    var weight: Int
-    var weightUnit: String
-    var gender: String
-    var age: Int
-    var graduationYear: Int
-    var highSchool: String
-    var hometown: String
-    var springboardRating: Double?
-    var platformRating: Double?
-    var totalRating: Double?
-    var dives: List<Dive>?
-    var videos: List<Video>?
-    var createdAt: Temporal.DateTime?
-    var updatedAt: Temporal.DateTime?
-}
-
-extension GraphAthlete {
-    // construct from API Data
-    init(from : NewAthlete) {
-        
-        guard let i = UUID(uuidString: from.id) else {
-            preconditionFailure("Can not create user, Invalid ID : \(from.id) (expected UUID)")
-        }
-        
-        id = i
-        user = from.user
-        team = from.team
-        college = from.college
-        heightFeet = from.heightFeet
-        heightInches = from.heightInches
-        weight = from.weight
-        weightUnit = from.weightUnit
-        gender = from.gender
-        age = from.age
-        graduationYear = from.graduationYear
-        highSchool = from.highSchool
-        hometown = from.hometown
-        springboardRating = from.springboardRating
-        platformRating = from.platformRating
-        totalRating = from.totalRating
-        dives = from.dives
-        videos = from.videos
-        createdAt = from.createdAt
-        updatedAt = from.updatedAt
-    }
-}
-
-extension NewAthlete {
-    init(from athlete: GraphAthlete) {
-        self.init(id: athlete.id.uuidString,
-                  user: athlete.user,
-                  team: athlete.team,
-                  college: athlete.college,
-                  heightFeet: athlete.heightFeet,
-                  heightInches: athlete.heightInches,
-                  weight: athlete.weight,
-                  weightUnit: athlete.weightUnit,
-                  gender: athlete.gender,
-                  age: athlete.age,
-                  graduationYear: athlete.graduationYear,
-                  highSchool: athlete.highSchool,
-                  hometown: athlete.hometown,
-                  springboardRating: athlete.springboardRating,
-                  platformRating: athlete.platformRating,
-                  totalRating: athlete.totalRating,
-                  dives: athlete.dives ?? [],
-                  videos: athlete.videos ?? [],
-                  createdAt: athlete.createdAt,
-                  updatedAt: athlete.updatedAt)
-    }
+func clearLocalDataStore() async throws {
+    try await Amplify.DataStore.start()
+    try await Amplify.DataStore.stop()
+    try await Amplify.DataStore.clear()
+    try await Amplify.DataStore.start()
 }

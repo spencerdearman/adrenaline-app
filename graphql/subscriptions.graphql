@@ -1523,10 +1523,7 @@ subscription OnCreateNewFollowed(
 ) {
   onCreateNewFollowed(filter: $filter) {
     id
-    firstName
-    lastName
     email
-    diveMeetsID
     users {
       items {
         id
@@ -1557,10 +1554,7 @@ subscription OnUpdateNewFollowed(
 ) {
   onUpdateNewFollowed(filter: $filter) {
     id
-    firstName
-    lastName
     email
-    diveMeetsID
     users {
       items {
         id
@@ -1591,10 +1585,7 @@ subscription OnDeleteNewFollowed(
 ) {
   onDeleteNewFollowed(filter: $filter) {
     id
-    firstName
-    lastName
     email
-    diveMeetsID
     users {
       items {
         id
@@ -3087,10 +3078,7 @@ subscription OnCreateNewUserNewFollowed(
     }
     newFollowed {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
@@ -3178,10 +3166,7 @@ subscription OnUpdateNewUserNewFollowed(
     }
     newFollowed {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
@@ -3269,10 +3254,7 @@ subscription OnDeleteNewUserNewFollowed(
     }
     newFollowed {
       id
-      firstName
-      lastName
       email
-      diveMeetsID
       users {
         nextToken
         startedAt
