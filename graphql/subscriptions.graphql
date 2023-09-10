@@ -1,5 +1,56 @@
 # this is an auto generated file. This will be overwritten
 
+subscription OnCreateMessageNewUser(
+  $filter: ModelSubscriptionMessageNewUserFilterInput
+) {
+  onCreateMessageNewUser(filter: $filter) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnUpdateMessageNewUser(
+  $filter: ModelSubscriptionMessageNewUserFilterInput
+) {
+  onUpdateMessageNewUser(filter: $filter) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnDeleteMessageNewUser(
+  $filter: ModelSubscriptionMessageNewUserFilterInput
+) {
+  onDeleteMessageNewUser(filter: $filter) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
   onCreateNewUser(filter: $filter) {
     id
@@ -126,6 +177,23 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
         id
         newUserId
         newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
         createdAt
         updatedAt
         _version
@@ -285,6 +353,23 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -433,6 +518,23 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -493,6 +595,11 @@ subscription OnCreateNewAthlete(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -667,6 +774,11 @@ subscription OnUpdateNewAthlete(
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -833,6 +945,11 @@ subscription OnDeleteNewAthlete(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -1275,6 +1392,11 @@ subscription OnCreateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1373,6 +1495,11 @@ subscription OnUpdateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1467,6 +1594,11 @@ subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -2970,9 +3102,25 @@ subscription OnDeleteJudgeScore(
 subscription OnCreateMessage($filter: ModelSubscriptionMessageFilterInput) {
   onCreateMessage(filter: $filter) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -2985,9 +3133,25 @@ subscription OnCreateMessage($filter: ModelSubscriptionMessageFilterInput) {
 subscription OnUpdateMessage($filter: ModelSubscriptionMessageFilterInput) {
   onUpdateMessage(filter: $filter) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -3000,9 +3164,25 @@ subscription OnUpdateMessage($filter: ModelSubscriptionMessageFilterInput) {
 subscription OnDeleteMessage($filter: ModelSubscriptionMessageFilterInput) {
   onDeleteMessage(filter: $filter) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -3063,6 +3243,11 @@ subscription OnCreateNewUserNewFollowed(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -3155,6 +3340,11 @@ subscription OnUpdateNewUserNewFollowed(
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -3239,6 +3429,11 @@ subscription OnDeleteNewUserNewFollowed(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename

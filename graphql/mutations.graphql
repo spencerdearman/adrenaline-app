@@ -1,5 +1,59 @@
 # this is an auto generated file. This will be overwritten
 
+mutation CreateMessageNewUser(
+  $input: CreateMessageNewUserInput!
+  $condition: ModelMessageNewUserConditionInput
+) {
+  createMessageNewUser(input: $input, condition: $condition) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdateMessageNewUser(
+  $input: UpdateMessageNewUserInput!
+  $condition: ModelMessageNewUserConditionInput
+) {
+  updateMessageNewUser(input: $input, condition: $condition) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeleteMessageNewUser(
+  $input: DeleteMessageNewUserInput!
+  $condition: ModelMessageNewUserConditionInput
+) {
+  deleteMessageNewUser(input: $input, condition: $condition) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 mutation CreateNewUser(
   $input: CreateNewUserInput!
   $condition: ModelNewUserConditionInput
@@ -129,6 +183,23 @@ mutation CreateNewUser(
         id
         newUserId
         newFollowedId
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
         createdAt
         updatedAt
         _version
@@ -291,6 +362,23 @@ mutation UpdateNewUser(
       startedAt
       __typename
     }
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -442,6 +530,23 @@ mutation DeleteNewUser(
       startedAt
       __typename
     }
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -503,6 +608,11 @@ mutation CreateNewAthlete(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -678,6 +788,11 @@ mutation UpdateNewAthlete(
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -845,6 +960,11 @@ mutation DeleteNewAthlete(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -1299,6 +1419,11 @@ mutation CreateCoachUser(
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1400,6 +1525,11 @@ mutation UpdateCoachUser(
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -1497,6 +1627,11 @@ mutation DeleteCoachUser(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -3054,9 +3189,25 @@ mutation CreateMessage(
 ) {
   createMessage(input: $input, condition: $condition) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -3072,9 +3223,25 @@ mutation UpdateMessage(
 ) {
   updateMessage(input: $input, condition: $condition) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -3090,9 +3257,25 @@ mutation DeleteMessage(
 ) {
   deleteMessage(input: $input, condition: $condition) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -3154,6 +3337,11 @@ mutation CreateNewUserNewFollowed(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -3247,6 +3435,11 @@ mutation UpdateNewUserNewFollowed(
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -3332,6 +3525,11 @@ mutation DeleteNewUserNewFollowed(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename

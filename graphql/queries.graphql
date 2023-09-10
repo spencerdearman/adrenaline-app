@@ -1,5 +1,138 @@
 # this is an auto generated file. This will be overwritten
 
+query GetMessageNewUser($id: ID!) {
+  getMessageNewUser(id: $id) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListMessageNewUsers(
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listMessageNewUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncMessageNewUsers(
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncMessageNewUsers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query MessageNewUsersByNewuserID(
+  $newuserID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  messageNewUsersByNewuserID(
+    newuserID: $newuserID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query MessageNewUsersByMessageID(
+  $messageID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  messageNewUsersByMessageID(
+    messageID: $messageID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
 query GetNewUser($id: ID!) {
   getNewUser(id: $id) {
     id
@@ -137,6 +270,23 @@ query GetNewUser($id: ID!) {
       startedAt
       __typename
     }
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -198,6 +348,11 @@ query ListNewUsers(
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -277,6 +432,11 @@ query SyncNewUsers(
         startedAt
         __typename
       }
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -339,6 +499,11 @@ query GetNewAthlete($id: ID!) {
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -879,6 +1044,11 @@ query GetCoachUser($id: ID!) {
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
@@ -2146,9 +2316,25 @@ query SyncJudgeScores(
 query GetMessage($id: ID!) {
   getMessage(id: $id) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      items {
+        id
+        isSender
+        newuserID
+        messageID
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        __typename
+      }
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -2166,9 +2352,13 @@ query ListMessages(
   listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      senderName
       body
       creationDate
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -2196,9 +2386,13 @@ query SyncMessages(
   ) {
     items {
       id
-      senderName
       body
       creationDate
+      MessageNewUsers {
+        nextToken
+        startedAt
+        __typename
+      }
       createdAt
       updatedAt
       _version
@@ -2261,6 +2455,11 @@ query GetNewUserNewFollowed($id: ID!) {
         __typename
       }
       followed {
+        nextToken
+        startedAt
+        __typename
+      }
+      MessageNewUsers {
         nextToken
         startedAt
         __typename
