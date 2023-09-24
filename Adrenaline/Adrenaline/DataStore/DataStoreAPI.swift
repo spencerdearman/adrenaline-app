@@ -209,6 +209,16 @@ func deleteUserByEmail(email: String) async throws {
     }
 }
 
+func getUserByEmail(email: String) async throws -> NewUser? {
+    let usersPredicate = NewUser.keys.email == email
+    let users = await queryAWSUsers(where: usersPredicate)
+    if users.count >= 1 {
+        return users[0]
+    }
+    
+    return nil
+}
+
 func clearLocalDataStore() async throws {
     try await Amplify.DataStore.start()
     try await Amplify.DataStore.stop()
