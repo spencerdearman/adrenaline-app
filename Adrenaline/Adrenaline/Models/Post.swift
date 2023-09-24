@@ -49,4 +49,22 @@ public struct Post: Model {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
+    
+    // Not generated, added afterwards as a convenience init for creationDate
+    public init(id: String = UUID().uuidString,
+                            title: String? = nil,
+                            description: String? = nil,
+                            images: List<NewImage>? = [],
+                            videos: List<Video>? = [],
+                            newuserID: String) {
+        self.init(id: id,
+                  title: title,
+                  description: description,
+                  creationDate: .now(),
+                  images: images,
+                  videos: videos,
+                  newuserID: newuserID,
+                  createdAt: nil,
+                  updatedAt: nil)
+    }
 }
