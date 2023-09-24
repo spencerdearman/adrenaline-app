@@ -55,6 +55,7 @@
 		00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */; };
 		00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */ = {isa = PBXBuildFile; fileRef = 00BD0F9A2A7CAC830098E03A /* collegeLogos.json */; };
 		00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */; };
+		00CEDFD42ABFC71500F079CE /* PostsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CEDFD32ABFC71500F079CE /* PostsAPI.swift */; };
 		00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D1D58B2A3EA477003E7C13 /* ListOptimizer.swift */; };
 		00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DAFEDF2A8DA22F00497917 /* ImageStore.swift */; };
 		00DAFEE22A8EED2500497917 /* VideoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DAFEE12A8EED2500497917 /* VideoStore.swift */; };
@@ -215,6 +216,7 @@
 		00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentImageLoader.swift; sourceTree = "<group>"; };
 		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = collegeLogos.json; sourceTree = "<group>"; };
 		00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		00CEDFD32ABFC71500F079CE /* PostsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsAPI.swift; sourceTree = "<group>"; };
 		00D1D58B2A3EA477003E7C13 /* ListOptimizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListOptimizer.swift; sourceTree = "<group>"; };
 		00DAFEDF2A8DA22F00497917 /* ImageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
 		00DAFEE12A8EED2500497917 /* VideoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoStore.swift; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 				0059AD2E2AA241D40076AF00 /* GraphTeam.swift */,
 				0059AD2D2AA241D40076AF00 /* GraphUser.swift */,
 				0005FA462AA24355004A65CA /* GraphUserGraphFollowed.swift */,
+				00CEDFD32ABFC71500F079CE /* PostsAPI.swift */,
 			);
 			path = DataStore;
 			sourceTree = "<group>";
@@ -857,6 +860,7 @@
 				4D13F3C62A9D56D20081823D /* NewSignIn.swift in Sources */,
 				4D13F3BF2A99A04E0081823D /* BlobView.swift in Sources */,
 				4DA482F82AA98BE8003DFA3B /* MessageNewUser+Schema.swift in Sources */,
+				00CEDFD42ABFC71500F079CE /* PostsAPI.swift in Sources */,
 				0037877929D4F40900D3CD59 /* Cache.swift in Sources */,
 				4D74FEC629AEC95500401178 /* MeetPageView.swift in Sources */,
 				4D541C102AAACC7200EC47D8 /* ChatBar.swift in Sources */,
