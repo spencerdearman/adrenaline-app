@@ -41,15 +41,23 @@ class AppLogic: ObservableObject {
             let _ = Amplify.Hub.listen(to: .dataStore) { event in
                 DispatchQueue.main.sync {
 //                    print(event.eventName)
-                    if event.eventName == HubPayload.EventName.DataStore.ready {
-                        // Sets boolean to true when ready event is received
-                        self.dataStoreReady = true
-                    } else if event.eventName == HubPayload.EventName.DataStore.outboxStatus {
-                        // Ignores this event, as it only carries status of queued tasks
-                        return
-                    } else {
-                        // If other events are received, assume not ready
-                        self.dataStoreReady = false
+                    switch event.eventName {
+                        case HubPayload.EventName.DataStore.ready:
+                            // Sets boolean to true when ready event is received
+                            self.dataStoreReady = true
+                            break
+                        case HubPayload.EventName.DataStore.outboxStatus:
+                            // If outbox status event is received and it is empty, then no other
+                            // events are remaining to upload to the cloud, so it is ready
+                            if let data = event.data as? OutboxStatusEvent,
+                               data.isEmpty {
+                                self.dataStoreReady = true
+                            }
+                            break
+                        default:
+                            // If other events are received, assume not ready
+                            self.dataStoreReady = false
+                            break
                     }
                 }
             }
@@ -73,39 +81,39 @@ class AppLogic: ObservableObject {
             // see https://github.com/aws-amplify/amplify-ios/blob/dev-preview/Amplify/Categories/Auth/Models/AuthEventName.swift
             let _  = Amplify.Hub.listen(to: .auth) { payload in
                 switch payload.eventName {
-                    
-                case HubPayload.EventName.Auth.signedIn:
-                    
-                    Task {
-                        print("==HUB== User signed In, update UI")
-                        await self.updateUI(forSignInStatus: true)
-                    }
-                    
-                    // if you want to get user attributes
-                    Task {
-                        let authUserAttributes = try? await Amplify.Auth.fetchUserAttributes()
-                        if let authUserAttributes {
-                            print("User attribtues - \(authUserAttributes)")
-                        } else {
-                            print("Failed fetching user attributes failed")
+                        
+                    case HubPayload.EventName.Auth.signedIn:
+                        
+                        Task {
+                            print("==HUB== User signed In, update UI")
+                            await self.updateUI(forSignInStatus: true)
                         }
-                    }
-                    
-                case HubPayload.EventName.Auth.signedOut:
-                    Task {
-                        print("==HUB== User signed Out, update UI")
-                        await self.updateUI(forSignInStatus: false)
-                    }
-                    
-                case HubPayload.EventName.Auth.sessionExpired:
-                    Task {
-                        print("==HUB== Session expired, show sign in aui")
-                        await self.updateUI(forSignInStatus: false)
-                    }
-                    
-                default:
-//                    print("==HUB== \(payload)")
-                    break
+                        
+                        // if you want to get user attributes
+                        Task {
+                            let authUserAttributes = try? await Amplify.Auth.fetchUserAttributes()
+                            if let authUserAttributes {
+                                print("User attribtues - \(authUserAttributes)")
+                            } else {
+                                print("Failed fetching user attributes failed")
+                            }
+                        }
+                        
+                    case HubPayload.EventName.Auth.signedOut:
+                        Task {
+                            print("==HUB== User signed Out, update UI")
+                            await self.updateUI(forSignInStatus: false)
+                        }
+                        
+                    case HubPayload.EventName.Auth.sessionExpired:
+                        Task {
+                            print("==HUB== Session expired, show sign in aui")
+                            await self.updateUI(forSignInStatus: false)
+                        }
+                        
+                    default:
+                        //                    print("==HUB== \(payload)")
+                        break
                 }
             }
         } catch let error as AuthError {
@@ -115,45 +123,45 @@ class AppLogic: ObservableObject {
         }
         
     }
-//}
-//
-//extension AppLogic {
+    //}
+    //
+    //extension AppLogic {
     // Other functions for authentication, sign in, sign out, etc.
     
     @MainActor
-       private func queryData() async {
-           // load data at start of app when user signed in
-           if self.users.isEmpty {
-               self.users = await queryUsers()
-           }
-
-           if self.meets.isEmpty {
-               do {
-                   let newMeets: [NewMeet] = try await query()
-                   self.meets = newMeets.map { GraphMeet(from: $0) }
-               } catch {
-                   print("Failed to query meets")
-               }
-           }
-
-           if self.teams.isEmpty {
-               do {
-                   let newTeams: [NewTeam] = try await query()
-                   self.teams = newTeams.map { GraphTeam(from: $0) }
-               } catch {
-                   print("Failed to query teams")
-               }
-           }
-
-           if self.colleges.isEmpty {
-               do {
-                   let colleges: [College] = try await query()
-                   self.colleges = colleges.map { GraphCollege(from: $0) }
-               } catch {
-                   print("Failed to query colleges")
-               }
-           }
-       }
+    private func queryData() async {
+        // load data at start of app when user signed in
+        if self.users.isEmpty {
+            self.users = await queryUsers()
+        }
+        
+        if self.meets.isEmpty {
+            do {
+                let newMeets: [NewMeet] = try await query()
+                self.meets = newMeets.map { GraphMeet(from: $0) }
+            } catch {
+                print("Failed to query meets")
+            }
+        }
+        
+        if self.teams.isEmpty {
+            do {
+                let newTeams: [NewTeam] = try await query()
+                self.teams = newTeams.map { GraphTeam(from: $0) }
+            } catch {
+                print("Failed to query teams")
+            }
+        }
+        
+        if self.colleges.isEmpty {
+            do {
+                let colleges: [College] = try await query()
+                self.colleges = colleges.map { GraphCollege(from: $0) }
+            } catch {
+                print("Failed to query colleges")
+            }
+        }
+    }
     
     // Changing the internal state, this triggers an UI update on the main thread
     @MainActor
