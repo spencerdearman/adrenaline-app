@@ -1,5 +1,146 @@
 # this is an auto generated file. This will be overwritten
 
+mutation CreatePost(
+  $input: CreatePostInput!
+  $condition: ModelPostConditionInput
+) {
+  createPost(input: $input, condition: $condition) {
+    id
+    title
+    description
+    creationDate
+    images {
+      nextToken
+      startedAt
+      __typename
+    }
+    videos {
+      nextToken
+      startedAt
+      __typename
+    }
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdatePost(
+  $input: UpdatePostInput!
+  $condition: ModelPostConditionInput
+) {
+  updatePost(input: $input, condition: $condition) {
+    id
+    title
+    description
+    creationDate
+    images {
+      nextToken
+      startedAt
+      __typename
+    }
+    videos {
+      nextToken
+      startedAt
+      __typename
+    }
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeletePost(
+  $input: DeletePostInput!
+  $condition: ModelPostConditionInput
+) {
+  deletePost(input: $input, condition: $condition) {
+    id
+    title
+    description
+    creationDate
+    images {
+      nextToken
+      startedAt
+      __typename
+    }
+    videos {
+      nextToken
+      startedAt
+      __typename
+    }
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation CreateNewImage(
+  $input: CreateNewImageInput!
+  $condition: ModelNewImageConditionInput
+) {
+  createNewImage(input: $input, condition: $condition) {
+    id
+    link
+    uploadDate
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdateNewImage(
+  $input: UpdateNewImageInput!
+  $condition: ModelNewImageConditionInput
+) {
+  updateNewImage(input: $input, condition: $condition) {
+    id
+    link
+    uploadDate
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeleteNewImage(
+  $input: DeleteNewImageInput!
+  $condition: ModelNewImageConditionInput
+) {
+  deleteNewImage(input: $input, condition: $condition) {
+    id
+    link
+    uploadDate
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 mutation CreateMessageNewUser(
   $input: CreateMessageNewUserInput!
   $condition: ModelMessageNewUserConditionInput
@@ -68,45 +209,6 @@ mutation CreateNewUser(
     accountType
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -119,56 +221,18 @@ mutation CreateNewUser(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -179,34 +243,16 @@ mutation CreateNewUser(
       __typename
     }
     followed {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
     MessageNewUsers {
-      items {
-        id
-        isSender
-        newuserID
-        messageID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
+      nextToken
+      startedAt
+      __typename
+    }
+    posts {
       nextToken
       startedAt
       __typename
@@ -236,45 +282,6 @@ mutation UpdateNewUser(
     accountType
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -287,56 +294,18 @@ mutation UpdateNewUser(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -347,34 +316,16 @@ mutation UpdateNewUser(
       __typename
     }
     followed {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
     MessageNewUsers {
-      items {
-        id
-        isSender
-        newuserID
-        messageID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
+      nextToken
+      startedAt
+      __typename
+    }
+    posts {
       nextToken
       startedAt
       __typename
@@ -404,45 +355,6 @@ mutation DeleteNewUser(
     accountType
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -455,56 +367,18 @@ mutation DeleteNewUser(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -515,34 +389,16 @@ mutation DeleteNewUser(
       __typename
     }
     followed {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
     MessageNewUsers {
-      items {
-        id
-        isSender
-        newuserID
-        messageID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
+      nextToken
+      startedAt
+      __typename
+    }
+    posts {
       nextToken
       startedAt
       __typename
@@ -572,51 +428,6 @@ mutation CreateNewAthlete(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -629,22 +440,6 @@ mutation CreateNewAthlete(
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -657,11 +452,6 @@ mutation CreateNewAthlete(
       id
       name
       imageLink
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -682,53 +472,17 @@ mutation CreateNewAthlete(
     platformRating
     totalRating
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
-    videos {
-      items {
-        id
-        link
-        title
-        description
-        uploadDate
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteVideosId
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newTeamAthletesId
-    collegeAthletesId
     newAthleteUserId
     __typename
   }
@@ -748,51 +502,6 @@ mutation UpdateNewAthlete(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -805,22 +514,6 @@ mutation UpdateNewAthlete(
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -833,11 +526,6 @@ mutation UpdateNewAthlete(
       id
       name
       imageLink
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -858,53 +546,17 @@ mutation UpdateNewAthlete(
     platformRating
     totalRating
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
-    videos {
-      items {
-        id
-        link
-        title
-        description
-        uploadDate
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteVideosId
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newTeamAthletesId
-    collegeAthletesId
     newAthleteUserId
     __typename
   }
@@ -924,51 +576,6 @@ mutation DeleteNewAthlete(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -981,22 +588,6 @@ mutation DeleteNewAthlete(
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1009,11 +600,6 @@ mutation DeleteNewAthlete(
       id
       name
       imageLink
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1034,53 +620,17 @@ mutation DeleteNewAthlete(
     platformRating
     totalRating
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
-    videos {
-      items {
-        id
-        link
-        title
-        description
-        uploadDate
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteVideosId
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newTeamAthletesId
-    collegeAthletesId
     newAthleteUserId
     __typename
   }
@@ -1092,89 +642,14 @@ mutation CreateVideo(
 ) {
   createVideo(input: $input, condition: $condition) {
     id
-    athlete {
-      id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      heightFeet
-      heightInches
-      weight
-      weightUnit
-      gender
-      age
-      graduationYear
-      highSchool
-      hometown
-      springboardRating
-      platformRating
-      totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
-      newAthleteUserId
-      __typename
-    }
     link
-    title
-    description
     uploadDate
+    postID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteVideosId
     __typename
   }
 }
@@ -1185,89 +660,14 @@ mutation UpdateVideo(
 ) {
   updateVideo(input: $input, condition: $condition) {
     id
-    athlete {
-      id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      heightFeet
-      heightInches
-      weight
-      weightUnit
-      gender
-      age
-      graduationYear
-      highSchool
-      hometown
-      springboardRating
-      platformRating
-      totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
-      newAthleteUserId
-      __typename
-    }
     link
-    title
-    description
     uploadDate
+    postID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteVideosId
     __typename
   }
 }
@@ -1278,89 +678,14 @@ mutation DeleteVideo(
 ) {
   deleteVideo(input: $input, condition: $condition) {
     id
-    athlete {
-      id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      heightFeet
-      heightInches
-      weight
-      weightUnit
-      gender
-      age
-      graduationYear
-      highSchool
-      hometown
-      springboardRating
-      platformRating
-      totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
-      newAthleteUserId
-      __typename
-    }
     link
-    title
-    description
     uploadDate
+    postID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteVideosId
     __typename
   }
 }
@@ -1379,51 +704,6 @@ mutation CreateCoachUser(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1436,22 +716,6 @@ mutation CreateCoachUser(
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1485,51 +749,6 @@ mutation UpdateCoachUser(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1542,22 +761,6 @@ mutation UpdateCoachUser(
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1591,51 +794,6 @@ mutation DeleteCoachUser(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1648,22 +806,6 @@ mutation DeleteCoachUser(
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1691,17 +833,6 @@ mutation CreateNewFollowed(
     id
     email
     users {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1723,17 +854,6 @@ mutation UpdateNewFollowed(
     id
     email
     users {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1755,17 +875,6 @@ mutation DeleteNewFollowed(
     id
     email
     users {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1788,34 +897,6 @@ mutation CreateNewTeam(
     name
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1826,30 +907,6 @@ mutation CreateNewTeam(
       __typename
     }
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1873,34 +930,6 @@ mutation UpdateNewTeam(
     name
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1911,30 +940,6 @@ mutation UpdateNewTeam(
       __typename
     }
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1958,34 +963,6 @@ mutation DeleteNewTeam(
     name
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1996,30 +973,6 @@ mutation DeleteNewTeam(
       __typename
     }
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -2043,30 +996,6 @@ mutation CreateCollege(
     name
     imageLink
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -2089,30 +1018,6 @@ mutation UpdateCollege(
     name
     imageLink
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -2135,30 +1040,6 @@ mutation DeleteCollege(
     name
     imageLink
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -2189,20 +1070,6 @@ mutation CreateNewMeet(
     link
     meetType
     events {
-      items {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -2233,20 +1100,6 @@ mutation UpdateNewMeet(
     link
     meetType
     events {
-      items {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -2277,20 +1130,6 @@ mutation DeleteNewMeet(
     link
     meetType
     events {
-      items {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -2322,11 +1161,6 @@ mutation CreateNewEvent(
       country
       link
       meetType
-      events {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2339,33 +1173,16 @@ mutation CreateNewEvent(
     link
     numEntries
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newmeetID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newMeetEventsId
     __typename
   }
 }
@@ -2388,11 +1205,6 @@ mutation UpdateNewEvent(
       country
       link
       meetType
-      events {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2405,33 +1217,16 @@ mutation UpdateNewEvent(
     link
     numEntries
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newmeetID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newMeetEventsId
     __typename
   }
 }
@@ -2454,11 +1249,6 @@ mutation DeleteNewEvent(
       country
       link
       meetType
-      events {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2471,33 +1261,16 @@ mutation DeleteNewEvent(
     link
     numEntries
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newmeetID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newMeetEventsId
     __typename
   }
 }
@@ -2510,83 +1283,20 @@ mutation CreateDive(
     id
     event {
       id
-      meet {
-        id
-        meetID
-        name
-        organization
-        startDate
-        endDate
-        city
-        state
-        country
-        link
-        meetType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       name
       date
       link
       numEntries
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
+      newmeetID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newMeetEventsId
       __typename
     }
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -2599,23 +1309,13 @@ mutation CreateDive(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
@@ -2626,28 +1326,17 @@ mutation CreateDive(
     dd
     totalScore
     scores {
-      items {
-        id
-        score
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        diveScoresId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newathleteID
+    neweventID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteDivesId
-    newEventDivesId
     __typename
   }
 }
@@ -2660,83 +1349,20 @@ mutation UpdateDive(
     id
     event {
       id
-      meet {
-        id
-        meetID
-        name
-        organization
-        startDate
-        endDate
-        city
-        state
-        country
-        link
-        meetType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       name
       date
       link
       numEntries
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
+      newmeetID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newMeetEventsId
       __typename
     }
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -2749,23 +1375,13 @@ mutation UpdateDive(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
@@ -2776,28 +1392,17 @@ mutation UpdateDive(
     dd
     totalScore
     scores {
-      items {
-        id
-        score
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        diveScoresId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newathleteID
+    neweventID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteDivesId
-    newEventDivesId
     __typename
   }
 }
@@ -2810,83 +1415,20 @@ mutation DeleteDive(
     id
     event {
       id
-      meet {
-        id
-        meetID
-        name
-        organization
-        startDate
-        endDate
-        city
-        state
-        country
-        link
-        meetType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       name
       date
       link
       numEntries
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
+      newmeetID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newMeetEventsId
       __typename
     }
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -2899,23 +1441,13 @@ mutation DeleteDive(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
@@ -2926,28 +1458,17 @@ mutation DeleteDive(
     dd
     totalScore
     scores {
-      items {
-        id
-        score
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        diveScoresId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newathleteID
+    neweventID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteDivesId
-    newEventDivesId
     __typename
   }
 }
@@ -2960,71 +1481,28 @@ mutation CreateJudgeScore(
     id
     dive {
       id
-      event {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       number
       name
       height
       netScore
       dd
       totalScore
-      scores {
-        nextToken
-        startedAt
-        __typename
-      }
+      newathleteID
+      neweventID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteDivesId
-      newEventDivesId
       __typename
     }
     score
+    diveID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    diveScoresId
     __typename
   }
 }
@@ -3037,71 +1515,28 @@ mutation UpdateJudgeScore(
     id
     dive {
       id
-      event {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       number
       name
       height
       netScore
       dd
       totalScore
-      scores {
-        nextToken
-        startedAt
-        __typename
-      }
+      newathleteID
+      neweventID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteDivesId
-      newEventDivesId
       __typename
     }
     score
+    diveID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    diveScoresId
     __typename
   }
 }
@@ -3114,71 +1549,28 @@ mutation DeleteJudgeScore(
     id
     dive {
       id
-      event {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       number
       name
       height
       netScore
       dd
       totalScore
-      scores {
-        nextToken
-        startedAt
-        __typename
-      }
+      newathleteID
+      neweventID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteDivesId
-      newEventDivesId
       __typename
     }
     score
+    diveID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    diveScoresId
     __typename
   }
 }
@@ -3192,18 +1584,6 @@ mutation CreateMessage(
     body
     creationDate
     MessageNewUsers {
-      items {
-        id
-        isSender
-        newuserID
-        messageID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -3226,18 +1606,6 @@ mutation UpdateMessage(
     body
     creationDate
     MessageNewUsers {
-      items {
-        id
-        isSender
-        newuserID
-        messageID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -3260,18 +1628,6 @@ mutation DeleteMessage(
     body
     creationDate
     MessageNewUsers {
-      items {
-        id
-        isSender
-        newuserID
-        messageID
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -3301,51 +1657,6 @@ mutation CreateNewUserNewFollowed(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -3358,11 +1669,6 @@ mutation CreateNewUserNewFollowed(
     newFollowed {
       id
       email
-      users {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -3395,51 +1701,6 @@ mutation UpdateNewUserNewFollowed(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -3452,11 +1713,6 @@ mutation UpdateNewUserNewFollowed(
     newFollowed {
       id
       email
-      users {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -3489,51 +1745,6 @@ mutation DeleteNewUserNewFollowed(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
-      MessageNewUsers {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -3546,11 +1757,6 @@ mutation DeleteNewUserNewFollowed(
     newFollowed {
       id
       email
-      users {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version

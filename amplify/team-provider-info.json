@@ -10,6 +10,17 @@
       "StackName": "amplify-adrenaline-main-153503",
       "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-main-153503/84fcecc0-3a10-11ee-b5db-0a91dd24a88b",
       "AmplifyAppId": "d28uzwoi4f7qhz"
+    },
+    "categories": {
+      "auth": {
+        "adrenaline7ea715e2": {}
+      },
+      "api": {
+        "adrenaline": {}
+      },
+      "storage": {
+        "adrenaline": {}
+      }
     }
   }
 }

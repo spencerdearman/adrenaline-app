@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-extension Video {
+extension NewImage {
   // MARK: - CodingKeys 
    public enum CodingKeys: String, ModelKey {
     case id
@@ -17,32 +17,32 @@ extension Video {
   //  MARK: - ModelSchema 
   
   public static let schema = defineSchema { model in
-    let video = Video.keys
+    let newImage = NewImage.keys
     
     model.authRules = [
       rule(allow: .private, operations: [.create, .update, .delete, .read])
     ]
     
-    model.listPluralName = "Videos"
-    model.syncPluralName = "Videos"
+    model.listPluralName = "NewImages"
+    model.syncPluralName = "NewImages"
     
     model.attributes(
       .index(fields: ["postID"], name: "byPost"),
-      .primaryKey(fields: [video.id])
+      .primaryKey(fields: [newImage.id])
     )
     
     model.fields(
-      .field(video.id, is: .required, ofType: .string),
-      .field(video.link, is: .required, ofType: .string),
-      .field(video.uploadDate, is: .required, ofType: .dateTime),
-      .field(video.postID, is: .required, ofType: .string),
-      .field(video.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(video.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+      .field(newImage.id, is: .required, ofType: .string),
+      .field(newImage.link, is: .required, ofType: .string),
+      .field(newImage.uploadDate, is: .required, ofType: .dateTime),
+      .field(newImage.postID, is: .required, ofType: .string),
+      .field(newImage.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+      .field(newImage.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
 }
 
-extension Video: ModelIdentifiable {
+extension NewImage: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
 }

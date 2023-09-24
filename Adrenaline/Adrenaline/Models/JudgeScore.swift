@@ -6,26 +6,31 @@ public struct JudgeScore: Model {
   public let id: String
   public var dive: Dive
   public var score: Double
+  public var diveID: String
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
   public init(id: String = UUID().uuidString,
       dive: Dive,
-      score: Double) {
+      score: Double,
+      diveID: String) {
     self.init(id: id,
       dive: dive,
       score: score,
+      diveID: diveID,
       createdAt: nil,
       updatedAt: nil)
   }
   internal init(id: String = UUID().uuidString,
       dive: Dive,
       score: Double,
+      diveID: String,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
       self.dive = dive
       self.score = score
+      self.diveID = diveID
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

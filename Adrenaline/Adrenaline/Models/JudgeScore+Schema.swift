@@ -8,6 +8,7 @@ extension JudgeScore {
     case id
     case dive
     case score
+    case diveID
     case createdAt
     case updatedAt
   }
@@ -26,6 +27,7 @@ extension JudgeScore {
     model.syncPluralName = "JudgeScores"
     
     model.attributes(
+      .index(fields: ["diveID"], name: "byDive"),
       .primaryKey(fields: [judgeScore.id])
     )
     
@@ -33,6 +35,7 @@ extension JudgeScore {
       .field(judgeScore.id, is: .required, ofType: .string),
       .belongsTo(judgeScore.dive, is: .required, ofType: Dive.self, targetNames: ["diveScoresId"]),
       .field(judgeScore.score, is: .required, ofType: .double),
+      .field(judgeScore.diveID, is: .required, ofType: .string),
       .field(judgeScore.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(judgeScore.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

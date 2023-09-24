@@ -35,7 +35,7 @@ extension NewTeam {
       .field(newTeam.id, is: .required, ofType: .string),
       .field(newTeam.name, is: .required, ofType: .string),
       .hasOne(newTeam.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.team, targetNames: ["newTeamCoachId"]),
-      .hasMany(newTeam.athletes, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.team),
+      .hasMany(newTeam.athletes, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.newteamID),
       .field(newTeam.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newTeam.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newTeam.newTeamCoachId, is: .optional, ofType: .string)

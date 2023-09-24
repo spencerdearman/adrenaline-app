@@ -3,12 +3,12 @@ type Post @model @auth(rules: [{ allow: private }]) {
   title: String
   description: String
   creationDate: AWSDateTime!
-  images: [Image] @hasMany(indexName: "byPost", fields: ["id"])
+  images: [NewImage] @hasMany(indexName: "byPost", fields: ["id"])
   videos: [Video] @hasMany(indexName: "byPost", fields: ["id"])
   newuserID: ID! @index(name: "byNewUser")
 }
 
-type Image @model @auth(rules: [{ allow: private }]) {
+type NewImage @model @auth(rules: [{ allow: private }]) {
   id: ID!
   link: AWSURL!
   uploadDate: AWSDateTime!

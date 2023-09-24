@@ -186,9 +186,6 @@ func updateAthleteField(user: NewUser, key: String, value: Any) async throws {
         case "dives":
                 updatedAthlete.dives = value as? List<Dive> ?? []
             break
-        case "videos":
-            updatedAthlete.videos = value as? List<Video> ?? []
-            break
         default:
             print("Invalid key in NewAthlete")
             return

@@ -13,6 +13,8 @@ public struct Dive: Model {
   public var dd: Double
   public var totalScore: Double
   public var scores: List<JudgeScore>?
+  public var newathleteID: String
+  public var neweventID: String
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
@@ -25,7 +27,9 @@ public struct Dive: Model {
       netScore: Double,
       dd: Double,
       totalScore: Double,
-      scores: List<JudgeScore> = []) {
+      scores: List<JudgeScore> = [],
+      newathleteID: String,
+      neweventID: String) {
     self.init(id: id,
       event: event,
       athlete: athlete,
@@ -36,6 +40,8 @@ public struct Dive: Model {
       dd: dd,
       totalScore: totalScore,
       scores: scores,
+      newathleteID: newathleteID,
+      neweventID: neweventID,
       createdAt: nil,
       updatedAt: nil)
   }
@@ -49,6 +55,8 @@ public struct Dive: Model {
       dd: Double,
       totalScore: Double,
       scores: List<JudgeScore> = [],
+      newathleteID: String,
+      neweventID: String,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
@@ -61,6 +69,8 @@ public struct Dive: Model {
       self.dd = dd
       self.totalScore = totalScore
       self.scores = scores
+      self.newathleteID = newathleteID
+      self.neweventID = neweventID
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

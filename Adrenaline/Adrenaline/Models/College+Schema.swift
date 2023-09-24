@@ -34,7 +34,7 @@ extension College {
       .field(college.id, is: .required, ofType: .string),
       .field(college.name, is: .required, ofType: .string),
       .field(college.imageLink, is: .required, ofType: .string),
-      .hasMany(college.athletes, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.college),
+      .hasMany(college.athletes, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.collegeID),
       .field(college.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(college.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

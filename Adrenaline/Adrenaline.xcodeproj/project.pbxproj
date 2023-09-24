@@ -23,6 +23,10 @@
 		0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6B82A58E024004C84BF /* SwipeActions.swift */; };
 		0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */; };
 		0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */; };
+		005057502ABFB038000B082D /* Post+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050574C2ABFB037000B082D /* Post+Schema.swift */; };
+		005057512ABFB038000B082D /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050574D2ABFB037000B082D /* Post.swift */; };
+		005057552ABFB11D000B082D /* NewImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005057532ABFB11D000B082D /* NewImage.swift */; };
+		005057562ABFB11D000B082D /* NewImage+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005057542ABFB11D000B082D /* NewImage+Schema.swift */; };
 		0050AE892AABA43000697021 /* GraphCollege.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE882AABA43000697021 /* GraphCollege.swift */; };
 		0050AE8B2AABA4A600697021 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8A2AABA4A600697021 /* Video.swift */; };
 		0050AE8D2AABA56600697021 /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8C2AABA56600697021 /* Video+Schema.swift */; };
@@ -179,6 +183,10 @@
 		0040A6B82A58E024004C84BF /* SwipeActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeActions.swift; sourceTree = "<group>"; };
 		0040A6BA2A5BC54C004C84BF /* FinishedLiveResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsView.swift; sourceTree = "<group>"; };
 		0040A6BC2A5BC945004C84BF /* FinishedLiveResultsParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedLiveResultsParser.swift; sourceTree = "<group>"; };
+		0050574C2ABFB037000B082D /* Post+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Post+Schema.swift"; sourceTree = "<group>"; };
+		0050574D2ABFB037000B082D /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		005057532ABFB11D000B082D /* NewImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewImage.swift; sourceTree = "<group>"; };
+		005057542ABFB11D000B082D /* NewImage+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewImage+Schema.swift"; sourceTree = "<group>"; };
 		0050AE882AABA43000697021 /* GraphCollege.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCollege.swift; sourceTree = "<group>"; };
 		0050AE8A2AABA4A600697021 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		0050AE8C2AABA56600697021 /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
@@ -657,6 +665,10 @@
 		4DA482BE2AA98BE8003DFA3B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				005057532ABFB11D000B082D /* NewImage.swift */,
+				005057542ABFB11D000B082D /* NewImage+Schema.swift */,
+				0050574D2ABFB037000B082D /* Post.swift */,
+				0050574C2ABFB037000B082D /* Post+Schema.swift */,
 				4DA482C42AA98BE8003DFA3B /* AmplifyModels.swift */,
 				4DA482D22AA98BE8003DFA3B /* CoachUser.swift */,
 				4DA482CE2AA98BE8003DFA3B /* CoachUser+Schema.swift */,
@@ -804,6 +816,7 @@
 				4D753DE32A2158370029138B /* EventPageParser.swift in Sources */,
 				4DA482F12AA98BE8003DFA3B /* NewFollowed+Schema.swift in Sources */,
 				4DA482E62AA98BE8003DFA3B /* College.swift in Sources */,
+				005057502ABFB038000B082D /* Post+Schema.swift in Sources */,
 				4DF9F80D2A85E7BA0049CCD3 /* AppLogic.swift in Sources */,
 				4D13F3C12A99B6700081823D /* ProfileBar.swift in Sources */,
 				4DA482E12AA98BE8003DFA3B /* AmplifyModels.swift in Sources */,
@@ -827,6 +840,7 @@
 				4D502E682AA194DC00D25B7B /* Enums.swift in Sources */,
 				4D74FEAF29AEB02100401178 /* Meet.swift in Sources */,
 				4D1A5C3729CB953300F3DA2B /* SwiftUIWebView.swift in Sources */,
+				005057562ABFB11D000B082D /* NewImage+Schema.swift in Sources */,
 				4DA482DE2AA98BE8003DFA3B /* Dive.swift in Sources */,
 				0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */,
 				00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */,
@@ -866,6 +880,7 @@
 				0005FA472AA24355004A65CA /* GraphUserGraphFollowed.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
 				0050AE892AABA43000697021 /* GraphCollege.swift in Sources */,
+				005057512ABFB038000B082D /* Post.swift in Sources */,
 				4DA482EB2AA98BE8003DFA3B /* CoachUser+Schema.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
@@ -897,6 +912,7 @@
 				0040A6BB2A5BC54C004C84BF /* FinishedLiveResultsView.swift in Sources */,
 				000AAE8C2A9448A8006393B7 /* HideTabBarScrollView.swift in Sources */,
 				0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */,
+				005057552ABFB11D000B082D /* NewImage.swift in Sources */,
 				000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */,
 				4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */,
 				00D1D58C2A3EA477003E7C13 /* ListOptimizer.swift in Sources */,
