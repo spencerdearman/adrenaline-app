@@ -11,6 +11,7 @@ struct NewPostView: View {
     @Environment(\.dismiss) var dismiss
     @State private var title: String = ""
     @State private var description: String = ""
+    @AppStorage("email") private var email: String = ""
     
     var body: some View {
         NavigationView {
@@ -44,7 +45,15 @@ struct NewPostView: View {
                         Spacer()
                         
                         Button {
-                            dismiss()
+                            Task {
+                                if let user = try await getUserByEmail(email: email) {
+                                    let post = Post(title: title, description: description, newuserID: user.id)
+                                    
+                                    let (_, _) = try await savePost(user: user, post: post)
+                                }
+                                
+                                dismiss()
+                            }
                         } label: {
                             Text("Post")
                                 .padding()
