@@ -13,11 +13,23 @@ struct NavigationBar: View {
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
     var diveMeetsID:  Binding<String>
-    @State var showSheet = false
+    @State var showSearchSheet = false
+    @State var showPostSheet = false
     @State var isLogged = true
     @Binding var showAccount: Bool
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
+    
+    // Using this function to swap sheet bools safely
+    private func showSheet(showingPost: Bool) {
+        if showingPost {
+            showSearchSheet = false
+            showPostSheet = true
+        } else {
+            showPostSheet = false
+            showSearchSheet = true
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -40,7 +52,21 @@ struct NavigationBar: View {
             
             HStack(spacing: 16) {
                 Button {
-                    showSheet.toggle()
+                    showSheet(showingPost: true)
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                }
+                .sheet(isPresented: $showPostSheet) {
+                    NewPostView()
+                }
+                
+                Button {
+                    showSheet(showingPost: false)
                 } label: {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 17, weight: .bold))
@@ -49,7 +75,7 @@ struct NavigationBar: View {
                         .background(.ultraThinMaterial)
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
-                .sheet(isPresented: $showSheet) {
+                .sheet(isPresented: $showSearchSheet) {
                     NewSearchView()
                 }
                 
