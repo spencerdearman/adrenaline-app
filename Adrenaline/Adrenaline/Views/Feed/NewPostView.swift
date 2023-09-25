@@ -51,16 +51,16 @@ struct NewPostView: View {
                     Spacer()
                     
                     HStack {
-                        Button {
-                            print("Camera")
-                        } label: {
-                            Image(systemName: "camera")
-                                .font(.system(size: 22, weight: .bold))
-                                .frame(width: 48, height: 48)
-                                .foregroundColor(.secondary)
-                                .background(.ultraThinMaterial)
-                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                        }
+//                        Button {
+//                            print("Camera")
+//                        } label: {
+//                            Image(systemName: "camera")
+//                                .font(.system(size: 22, weight: .bold))
+//                                .frame(width: 48, height: 48)
+//                                .foregroundColor(.secondary)
+//                                .background(.ultraThinMaterial)
+//                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+//                        }
                         
                         PhotosPicker(selection: $selectedItems) {
                             Image(systemName: "photo.on.rectangle")
