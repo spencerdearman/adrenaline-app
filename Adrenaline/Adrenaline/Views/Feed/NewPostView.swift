@@ -11,6 +11,7 @@ struct NewPostView: View {
     @Environment(\.dismiss) var dismiss
     @State private var title: String = ""
     @State private var description: String = ""
+    @State private var mediaItems: [PostMediaItem] = []
     @AppStorage("email") private var email: String = ""
     
     var body: some View {
@@ -22,15 +23,31 @@ struct NewPostView: View {
                         .textFieldStyle(.roundedBorder)
                         .lineLimit(6, reservesSpace: true)
                     
+                    let size: CGFloat = 125
+                    ScrollView {
+                        LazyVGrid(columns: [GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
+                            ForEach(mediaItems) { item in
+                                AnyView(item.view
+                                    .frame(width: size, height: size))
+                            }
+                        }
+                    }
+                    .scrollIndicators(.hidden)
+                    
                     Spacer()
                     
                     HStack {
-                        Image(systemName: "camera")
-                            .font(.system(size: 22, weight: .bold))
-                            .frame(width: 48, height: 48)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                        Button {
+                            print("Camera")
+                        } label: {
+                            Image(systemName: "camera")
+                                .font(.system(size: 22, weight: .bold))
+                                .frame(width: 48, height: 48)
+                                .foregroundColor(.secondary)
+                                .background(.ultraThinMaterial)
+                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                        }
+                        
                         Button {
                             print("Gallery")
                         } label: {
