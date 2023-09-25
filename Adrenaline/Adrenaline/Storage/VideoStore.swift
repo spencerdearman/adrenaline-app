@@ -52,7 +52,7 @@ final class VideoStore {
         return result!
     }
     
-    private func saveVideo(data: Data, email: String, name: String) -> URL? {
+    func saveVideo(data: Data, email: String, name: String) -> URL? {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let path = paths[0]
         
