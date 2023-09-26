@@ -11,6 +11,7 @@ import AVKit
 import UIKit
 
 struct NewPostView: View {
+    @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) var dismiss
     @Environment(\.videoStore) var videoStore
     @State private var title: String = ""
@@ -89,8 +90,9 @@ struct NewPostView: View {
                                 .padding()
                                 .font(.system(size: 22, weight: .bold))
                                 .frame(height: 48)
-                                .foregroundColor(.secondary)
-                                .background(.ultraThinMaterial)
+                                .foregroundColor(currentMode == .light ? .white : .secondary)
+                                .background(Rectangle()
+                                    .foregroundStyle(Color.gray))
                                 .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                         }
                     }
