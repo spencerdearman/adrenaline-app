@@ -17,17 +17,10 @@ struct NewPostView: View {
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var mediaItems: [PostMediaItem] = []
-    @State private var videoData: [(Data, URL)] = []
-    @State private var imageData: [Data] = []
+    @State private var videoData: [String: Data] = [:]
+    @State private var imageData: [String: Data] = [:]
     @State private var selectedItems: [PhotosPickerItem] = []
     @AppStorage("email") private var email: String = ""
-    
-    private func getCurrentDateTime() -> String {
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        return df.string(from: Date.now)
-    }
     
     var body: some View {
         NavigationView {
@@ -102,16 +95,19 @@ struct NewPostView: View {
         }
         .onChange(of: selectedItems) { _ in
             mediaItems = []
-            imageData = []
+            imageData = [:]
+            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+            let path = paths[0]
             
-            for (_, url) in videoData {
+            for (name, _) in videoData {
                 do {
+                    let url = path.appendingPathComponent(name)
                     try FileManager.default.removeItem(at: url)
                 } catch {
                     print("Failed to remove data at URL")
                 }
             }
-            videoData = []
+            videoData = [:]
             
             for selectedItem in selectedItems {
                 var selectedFileData: Data? = nil
@@ -130,20 +126,21 @@ struct NewPostView: View {
                         // Bypass saving to the cloud and locally store
                         // Note: will need to save to cloud and cache when
                         //       post is confirmed
-                        let name = getCurrentDateTime()
+                        let name = getCurrentDateTime() + ".mp4"
                         guard let url = videoStore.saveVideo(data: data, email: email, name: name) else { return }
                         let video = VideoPlayer(player: AVPlayer(url: url))
                         
                         // Store Data and URL where data is saved in case it
                         // needs deleted
-                        videoData.append((data, url))
+                        videoData[name] = data
                         mediaItems.append(PostMediaItem(data: PostMedia.video(video)))
                     } else if let data = selectedFileData,
                               type.conforms(to: UTType.image) {
                         guard let uiImage = UIImage(data: data) else { return }
                         let image = Image(uiImage: uiImage).resizable()
                         
-                        imageData.append(data)
+                        let name = getCurrentDateTime() + ".jpg"
+                        imageData[name] = data
                         mediaItems.append(PostMediaItem(data: PostMedia.image(image)))
                     }
                 }
