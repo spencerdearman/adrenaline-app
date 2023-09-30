@@ -32,7 +32,7 @@ struct NewPostView: View {
         
         for (name, _) in videoData {
             do {
-                let url = path.appendingPathComponent(name)
+                let url = path.appendingPathComponent("\(email)-\(name).mp4")
                 try FileManager.default.removeItem(at: url)
             } catch {
                 print("Failed to remove data at URL")
