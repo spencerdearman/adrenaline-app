@@ -54,6 +54,10 @@ class AppLogic: ObservableObject {
                                 self.dataStoreReady = true
                             }
                             break
+                        case HubPayload.EventName.DataStore.syncReceived:
+                            // Ignore this event since sometimes it arrives after outbox status,
+                            // which indicates completion
+                            break
                         default:
                             // If other events are received, assume not ready
                             self.dataStoreReady = false
