@@ -24,7 +24,6 @@ func createPost(user: NewUser, title: String, description: String,
     var videos: [Video]? = nil
     var images: [NewImage]? = nil
     let email = user.email.lowercased()
-    let leadingLink = "https://adrenalinexxxxx153503-main.s3.amazonaws.com/public"
     
     let postId = UUID().uuidString
     
@@ -35,10 +34,8 @@ func createPost(user: NewUser, title: String, description: String,
             let _ = try await task.value
             print("Video \(name) uploaded")
             
-            let link = "\(leadingLink)/videos/\(email.replacingOccurrences(of: "@", with: "%40"))/\(name).mp4"
-            
             if videos == nil { videos = [] }
-            videos?.append(Video(link: link, uploadDate: .now(), postID: postId))
+            videos?.append(Video(s3key: name, uploadDate: .now(), postID: postId))
         }
         
         for (name, data) in imagesData {
@@ -47,10 +44,8 @@ func createPost(user: NewUser, title: String, description: String,
             let _ = try await task.value
             print("Image \(name) uploaded")
             
-            let link = "\(leadingLink)/images/\(email.replacingOccurrences(of: "@", with: "%40"))/\(name).jpg"
-            
             if images == nil { images = [] }
-            images?.append(NewImage(link: link, uploadDate: .now(), postID: postId))
+            images?.append(NewImage(s3key: name, uploadDate: .now(), postID: postId))
         }
         
         let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)

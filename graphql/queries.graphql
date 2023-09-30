@@ -118,7 +118,7 @@ query PostsByNewuserID(
 query GetNewImage($id: ID!) {
   getNewImage(id: $id) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
@@ -138,7 +138,7 @@ query ListNewImages(
   listNewImages(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      link
+      s3key
       uploadDate
       postID
       createdAt
@@ -168,7 +168,7 @@ query SyncNewImages(
   ) {
     items {
       id
-      link
+      s3key
       uploadDate
       postID
       createdAt
@@ -200,7 +200,7 @@ query NewImagesByPostID(
   ) {
     items {
       id
-      link
+      s3key
       uploadDate
       postID
       createdAt
@@ -723,7 +723,7 @@ query NewAthletesByNewteamID(
 query GetVideo($id: ID!) {
   getVideo(id: $id) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
@@ -743,7 +743,7 @@ query ListVideos(
   listVideos(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      link
+      s3key
       uploadDate
       postID
       createdAt
@@ -773,7 +773,7 @@ query SyncVideos(
   ) {
     items {
       id
-      link
+      s3key
       uploadDate
       postID
       createdAt
@@ -805,7 +805,7 @@ query VideosByPostID(
   ) {
     items {
       id
-      link
+      s3key
       uploadDate
       postID
       createdAt

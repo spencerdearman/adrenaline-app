@@ -81,7 +81,7 @@ subscription OnDeletePost($filter: ModelSubscriptionPostFilterInput) {
 subscription OnCreateNewImage($filter: ModelSubscriptionNewImageFilterInput) {
   onCreateNewImage(filter: $filter) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
@@ -96,7 +96,7 @@ subscription OnCreateNewImage($filter: ModelSubscriptionNewImageFilterInput) {
 subscription OnUpdateNewImage($filter: ModelSubscriptionNewImageFilterInput) {
   onUpdateNewImage(filter: $filter) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
@@ -111,7 +111,7 @@ subscription OnUpdateNewImage($filter: ModelSubscriptionNewImageFilterInput) {
 subscription OnDeleteNewImage($filter: ModelSubscriptionNewImageFilterInput) {
   onDeleteNewImage(filter: $filter) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
@@ -606,7 +606,7 @@ subscription OnDeleteNewAthlete(
 subscription OnCreateVideo($filter: ModelSubscriptionVideoFilterInput) {
   onCreateVideo(filter: $filter) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
@@ -621,7 +621,7 @@ subscription OnCreateVideo($filter: ModelSubscriptionVideoFilterInput) {
 subscription OnUpdateVideo($filter: ModelSubscriptionVideoFilterInput) {
   onUpdateVideo(filter: $filter) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
@@ -636,7 +636,7 @@ subscription OnUpdateVideo($filter: ModelSubscriptionVideoFilterInput) {
 subscription OnDeleteVideo($filter: ModelSubscriptionVideoFilterInput) {
   onDeleteVideo(filter: $filter) {
     id
-    link
+    s3key
     uploadDate
     postID
     createdAt
