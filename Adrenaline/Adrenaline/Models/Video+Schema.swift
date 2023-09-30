@@ -6,7 +6,7 @@ extension Video {
   // MARK: - CodingKeys 
    public enum CodingKeys: String, ModelKey {
     case id
-    case link
+    case s3key
     case uploadDate
     case postID
     case createdAt
@@ -33,7 +33,7 @@ extension Video {
     
     model.fields(
       .field(video.id, is: .required, ofType: .string),
-      .field(video.link, is: .required, ofType: .string),
+      .field(video.s3key, is: .required, ofType: .string),
       .field(video.uploadDate, is: .required, ofType: .dateTime),
       .field(video.postID, is: .required, ofType: .string),
       .field(video.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),

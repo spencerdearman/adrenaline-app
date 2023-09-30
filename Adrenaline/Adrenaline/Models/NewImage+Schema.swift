@@ -6,7 +6,7 @@ extension NewImage {
   // MARK: - CodingKeys 
    public enum CodingKeys: String, ModelKey {
     case id
-    case link
+    case s3key
     case uploadDate
     case postID
     case createdAt
@@ -33,7 +33,7 @@ extension NewImage {
     
     model.fields(
       .field(newImage.id, is: .required, ofType: .string),
-      .field(newImage.link, is: .required, ofType: .string),
+      .field(newImage.s3key, is: .required, ofType: .string),
       .field(newImage.uploadDate, is: .required, ofType: .dateTime),
       .field(newImage.postID, is: .required, ofType: .string),
       .field(newImage.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),

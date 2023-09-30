@@ -10,7 +10,7 @@ type Post @model @auth(rules: [{ allow: private }]) {
 
 type NewImage @model @auth(rules: [{ allow: private }]) {
   id: ID!
-  link: AWSURL!
+  s3key: String!
   uploadDate: AWSDateTime!
   postID: ID! @index(name: "byPost")
 }
@@ -61,7 +61,7 @@ type NewAthlete @model @auth(rules: [{ allow: private }]) {
 
 type Video @model @auth(rules: [{ allow: private }]) {
   id: ID!
-  link: AWSURL!
+  s3key: String!
   uploadDate: AWSDateTime!
   postID: ID! @index(name: "byPost")
 }
