@@ -56,11 +56,6 @@ func createPost(user: NewUser, title: String, description: String,
         let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)
         let videosList = videos == nil ? nil : List<Video>.init(elements: videos!)
         
-        try await imagesList?.fetch()
-        try await videosList?.fetch()
-        print("Images:", imagesList?.elements)
-        print("Videos:", videosList?.elements)
-        
         return Post(id: postId, title: title, description: description, creationDate: .now(),
                     images: imagesList, videos: videosList, newuserID: user.id)
         
@@ -73,7 +68,6 @@ func createPost(user: NewUser, title: String, description: String,
 //       saving the Post itself
 func savePost(user: NewUser, post: Post) async throws -> (NewUser, Post) {
     if let videos = post.videos {
-        print("videos not nil")
         try await videos.fetch()
         for video in videos {
             let _ = try await saveToDataStore(object: video)
@@ -81,7 +75,6 @@ func savePost(user: NewUser, post: Post) async throws -> (NewUser, Post) {
     }
     
     if let images = post.images {
-        print("images not nil")
         try await images.fetch()
         for image in images {
             let _ = try await saveToDataStore(object: image)
