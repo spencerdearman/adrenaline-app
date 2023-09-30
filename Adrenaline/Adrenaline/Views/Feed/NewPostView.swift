@@ -20,7 +20,31 @@ struct NewPostView: View {
     @State private var videoData: [String: Data] = [:]
     @State private var imageData: [String: Data] = [:]
     @State private var selectedItems: [PhotosPickerItem] = []
+    @State private var buttonPressed: Bool = false
     @AppStorage("email") private var email: String = ""
+    
+    // Removes media items from local variables and deletes locally stored files
+    private func clearMediaItems() {
+        mediaItems = []
+        imageData = [:]
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let path = paths[0]
+        
+        for (name, _) in videoData {
+            do {
+                let url = path.appendingPathComponent(name)
+                try FileManager.default.removeItem(at: url)
+            } catch {
+                print("Failed to remove data at URL")
+            }
+        }
+        videoData = [:]
+    }
+    
+    private func didDismiss() {
+        clearMediaItems()
+        dismiss()
+    }
     
     var body: some View {
         NavigationView {
@@ -45,17 +69,6 @@ struct NewPostView: View {
                     Spacer()
                     
                     HStack {
-//                        Button {
-//                            print("Camera")
-//                        } label: {
-//                            Image(systemName: "camera")
-//                                .font(.system(size: 22, weight: .bold))
-//                                .frame(width: 48, height: 48)
-//                                .foregroundColor(.secondary)
-//                                .background(.ultraThinMaterial)
-//                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-//                        }
-                        
                         PhotosPicker(selection: $selectedItems) {
                             Image(systemName: "photo.on.rectangle")
                                 .font(.system(size: 22, weight: .bold))
@@ -67,16 +80,27 @@ struct NewPostView: View {
                         
                         Spacer()
                         
+                        if buttonPressed {
+                            ProgressView()
+                                .padding(.trailing)
+                        }
+                        
                         Button {
                             Task {
+                                buttonPressed = true
+                                
                                 if let user = try await getUserByEmail(email: email) {
-                                    let post = Post(title: title, description: description, 
-                                                    newuserID: user.id)
+                                    let post = try await createPost(user: user, title: title,
+                                                                    description: description,
+                                                                    videosData: videoData,
+                                                                    imagesData: imageData)
                                     
                                     let (_, _) = try await savePost(user: user, post: post)
                                 }
                                 
-                                dismiss()
+                                didDismiss()
+                                
+                                buttonPressed = false
                             }
                         } label: {
                             Text("Post")
@@ -88,26 +112,14 @@ struct NewPostView: View {
                                     .foregroundStyle(Color.gray))
                                 .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                         }
+                        .disabled(buttonPressed)
                     }
                 }
                 .padding()
                 .navigationTitle("New Post")
         }
         .onChange(of: selectedItems) { _ in
-            mediaItems = []
-            imageData = [:]
-            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-            let path = paths[0]
-            
-            for (name, _) in videoData {
-                do {
-                    let url = path.appendingPathComponent(name)
-                    try FileManager.default.removeItem(at: url)
-                } catch {
-                    print("Failed to remove data at URL")
-                }
-            }
-            videoData = [:]
+            clearMediaItems()
             
             for selectedItem in selectedItems {
                 var selectedFileData: Data? = nil
@@ -126,7 +138,7 @@ struct NewPostView: View {
                         // Bypass saving to the cloud and locally store
                         // Note: will need to save to cloud and cache when
                         //       post is confirmed
-                        let name = getCurrentDateTime() + ".mp4"
+                        let name = getCurrentDateTime()
                         guard let url = videoStore.saveVideo(data: data, email: email, name: name) else { return }
                         let video = VideoPlayer(player: AVPlayer(url: url))
                         
@@ -139,7 +151,7 @@ struct NewPostView: View {
                         guard let uiImage = UIImage(data: data) else { return }
                         let image = Image(uiImage: uiImage).resizable()
                         
-                        let name = getCurrentDateTime() + ".jpg"
+                        let name = getCurrentDateTime()
                         imageData[name] = data
                         mediaItems.append(PostMediaItem(data: PostMedia.image(image)))
                     }

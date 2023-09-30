@@ -60,6 +60,7 @@ final class VideoStore {
         let url = path.appendingPathComponent("\(email.lowercased())-\(name).mp4")
         
         do {
+            print("Saving video to URL: \(url.absoluteString)")
             try data.write(to: url)
             return url
         } catch {

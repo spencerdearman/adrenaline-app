@@ -11,7 +11,7 @@ import SwiftUI
 
 func getCurrentDateTime() -> String {
     let df = DateFormatter()
-    df.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    df.dateFormat = "yyyy-MM-dd--HH:mm:ss"
     
     return df.string(from: Date.now)
 }
@@ -23,33 +23,31 @@ func createPost(user: NewUser, title: String, description: String,
                 videosData: [String: Data], imagesData: [String: Data]) async throws -> Post {
     var videos: [Video]? = nil
     var images: [NewImage]? = nil
-    let email = user.email
+    let email = user.email.lowercased()
     let leadingLink = "https://adrenalinexxxxx153503-main.s3.amazonaws.com/public"
     
     let postId = UUID().uuidString
     
     do {
         for (name, data) in videosData {
-            let task = Amplify.Storage.uploadData(key: "videos/\(name)",
-                                                  data: data)
+            let task = Amplify.Storage.uploadData(key: "videos/\(email)/\(name).mp4", data: data)
             
             let _ = try await task.value
             print("Video \(name) uploaded")
             
-            let link = "\(leadingLink)/videos/\(email.replacingOccurrences(of: "@", with: "%40"))/\(name)"
+            let link = "\(leadingLink)/videos/\(email.replacingOccurrences(of: "@", with: "%40"))/\(name).mp4"
             
             if videos == nil { videos = [] }
             videos?.append(Video(link: link, uploadDate: .now(), postID: postId))
         }
         
         for (name, data) in imagesData {
-            let task = Amplify.Storage.uploadData(key: "images/\(name)",
-                                                  data: data)
+            let task = Amplify.Storage.uploadData(key: "images/\(email)/\(name).jpg", data: data)
             
             let _ = try await task.value
             print("Image \(name) uploaded")
             
-            let link = "\(leadingLink)/images/\(email.replacingOccurrences(of: "@", with: "%40"))/\(name)"
+            let link = "\(leadingLink)/images/\(email.replacingOccurrences(of: "@", with: "%40"))/\(name).jpg"
             
             if images == nil { images = [] }
             images?.append(NewImage(link: link, uploadDate: .now(), postID: postId))
@@ -58,7 +56,12 @@ func createPost(user: NewUser, title: String, description: String,
         let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)
         let videosList = videos == nil ? nil : List<Video>.init(elements: videos!)
         
-        return Post(id: postId, title: "", description: "", creationDate: .now(),
+        try await imagesList?.fetch()
+        try await videosList?.fetch()
+        print("Images:", imagesList?.elements)
+        print("Videos:", videosList?.elements)
+        
+        return Post(id: postId, title: title, description: description, creationDate: .now(),
                     images: imagesList, videos: videosList, newuserID: user.id)
         
     }
@@ -70,6 +73,7 @@ func createPost(user: NewUser, title: String, description: String,
 //       saving the Post itself
 func savePost(user: NewUser, post: Post) async throws -> (NewUser, Post) {
     if let videos = post.videos {
+        print("videos not nil")
         try await videos.fetch()
         for video in videos {
             let _ = try await saveToDataStore(object: video)
@@ -77,6 +81,7 @@ func savePost(user: NewUser, post: Post) async throws -> (NewUser, Post) {
     }
     
     if let images = post.images {
+        print("images not nil")
         try await images.fetch()
         for image in images {
             let _ = try await saveToDataStore(object: image)
