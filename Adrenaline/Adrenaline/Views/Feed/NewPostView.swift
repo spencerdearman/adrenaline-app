@@ -138,7 +138,7 @@ struct NewPostView: View {
                         // Bypass saving to the cloud and locally store
                         // Note: will need to save to cloud and cache when
                         //       post is confirmed
-                        let name = getCurrentDateTime()
+                        let name = UUID().uuidString
                         guard let url = videoStore.saveVideo(data: data, email: email, name: name) else { return }
                         let video = VideoPlayer(player: AVPlayer(url: url))
                         
@@ -151,7 +151,7 @@ struct NewPostView: View {
                         guard let uiImage = UIImage(data: data) else { return }
                         let image = Image(uiImage: uiImage).resizable()
                         
-                        let name = getCurrentDateTime()
+                        let name = UUID().uuidString
                         imageData[name] = data
                         mediaItems.append(PostMediaItem(data: PostMedia.image(image)))
                     }

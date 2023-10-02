@@ -35,7 +35,7 @@ func createPost(user: NewUser, title: String, description: String,
             print("Video \(name) uploaded")
             
             if videos == nil { videos = [] }
-            videos?.append(Video(s3key: name, uploadDate: .now(), postID: postId))
+            videos?.append(Video(id: name, s3key: name, uploadDate: .now(), postID: postId))
         }
         
         for (name, data) in imagesData {
@@ -45,7 +45,7 @@ func createPost(user: NewUser, title: String, description: String,
             print("Image \(name) uploaded")
             
             if images == nil { images = [] }
-            images?.append(NewImage(s3key: name, uploadDate: .now(), postID: postId))
+            images?.append(NewImage(id: name, s3key: name, uploadDate: .now(), postID: postId))
         }
         
         let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)
