@@ -83,19 +83,19 @@ struct ProfileContent: View {
         Group {
             switch selectedPage {
                 case 0:
-                    MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false)
+                    AnyView(MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false))
                 case 1:
-                    MetricsView(graphUser: graphUser)
+                    AnyView(MetricsView(graphUser: graphUser))
                 case 2:
-                    RecruitingView()
+                    AnyView(RecruitingView())
                 case 3:
-                    StatisticsView(diveMeetsID: graphUser.diveMeetsID)
+                    AnyView(StatisticsView(diveMeetsID: graphUser.diveMeetsID))
                 case 4:
-                    VideosView()
+                    AnyView(VideosView())
                 case 5:
-                    FavoritesView(graphUser: graphUser)
+                    AnyView(FavoritesView(graphUser: graphUser))
                 default:
-                    MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false)
+                    AnyView(MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false))
             }
         }
         .offset(y: -screenHeight * 0.05)
@@ -155,8 +155,85 @@ struct RecruitingView: View {
 }
 
 struct VideosView: View {
+    @EnvironmentObject private var appLogic: AppLogic
+    @Environment(\.videoStore) private var videoStore
+    @State private var videos: [VideoItem] = []
+    @State private var isDownloading: Bool = false
+    @AppStorage("email") private var email: String = ""
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
     var body: some View {
-        Text("Welcome to the Videos View")
+        VStack {
+            if !videos.isEmpty {
+                let size: CGFloat = 125
+                ScrollView(showsIndicators: false) {
+                    LazyVGrid(columns: [
+                        GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
+                            ForEach(videos.indices, id: \.self) { index in
+                                videos[index].view
+                                    .frame(width: size, height: size)
+                                    .onAppear {
+                                        videos[index].player?.seek(to: .zero)
+                                    }
+                            }
+                        }
+                }
+            } else {
+                Spacer()
+            }
+            
+            if isDownloading {
+                BackgroundBubble(vPadding: 20, hPadding: 40) {
+                    VStack {
+                        Text("Getting videos...")
+                        ProgressView()
+                    }
+                }
+                
+                Spacer()
+                Spacer()
+                Spacer()
+                Spacer()
+                Spacer()
+            }
+        }
+        .padding([.leading, .trailing, .bottom])
+        .onAppear {
+            if videos.isEmpty, email != "" {
+                Task {
+                    guard let listItems = await videoStore.getVideoItemsByEmail(email: email) else {
+                        return
+                    }
+                    
+                    isDownloading = true
+                    
+                    videos = await withTaskGroup(of: (Int, VideoItem?).self,
+                                                 returning: [VideoItem].self) { [self] group in
+                        // Associates each work item with an Int to achieve original order later
+                        for item in listItems.enumerated().map({ ($0.0, $0.1) }) {
+                            group.addTask {
+                                await (item.0, videoStore.downloadVideoItem(item: item.1,
+                                                                            email: email))
+                            }
+                        }
+                        
+                        var results: [(Int, VideoItem)] = []
+                        
+                        for await result in group {
+                            if result.1 != nil {
+                                results.append((result.0, result.1!))
+                            }
+                        }
+                        
+                        return results.sorted(by: { $0.0 < $1.0 }).map { $0.1 }
+                    }
+                    
+                    isDownloading = false
+                }
+            }
+        }
     }
 }
 
@@ -224,8 +301,8 @@ struct StatisticsView: View {
                     Picker("", selection: $categorySelection) {
                         ForEach([0, 1, 2, 3, 4, 5, 6], id: \.self) { elem in
                             if elem == 0 {
-                                    Text(String("All"))
-                                .tag(elem)
+                                Text(String("All"))
+                                    .tag(elem)
                             } else {
                                 HStack {
                                     Image(systemName: "\(elem).circle")
@@ -296,7 +373,7 @@ struct StatisticsView: View {
                         }
                     }
                 }
-        }
+            }
         }
         .onChange(of: categorySelection) { _ in
             updateFilteredStats()
