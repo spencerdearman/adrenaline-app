@@ -9,7 +9,7 @@ import SwiftUI
 import AVKit
 
 enum PostMedia {
-    case video(VideoPlayer<EmptyView>)
+    case video(VideoItem)
     case image(Image)
 }
 
@@ -19,7 +19,7 @@ struct PostMediaItem: Identifiable {
     var data: PostMedia
     var view: any View {
         if case let .video(v) = self.data {
-            v
+            v.view
         } else if case let .image(i) = self.data {
             i
         } else {

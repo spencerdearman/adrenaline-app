@@ -61,6 +61,11 @@ struct NewPostView: View {
                             ForEach(mediaItems) { item in
                                 AnyView(item.view
                                     .frame(width: size, height: size))
+                                .onAppear {
+                                    if case let .video(v) = item.data {
+                                        v.player?.seek(to: .zero)
+                                    }
+                                }
                             }
                         }
                     }
@@ -140,7 +145,7 @@ struct NewPostView: View {
                         //       post is confirmed
                         let name = UUID().uuidString
                         guard let url = videoStore.saveVideo(data: data, email: email, name: name) else { return }
-                        let video = VideoPlayer(player: AVPlayer(url: url))
+                        let video = VideoItem(key: name, player: AVPlayer(url: url))
                         
                         // Store Data and URL where data is saved in case it
                         // needs deleted
