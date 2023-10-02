@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Amplify
 import AVKit
+import AWSS3StoragePlugin
 
 struct VideoItem {
     var key: String?
@@ -114,7 +115,6 @@ final class VideoStore {
     }
     
     // asynchronously download the video
-    @MainActor // to be sure to execute the UI update on the main thread
     private func asyncDownloadVideo(email: String, name: String) async -> VideoItem {
         
         // trigger asynchronous download
@@ -171,36 +171,54 @@ final class VideoStore {
         return nil
     }
     
-    func downloadVideosByEmail(email: String) async -> [VideoItem] {
-        var result: [VideoItem] = []
-        do {
+    // Gets all of the S3 storage items to download for a given email, sorted
+    // descending by lastModified
+    func getVideoItemsByEmail(email: String) async -> [StorageListResult.Item]? {
+        do{
             let options = StorageListRequest.Options(path: "videos/\(email)")
             let listResult = try await Amplify.Storage.list(options: options).items
             
-            for item in listResult.sorted(by: {
+            return listResult.sorted(by: {
                 if let first = $0.lastModified, let second = $1.lastModified, first > second {
                     return true
                 }
                 
                 return false
-            }) {
-                guard let name = item.key.components(separatedBy: "/").last else { continue }
-                let key: String
-                if name.suffix(4).starts(with: ".") {
-                    key = String(name.dropLast(4))
-                } else {
-                    key = name
-                }
-                
-                result.append(await self.video(email: email, name: key))
-            }
-            
-            return result
+            })
         } catch {
-            print("Failed to download videos by email")
+            print("Failed to get VideoItems from S3")
         }
         
-        return []
+        return nil
+    }
+    
+    // Downloads an individual item from S3 and returns it; can be used in tandem with
+    // getVideoItemsByEmail() to get the list of items beforehand and get results as they finish
+    func downloadVideoItem(item: StorageListResult.Item, email: String) async -> VideoItem? {
+        guard let name = item.key.components(separatedBy: "/").last else { return nil }
+        let key: String
+        if name.suffix(4).starts(with: ".") {
+            key = String(name.dropLast(4))
+        } else {
+            key = name
+        }
+        
+        return await self.video(email: email, name: key)
+    }
+    
+    // Gets all videos from S3 for the given email
+    func downloadVideosByEmail(email: String) async -> [VideoItem] {
+        var result: [VideoItem] = []
+        
+        guard let listItems = await getVideoItemsByEmail(email: email) else { return [] }
+        
+        for item in listItems {
+            if let video = await downloadVideoItem(item: item, email: email) {
+                result.append(video)
+            }
+        }
+        
+        return result
     }
     
     // return the placeholder video from the cache
