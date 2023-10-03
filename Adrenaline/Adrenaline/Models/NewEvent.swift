@@ -10,6 +10,7 @@ public struct NewEvent: Model {
   public var link: String
   public var numEntries: Int
   public var dives: List<Dive>?
+  public var newmeetID: String
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
@@ -19,7 +20,8 @@ public struct NewEvent: Model {
       date: Temporal.Date,
       link: String,
       numEntries: Int,
-      dives: List<Dive> = []) {
+      dives: List<Dive> = [],
+      newmeetID: String) {
     self.init(id: id,
       meet: meet,
       name: name,
@@ -27,6 +29,7 @@ public struct NewEvent: Model {
       link: link,
       numEntries: numEntries,
       dives: dives,
+      newmeetID: newmeetID,
       createdAt: nil,
       updatedAt: nil)
   }
@@ -37,6 +40,7 @@ public struct NewEvent: Model {
       link: String,
       numEntries: Int,
       dives: List<Dive> = [],
+      newmeetID: String,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
@@ -46,6 +50,7 @@ public struct NewEvent: Model {
       self.link = link
       self.numEntries = numEntries
       self.dives = dives
+      self.newmeetID = newmeetID
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

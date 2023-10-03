@@ -12,6 +12,7 @@ extension NewEvent {
     case link
     case numEntries
     case dives
+    case newmeetID
     case createdAt
     case updatedAt
   }
@@ -30,6 +31,7 @@ extension NewEvent {
     model.syncPluralName = "NewEvents"
     
     model.attributes(
+      .index(fields: ["newmeetID"], name: "byNewMeet"),
       .primaryKey(fields: [newEvent.id])
     )
     
@@ -40,7 +42,8 @@ extension NewEvent {
       .field(newEvent.date, is: .required, ofType: .date),
       .field(newEvent.link, is: .required, ofType: .string),
       .field(newEvent.numEntries, is: .required, ofType: .int),
-      .hasMany(newEvent.dives, is: .optional, ofType: Dive.self, associatedWith: Dive.keys.event),
+      .hasMany(newEvent.dives, is: .optional, ofType: Dive.self, associatedWith: Dive.keys.neweventID),
+      .field(newEvent.newmeetID, is: .required, ofType: .string),
       .field(newEvent.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newEvent.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

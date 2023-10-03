@@ -50,7 +50,7 @@ extension NewMeet {
       .field(newMeet.country, is: .required, ofType: .string),
       .field(newMeet.link, is: .required, ofType: .string),
       .field(newMeet.meetType, is: .required, ofType: .int),
-      .hasMany(newMeet.events, is: .optional, ofType: NewEvent.self, associatedWith: NewEvent.keys.meet),
+      .hasMany(newMeet.events, is: .optional, ofType: NewEvent.self, associatedWith: NewEvent.keys.newmeetID),
       .field(newMeet.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newMeet.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

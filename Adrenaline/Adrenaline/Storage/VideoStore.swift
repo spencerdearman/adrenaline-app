@@ -9,12 +9,37 @@ import Foundation
 import SwiftUI
 import Amplify
 import AVKit
+import AWSS3StoragePlugin
+
+struct VideoItem {
+    var key: String?
+    var player: AVPlayer?
+    
+    var view: VideoPlayer<EmptyView> {
+        VideoPlayer(player: player)
+    }
+    
+    // Key is formatted as videos/email/videoName
+    var email: String? {
+        guard let key = key else { return nil }
+        let comps = key.components(separatedBy: "/")
+        if comps.count < 2 { return nil }
+        return comps[1]
+    }
+    
+    var name: String? {
+        guard let key = key else { return nil }
+        let comps = key.components(separatedBy: "/")
+        if comps.count < 3 { return nil }
+        return comps[2]
+    }
+}
 
 // manage image cache and download
 final class VideoStore {
     
     // our video cache
-    private var videos: [String: VideoPlayer<EmptyView>]
+    private var videos: [String: VideoItem]
     private let placeholderName = "PLACEHOLDER"
     private let imageScale = 2
     
@@ -26,14 +51,16 @@ final class VideoStore {
         // initially empty cache
         videos = [:]
         
+        let player = AVPlayer()
+        
         // create a place holder image
-        videos[self.placeholderName] = VideoPlayer(player: AVPlayer())
+        videos[self.placeholderName] = VideoItem(key: placeholderName, player: player)
     }
     
     // retrieve a video.
     // first check the cache, otherwise trigger an asynchronous download and return a placeholder
-    func video(email: String, name: String) async -> VideoPlayer<EmptyView> {
-        var result : VideoPlayer<EmptyView>?
+    func video(email: String, name: String) async -> VideoItem {
+        var result : VideoItem
         let key = "\(email.lowercased())/\(name)"
         
         if let vid = videos[key] {
@@ -49,10 +76,11 @@ final class VideoStore {
             result = vid
             
         }
-        return result!
+        
+        return result
     }
     
-    private func saveVideo(data: Data, email: String, name: String) -> URL? {
+    func saveVideo(data: Data, email: String, name: String) -> URL? {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         let path = paths[0]
         
@@ -60,6 +88,7 @@ final class VideoStore {
         let url = path.appendingPathComponent("\(email.lowercased())-\(name).mp4")
         
         do {
+            print("Saving video to URL: \(url.absoluteString)")
             try data.write(to: url)
             return url
         } catch {
@@ -70,14 +99,14 @@ final class VideoStore {
     }
     
     private func localStoreVideo(data: Data, email: String,
-                                 name: String) -> VideoPlayer<EmptyView> {
+                                 name: String) -> VideoItem {
         // Save video file locally
         guard let url = saveVideo(data: data, email: email, name: name) else {
             return self.placeholder()
         }
         
         let player = AVPlayer(url: url)
-        let vid = VideoPlayer(player: player)
+        let vid = VideoItem(key: "videos/\(email)/\(name)", player: player)
         
         // store video in cache
         addVideo(email: email, name: name, video: vid)
@@ -86,8 +115,7 @@ final class VideoStore {
     }
     
     // asynchronously download the video
-    @MainActor // to be sure to execute the UI update on the main thread
-    private func asyncDownloadVideo(email: String, name: String) async -> VideoPlayer<EmptyView> {
+    private func asyncDownloadVideo(email: String, name: String) async -> VideoItem {
         
         // trigger asynchronous download
         let task = Task {
@@ -120,22 +148,16 @@ final class VideoStore {
         return Data() // could return a default video
     }
     
-    func uploadVideo(data: Data, email: String, name: String) async -> VideoPlayer<EmptyView>? {
+    func uploadVideo(data: Data, email: String, name: String) async -> VideoItem? {
         let key = "\(email.lowercased())/\(name).mp4"
         print("Uploading video: \(key)")
         
         do {
             
             let task = Amplify.Storage.uploadData(key: "videos/\(key)", data: data)
-            //            Task {
-            //                for await progress in await task.progress {
-            //                    print("Progress: \(progress)")
-            //                }
-            //            }
             
             let _ = try await task.value
             print("Video \(key) uploaded")
-            //            print(value)
             
             // Locally store video to avoid downloading from S3
             return localStoreVideo(data: data, email: email.lowercased(), name: name)
@@ -149,12 +171,58 @@ final class VideoStore {
         return nil
     }
     
-    func downloadVideosByEmail(email: String) -> [VideoPlayer<EmptyView>] {
-        return []
+    // Gets all of the S3 storage items to download for a given email, sorted
+    // descending by lastModified
+    func getVideoItemsByEmail(email: String) async -> [StorageListResult.Item]? {
+        do{
+            let options = StorageListRequest.Options(path: "videos/\(email)")
+            let listResult = try await Amplify.Storage.list(options: options).items
+            
+            return listResult.sorted(by: {
+                if let first = $0.lastModified, let second = $1.lastModified, first > second {
+                    return true
+                }
+                
+                return false
+            })
+        } catch {
+            print("Failed to get VideoItems from S3")
+        }
+        
+        return nil
+    }
+    
+    // Downloads an individual item from S3 and returns it; can be used in tandem with
+    // getVideoItemsByEmail() to get the list of items beforehand and get results as they finish
+    func downloadVideoItem(item: StorageListResult.Item, email: String) async -> VideoItem? {
+        guard let name = item.key.components(separatedBy: "/").last else { return nil }
+        let key: String
+        if name.suffix(4).starts(with: ".") {
+            key = String(name.dropLast(4))
+        } else {
+            key = name
+        }
+        
+        return await self.video(email: email, name: key)
+    }
+    
+    // Gets all videos from S3 for the given email
+    func downloadVideosByEmail(email: String) async -> [VideoItem] {
+        var result: [VideoItem] = []
+        
+        guard let listItems = await getVideoItemsByEmail(email: email) else { return [] }
+        
+        for item in listItems {
+            if let video = await downloadVideoItem(item: item, email: email) {
+                result.append(video)
+            }
+        }
+        
+        return result
     }
     
     // return the placeholder video from the cache
-    func placeholder() -> VideoPlayer<EmptyView> {
+    func placeholder() -> VideoItem {
         if let vid = videos[self.placeholderName] {
             return vid
         } else {
@@ -163,8 +231,13 @@ final class VideoStore {
     }
     
     // add video to the cache
-    func addVideo(email: String, name: String, video : VideoPlayer<EmptyView>) {
+    func addVideo(email: String, name: String, video : VideoItem) {
         videos["\(email.lowercased())/\(name)"] = video
+    }
+    
+    // remove video from the cache
+    func removeVideo(email: String, name: String) {
+        videos.removeValue(forKey: "\(email.lowercased())/\(name)")
     }
 }
 

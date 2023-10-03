@@ -15,6 +15,8 @@ extension Dive {
     case dd
     case totalScore
     case scores
+    case newathleteID
+    case neweventID
     case createdAt
     case updatedAt
   }
@@ -33,6 +35,8 @@ extension Dive {
     model.syncPluralName = "Dives"
     
     model.attributes(
+      .index(fields: ["newathleteID"], name: "byNewAthlete"),
+      .index(fields: ["neweventID"], name: "byNewEvent"),
       .primaryKey(fields: [dive.id])
     )
     
@@ -46,7 +50,9 @@ extension Dive {
       .field(dive.netScore, is: .required, ofType: .double),
       .field(dive.dd, is: .required, ofType: .double),
       .field(dive.totalScore, is: .required, ofType: .double),
-      .hasMany(dive.scores, is: .optional, ofType: JudgeScore.self, associatedWith: JudgeScore.keys.dive),
+      .hasMany(dive.scores, is: .optional, ofType: JudgeScore.self, associatedWith: JudgeScore.keys.diveID),
+      .field(dive.newathleteID, is: .required, ofType: .string),
+      .field(dive.neweventID, is: .required, ofType: .string),
       .field(dive.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(dive.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

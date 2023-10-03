@@ -186,9 +186,6 @@ func updateAthleteField(user: NewUser, key: String, value: Any) async throws {
         case "dives":
                 updatedAthlete.dives = value as? List<Dive> ?? []
             break
-        case "videos":
-            updatedAthlete.videos = value as? List<Video> ?? []
-            break
         default:
             print("Invalid key in NewAthlete")
             return
@@ -210,6 +207,16 @@ func deleteUserByEmail(email: String) async throws {
             print("Deleted user: \(user.email)")
         }
     }
+}
+
+func getUserByEmail(email: String) async throws -> NewUser? {
+    let usersPredicate = NewUser.keys.email == email
+    let users = await queryAWSUsers(where: usersPredicate)
+    if users.count >= 1 {
+        return users[0]
+    }
+    
+    return nil
 }
 
 func clearLocalDataStore() async throws {

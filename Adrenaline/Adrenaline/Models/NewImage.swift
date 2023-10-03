@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-public struct Video: Model {
+public struct NewImage: Model {
   public let id: String
   public var s3key: String
   public var uploadDate: Temporal.DateTime

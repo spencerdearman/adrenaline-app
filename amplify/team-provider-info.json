@@ -1,14 +1,14 @@
 {
-  "logan": {
+  "main": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-adrenaline-logan-202623-authRole",
-      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-logan-202623-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-logan-202623-authRole",
+      "AuthRoleName": "amplify-adrenaline-main-153503-authRole",
+      "UnauthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-main-153503-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::861465534182:role/amplify-adrenaline-main-153503-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-adrenaline-logan-202623-deployment",
-      "UnauthRoleName": "amplify-adrenaline-logan-202623-unauthRole",
-      "StackName": "amplify-adrenaline-logan-202623",
-      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-logan-202623/54572640-41f3-11ee-874d-12d457cbab57",
+      "DeploymentBucketName": "amplify-adrenaline-main-153503-deployment",
+      "UnauthRoleName": "amplify-adrenaline-main-153503-unauthRole",
+      "StackName": "amplify-adrenaline-main-153503",
+      "StackId": "arn:aws:cloudformation:us-east-1:861465534182:stack/amplify-adrenaline-main-153503/84fcecc0-3a10-11ee-b5db-0a91dd24a88b",
       "AmplifyAppId": "d28uzwoi4f7qhz"
     },
     "categories": {

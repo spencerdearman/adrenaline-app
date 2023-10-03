@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/amplify-swift",
       "state" : {
-        "revision" : "51969271f4ea87a5a5da7199b3a577b1cc8970ba",
-        "version" : "2.15.5"
+        "revision" : "3c03eb7a3a1379de2d9f54a49bef33b53194f574",
+        "version" : "2.15.2"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/amplify-ui-swift-authenticator",
       "state" : {
-        "revision" : "7b068bb8e9b9c2f40a5f32b1266b58e220b4b1a6",
-        "version" : "1.0.5"
+        "revision" : "e6cca20a23b4e6d1834a8df35273328ada6a80a9",
+        "version" : "1.0.3"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/aws-amplify/aws-appsync-realtime-client-ios.git",
       "state" : {
-        "revision" : "c7ec93dcbbcd8abc90c74203937f207a7fcaa611",
-        "version" : "3.1.1"
+        "revision" : "b036e83716789c13a3480eeb292b70caa54114f2",
+        "version" : "3.1.0"
       }
     },
     {

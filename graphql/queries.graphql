@@ -1,5 +1,354 @@
 # this is an auto generated file. This will be overwritten
 
+query GetPost($id: ID!) {
+  getPost(id: $id) {
+    id
+    title
+    description
+    creationDate
+    images {
+      nextToken
+      startedAt
+      __typename
+    }
+    videos {
+      nextToken
+      startedAt
+      __typename
+    }
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListPosts(
+  $filter: ModelPostFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      title
+      description
+      creationDate
+      newuserID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncPosts(
+  $filter: ModelPostFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncPosts(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      title
+      description
+      creationDate
+      newuserID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query PostsByNewuserID(
+  $newuserID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelPostFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  postsByNewuserID(
+    newuserID: $newuserID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      title
+      description
+      creationDate
+      newuserID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetNewImage($id: ID!) {
+  getNewImage(id: $id) {
+    id
+    s3key
+    uploadDate
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListNewImages(
+  $filter: ModelNewImageFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listNewImages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      s3key
+      uploadDate
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncNewImages(
+  $filter: ModelNewImageFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncNewImages(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      s3key
+      uploadDate
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query NewImagesByPostID(
+  $postID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelNewImageFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  newImagesByPostID(
+    postID: $postID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      s3key
+      uploadDate
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetMessageNewUser($id: ID!) {
+  getMessageNewUser(id: $id) {
+    id
+    isSender
+    newuserID
+    messageID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListMessageNewUsers(
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listMessageNewUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncMessageNewUsers(
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncMessageNewUsers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query MessageNewUsersByNewuserID(
+  $newuserID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  messageNewUsersByNewuserID(
+    newuserID: $newuserID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query MessageNewUsersByMessageID(
+  $messageID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelMessageNewUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  messageNewUsersByMessageID(
+    messageID: $messageID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      isSender
+      newuserID
+      messageID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
 query GetNewUser($id: ID!) {
   getNewUser(id: $id) {
     id
@@ -11,45 +360,6 @@ query GetNewUser($id: ID!) {
     accountType
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -62,56 +372,18 @@ query GetNewUser($id: ID!) {
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -122,17 +394,16 @@ query GetNewUser($id: ID!) {
       __typename
     }
     followed {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
+      nextToken
+      startedAt
+      __typename
+    }
+    MessageNewUsers {
+      nextToken
+      startedAt
+      __typename
+    }
+    posts {
       nextToken
       startedAt
       __typename
@@ -162,46 +433,6 @@ query ListNewUsers(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -237,46 +468,6 @@ query SyncNewUsers(
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -303,46 +494,6 @@ query GetNewAthlete($id: ID!) {
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -355,22 +506,6 @@ query GetNewAthlete($id: ID!) {
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -383,11 +518,6 @@ query GetNewAthlete($id: ID!) {
       id
       name
       imageLink
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -408,53 +538,17 @@ query GetNewAthlete($id: ID!) {
     platformRating
     totalRating
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
-    videos {
-      items {
-        id
-        link
-        title
-        description
-        uploadDate
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteVideosId
-        __typename
-      }
-      nextToken
-      startedAt
-      __typename
-    }
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newTeamAthletesId
-    collegeAthletesId
     newAthleteUserId
     __typename
   }
@@ -468,45 +562,6 @@ query ListNewAthletes(
   listNewAthletes(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -519,23 +574,13 @@ query ListNewAthletes(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
@@ -559,45 +604,6 @@ query SyncNewAthletes(
   ) {
     items {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -610,23 +616,101 @@ query SyncNewAthletes(
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
+      newAthleteUserId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query NewAthletesByCollegeID(
+  $collegeID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelNewAthleteFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  newAthletesByCollegeID(
+    collegeID: $collegeID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteUserId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query NewAthletesByNewteamID(
+  $newteamID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelNewAthleteFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  newAthletesByNewteamID(
+    newteamID: $newteamID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       newAthleteUserId
       __typename
     }
@@ -639,89 +723,14 @@ query SyncNewAthletes(
 query GetVideo($id: ID!) {
   getVideo(id: $id) {
     id
-    athlete {
-      id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
-      heightFeet
-      heightInches
-      weight
-      weightUnit
-      gender
-      age
-      graduationYear
-      highSchool
-      hometown
-      springboardRating
-      platformRating
-      totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
-      newAthleteUserId
-      __typename
-    }
-    link
-    title
-    description
+    s3key
     uploadDate
+    postID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteVideosId
     __typename
   }
 }
@@ -734,40 +743,14 @@ query ListVideos(
   listVideos(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      link
-      title
-      description
+      s3key
       uploadDate
+      postID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteVideosId
       __typename
     }
     nextToken
@@ -790,40 +773,46 @@ query SyncVideos(
   ) {
     items {
       id
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      link
-      title
-      description
+      s3key
       uploadDate
+      postID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteVideosId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query VideosByPostID(
+  $postID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelVideoFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  videosByPostID(
+    postID: $postID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      s3key
+      uploadDate
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
     nextToken
@@ -843,46 +832,6 @@ query GetCoachUser($id: ID!) {
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -895,22 +844,6 @@ query GetCoachUser($id: ID!) {
     team {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -938,34 +871,6 @@ query ListCoachUsers(
   listCoachUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -995,34 +900,6 @@ query SyncCoachUsers(
   ) {
     items {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1043,17 +920,6 @@ query GetNewFollowed($id: ID!) {
     id
     email
     users {
-      items {
-        id
-        newUserId
-        newFollowedId
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1076,11 +942,6 @@ query ListNewFolloweds(
     items {
       id
       email
-      users {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1109,11 +970,6 @@ query SyncNewFolloweds(
     items {
       id
       email
-      users {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1133,34 +989,6 @@ query GetNewTeam($id: ID!) {
     name
     coach {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1171,30 +999,6 @@ query GetNewTeam($id: ID!) {
       __typename
     }
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1218,22 +1022,6 @@ query ListNewTeams(
     items {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1263,22 +1051,6 @@ query SyncNewTeams(
     items {
       id
       name
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1299,30 +1071,6 @@ query GetCollege($id: ID!) {
     name
     imageLink
     athletes {
-      items {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1346,11 +1094,6 @@ query ListColleges(
       id
       name
       imageLink
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1380,11 +1123,6 @@ query SyncColleges(
       id
       name
       imageLink
-      athletes {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1412,20 +1150,6 @@ query GetNewMeet($id: ID!) {
     link
     meetType
     events {
-      items {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
       nextToken
       startedAt
       __typename
@@ -1457,11 +1181,6 @@ query ListNewMeets(
       country
       link
       meetType
-      events {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1499,11 +1218,6 @@ query SyncNewMeets(
       country
       link
       meetType
-      events {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1532,11 +1246,6 @@ query GetNewEvent($id: ID!) {
       country
       link
       meetType
-      events {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -1549,33 +1258,16 @@ query GetNewEvent($id: ID!) {
     link
     numEntries
     dives {
-      items {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newmeetID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newMeetEventsId
     __typename
   }
 }
@@ -1588,40 +1280,16 @@ query ListNewEvents(
   listNewEvents(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      meet {
-        id
-        meetID
-        name
-        organization
-        startDate
-        endDate
-        city
-        state
-        country
-        link
-        meetType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       name
       date
       link
       numEntries
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
+      newmeetID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newMeetEventsId
       __typename
     }
     nextToken
@@ -1644,40 +1312,50 @@ query SyncNewEvents(
   ) {
     items {
       id
-      meet {
-        id
-        meetID
-        name
-        organization
-        startDate
-        endDate
-        city
-        state
-        country
-        link
-        meetType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       name
       date
       link
       numEntries
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
+      newmeetID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newMeetEventsId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query NewEventsByNewmeetID(
+  $newmeetID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelNewEventFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  newEventsByNewmeetID(
+    newmeetID: $newmeetID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      name
+      date
+      link
+      numEntries
+      newmeetID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
     nextToken
@@ -1691,83 +1369,20 @@ query GetDive($id: ID!) {
     id
     event {
       id
-      meet {
-        id
-        meetID
-        name
-        organization
-        startDate
-        endDate
-        city
-        state
-        country
-        link
-        meetType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       name
       date
       link
       numEntries
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
+      newmeetID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newMeetEventsId
       __typename
     }
     athlete {
       id
-      user {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      team {
-        id
-        name
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamCoachId
-        __typename
-      }
-      college {
-        id
-        name
-        imageLink
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       heightFeet
       heightInches
       weight
@@ -1780,23 +1395,13 @@ query GetDive($id: ID!) {
       springboardRating
       platformRating
       totalRating
-      dives {
-        nextToken
-        startedAt
-        __typename
-      }
-      videos {
-        nextToken
-        startedAt
-        __typename
-      }
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newTeamAthletesId
-      collegeAthletesId
       newAthleteUserId
       __typename
     }
@@ -1807,28 +1412,17 @@ query GetDive($id: ID!) {
     dd
     totalScore
     scores {
-      items {
-        id
-        score
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        diveScoresId
-        __typename
-      }
       nextToken
       startedAt
       __typename
     }
+    newathleteID
+    neweventID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    newAthleteDivesId
-    newEventDivesId
     __typename
   }
 }
@@ -1841,62 +1435,19 @@ query ListDives(
   listDives(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      event {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       number
       name
       height
       netScore
       dd
       totalScore
-      scores {
-        nextToken
-        startedAt
-        __typename
-      }
+      newathleteID
+      neweventID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteDivesId
-      newEventDivesId
       __typename
     }
     nextToken
@@ -1919,62 +1470,93 @@ query SyncDives(
   ) {
     items {
       id
-      event {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       number
       name
       height
       netScore
       dd
       totalScore
-      scores {
-        nextToken
-        startedAt
-        __typename
-      }
+      newathleteID
+      neweventID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteDivesId
-      newEventDivesId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query DivesByNewathleteID(
+  $newathleteID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelDiveFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  divesByNewathleteID(
+    newathleteID: $newathleteID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      number
+      name
+      height
+      netScore
+      dd
+      totalScore
+      newathleteID
+      neweventID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query DivesByNeweventID(
+  $neweventID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelDiveFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  divesByNeweventID(
+    neweventID: $neweventID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      number
+      name
+      height
+      netScore
+      dd
+      totalScore
+      newathleteID
+      neweventID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
     nextToken
@@ -1988,71 +1570,28 @@ query GetJudgeScore($id: ID!) {
     id
     dive {
       id
-      event {
-        id
-        name
-        date
-        link
-        numEntries
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newMeetEventsId
-        __typename
-      }
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
       number
       name
       height
       netScore
       dd
       totalScore
-      scores {
-        nextToken
-        startedAt
-        __typename
-      }
+      newathleteID
+      neweventID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      newAthleteDivesId
-      newEventDivesId
       __typename
     }
     score
+    diveID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    diveScoresId
     __typename
   }
 }
@@ -2065,30 +1604,13 @@ query ListJudgeScores(
   listJudgeScores(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      dive {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       score
+      diveID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      diveScoresId
       __typename
     }
     nextToken
@@ -2111,30 +1633,44 @@ query SyncJudgeScores(
   ) {
     items {
       id
-      dive {
-        id
-        number
-        name
-        height
-        netScore
-        dd
-        totalScore
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newAthleteDivesId
-        newEventDivesId
-        __typename
-      }
       score
+      diveID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      diveScoresId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query JudgeScoresByDiveID(
+  $diveID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelJudgeScoreFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  judgeScoresByDiveID(
+    diveID: $diveID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      score
+      diveID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       __typename
     }
     nextToken
@@ -2146,9 +1682,13 @@ query SyncJudgeScores(
 query GetMessage($id: ID!) {
   getMessage(id: $id) {
     id
-    senderName
     body
     creationDate
+    MessageNewUsers {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -2166,7 +1706,6 @@ query ListMessages(
   listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      senderName
       body
       creationDate
       createdAt
@@ -2196,7 +1735,6 @@ query SyncMessages(
   ) {
     items {
       id
-      senderName
       body
       creationDate
       createdAt
@@ -2225,46 +1763,6 @@ query GetNewUserNewFollowed($id: ID!) {
       phone
       diveMeetsID
       accountType
-      athlete {
-        id
-        heightFeet
-        heightInches
-        weight
-        weightUnit
-        gender
-        age
-        graduationYear
-        highSchool
-        hometown
-        springboardRating
-        platformRating
-        totalRating
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newTeamAthletesId
-        collegeAthletesId
-        newAthleteUserId
-        __typename
-      }
-      coach {
-        id
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        coachUserUserId
-        coachUserTeamId
-        __typename
-      }
-      followed {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2277,11 +1775,6 @@ query GetNewUserNewFollowed($id: ID!) {
     newFollowed {
       id
       email
-      users {
-        nextToken
-        startedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2312,33 +1805,6 @@ query ListNewUserNewFolloweds(
       id
       newUserId
       newFollowedId
-      newUser {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      newFollowed {
-        id
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2368,33 +1834,6 @@ query SyncNewUserNewFolloweds(
       id
       newUserId
       newFollowedId
-      newUser {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      newFollowed {
-        id
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2426,33 +1865,6 @@ query NewUserNewFollowedsByNewUserId(
       id
       newUserId
       newFollowedId
-      newUser {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      newFollowed {
-        id
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version
@@ -2484,33 +1896,6 @@ query NewUserNewFollowedsByNewFollowedId(
       id
       newUserId
       newFollowedId
-      newUser {
-        id
-        firstName
-        lastName
-        email
-        phone
-        diveMeetsID
-        accountType
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        newUserAthleteId
-        newUserCoachId
-        __typename
-      }
-      newFollowed {
-        id
-        email
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        __typename
-      }
       createdAt
       updatedAt
       _version

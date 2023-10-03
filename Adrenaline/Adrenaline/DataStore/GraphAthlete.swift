@@ -26,7 +26,6 @@ struct GraphAthlete: Codable, Identifiable {
     var platformRating: Double?
     var totalRating: Double?
     var dives: List<Dive>?
-    var videos: List<Video>?
     var createdAt: Temporal.DateTime?
     var updatedAt: Temporal.DateTime?
 }
@@ -56,7 +55,6 @@ extension GraphAthlete {
         platformRating = from.platformRating
         totalRating = from.totalRating
         dives = from.dives
-        videos = from.videos
         createdAt = from.createdAt
         updatedAt = from.updatedAt
     }
@@ -81,7 +79,8 @@ extension NewAthlete {
                   platformRating: athlete.platformRating,
                   totalRating: athlete.totalRating,
                   dives: athlete.dives ?? [],
-                  videos: athlete.videos ?? [],
+                  collegeID: athlete.college == nil ? "" : athlete.college!.id,
+                  newteamID: athlete.team == nil ? "" : athlete.team!.id,
                   createdAt: athlete.createdAt,
                   updatedAt: athlete.updatedAt)
     }
