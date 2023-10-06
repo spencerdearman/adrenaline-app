@@ -516,6 +516,7 @@ struct NewSignupSequence: View {
                         withAnimation {
                             print("Selected Next")
                             if newUser.accountType == "Athlete" {
+                                print("Coming in here")
                                 pageIndex = 3
                             } else {
                                 pageIndex = 4
@@ -582,179 +583,182 @@ struct NewSignupSequence: View {
     }
     
     var athleteInfoForm: some View {
-        Group {
-            HStack {
-                TextField("Height (ft)", value: $heightFeet, formatter: .heightFtFormatter)
-                    .keyboardType(.numberPad)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightFeet == 0 ? Custom.error : nil))
-                    .focused($isFirstFocused)
-                    .onChange(of: heightFeet) { _ in
-                        heightFeet = heightFeet
-                    }
-                TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
-                    .keyboardType(.numberPad)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightInches == 0 ? Custom.error : nil))
-                    .focused($isFirstFocused)
-                    .onChange(of: heightInches) { _ in
-                        heightInches = heightInches
-                    }
-            }
+        Group{
             
-            HStack {
-                TextField("Weight", value: $weight, formatter: .weightFormatter)
-                    .keyboardType(.numberPad)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && weight == 0 ? Custom.error : nil))
-                    .focused($isLastFocused)
-                
-                BubbleSelectView(selection: $weightUnit)
-                    .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
-                    .scaleEffect(1.08)
-                    .onAppear {
-                        weightUnitString = weightUnit.rawValue
-                    }
-                    .onChange(of: weightUnit) { _ in
-                        weightUnitString = weightUnit.rawValue
-                    }
-            }
-            
-            HStack {
-                TextField("Age", value: $age, formatter: .ageFormatter)
-                    .keyboardType(.numberPad)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && age == 0 ? Custom.error : nil))
-                    .focused($isPhoneFocused)
-                    .onChange(of: age) { _ in
-                        age = age
-                    }
-                
-                BubbleSelectView(selection: $gender)
-                    .frame(width: textFieldWidth / 2)
-                    .scaleEffect(1.05)
-                    .onAppear {
-                        genderString = gender.rawValue
-                    }
-                    .onChange(of: gender) { _ in
-                        genderString = gender.rawValue
-                    }
-            }
-            
-            TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
-                .keyboardType(.numberPad)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && gradYear == 0 ? Custom.error : nil))
-                .focused($isFirstFocused)
-                .onChange(of: gradYear) { _ in
-                    gradYear = gradYear
-                }
-            
-            TextField("High School", text: $highSchool)
-                .keyboardType(.numberPad)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && highSchool.isEmpty ? Custom.error : nil))
-                .focused($isFirstFocused)
-                .onChange(of: highSchool) { _ in
-                    highSchool = highSchool
-                }
-            
-            TextField("Hometown", text: $hometown)
-                .keyboardType(.numberPad)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && hometown.isEmpty ? Custom.error : nil))
-                .focused($isFirstFocused)
-                .onChange(of: hometown) { _ in
-                    hometown = hometown
-                }
-            
-            Divider()
-            
-            Button {
-                withAnimation(.closeCard) {
-                    showAthleteError = false
-                }
-                Task {
-                    do {
-                        guard let savedUser = savedUser else { return }
-                        print("Printing the saved User: \(savedUser)")
-
-                        let team = NewTeam(name: "DEFAULT")
-                        let savedTeam = try await Amplify.DataStore.save(team)
-
-                        let college = College(name: "DEFAULT", imageLink: "NIL")
-                        let savedCollege = try await Amplify.DataStore.save(college)
-
-                        // Create the athlete item using the saved user, team, and college
-                        let athlete = NewAthlete(
-                            user: savedUser,
-                            team: savedTeam,
-                            college: savedCollege,
-                            heightFeet: heightFeet,
-                            heightInches: Int(heightInches),
-                            weight: weight,
-                            weightUnit: weightUnitString,
-                            gender: genderString,
-                            age: age,
-                            graduationYear: gradYear,
-                            highSchool: highSchool,
-                            hometown: hometown)
-                        
-                        // Save the athlete item
-                        let savedItem = try await Amplify.DataStore.save(athlete)
-                        withAnimation(.openCard) {
-                            athleteCreationSuccessful = true
-                        }
-                        print("Saved item: \(savedItem)")
-                    } catch let error as DataStoreError {
-                        withAnimation(.closeCard) {
-                            athleteCreationSuccessful = false
-                        }
-                        print("Error creating item: \(error)")
-                    } catch {
-                        withAnimation(.closeCard) {
-                            athleteCreationSuccessful = false
-                        }
-                        print("Unexpected error: \(error)")
-                    }
-                    withAnimation(.openCard) {
-                        if athleteAllFieldsFilled {
-                            if athleteCreationSuccessful {
-                                buttonPressed = false
-                                pageIndex = 4
-                            } else {
-                                showAthleteError = true
-                            }
-                        } else {
-                            buttonPressed = true
-                        }
-                    }
-                }
-            } label: {
-                ColorfulButton(title: "Continue")
-            }
-            
-            if showAthleteError {
-                Text("Error creating athlete profile, please check information")
-                    .foregroundColor(.primary).fontWeight(.semibold)
-            }
-            
-            Text("**Previous**")
-                .font(.footnote)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .foregroundColor(.primary.opacity(0.7))
-                .accentColor(.primary.opacity(0.7))
-                .onTapGesture {
-                    withAnimation(.openCard) {
-                        pageIndex = 2
-                    }
-                }
         }
+//        Group {
+//            HStack {
+//                TextField("Height (ft)", value: $heightFeet, formatter: .heightFtFormatter)
+//                    .keyboardType(.numberPad)
+//                    .autocapitalization(.none)
+//                    .disableAutocorrection(true)
+//                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightFeet == 0 ? Custom.error : nil))
+//                    .focused($isFirstFocused)
+//                    .onChange(of: heightFeet) { _ in
+//                        heightFeet = heightFeet
+//                    }
+//                TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
+//                    .keyboardType(.numberPad)
+//                    .autocapitalization(.none)
+//                    .disableAutocorrection(true)
+//                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightInches == 0 ? Custom.error : nil))
+//                    .focused($isFirstFocused)
+//                    .onChange(of: heightInches) { _ in
+//                        heightInches = heightInches
+//                    }
+//            }
+//            
+//            HStack {
+//                TextField("Weight", value: $weight, formatter: .weightFormatter)
+//                    .keyboardType(.numberPad)
+//                    .autocapitalization(.none)
+//                    .disableAutocorrection(true)
+//                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && weight == 0 ? Custom.error : nil))
+//                    .focused($isLastFocused)
+//                
+//                BubbleSelectView(selection: $weightUnit)
+//                    .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
+//                    .scaleEffect(1.08)
+//                    .onAppear {
+//                        weightUnitString = weightUnit.rawValue
+//                    }
+//                    .onChange(of: weightUnit) { _ in
+//                        weightUnitString = weightUnit.rawValue
+//                    }
+//            }
+//            
+//            HStack {
+//                TextField("Age", value: $age, formatter: .ageFormatter)
+//                    .keyboardType(.numberPad)
+//                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && age == 0 ? Custom.error : nil))
+//                    .focused($isPhoneFocused)
+//                    .onChange(of: age) { _ in
+//                        age = age
+//                    }
+//                
+//                BubbleSelectView(selection: $gender)
+//                    .frame(width: textFieldWidth / 2)
+//                    .scaleEffect(1.05)
+//                    .onAppear {
+//                        genderString = gender.rawValue
+//                    }
+//                    .onChange(of: gender) { _ in
+//                        genderString = gender.rawValue
+//                    }
+//            }
+//            
+//            TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
+//                .keyboardType(.numberPad)
+//                .autocapitalization(.none)
+//                .disableAutocorrection(true)
+//                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && gradYear == 0 ? Custom.error : nil))
+//                .focused($isFirstFocused)
+//                .onChange(of: gradYear) { _ in
+//                    gradYear = gradYear
+//                }
+//            
+//            TextField("High School", text: $highSchool)
+//                .keyboardType(.numberPad)
+//                .autocapitalization(.none)
+//                .disableAutocorrection(true)
+//                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && highSchool.isEmpty ? Custom.error : nil))
+//                .focused($isFirstFocused)
+//                .onChange(of: highSchool) { _ in
+//                    highSchool = highSchool
+//                }
+//            
+//            TextField("Hometown", text: $hometown)
+//                .keyboardType(.numberPad)
+//                .autocapitalization(.none)
+//                .disableAutocorrection(true)
+//                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && hometown.isEmpty ? Custom.error : nil))
+//                .focused($isFirstFocused)
+//                .onChange(of: hometown) { _ in
+//                    hometown = hometown
+//                }
+//            
+//            Divider()
+//            
+//            Button {
+//                withAnimation(.closeCard) {
+//                    showAthleteError = false
+//                }
+//                Task {
+//                    do {
+//                        guard let savedUser = savedUser else { return }
+//                        print("Printing the saved User: \(savedUser)")
+//
+//                        let team = NewTeam(name: "DEFAULT")
+//                        let savedTeam = try await Amplify.DataStore.save(team)
+//
+//                        let college = College(name: "DEFAULT", imageLink: "NIL")
+//                        let savedCollege = try await Amplify.DataStore.save(college)
+//
+//                        // Create the athlete item using the saved user, team, and college
+//                        let athlete = NewAthlete(
+//                            user: savedUser,
+//                            team: savedTeam,
+//                            college: savedCollege,
+//                            heightFeet: heightFeet,
+//                            heightInches: Int(heightInches),
+//                            weight: weight,
+//                            weightUnit: weightUnitString,
+//                            gender: genderString,
+//                            age: age,
+//                            graduationYear: gradYear,
+//                            highSchool: highSchool,
+//                            hometown: hometown)
+//                        
+//                        // Save the athlete item
+//                        let savedItem = try await Amplify.DataStore.save(athlete)
+//                        withAnimation(.openCard) {
+//                            athleteCreationSuccessful = true
+//                        }
+//                        print("Saved item: \(savedItem)")
+//                    } catch let error as DataStoreError {
+//                        withAnimation(.closeCard) {
+//                            athleteCreationSuccessful = false
+//                        }
+//                        print("Error creating item: \(error)")
+//                    } catch {
+//                        withAnimation(.closeCard) {
+//                            athleteCreationSuccessful = false
+//                        }
+//                        print("Unexpected error: \(error)")
+//                    }
+//                    withAnimation(.openCard) {
+//                        if athleteAllFieldsFilled {
+//                            if athleteCreationSuccessful {
+//                                buttonPressed = false
+//                                pageIndex = 4
+//                            } else {
+//                                showAthleteError = true
+//                            }
+//                        } else {
+//                            buttonPressed = true
+//                        }
+//                    }
+//                }
+//            } label: {
+//                ColorfulButton(title: "Continue")
+//            }
+//            
+//            if showAthleteError {
+//                Text("Error creating athlete profile, please check information")
+//                    .foregroundColor(.primary).fontWeight(.semibold)
+//            }
+//            
+//            Text("**Previous**")
+//                .font(.footnote)
+//                .frame(maxWidth: .infinity, alignment: .center)
+//                .foregroundColor(.primary.opacity(0.7))
+//                .accentColor(.primary.opacity(0.7))
+//                .onTapGesture {
+//                    withAnimation(.openCard) {
+//                        pageIndex = 2
+//                    }
+//                }
+//        }
     }
     
     var welcomeForm: some View {
