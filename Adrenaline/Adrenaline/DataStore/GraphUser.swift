@@ -8,23 +8,39 @@
 import Foundation
 import Amplify
 
-struct GraphUser: Hashable, Codable, Identifiable {
+class GraphUser: ObservableObject, Hashable, Identifiable {
     static func == (lhs: GraphUser, rhs: GraphUser) -> Bool {
         lhs.id == rhs.id
     }
     
-    var id: UUID = UUID()
-    var firstName: String
-    var lastName: String
-    var email: String
-    var phone: String?
-    var diveMeetsID: String?
-    var accountType: String
-    var followed: List<NewUserNewFollowed>?
-    var createdAt: Temporal.DateTime?
-    var updatedAt: Temporal.DateTime?
-    var athleteId: String?
-    var coachId: String?
+    init(id: UUID = UUID(), firstName: String, lastName: String, email: String, phone: String? = nil, diveMeetsID: String? = nil, accountType: String, followed: List<NewUserNewFollowed>? = nil, createdAt: Temporal.DateTime? = nil, updatedAt: Temporal.DateTime? = nil, newUserAthleteId: String? = nil, newUserCoachId: String? = nil) {
+        self.id = id
+        self.firstName = firstName
+        self.lastName = lastName
+        self.email = email
+        self.phone = phone
+        self.diveMeetsID = diveMeetsID
+        self.accountType = accountType
+        
+        self.followed = followed
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.athleteId = newUserAthleteId
+        self.coachId = newUserCoachId
+    }
+    
+    @Published var id: UUID = UUID()
+    @Published var firstName: String
+    @Published var lastName: String
+    @Published var email: String
+    @Published var phone: String?
+    @Published var diveMeetsID: String?
+    @Published var accountType: String
+    @Published var followed: List<NewUserNewFollowed>?
+    @Published var createdAt: Temporal.DateTime?
+    @Published var updatedAt: Temporal.DateTime?
+    @Published var athleteId: String?
+    @Published var coachId: String?
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -35,25 +51,24 @@ struct GraphUser: Hashable, Codable, Identifiable {
 // Added later, not generated code
 extension GraphUser {
     // construct from API Data
-    init(from : NewUser)  {
+    convenience init(from : NewUser)  {
         
         guard let i = UUID(uuidString: from.id) else {
             preconditionFailure("Can not create user, Invalid ID : \(from.id) (expected UUID)")
         }
         
-        id = i
-        firstName = from.firstName
-        lastName = from.lastName
-        email = from.email
-        phone = from.phone
-        diveMeetsID = from.diveMeetsID
-        accountType = from.accountType
-        
-        followed = from.followed
-        createdAt = from.createdAt
-        updatedAt = from.updatedAt
-        athleteId = from.newUserAthleteId
-        coachId = from.newUserCoachId
+        self.init(id:i,
+                  firstName: from.firstName,
+                  lastName: from.lastName,
+                  email: from.email,
+                  phone: from.phone,
+                  diveMeetsID: from.diveMeetsID,
+                  accountType: from.accountType,
+                  followed: from.followed,
+                  createdAt: from.createdAt,
+                  updatedAt: from.updatedAt,
+                  newUserAthleteId: from.newUserAthleteId,
+                  newUserCoachId: from.newUserCoachId)
     }
 }
 

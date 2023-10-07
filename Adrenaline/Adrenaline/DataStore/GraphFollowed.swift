@@ -8,7 +8,7 @@
 import Foundation
 import Amplify
 
-struct GraphFollowed: Hashable, Codable, Identifiable {
+struct GraphFollowed: Hashable, Identifiable {
     var id: UUID = UUID()
     var email: String
     var users: [GraphUserGraphFollowed]?

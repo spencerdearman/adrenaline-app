@@ -79,8 +79,6 @@ extension NewAthlete {
                   platformRating: athlete.platformRating,
                   totalRating: athlete.totalRating,
                   dives: athlete.dives ?? [],
-                  collegeID: athlete.college == nil ? "" : athlete.college!.id,
-                  newteamID: athlete.team == nil ? "" : athlete.team!.id,
                   createdAt: athlete.createdAt,
                   updatedAt: athlete.updatedAt)
     }

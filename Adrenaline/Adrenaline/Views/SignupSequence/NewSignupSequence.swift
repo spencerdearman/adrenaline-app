@@ -63,8 +63,8 @@ struct NewSignupSequence: View {
     
     // User States
     @State var savedUser: NewUser? = nil
-    @State var newUser: GraphUser = GraphUser(firstName: "", lastName: "",
-                                              email: "", accountType: "")
+    @StateObject var newUser: GraphUser = GraphUser(firstName: "", lastName: "",
+                                              email: "", accountType: "Athlete")
     
     // General States
     @State var buttonPressed: Bool = false
@@ -294,7 +294,7 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Coach"
-                newUser.accountType = "Coach"
+                newUser.accountType = accountType
             } label: {
                 ZStack {
                     Rectangle()
@@ -320,7 +320,7 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Spectator"
-                newUser.accountType = "Spectator"
+                newUser.accountType = accountType
             } label: {
                 ZStack {
                     Rectangle()
@@ -371,7 +371,6 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && firstName.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .onChange(of: firstName) { _ in
-                    firstName = firstName
                     newUser.firstName = firstName
                 }
             
@@ -381,7 +380,6 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && lastName.isEmpty ? Custom.error : nil))
                 .focused($isLastFocused)
                 .onChange(of: lastName) { _ in
-                    lastName = lastName
                     newUser.lastName = lastName
                 }
             
@@ -603,7 +601,6 @@ struct NewSignupSequence: View {
                         heightInches = heightInches
                     }
             }
-            
             HStack {
                 TextField("Weight", value: $weight, formatter: .weightFormatter)
                     .keyboardType(.numberPad)
@@ -622,7 +619,6 @@ struct NewSignupSequence: View {
                         weightUnitString = weightUnit.rawValue
                     }
             }
-            
             HStack {
                 TextField("Age", value: $age, formatter: .ageFormatter)
                     .keyboardType(.numberPad)
@@ -642,7 +638,6 @@ struct NewSignupSequence: View {
                         genderString = gender.rawValue
                     }
             }
-            
             TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
@@ -652,7 +647,6 @@ struct NewSignupSequence: View {
                 .onChange(of: gradYear) { _ in
                     gradYear = gradYear
                 }
-            
             TextField("High School", text: $highSchool)
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
@@ -662,7 +656,6 @@ struct NewSignupSequence: View {
                 .onChange(of: highSchool) { _ in
                     highSchool = highSchool
                 }
-            
             TextField("Hometown", text: $hometown)
                 .keyboardType(.numberPad)
                 .autocapitalization(.none)
@@ -672,8 +665,8 @@ struct NewSignupSequence: View {
                 .onChange(of: hometown) { _ in
                     hometown = hometown
                 }
-            
             Divider()
+            
             
             Button {
                 withAnimation(.closeCard) {
@@ -683,13 +676,13 @@ struct NewSignupSequence: View {
                     do {
                         guard let savedUser = savedUser else { return }
                         print("Printing the saved User: \(savedUser)")
-
+                        
                         let team = NewTeam(name: "DEFAULT")
                         let savedTeam = try await Amplify.DataStore.save(team)
-
+                        
                         let college = College(name: "DEFAULT", imageLink: "NIL")
                         let savedCollege = try await Amplify.DataStore.save(college)
-
+                        
                         // Create the athlete item using the saved user, team, and college
                         let athlete = NewAthlete(
                             user: savedUser,
@@ -738,7 +731,6 @@ struct NewSignupSequence: View {
             } label: {
                 ColorfulButton(title: "Continue")
             }
-            
             if showAthleteError {
                 Text("Error creating athlete profile, please check information")
                     .foregroundColor(.primary).fontWeight(.semibold)
