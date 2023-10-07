@@ -152,9 +152,6 @@ struct NewSignupSequence: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
-                .onAppear{
-                    print(newUser)
-                }
             
             Group {
                 switch pageIndex {
@@ -272,7 +269,6 @@ struct NewSignupSequence: View {
             Button {
                 accountType = "Athlete"
                 newUser.accountType = "Athlete"
-                print(newUser.accountType)
             } label: {
                 ZStack {
                     Rectangle()
@@ -299,7 +295,6 @@ struct NewSignupSequence: View {
             Button {
                 accountType = "Coach"
                 newUser.accountType = accountType
-                print(newUser.accountType)
             } label: {
                 ZStack {
                     Rectangle()
@@ -326,7 +321,6 @@ struct NewSignupSequence: View {
             Button {
                 accountType = "Spectator"
                 newUser.accountType = accountType
-                print(newUser.accountType)
             } label: {
                 ZStack {
                     Rectangle()
@@ -355,7 +349,6 @@ struct NewSignupSequence: View {
             Button {
                 if accountAllFieldsFilled {
                     buttonPressed = false
-                    print(newUser.accountType)
                     pageIndex = 1
                 } else {
                     buttonPressed = true
@@ -507,8 +500,6 @@ struct NewSignupSequence: View {
                         savedUser = try await saveUser(user: newUser)
                         userCreationSuccessful = true
                         print("Saved New User")
-                        print("newUser \(newUser)")
-                        print(savedUser?.accountType)
                         
                         if newUser.accountType == "Coach" {
                             let coach = CoachUser(user: savedUser)
@@ -522,9 +513,7 @@ struct NewSignupSequence: View {
                     if userCreationSuccessful {
                         withAnimation {
                             print("Selected Next")
-                            print(newUser.accountType)
                             if newUser.accountType == "Athlete" {
-                                print("Coming in here")
                                 pageIndex = 3
                             } else {
                                 pageIndex = 4
