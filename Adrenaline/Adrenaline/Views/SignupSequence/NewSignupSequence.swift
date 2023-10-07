@@ -63,8 +63,8 @@ struct NewSignupSequence: View {
     
     // User States
     @State var savedUser: NewUser? = nil
-    @State var newUser: GraphUser = GraphUser(firstName: "", lastName: "",
-                                              email: "", accountType: "")
+    @StateObject var newUser: GraphUser = GraphUser(firstName: "", lastName: "",
+                                              email: "", accountType: "Athlete")
     
     // General States
     @State var buttonPressed: Bool = false
@@ -152,6 +152,9 @@ struct NewSignupSequence: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
+                .onAppear{
+                    print(newUser)
+                }
             
             Group {
                 switch pageIndex {
@@ -269,6 +272,7 @@ struct NewSignupSequence: View {
             Button {
                 accountType = "Athlete"
                 newUser.accountType = "Athlete"
+                print(newUser.accountType)
             } label: {
                 ZStack {
                     Rectangle()
@@ -294,7 +298,8 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Coach"
-                newUser.accountType = "Coach"
+                newUser.accountType = accountType
+                print(newUser.accountType)
             } label: {
                 ZStack {
                     Rectangle()
@@ -320,7 +325,8 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Spectator"
-                newUser.accountType = "Spectator"
+                newUser.accountType = accountType
+                print(newUser.accountType)
             } label: {
                 ZStack {
                     Rectangle()
@@ -349,6 +355,7 @@ struct NewSignupSequence: View {
             Button {
                 if accountAllFieldsFilled {
                     buttonPressed = false
+                    print(newUser.accountType)
                     pageIndex = 1
                 } else {
                     buttonPressed = true
@@ -371,7 +378,6 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && firstName.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .onChange(of: firstName) { _ in
-                    firstName = firstName
                     newUser.firstName = firstName
                 }
             
@@ -381,7 +387,6 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && lastName.isEmpty ? Custom.error : nil))
                 .focused($isLastFocused)
                 .onChange(of: lastName) { _ in
-                    lastName = lastName
                     newUser.lastName = lastName
                 }
             
@@ -502,6 +507,8 @@ struct NewSignupSequence: View {
                         savedUser = try await saveUser(user: newUser)
                         userCreationSuccessful = true
                         print("Saved New User")
+                        print("newUser \(newUser)")
+                        print(savedUser?.accountType)
                         
                         if newUser.accountType == "Coach" {
                             let coach = CoachUser(user: savedUser)
@@ -515,6 +522,7 @@ struct NewSignupSequence: View {
                     if userCreationSuccessful {
                         withAnimation {
                             print("Selected Next")
+                            print(newUser.accountType)
                             if newUser.accountType == "Athlete" {
                                 print("Coming in here")
                                 pageIndex = 3
