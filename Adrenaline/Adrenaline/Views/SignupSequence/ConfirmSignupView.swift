@@ -45,8 +45,10 @@ struct ConfirmSignUp: View {
         Group {
             TextField("Confirmation Code", text: $state.confirmationCode)
                 .customField(icon: "envelope.open.fill")
+                .keyboardType(.numberPad)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
+                .textContentType(.oneTimeCode)
             
             Button {
                 Task {
