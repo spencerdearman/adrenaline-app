@@ -209,6 +209,7 @@ struct Chat: View {
         }
         .onAppear {
             Task {
+                unsubscribeFromConversation()
                 let mainUsersPredicate = NewUser.keys.email == email
                 let mainUsers = await queryAWSUsers(where: mainUsersPredicate)
                 if mainUsers.count >= 1 {

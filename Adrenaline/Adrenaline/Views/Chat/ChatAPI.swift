@@ -10,6 +10,8 @@ import Foundation
 import Amplify
 import Combine
 
+var conversationSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<Message>>?
+
 func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, Bool)]  {
     do {
         let senderMessageNewUsers = sender.MessageNewUsers
@@ -26,6 +28,7 @@ func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, 
             for m in matchingMessages {
                 IdDictionary[m.messageID] = m.isSender
             }
+            startConversationSubscription(matchingIDArray)
             return await queryMessages(withIDs: matchingIDArray, dict: IdDictionary)
         } else {
             print("error with senderMessageNewUsers")
@@ -34,6 +37,97 @@ func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, 
         print("Error: \(error)")
     }
     return []
+}
+
+func startConversationSubscription(_ matchingIDArray: [String]) {
+    // Create a compound predicate for the list of matching IDs
+    var subPredicates: [QueryPredicate] = []
+    for messageId in matchingIDArray {
+        let idPredicate = Message.keys.id == messageId
+        subPredicates.append(idPredicate)
+    }
+    
+    let conversationPredicate = QueryPredicateGroup(type: .or, predicates: subPredicates)
+    
+    // Subscribe to changes for the matching messages
+    conversationSubscription = try? Amplify.DataStore.observeQuery(
+        for: Message.self,
+        where: conversationPredicate
+    )
+    
+    if let conversationSubscription = conversationSubscription {
+        Task {
+            do {
+                for try await querySnapshot in conversationSubscription {
+                    // Handle the updated snapshots as needed
+                    print("[Snapshot] item count: \(querySnapshot.items.count), isSynced: \(querySnapshot.isSynced)")
+                }
+            } catch {
+                print("Error observing conversation: \(error)")
+            }
+        }
+    } else {
+        print("conversationSubscription is nil")
+    }
+}
+
+//func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, Bool)] {
+//    do {
+//        let senderMessageNewUsers = sender.MessageNewUsers
+//        let recipientMessageNewUsers = recipient.MessageNewUsers
+//        try await senderMessageNewUsers?.fetch()
+//        try await recipientMessageNewUsers?.fetch()
+//        if let senderMessageNewUsers = senderMessageNewUsers,
+//           let recipientMessageNewUsers = recipientMessageNewUsers {
+//            let recipientIDSet = Set(recipientMessageNewUsers.map { $0.messageID })
+//            let matchingMessages = senderMessageNewUsers.filter { recipientIDSet.contains($0.messageID) }
+//            let matchingIDSet = Set(matchingMessages.map { $0.messageID })
+//            let matchingIDArray = Array(matchingIDSet)
+//            var IdDictionary: [String: Bool] = [:]
+//            for m in matchingMessages {
+//                IdDictionary[m.messageID] = m.isSender
+//            }
+//            
+//            // Create a compound predicate for the list of matching IDs
+//            var subPredicates: [QueryPredicate] = []
+//            for messageId in matchingIDArray {
+//                let idPredicate = Message.keys.id == messageId
+//                subPredicates.append(idPredicate)
+//            }
+//            
+//            let conversationPredicate = QueryPredicateGroup(type: .or, predicates: subPredicates)
+//            
+//            // Subscribe to changes for the matching messages
+//            conversationSubscription = try Amplify.DataStore.observeQuery(
+//                for: Message.self,
+//                where: conversationPredicate
+//            )
+//            
+//            if let conversationSubscription = conversationSubscription {
+//                do {
+//                    for try await querySnapshot in conversationSubscription {
+//                        // Handle the updated snapshots as needed
+//                        print("[Snapshot] item count: \(querySnapshot.items.count), isSynced: \(querySnapshot.isSynced)")
+//                    }
+//                } catch {
+//                    print("Error observing conversation: \(error)")
+//                }
+//            } else {
+//                print("conversationSubscription is nil")
+//            }
+//            
+//            return await queryMessages(withIDs: matchingIDArray, dict: IdDictionary)
+//        } else {
+//            print("Error with senderMessageNewUsers")
+//        }
+//    } catch {
+//        print("Error: \(error)")
+//    }
+//    return []
+//}
+
+func unsubscribeFromConversation() {
+    conversationSubscription?.cancel()
 }
 
 func queryMessageNewUsers(where predicate: QueryPredicate? = nil,
