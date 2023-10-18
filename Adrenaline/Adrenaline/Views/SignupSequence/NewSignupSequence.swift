@@ -366,19 +366,19 @@ struct NewSignupSequence: View {
     var basicInfoForm: some View {
         Group {
             TextField("First Name", text: $firstName)
-                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && firstName.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
+                .textContentType(.givenName)
                 .onChange(of: firstName) { _ in
                     newUser.firstName = firstName
                 }
-            
+        
             TextField("Last Name", text: $lastName)
-                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && lastName.isEmpty ? Custom.error : nil))
                 .focused($isLastFocused)
+                .textContentType(.familyName)
                 .onChange(of: lastName) { _ in
                     newUser.lastName = lastName
                 }
@@ -387,6 +387,7 @@ struct NewSignupSequence: View {
                 .keyboardType(.numberPad)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && phone.isEmpty ? Custom.error : nil))
                 .focused($isPhoneFocused)
+                .textContentType(.telephoneNumber)
                 .onChange(of: phone) { _ in
                     phone = formatPhoneString(string: phone)
                     newUser.phone = removePhoneFormatting(string: phone)
@@ -640,7 +641,6 @@ struct NewSignupSequence: View {
             }
             TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
                 .keyboardType(.numberPad)
-                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && gradYear == 0 ? Custom.error : nil))
                 .focused($isFirstFocused)
@@ -648,8 +648,6 @@ struct NewSignupSequence: View {
                     gradYear = gradYear
                 }
             TextField("High School", text: $highSchool)
-                .keyboardType(.numberPad)
-                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && highSchool.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
@@ -657,8 +655,6 @@ struct NewSignupSequence: View {
                     highSchool = highSchool
                 }
             TextField("Hometown", text: $hometown)
-                .keyboardType(.numberPad)
-                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && hometown.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
