@@ -26,7 +26,7 @@ struct Chat: View {
     @State var appear = [false, false, false]
     @State var viewState: CGSize = .zero
     @State var messageNotEmpty: Bool = false
-    @State var refresh: Bool = false
+    var refresh: Bool = false
     @State var recipientMessageSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<MessageNewUser>>?
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     private let screenWidth = UIScreen.main.bounds.width
@@ -103,6 +103,7 @@ struct Chat: View {
                                     }
                             }
                         }
+                        .defaultScrollAnchor(.bottom)
                         HStack {
                             TextField("Enter message", text: $text)
                                 .onChange(of: text) { newText in
@@ -143,7 +144,6 @@ struct Chat: View {
                                         if let currentUser = currentUser, let recipient = recipient {
                                             messages = await queryConversation(sender: currentUser,
                                                                                recipient: recipient)
-                                           // startRecipientMessageSubscription(recipient)
                                         } else {
                                             print("Error updating the users")
                                         }
@@ -163,6 +163,7 @@ struct Chat: View {
                         .modifier(OutlineOverlay(cornerRadius: 30))
                     }
                     .onAppear {
+                        observeNewMessages()
                         Task {
                             let usersPredicate = NewUser.keys.email == email
                             let users = await queryAWSUsers(where: usersPredicate)
@@ -180,7 +181,9 @@ struct Chat: View {
                             } else {
                                 print("Error fetching users")
                             }
-                            observeNewMessages()
+                            if let recipient = recipient {
+                                startRecipientMessageSubscription(recipient)
+                            }
                         }
                     }
                     .padding(.horizontal, 16)
@@ -258,26 +261,13 @@ struct Chat: View {
                         if !observedMessageIDs.contains(message.id) {
                             // A new message has been created, you can update your UI here
                             print("New message created: \(message)")
-                            
                             // Update the observedMessageIDs set to mark this message as observed
                             observedMessageIDs.insert(message.id)
-                            
-                            forceUIUpdate()
                         }
                     }
                 }
             } catch {
                 print("Error observing new messages: \(error)")
-            }
-        }
-    }
-
-    // This function can be called to force a UI update when a new message is created
-    func forceUIUpdate() {
-        Task {
-            if let currentUser = currentUser, let recipient = recipient {
-                // Update the messages array with the latest conversation
-                messages = await queryConversation(sender: currentUser, recipient: recipient)
             }
         }
     }
@@ -300,9 +290,6 @@ struct Chat: View {
                         } else {
                             print("Error updating the users")
                         }
-                        forceUIUpdate()
-                        // Handle the updated snapshots as needed
-                        // You can update your UI or perform any other actions here
                     }
                 } catch {
                     print("Error observing recipient's messages: \(error)")

@@ -68,31 +68,21 @@ func queryMessages(where predicate: QueryPredicate? = nil,
 
 func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async -> [(Message, Bool)] {
     do {
-        var finalPredicate: QueryPredicate?
+        var idPredicates: [QueryPredicate] = []
         
         for messageID in messageIDs {
-            let idPredicate = Message.keys.id == messageID
-            if let existingPredicate = finalPredicate {
-                // Combining Predicates
-                finalPredicate = (idPredicate || existingPredicate)
-            } else {
-                // For First Predicate
-                finalPredicate = idPredicate
+            let idPredicate = QueryPredicateOperation(field: "id", operator: .equals(messageID))
+                idPredicates.append(idPredicate)
+        }
+        let finalPredicate = QueryPredicateGroup(type: .or, predicates: idPredicates)
+        let tempMessages = await queryMessages(where: finalPredicate)
+        var result: [(Message, Bool)] = []
+        for message in tempMessages {
+            if let b = dict[message.id] {
+                result.append((message, b))
             }
         }
-        
-        if let finalPredicate = finalPredicate {
-            let tempMessages = await queryMessages(where: finalPredicate)
-            var result: [(Message, Bool)] = []
-            for message in tempMessages {
-                if let b = dict[message.id] {
-                    result.append((message, b))
-                }
-            }
-            return result
-        } else {
-            return []
-        }
+        return result
     }
 }
 
