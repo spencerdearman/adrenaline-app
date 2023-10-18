@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 import Amplify
+import Combine
 
 struct Chat: View {
     // Bindings
@@ -94,10 +95,10 @@ struct Chat: View {
                             LazyVStack {
                                 ForEach(messages.sorted(by: { $0.0.createdAt ?? .now() <
                                     $1.0.createdAt ?? .now() }), id: \.0.id) { message, b in
-                                    MessageRow(message: message, b: b)
-                                        .frame(maxWidth: .infinity, alignment: b ? .trailing
-                                               : .leading)
-                                }
+                                        MessageRow(message: message, b: b)
+                                            .frame(maxWidth: .infinity, alignment: b ? .trailing
+                                                   : .leading)
+                                    }
                             }
                         }
                         HStack {

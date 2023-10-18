@@ -8,6 +8,7 @@
 import SwiftUI
 import Foundation
 import Amplify
+import Combine
 
 func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, Bool)]  {
     do {
@@ -16,7 +17,7 @@ func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, 
         try await senderMessageNewUsers?.fetch()
         try await recipientMessageNewUsers?.fetch()
         if let senderMessageNewUsers = senderMessageNewUsers,
-            let recipientMessageNewUsers = recipientMessageNewUsers {
+           let recipientMessageNewUsers = recipientMessageNewUsers {
             let recipientIDSet = Set(recipientMessageNewUsers.map { $0.messageID })
             let matchingMessages = senderMessageNewUsers.filter {recipientIDSet.contains($0.messageID)}
             let matchingIDSet = Set(matchingMessages.map { $0.messageID })
@@ -62,7 +63,6 @@ func queryMessages(where predicate: QueryPredicate? = nil,
 }
 
 
-
 func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async -> [(Message, Bool)] {
     do {
         var finalPredicate: QueryPredicate?
@@ -77,7 +77,7 @@ func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async ->
                 finalPredicate = idPredicate
             }
         }
-
+        
         if let finalPredicate = finalPredicate {
             let tempMessages = await queryMessages(where: finalPredicate)
             var result: [(Message, Bool)] = []
@@ -90,8 +90,6 @@ func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async ->
         } else {
             return []
         }
-    } catch {
-        print("Unexpected error while calling DataStore: \(error)")
     }
 }
 
@@ -106,7 +104,7 @@ func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
                                             newuserID: sender.id,
                                             messageID: savedMessage.id)
             let _ = try await Amplify.DataStore.save(tempSender)
-
+            
             let tempRecipient = MessageNewUser(isSender: false,
                                                newuserID: recipient.id,
                                                messageID: savedMessage.id)
@@ -116,3 +114,4 @@ func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
         }
     }
 }
+
