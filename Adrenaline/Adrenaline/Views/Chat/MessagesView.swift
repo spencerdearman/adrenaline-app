@@ -26,6 +26,8 @@ struct Chat: View {
     @State var appear = [false, false, false]
     @State var viewState: CGSize = .zero
     @State var messageNotEmpty: Bool = false
+    @State var refresh: Bool = false
+    @State var recipientMessageSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<MessageNewUser>>?
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -141,6 +143,7 @@ struct Chat: View {
                                         if let currentUser = currentUser, let recipient = recipient {
                                             messages = await queryConversation(sender: currentUser,
                                                                                recipient: recipient)
+                                           // startRecipientMessageSubscription(recipient)
                                         } else {
                                             print("Error updating the users")
                                         }
@@ -177,6 +180,7 @@ struct Chat: View {
                             } else {
                                 print("Error fetching users")
                             }
+                            observeNewMessages()
                         }
                     }
                     .padding(.horizontal, 16)
@@ -209,7 +213,6 @@ struct Chat: View {
         }
         .onAppear {
             Task {
-                unsubscribeFromConversation()
                 let mainUsersPredicate = NewUser.keys.email == email
                 let mainUsers = await queryAWSUsers(where: mainUsersPredicate)
                 if mainUsers.count >= 1 {
@@ -239,4 +242,75 @@ struct Chat: View {
             }
         }
     }
+    // Define a set to keep track of observed message IDs
+   @State var observedMessageIDs: Set<String> = Set()
+
+    // This function is used to observe changes in the Message model
+    func observeNewMessages() {
+        // Set up a subscription to observe new messages
+        let messageSubscription = Amplify.DataStore.observeQuery(for: Message.self)
+
+        Task {
+            do {
+                for try await querySnapshot in messageSubscription {
+                    for message in querySnapshot.items {
+                        // Check if the message ID has already been observed
+                        if !observedMessageIDs.contains(message.id) {
+                            // A new message has been created, you can update your UI here
+                            print("New message created: \(message)")
+                            
+                            // Update the observedMessageIDs set to mark this message as observed
+                            observedMessageIDs.insert(message.id)
+                            
+                            forceUIUpdate()
+                        }
+                    }
+                }
+            } catch {
+                print("Error observing new messages: \(error)")
+            }
+        }
+    }
+
+    // This function can be called to force a UI update when a new message is created
+    func forceUIUpdate() {
+        Task {
+            if let currentUser = currentUser, let recipient = recipient {
+                // Update the messages array with the latest conversation
+                messages = await queryConversation(sender: currentUser, recipient: recipient)
+            }
+        }
+    }
+
+
+    func startRecipientMessageSubscription(_ recipient: NewUser) {
+        recipientMessageSubscription = try? Amplify.DataStore.observeQuery(
+            for: MessageNewUser.self,
+            where: MessageNewUser.keys.newuserID == recipient.id
+        )
+
+        if let recipientMessageSubscription = recipientMessageSubscription {
+            Task {
+                do {
+                    for try await querySnapshot in recipientMessageSubscription {
+                        print("new query snapshot")
+                        if let currentUser = currentUser {
+                            messages = await queryConversation(sender: currentUser,
+                                                               recipient: recipient)
+                        } else {
+                            print("Error updating the users")
+                        }
+                        forceUIUpdate()
+                        // Handle the updated snapshots as needed
+                        // You can update your UI or perform any other actions here
+                    }
+                } catch {
+                    print("Error observing recipient's messages: \(error)")
+                }
+            }
+        } else {
+            print("recipientMessageSubscription is nil")
+        }
+    }
+    
 }
