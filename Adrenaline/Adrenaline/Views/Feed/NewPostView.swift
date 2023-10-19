@@ -144,7 +144,7 @@ struct NewPostView: View {
                         // Note: will need to save to cloud and cache when
                         //       post is confirmed
                         let name = UUID().uuidString
-                        guard let url = videoStore.saveVideo(data: data, email: email, name: name) else { return }
+                        guard let url = await videoStore.saveVideo(data: data, email: email, name: name) else { return }
                         let video = VideoItem(key: name, player: AVPlayer(url: url))
                         
                         // Store Data and URL where data is saved in case it

@@ -51,6 +51,7 @@
 		00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00ADF5092A93304800C85C7F /* DataStoreAPI.swift */; };
 		00B5BB0A2AA0E80D00E587B5 /* FollowingTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */; };
 		00B5BB0C2AA0E8A000E587B5 /* FollowingAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */; };
+		00B79D712AE11E3600031D05 /* CompressVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B79D702AE11E3600031D05 /* CompressVideo.swift */; };
 		00B7BB202A7BEE18006C88B6 /* TextFieldClearButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */; };
 		00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */; };
 		00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */ = {isa = PBXBuildFile; fileRef = 00BD0F9A2A7CAC830098E03A /* collegeLogos.json */; };
@@ -214,6 +215,7 @@
 		00ADF5092A93304800C85C7F /* DataStoreAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreAPI.swift; sourceTree = "<group>"; };
 		00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingTestView.swift; sourceTree = "<group>"; };
 		00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowingAPI.swift; sourceTree = "<group>"; };
+		00B79D702AE11E3600031D05 /* CompressVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompressVideo.swift; sourceTree = "<group>"; };
 		00B7BB1F2A7BEE18006C88B6 /* TextFieldClearButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TextFieldClearButton.swift; path = Adrenaline/Views/CustomStructures/TextFieldClearButton.swift; sourceTree = SOURCE_ROOT; };
 		00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentImageLoader.swift; sourceTree = "<group>"; };
 		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = collegeLogos.json; sourceTree = "<group>"; };
@@ -379,6 +381,14 @@
 				00CEDFD32ABFC71500F079CE /* PostsAPI.swift */,
 			);
 			path = DataStore;
+			sourceTree = "<group>";
+		};
+		00B79D6D2AE10EE700031D05 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				00B79D702AE11E3600031D05 /* CompressVideo.swift */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 		00DAFEE32A90240D00497917 /* Storage */ = {
@@ -548,6 +558,7 @@
 				4D74FEB529AEB4CD00401178 /* Resources */,
 				00DAFEE32A90240D00497917 /* Storage */,
 				4D74FEB229AEB47000401178 /* Views */,
+				00B79D6D2AE10EE700031D05 /* Util */,
 			);
 			path = Adrenaline;
 			sourceTree = "<group>";
@@ -963,6 +974,7 @@
 				4D13F3C82A9D57C20081823D /* ColorfulButton.swift in Sources */,
 				4DA481CF2AA78A01003DFA3B /* MessageRow.swift in Sources */,
 				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
+				00B79D712AE11E3600031D05 /* CompressVideo.swift in Sources */,
 				0059AD322AA241D40076AF00 /* GraphTeam.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,

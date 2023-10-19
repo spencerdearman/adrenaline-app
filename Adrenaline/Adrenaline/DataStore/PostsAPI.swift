@@ -29,7 +29,22 @@ func createPost(user: NewUser, title: String, description: String,
     
     do {
         for (name, data) in videosData {
-            let task = Amplify.Storage.uploadData(key: "videos/\(email)/\(name).mp4", data: data)
+            let storageKey = "videos/\(email)/\(name).mp4"
+            var task = Amplify.Storage.uploadData(key: storageKey, data: data)
+            
+            let compressedFileURL = VideoStore.getCompressedFileURL(email: email, name: name)
+            print("Compressed URL to upload: \(compressedFileURL)")
+            if FileManager.default.fileExists(atPath: compressedFileURL.path) {
+                print("Compressed file exists")
+                if let compressedData = NSData(contentsOfFile: compressedFileURL.path) {
+                    print("Uploading compressed data...")
+                    task = Amplify.Storage.uploadData(key: storageKey,
+                                                      data: compressedData as Data)
+                } else {
+                    print("Failed to get compressed data")
+                }
+            }
+            print("Assigned storage task...")
             
             let _ = try await task.value
             print("Video \(name) uploaded")
