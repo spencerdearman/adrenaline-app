@@ -26,7 +26,6 @@ struct Chat: View {
     @State var appear = [false, false, false]
     @State var viewState: CGSize = .zero
     @State var messageNotEmpty: Bool = false
-    var refresh: Bool = false
     @State var recipientMessageSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<MessageNewUser>>?
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     private let screenWidth = UIScreen.main.bounds.width
@@ -37,6 +36,7 @@ struct Chat: View {
     
     // Personal Chat States
     @State var text: String = ""
+    @State var allUserMessages: [Message] = []
     @State var messages: [(Message, Bool)] = []
     @State var recipient: NewUser?
     
@@ -106,7 +106,7 @@ struct Chat: View {
                         .defaultScrollAnchor(.bottom)
                         HStack {
                             TextField("Enter message", text: $text)
-                                .onChange(of: text) { newText in
+                                .onChange(of: text, initial: true) { _, newText in
                                     if text != "" {
                                         messageNotEmpty = true
                                     } else {
@@ -121,32 +121,33 @@ struct Chat: View {
                                         if let currentUser = currentUser, let recipient = recipient {
                                             didTapSend(message: text, sender: currentUser,
                                                        recipient: recipient)
+                                            
                                             text.removeAll()
                                         } else {
                                             print("Errors retrieving users")
                                         }
                                         
-                                        //Updating the CurrentUser Status
-                                        let usersPredicate = NewUser.keys.email == email
-                                        let users = await queryAWSUsers(where: usersPredicate)
-                                        if users.count >= 1 {
-                                            currentUser = users[0]
-                                        }
-                                        
-                                        //Updating the Recipient Status
-                                        let recipientPredicate = NewUser.keys.id == recipient?.id
-                                        let recipients = await queryAWSUsers(where: recipientPredicate)
-                                        if recipients.count >= 1 {
-                                            recipient = recipients[0]
-                                        }
-                                        
-                                        //Updating Messages
-                                        if let currentUser = currentUser, let recipient = recipient {
-                                            messages = await queryConversation(sender: currentUser,
-                                                                               recipient: recipient)
-                                        } else {
-                                            print("Error updating the users")
-                                        }
+//                                        //Updating the CurrentUser Status
+//                                        let usersPredicate = NewUser.keys.email == email
+//                                        let users = await queryAWSUsers(where: usersPredicate)
+//                                        if users.count >= 1 {
+//                                            currentUser = users[0]
+//                                        }
+//                                        
+//                                        //Updating the Recipient Status
+//                                        let recipientPredicate = NewUser.keys.id == recipient?.id
+//                                        let recipients = await queryAWSUsers(where: recipientPredicate)
+//                                        if recipients.count >= 1 {
+//                                            recipient = recipients[0]
+//                                        }
+//                                        
+//                                        //Updating Messages
+//                                        if let currentUser = currentUser, let recipient = recipient {
+//                                            messages = await queryConversation(sender: currentUser,
+//                                                                               recipient: recipient)
+//                                        } else {
+//                                            print("Error updating the users")
+//                                        }
                                     }
                                 }
                             } label: {
@@ -161,30 +162,6 @@ struct Chat: View {
                         .background(.ultraThinMaterial)
                         .cornerRadius(30)
                         .modifier(OutlineOverlay(cornerRadius: 30))
-                    }
-                    .onAppear {
-                        observeNewMessages()
-                        Task {
-                            let usersPredicate = NewUser.keys.email == email
-                            let users = await queryAWSUsers(where: usersPredicate)
-                            if users.count >= 1 {
-                                currentUser = users[0]
-                            }
-                            let recipientPredicate = NewUser.keys.id == recipient?.id
-                            let recipients = await queryAWSUsers(where: recipientPredicate)
-                            if recipients.count >= 1 {
-                                recipient = recipients[0]
-                            }
-                            if let currentUser = currentUser, let recipient = recipient {
-                                messages = await queryConversation(sender: currentUser,
-                                                                   recipient: recipient)
-                            } else {
-                                print("Error fetching users")
-                            }
-                            if let recipient = recipient {
-                                startRecipientMessageSubscription(recipient)
-                            }
-                        }
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
@@ -226,6 +203,7 @@ struct Chat: View {
                 if allUsers.count >= 1 {
                     users = allUsers
                 }
+                observeNewMessages()
             }
         }
     }
@@ -263,6 +241,32 @@ struct Chat: View {
                             print("New message created: \(message)")
                             // Update the observedMessageIDs set to mark this message as observed
                             observedMessageIDs.insert(message.id)
+                            //Updating Messages
+                            if let currentUser = currentUser, let recipient = recipient {
+                                
+                                let msgMessageNewUsers = message.MessageNewUsers
+                                try await msgMessageNewUsers?.fetch()
+                                
+                                if let msgMessageNewUsers = msgMessageNewUsers {
+                                    for messageNewUser in msgMessageNewUsers.elements {
+                                        if messageNewUser.newuserID == currentUser.id {
+                                            allUserMessages.append(message)
+                                        }
+                                        //Dictionary with message-bool tuples
+                                        if messageNewUser.newuserID == currentUser.id, let isSender = messageNewUser.isSender, isSender {
+                                            messages.append((message, true))
+                                        } else if messageNewUser.newuserID == recipient.id, let isSender = messageNewUser.isSender, !isSender {
+                                            messages.append((message, false))
+                                        }
+                                    }
+                                }
+                                
+//                                messages = await queryConversation(sender: currentUser,
+//                                                                   recipient: recipient, messageSnapshot: querySnapshot.items)
+                                print(messages)
+                            } else {
+                                print("Error updating the users")
+                            }
                         }
                     }
                 }
@@ -271,33 +275,4 @@ struct Chat: View {
             }
         }
     }
-
-
-    func startRecipientMessageSubscription(_ recipient: NewUser) {
-        recipientMessageSubscription = try? Amplify.DataStore.observeQuery(
-            for: MessageNewUser.self,
-            where: MessageNewUser.keys.newuserID == recipient.id
-        )
-
-        if let recipientMessageSubscription = recipientMessageSubscription {
-            Task {
-                do {
-                    for try await querySnapshot in recipientMessageSubscription {
-                        print("new query snapshot")
-                        if let currentUser = currentUser {
-                            messages = await queryConversation(sender: currentUser,
-                                                               recipient: recipient)
-                        } else {
-                            print("Error updating the users")
-                        }
-                    }
-                } catch {
-                    print("Error observing recipient's messages: \(error)")
-                }
-            }
-        } else {
-            print("recipientMessageSubscription is nil")
-        }
-    }
-    
 }

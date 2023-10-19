@@ -11,7 +11,7 @@ import Amplify
 import Combine
 
 
-func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, Bool)]  {
+func queryConversation(sender: NewUser, recipient: NewUser, messageSnapshot: [Message]) async -> [(Message, Bool)]  {
     do {
         let senderMessageNewUsers = sender.MessageNewUsers
         let recipientMessageNewUsers = recipient.MessageNewUsers
@@ -23,11 +23,17 @@ func queryConversation(sender: NewUser, recipient: NewUser) async -> [(Message, 
             let matchingMessages = senderMessageNewUsers.filter {recipientIDSet.contains($0.messageID)}
             let matchingIDSet = Set(matchingMessages.map { $0.messageID })
             let matchingIDArray = Array(matchingIDSet)
-            var IdDictionary: [String : Bool] = [:]
-            for m in matchingMessages {
-                IdDictionary[m.messageID] = m.isSender
+            let snapshotDict = messageSnapshot.reduce(into: [String: Message]()) {
+                $0[$1.id] = $1
             }
-            return await queryMessages(withIDs: matchingIDArray, dict: IdDictionary)
+            var result: [(Message, Bool)] = []
+            for m in matchingMessages {
+                if let message = snapshotDict[m.messageID], let senderBool = m.isSender {
+                    result.append((message, senderBool))
+                }
+            }
+            return result
+            //return await queryMessages(withIDs: matchingIDArray, dict: IdDictionary)
         } else {
             print("error with senderMessageNewUsers")
         }
@@ -72,7 +78,7 @@ func queryMessages(withIDs messageIDs: [String], dict: [String : Bool]) async ->
         
         for messageID in messageIDs {
             let idPredicate = QueryPredicateOperation(field: "id", operator: .equals(messageID))
-                idPredicates.append(idPredicate)
+            idPredicates.append(idPredicate)
         }
         let finalPredicate = QueryPredicateGroup(type: .or, predicates: idPredicates)
         let tempMessages = await queryMessages(where: finalPredicate)
@@ -91,17 +97,19 @@ func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
     Task {
         do {
             let message = Message(body: message, creationDate: .now())
-            let savedMessage = try await Amplify.DataStore.save(message)
+//            let savedMessage = try await Amplify.DataStore.save(message)
             
             let tempSender = MessageNewUser(isSender: true,
                                             newuserID: sender.id,
-                                            messageID: savedMessage.id)
+                                            messageID: message.id)
             let _ = try await Amplify.DataStore.save(tempSender)
             
             let tempRecipient = MessageNewUser(isSender: false,
                                                newuserID: recipient.id,
-                                               messageID: savedMessage.id)
+                                               messageID: message.id)
             let _ = try await Amplify.DataStore.save(tempRecipient)
+            
+            let savedMessage = try await Amplify.DataStore.save(message)
         } catch {
             print(error)
         }
