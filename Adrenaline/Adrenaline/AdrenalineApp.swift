@@ -451,10 +451,10 @@ struct AdrenalineApp: App {
                             //     .testMetrics(0, includePlatform: false)
                             // await SkillRating(diveStatistics: nil)
                             //     .testMetrics(0, onlyPlatform: true)
-                            let moc = modelDataController.container.viewContext
-                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
-                                entityName: "DivingMeet")
-                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
+//                            let moc = modelDataController.container.viewContext
+//                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
+//                                entityName: "DivingMeet")
+//                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
                             
 //                            try await meetParser.parseMeets(storedMeets: meets)
                             
