@@ -57,6 +57,22 @@ final class VideoStore {
         videos[self.placeholderName] = VideoItem(key: placeholderName, player: player)
     }
     
+    static func getCompressedFileURL(email: String, name: String) -> URL {
+        let url = VideoStore.getVideoPathURL(email: email, name: name)
+        
+        let filename = url.deletingPathExtension().absoluteString + "-compressed.mp4"
+        return URL(string: filename)!
+    }
+    
+    static func getVideoPathURL(email: String, name: String) -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        let path = paths[0]
+        
+        let url = path.appendingPathComponent("\(email.lowercased())-\(name).mp4")
+        
+        return url
+    }
+    
     // retrieve a video.
     // first check the cache, otherwise trigger an asynchronous download and return a placeholder
     func video(email: String, name: String) async -> VideoItem {
@@ -80,16 +96,19 @@ final class VideoStore {
         return result
     }
     
-    func saveVideo(data: Data, email: String, name: String) -> URL? {
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        let path = paths[0]
-        
-        // Use - instead of / to avoid path issues
-        let url = path.appendingPathComponent("\(email.lowercased())-\(name).mp4")
+    func saveVideo(data: Data, email: String, name: String) async -> URL? {
+        let url = VideoStore.getVideoPathURL(email: email, name: name)
         
         do {
             print("Saving video to URL: \(url.absoluteString)")
+            
             try data.write(to: url)
+            
+            let compressor = CompressVideo()
+            try await compressor.compressFile(url) { (compressedURL) in
+                print("Compressed video to URL: \(compressedURL)")
+            }
+            
             return url
         } catch {
             print("Failed to write data to URL")
@@ -99,9 +118,9 @@ final class VideoStore {
     }
     
     private func localStoreVideo(data: Data, email: String,
-                                 name: String) -> VideoItem {
+                                 name: String) async -> VideoItem {
         // Save video file locally
-        guard let url = saveVideo(data: data, email: email, name: name) else {
+        guard let url = await saveVideo(data: data, email: email, name: name) else {
             return self.placeholder()
         }
         
@@ -122,7 +141,7 @@ final class VideoStore {
             // download the video from our API
             let data = await downloadVideo(email: email, name: name)
             
-            return localStoreVideo(data: data, email: email, name: name)
+            return await localStoreVideo(data: data, email: email, name: name)
         }
         
         return await task.value
@@ -160,7 +179,7 @@ final class VideoStore {
             print("Video \(key) uploaded")
             
             // Locally store video to avoid downloading from S3
-            return localStoreVideo(data: data, email: email.lowercased(), name: name)
+            return await localStoreVideo(data: data, email: email.lowercased(), name: name)
             
         } catch let error as StorageError {
             print("Cannot download video \(key): \(error.errorDescription). \(error.recoverySuggestion)")
