@@ -121,10 +121,10 @@ struct MeetScoreCalculator: View {
                 
                 CalculatorTopView(tableData: $tableData, numDives: $numDives, meetType: $meetType,
                                   dives: $dives)
-                .onChange(of: numDives) { _ in
+                .onChange(of: numDives) {
                     refreshDives()
                 }
-                .onChange(of: meetType) { _ in
+                .onChange(of: meetType) {
                     refreshDives()
                 }
                 .onAppear {
@@ -383,16 +383,16 @@ struct CalculatorRowView: View {
                                     .opacity(0.4)
                             }
                         ), width: .Fixed(wheelPickerSelectedSpacing))
-                        .onChange(of: judgeScores[i]) { _ in
+                        .onChange(of: judgeScores[i]) {
                             updateNetAndTotalScores()
                         }
-                        .onChange(of: dives) { _ in
+                        .onChange(of: dives) {
                             updateNetAndTotalScores()
                         }
-                        .onChange(of: meetType) { _ in
+                        .onChange(of: meetType) {
                             updateNetAndTotalScores()
                         }
-                        .onChange(of: diveNetScores) { _ in
+                        .onChange(of: diveNetScores) {
                             updateNetAndTotalScores()
                         }
                         .onAppear {

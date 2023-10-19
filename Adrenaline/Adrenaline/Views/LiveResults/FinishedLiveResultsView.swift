@@ -63,7 +63,7 @@ struct FinishedLiveResultsView: View {
                 }
             }
         }
-        .onChange(of: html) { _ in
+        .onChange(of: html) {
                 Task {
                     let parseTask = Task {
                         await parser.getFinishedLiveResultsRecords(html: html)

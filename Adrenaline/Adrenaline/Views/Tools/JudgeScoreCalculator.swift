@@ -131,7 +131,7 @@ struct JudgeScoreCalculator: View {
                                 .multilineTextAlignment(.center)
                                 .background(RoundedRectangle(cornerRadius: cornerRadius)
                                     .fill(Custom.darkGray))
-                                .onChange(of: dive) { _ in
+                                .onChange(of: dive) {
                                     dive = String(dive.prefix(5))
                                 }
                                 .shadow(radius: shadowRadius)
@@ -145,7 +145,7 @@ struct JudgeScoreCalculator: View {
                                 .background(RoundedRectangle(cornerRadius: cornerRadius)
                                     .fill(Custom.darkGray))
                                 .shadow(radius: shadowRadius)
-                                .onChange(of: score) { _ in
+                                .onChange(of: score) {
                                     score = String(score.prefix(6))
                                 }
                             Spacer()

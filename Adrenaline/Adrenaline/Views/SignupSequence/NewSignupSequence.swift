@@ -370,7 +370,7 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && firstName.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .textContentType(.givenName)
-                .onChange(of: firstName) { _ in
+                .onChange(of: firstName) {
                     newUser.firstName = firstName
                 }
         
@@ -379,7 +379,7 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && lastName.isEmpty ? Custom.error : nil))
                 .focused($isLastFocused)
                 .textContentType(.familyName)
-                .onChange(of: lastName) { _ in
+                .onChange(of: lastName) {
                     newUser.lastName = lastName
                 }
             
@@ -388,7 +388,7 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && phone.isEmpty ? Custom.error : nil))
                 .focused($isPhoneFocused)
                 .textContentType(.telephoneNumber)
-                .onChange(of: phone) { _ in
+                .onChange(of: phone) {
                     phone = formatPhoneString(string: phone)
                     newUser.phone = removePhoneFormatting(string: phone)
                 }
@@ -589,7 +589,7 @@ struct NewSignupSequence: View {
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightFeet == 0 ? Custom.error : nil))
                     .focused($isFirstFocused)
-                    .onChange(of: heightFeet) { _ in
+                    .onChange(of: heightFeet) {
                         heightFeet = heightFeet
                     }
                 TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
@@ -598,7 +598,7 @@ struct NewSignupSequence: View {
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightInches == 0 ? Custom.error : nil))
                     .focused($isFirstFocused)
-                    .onChange(of: heightInches) { _ in
+                    .onChange(of: heightInches) {
                         heightInches = heightInches
                     }
             }
@@ -616,7 +616,7 @@ struct NewSignupSequence: View {
                     .onAppear {
                         weightUnitString = weightUnit.rawValue
                     }
-                    .onChange(of: weightUnit) { _ in
+                    .onChange(of: weightUnit) {
                         weightUnitString = weightUnit.rawValue
                     }
             }
@@ -625,7 +625,7 @@ struct NewSignupSequence: View {
                     .keyboardType(.numberPad)
                     .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && age == 0 ? Custom.error : nil))
                     .focused($isPhoneFocused)
-                    .onChange(of: age) { _ in
+                    .onChange(of: age) {
                         age = age
                     }
                 
@@ -635,7 +635,7 @@ struct NewSignupSequence: View {
                     .onAppear {
                         genderString = gender.rawValue
                     }
-                    .onChange(of: gender) { _ in
+                    .onChange(of: gender) {
                         genderString = gender.rawValue
                     }
             }
@@ -644,21 +644,21 @@ struct NewSignupSequence: View {
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && gradYear == 0 ? Custom.error : nil))
                 .focused($isFirstFocused)
-                .onChange(of: gradYear) { _ in
+                .onChange(of: gradYear) {
                     gradYear = gradYear
                 }
             TextField("High School", text: $highSchool)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && highSchool.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
-                .onChange(of: highSchool) { _ in
+                .onChange(of: highSchool) {
                     highSchool = highSchool
                 }
             TextField("Hometown", text: $hometown)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && hometown.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
-                .onChange(of: hometown) { _ in
+                .onChange(of: hometown) {
                     hometown = hometown
                 }
             Divider()

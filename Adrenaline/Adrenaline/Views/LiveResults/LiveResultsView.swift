@@ -368,17 +368,17 @@ struct ParseLoaderView: View {
             if !debugMode {
                 if shiftingBool {
                     LRWebView(request: request, html: $html)
-                        .onChange(of: html) { newValue in
+                        .onChange(of: html) {
                             Task {
-                                loadedSuccessfully = await parseLiveResultsData(newValue: newValue)
+                                loadedSuccessfully = await parseLiveResultsData(newValue: html)
                                 attemptedLoad = true
                             }
                         }
                 } else {
                     LRWebView(request: request, html: $html)
-                        .onChange(of: html) { newValue in
+                        .onChange(of: html) {
                             Task {
-                                loadedSuccessfully = await parseLiveResultsData(newValue: newValue)
+                                loadedSuccessfully = await parseLiveResultsData(newValue: html)
                                 attemptedLoad = true
                             }
                         }

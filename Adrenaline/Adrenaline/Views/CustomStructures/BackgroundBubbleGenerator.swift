@@ -39,7 +39,7 @@ struct BackgroundBubble<Content: View>: View {
                             .onAppear {
                                 contentSize = geometry.size
                             }
-                            .onChange(of: dynamicTypeSize) { _ in // Observe changes to the dynamic type size
+                            .onChange(of: dynamicTypeSize) { // Observe changes to the dynamic type size
                                 contentSize = geometry.size
                             }
                     }
