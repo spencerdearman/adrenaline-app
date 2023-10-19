@@ -123,7 +123,7 @@ struct NewPostView: View {
                 .padding()
                 .navigationTitle("New Post")
         }
-        .onChange(of: selectedItems) { _ in
+        .onChange(of: selectedItems) {
             clearMediaItems()
             
             for selectedItem in selectedItems {

@@ -108,9 +108,9 @@ struct SignUpField: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "envelope.open.fill")
-                .onChange(of: fieldValue) { newValue in
-                    signUpField.value = newValue
-                    email = newValue
+                .onChange(of: fieldValue) {
+                    signUpField.value = fieldValue
+                    email = fieldValue
                 }
         case .password:
             SecureField("Password", text: $signUpField.value)

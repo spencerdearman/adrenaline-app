@@ -102,13 +102,12 @@ struct Chat: View {
                         }
                         HStack {
                             TextField("Enter message", text: $text)
-                                .onChange(of: text) { newText in
+                                .onChange(of: text) {
                                     if text != "" {
                                         messageNotEmpty = true
                                     } else {
                                         messageNotEmpty = false
                                     }
-                                    text = newText
                                 }
                             Button {
                                 if messageNotEmpty {

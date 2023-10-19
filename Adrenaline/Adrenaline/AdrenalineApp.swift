@@ -428,7 +428,7 @@ struct AdrenalineApp: App {
                 .environment(\.dropFollowedByEmail, modelDataController.dropFollowedByEmail)
                 .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
                 .environment(\.dropFollowedFromUser, modelDataController.dropFollowedFromUser)
-                .onChange(of: appLogic.dataStoreReady) { _ in
+                .onChange(of: appLogic.dataStoreReady) {
                     print(appLogic.dataStoreReady
                           ? "DataStore ready"
                           : "DataStore not ready")

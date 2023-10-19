@@ -310,7 +310,8 @@ public struct SwipeAction<Label: View, Background: View>: View {
             self.highlighted = pressing
         } perform: {}
             .buttonStyle(SwipeActionButtonStyle())
-            .onChange(of: swipeContext.state.wrappedValue) { state in /// Read changes in state.
+            .onChange(of: swipeContext.state.wrappedValue) { /// Read changes in state.
+                let state = swipeContext.state.wrappedValue
                 guard let allowSwipeToTrigger, allowSwipeToTrigger else { return }
                 
                 if let state {
@@ -451,7 +452,7 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
                 .updatingVelocity($velocity),
             including: options.swipeEnabled ? .all : .subviews /// Enable/disable swiping here.
         )
-        .onChange(of: currentlyDragging) { currentlyDragging in /// Detect gesture cancellations.
+        .onChange(of: currentlyDragging) { /// Detect gesture cancellations.
             if !currentlyDragging, let latestDragGestureValueBackup {
                 /// Gesture cancelled.
                 let velocity = velocity.dx / currentOffset
@@ -461,22 +462,22 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         
         // MARK: - Trigger haptics
         
-        .onChange(of: leadingState) { [leadingState] newValue in
+        .onChange(of: leadingState) { oldState, newState in
             /// Make sure the change was from `triggering` to `nil`, or the other way around.
             let changed =
-            leadingState == .triggering && newValue == nil ||
-            leadingState == nil && newValue == .triggering
+            oldState == .triggering && newState == nil ||
+            oldState == nil && newState == .triggering
             
             if changed, options.enableTriggerHaptics { /// Generate haptic feedback if necessary.
                 let generator = UIImpactFeedbackGenerator(style: .rigid)
                 generator.impactOccurred()
             }
         }
-        .onChange(of: trailingState) { [trailingState] newValue in
+        .onChange(of: trailingState) { oldState, newState in
             
             let changed =
-            trailingState == .triggering && newValue == nil ||
-            trailingState == nil && newValue == .triggering
+            oldState == .triggering && newState == nil ||
+            oldState == nil && newState == .triggering
             
             if changed, options.enableTriggerHaptics {
                 let generator = UIImpactFeedbackGenerator(style: .rigid)
@@ -486,22 +487,22 @@ public struct SwipeView<Label, LeadingActions, TrailingActions>: View where Labe
         
         // MARK: - Receive `SwipeViewGroup` events
         
-        .onChange(of: currentlyDragging) { newValue in
-            if newValue {
+        .onChange(of: currentlyDragging) {
+            if currentlyDragging {
                 swipeViewGroupSelection.wrappedValue = id
             }
         }
-        .onChange(of: leadingState) { newValue in
-            if newValue == .closed, swipeViewGroupSelection.wrappedValue == id {
+        .onChange(of: leadingState) {
+            if leadingState == .closed, swipeViewGroupSelection.wrappedValue == id {
                 swipeViewGroupSelection.wrappedValue = nil
             }
         }
-        .onChange(of: trailingState) { newValue in
-            if newValue == .closed, swipeViewGroupSelection.wrappedValue == id {
+        .onChange(of: trailingState) {
+            if trailingState == .closed, swipeViewGroupSelection.wrappedValue == id {
                 swipeViewGroupSelection.wrappedValue = nil
             }
         }
-        .onChange(of: swipeViewGroupSelection.wrappedValue) { newValue in
+        .onChange(of: swipeViewGroupSelection.wrappedValue) {
             if swipeViewGroupSelection.wrappedValue != id {
                 currentSide = nil
                 
@@ -702,8 +703,8 @@ struct SwipeActionsLayout: _VariadicView_UnaryViewRoot {
         .onAppear { /// Set the number of actions here.
             numberOfActions = children.count
         }
-        .onChange(of: children.count) { count in
-            numberOfActions = count
+        .onChange(of: children.count) {
+            numberOfActions = children.count
         }
     }
 }

@@ -58,7 +58,7 @@ struct NewSignIn: View {
                 .disableAutocorrection(true)
                 .focused($isEmailFocused)
                 .customField(icon: "envelope.open.fill")
-                .onChange(of: state.username) { _ in
+                .onChange(of: state.username) {
                     email = state.username
                 }
             

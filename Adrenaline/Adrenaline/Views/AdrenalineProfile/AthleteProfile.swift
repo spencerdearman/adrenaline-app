@@ -357,7 +357,7 @@ struct StatisticsView: View {
                 .padding(.top)
                 .padding(.bottom, maxHeightOffset)
             }
-            .onChange(of: maxHeightOffsetScaled) { _ in
+            .onChange(of: maxHeightOffsetScaled) {
                 print(maxHeightOffset)
             }
             .onAppear {
@@ -375,10 +375,10 @@ struct StatisticsView: View {
                 }
             }
         }
-        .onChange(of: categorySelection) { _ in
+        .onChange(of: categorySelection) {
             updateFilteredStats()
         }
-        .onChange(of: heightSelection) { _ in
+        .onChange(of: heightSelection) {
             updateFilteredStats()
         }
     }
