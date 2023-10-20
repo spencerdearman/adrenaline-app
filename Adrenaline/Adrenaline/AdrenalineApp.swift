@@ -198,7 +198,6 @@ let CLOUDFRONT_IMAGE_BASE_URL = "https://dc666cmbq88s6.cloudfront.net/"
 let MAIN_BUCKET = "adrenalinexxxxx153503-main"
 let STREAMS_BUCKET = "adrenaline-main-video-streams"
 
-
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
