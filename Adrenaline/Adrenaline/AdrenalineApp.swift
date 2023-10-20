@@ -425,62 +425,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     }
 }
 
-class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(
-        _ application: UIApplication,
-        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
-    ) {
-        Task {
-            do {
-                try await Amplify.Notifications.Push.registerDevice(apnsToken: deviceToken)
-                let apnsToken = deviceToken.map { String(format: "%02x", $0) }.joined()
-                print(apnsToken)
-                print("Registered with Pinpoint.")
-            } catch {
-                print("Error registering with Pinpoint: \(error)")
-            }
-        }
-    }
-    
-    func application(
-        _ application: UIApplication,
-        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
-    ) async -> UIBackgroundFetchResult {
-        
-        do {
-            try await Amplify.Notifications.Push.recordNotificationReceived(userInfo)
-        } catch {
-            print("Error recording receipt of notification: \(error)")
-        }
-        
-        return .newData
-    }
-    
-    func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
-    ) -> Bool {
-        UNUserNotificationCenter.current().delegate = self
-        // ...
-        return true
-    }
-}
-
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    
-    // Called when a user opens (taps or clicks) a notification.
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse
-    ) async {
-        do {
-            try await Amplify.Notifications.Push.recordNotificationOpened(response)
-        } catch {
-            print("Error recording notification opened: \(error)")
-        }
-    }
-}
-
 @main
 struct AdrenalineApp: App {
     // Only one of these should exist, add @Environment to use variable in views
