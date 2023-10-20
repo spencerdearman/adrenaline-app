@@ -10,16 +10,16 @@ import SwiftUI
 struct MessageRow: View {
 
     let message: Message
-    let b: Bool
+    let currentUserIsSender: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
             Text(message.body)
-                .foregroundColor(b ? .white : .primary)
+                .foregroundColor(currentUserIsSender ? .white : .primary)
                 .font(.body)
                 .padding(10)
         }
-        .background(b ? .blue.opacity(0.7) : .gray.opacity(0.2))
+        .background(currentUserIsSender ? .blue.opacity(0.7) : .gray.opacity(0.2))
         .cornerRadius(30)
     }
 }

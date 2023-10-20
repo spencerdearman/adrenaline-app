@@ -32,7 +32,6 @@ struct PlayButton: View {
         .background(.ultraThinMaterial)
         .cornerRadius(60)
         .modifier(OutlineOverlay(cornerRadius: 60))
-        .overlay(CircularView(value: 0.25, lineWidth: 8))
         .overlay(
             Text("12:08")
                 .font(.footnote.weight(.semibold))
@@ -176,23 +175,57 @@ struct PlayShape: Shape {
 struct CircularView: View {
     var value: CGFloat = 0.5
     var lineWidth: Double = 4
+    @Binding var newMessage: Bool
     
     @State var appear = false
+    @State var showBackgroundCircle: Bool = false
+    @State var dynamicCircleColor = [Custom.darkBlue, Custom.coolBlue, Custom.medBlue, Custom.lightBlue, Custom.medBlue, Custom.coolBlue, Custom.darkBlue]
+    @State var staticCircleColor = [Custom.darkBlue, Custom.coolBlue, Custom.medBlue, Custom.lightBlue, Custom.medBlue, Custom.coolBlue, Custom.darkBlue]
+    let blue = [Custom.darkBlue, Custom.coolBlue, Custom.medBlue, Custom.lightBlue, Custom.medBlue, Custom.coolBlue, Custom.darkBlue]
+    let red = [Color.white, Color.red]
+    let animationDuration = 4.0
+    
     
     var body: some View {
-        Circle()
-            .trim(from: 0, to: appear ? value : 0)
-            .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-            .fill(.angularGradient(colors: [Custom.darkBlue, Custom.coolBlue, Custom.medBlue, Custom.lightBlue, Custom.medBlue, Custom.coolBlue, Custom.darkBlue], center: .center, startAngle: .degrees(0), endAngle: .degrees(360)))
-            .rotationEffect(.degrees(270))
-            .onAppear {
-                withAnimation(.spring().delay(0.5)) {
-                    appear = true
+        ZStack {
+            
+            //Static
+            if showBackgroundCircle {
+                Circle()
+                    .trim(from: 0, to: value)
+                    .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                    .fill(.angularGradient(colors: staticCircleColor, center: .center, startAngle: .degrees(0), endAngle: .degrees(360)))
+                    .rotationEffect(.degrees(270))
+            }
+            
+            //Dynamic
+            Circle()
+                .trim(from: 0, to: appear ? value : 0)
+                .stroke(style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                .fill(.angularGradient(colors: dynamicCircleColor, center: .center, startAngle: .degrees(0), endAngle: .degrees(360)))
+                .rotationEffect(.degrees(270))
+                .onAppear {
+                    withAnimation(.easeIn(duration: animationDuration).delay(0.3)) {
+                        appear = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
+                        showBackgroundCircle = true
+                    }
                 }
-            }
-            .onDisappear {
-                appear = false
-            }
+                .onChange(of: newMessage) {
+                    appear = false
+                    dynamicCircleColor = newMessage ? red : blue
+                    withAnimation(.easeIn(duration: animationDuration).delay(0.3)) {
+                        appear = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
+                        staticCircleColor = dynamicCircleColor
+                    }
+                }
+                .onDisappear {
+                    appear = false
+                }
+        }
     }
 }
 
