@@ -2,7 +2,7 @@
   "version": "1",
   "cognitoConfig": {
     "identityPoolName": "adrenaline7ea715e2_identitypool_7ea715e2",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "adrena7ea715e2",
     "userPoolName": "adrenaline7ea715e2_userpool_7ea715e2",
     "autoVerifiedAttributes": [

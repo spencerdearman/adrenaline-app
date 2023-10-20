@@ -1,0 +1,21 @@
+{
+    "appName": "adrenaline",
+    "roleName": "pinpointLambdaRole2eff04a2",
+    "cloudformationPolicyName": "cloudformationPolicy2eff04a2",
+    "cloudWatchPolicyName": "cloudWatchPolicy2eff04a2",
+    "pinpointPolicyName": "pinpointPolicy2eff04a2",
+    "authPolicyName": "pinpoint_amplify_2eff04a2",
+    "unauthPolicyName": "pinpoint_amplify_2eff04a2",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}

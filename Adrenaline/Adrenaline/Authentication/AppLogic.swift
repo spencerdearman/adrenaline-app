@@ -13,6 +13,8 @@ import AWSCognitoAuthPlugin
 import AWSDataStorePlugin
 import AWSAPIPlugin
 import AWSS3StoragePlugin
+import AWSPinpointPushNotificationsPlugin
+import AWSPinpointAnalyticsPlugin
 
 //Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
@@ -32,6 +34,9 @@ class AppLogic: ObservableObject {
             Amplify.Logging.logLevel = .info
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
+            try Amplify.add(plugin: AWSPinpointPushNotificationsPlugin(options: [.badge, .alert, .sound]))
+            try Amplify.add(plugin:
+                AWSPinpointAnalyticsPlugin())
             try Amplify.add(plugin: AWSAPIPlugin(modelRegistration: AmplifyModels()))
             try Amplify.add(plugin: AWSDataStorePlugin(modelRegistration: AmplifyModels()))
             try Amplify.add(plugin: AWSS3StoragePlugin())
