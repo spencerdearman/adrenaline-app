@@ -340,7 +340,7 @@ extension EnvironmentValues {
         get { self[NewMeetsKey.self] }
         set { self[NewMeetsKey.self] = newValue }
     }
-
+    
     var newTeams: [NewTeam] {
         get { self[NewTeamsKey.self] }
         set { self[NewTeamsKey.self] = newValue }
@@ -365,14 +365,11 @@ extension UINavigationController {
     }
 }
 
-<<<<<<< HEAD
 let CLOUDFRONT_STREAM_BASE_URL = "https://d3mgzcs3lrwvom.cloudfront.net/"
 let CLOUDFRONT_IMAGE_BASE_URL = "https://dc666cmbq88s6.cloudfront.net/"
 let MAIN_BUCKET = "adrenalinexxxxx153503-main"
 let STREAMS_BUCKET = "adrenaline-main-video-streams"
 
-=======
->>>>>>> ffd7ed9 (Finished initial setup for AWS Notifications and APNs.)
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(
         _ application: UIApplication,
@@ -415,11 +412,62 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-<<<<<<< HEAD
-    
-=======
+    // Called when a user opens (taps or clicks) a notification.
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        do {
+            try await Amplify.Notifications.Push.recordNotificationOpened(response)
+        } catch {
+            print("Error recording notification opened: \(error)")
+        }
+    }
+}
 
->>>>>>> ffd7ed9 (Finished initial setup for AWS Notifications and APNs.)
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        Task {
+            do {
+                try await Amplify.Notifications.Push.registerDevice(apnsToken: deviceToken)
+                let apnsToken = deviceToken.map { String(format: "%02x", $0) }.joined()
+                print(apnsToken)
+                print("Registered with Pinpoint.")
+            } catch {
+                print("Error registering with Pinpoint: \(error)")
+            }
+        }
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    ) async -> UIBackgroundFetchResult {
+        
+        do {
+            try await Amplify.Notifications.Push.recordNotificationReceived(userInfo)
+        } catch {
+            print("Error recording receipt of notification: \(error)")
+        }
+        
+        return .newData
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+    ) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        // ...
+        return true
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
     // Called when a user opens (taps or clicks) a notification.
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
@@ -443,11 +491,7 @@ struct AdrenalineApp: App {
     @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> ffd7ed9 (Finished initial setup for AWS Notifications and APNs.)
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -514,16 +558,6 @@ struct AdrenalineApp: App {
                         // Runs this task asynchronously so rest of app can function while this
                         // finishes
                         Task {
-<<<<<<< HEAD
-=======
-                            let moc = modelDataController.container.viewContext
-                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
-                                entityName: "DivingMeet")
-                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
-                            
-//                            try await meetParser.parseMeets(storedMeets: meets)
-                            
->>>>>>> ffd7ed9 (Finished initial setup for AWS Notifications and APNs.)
                             // Check that each set of meets is not nil and add each to the database
                             if let upcoming = meetParser.upcomingMeets {
                                 modelDataController.addRecords(
