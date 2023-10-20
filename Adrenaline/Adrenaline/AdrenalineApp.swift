@@ -374,6 +374,8 @@ extension UINavigationController {
     }
 }
 
+let CLOUDFRONT_BASE_URL = "https://d3mgzcs3lrwvom.cloudfront.net/"
+
 @main
 struct AdrenalineApp: App {
     // Only one of these should exist, add @Environment to use variable in views
