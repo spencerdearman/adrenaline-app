@@ -26,6 +26,8 @@ struct Chat: View {
     @State var appear = [false, false, false]
     @State var viewState: CGSize = .zero
     @State var messageNotEmpty: Bool = false
+    @State var newMessages: Set<String> = Set()
+    @State var observedMessageIDs: Set<String> = Set()
     @State var recipientMessageSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<MessageNewUser>>?
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     private let screenWidth = UIScreen.main.bounds.width
@@ -60,9 +62,10 @@ struct Chat: View {
                                 ForEach(users.indices, id: \.self) { index in
                                     let user = users[index]
                                     if index != 0 { Divider() }
-                                    ProfileRow(user: user)
+                                    ProfileRow(user: user, newMessages: $newMessages)
                                         .onTapGesture {
                                             withAnimation {
+                                                newMessages.remove(user.id)
                                                 selection = 1
                                                 feedModel.showTab = false
                                             }
@@ -202,14 +205,11 @@ struct Chat: View {
             }
         }
     }
-    // Define a set to keep track of observed message IDs
-   @State var observedMessageIDs: Set<String> = Set()
 
     // This function is used to observe changes in the Message model
     func observeNewMessages() {
         // Set up a subscription to observe new messages
         let messageSubscription = Amplify.DataStore.observeQuery(for: Message.self)
-
         Task {
             do {
                 for try await querySnapshot in messageSubscription {
@@ -218,9 +218,6 @@ struct Chat: View {
                         // Check if the message ID has already been observed
                         if !observedMessageIDs.contains(message.id) {
                             // A new message has been created, you can update your UI here
-                            print("New message created: \(message)")
-                            // Update the observedMessageIDs set to mark this message as observed
-                            observedMessageIDs.insert(message.id)
                             //Updating Messages
                             if let currentUser = currentUser {
                                 
@@ -238,6 +235,7 @@ struct Chat: View {
                                             currentMessageNewUser = msgMessageNewUsers.elements[1]
                                             recipientMessageNewUser = msgMessageNewUsers.elements[0]
                                         } else {
+                                            observedMessageIDs.insert(message.id)
                                             continue
                                         }
                                         
@@ -250,11 +248,13 @@ struct Chat: View {
                                         }
                                         currentUserConversations[key]!.append(value)
                                         updatedConversations.insert(key)
+                                        
+                                        // Update the observedMessageIDs set to mark this message as observed
+                                        observedMessageIDs.insert(message.id)
                                     } else {
-                                        print("MessageNewUser count does not equal 2")
+                                        print("MessageNewUser count != 2")
                                     }
                                 }
-                                print(messages)
                             } else {
                                 print("Error updating the users")
                             }
@@ -262,17 +262,9 @@ struct Chat: View {
                     }
                     for key in updatedConversations {
                         currentUserConversations[key]! = 
-                        currentUserConversations[key]!.sorted(by: {
-                            //$0.0.createdAt ?? .now() < $1.0.createdAt ?? .now()
-                            let lhs = $0.0.creationDate
-                            let rhs = $1.0.creationDate
-                            print("lhs \(lhs)")
-                            print("rhs \(rhs)")
-                            return lhs < rhs
-                        })
-                        print("key \(key)")
-                        print("Current User Conversations: \(currentUserConversations[key])")
+                        currentUserConversations[key]!.sorted(by: { $0.0.creationDate < $1.0.creationDate })
                     }
+                    newMessages = updatedConversations
                 }
             } catch {
                 print("Error observing new messages: \(error)")
