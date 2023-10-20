@@ -374,6 +374,62 @@ extension UINavigationController {
     }
 }
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        Task {
+            do {
+                try await Amplify.Notifications.Push.registerDevice(apnsToken: deviceToken)
+                let apnsToken = deviceToken.map { String(format: "%02x", $0) }.joined()
+                print(apnsToken)
+                print("Registered with Pinpoint.")
+            } catch {
+                print("Error registering with Pinpoint: \(error)")
+            }
+        }
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    ) async -> UIBackgroundFetchResult {
+        
+        do {
+            try await Amplify.Notifications.Push.recordNotificationReceived(userInfo)
+        } catch {
+            print("Error recording receipt of notification: \(error)")
+        }
+        
+        return .newData
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+    ) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        // ...
+        return true
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+
+    // Called when a user opens (taps or clicks) a notification.
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        do {
+            try await Amplify.Notifications.Push.recordNotificationOpened(response)
+        } catch {
+            print("Error recording notification opened: \(error)")
+        }
+    }
+}
+
 @main
 struct AdrenalineApp: App {
     // Only one of these should exist, add @Environment to use variable in views
@@ -383,6 +439,7 @@ struct AdrenalineApp: App {
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
     @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
         WindowGroup {
@@ -436,7 +493,13 @@ struct AdrenalineApp: App {
                 .onAppear {
                     appLogic.configureAmplify()
                     networkMonitor.start()
+                    Task {
+                        let user = try await Amplify.Auth.getCurrentUser().userId
+                        try await Amplify.Notifications.Push.identifyUser(userId: user)
+                    }
                     
+                    
+                
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without
                     //     starting over)
@@ -446,11 +509,6 @@ struct AdrenalineApp: App {
                         // Runs this task asynchronously so rest of app can function while this
                         // finishes
                         Task {
-                            // await SkillRating(diveStatistics: nil).testMetrics(0)
-                            // await SkillRating(diveStatistics: nil)
-                            //     .testMetrics(0, includePlatform: false)
-                            // await SkillRating(diveStatistics: nil)
-                            //     .testMetrics(0, onlyPlatform: true)
                             let moc = modelDataController.container.viewContext
                             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
                                 entityName: "DivingMeet")
