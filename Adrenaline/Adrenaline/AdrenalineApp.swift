@@ -263,7 +263,7 @@ struct AdrenalineApp: App {
     @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
