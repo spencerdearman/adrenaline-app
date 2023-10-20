@@ -39,7 +39,6 @@ struct Chat: View {
     // Personal Chat States
     @State var text: String = ""
     @State var currentUserConversations: [String : [(Message, Bool)]] = [:]
-    @State var messages: [(Message, Bool)] = []
     @State var recipient: NewUser?
     
     var body: some View {
