@@ -36,7 +36,7 @@ struct Chat: View {
     
     // Personal Chat States
     @State var text: String = ""
-    @State var allUserMessages: [Message] = []
+    @State var currentUserConversations: [String : [(Message, Bool)]] = [:]
     @State var messages: [(Message, Bool)] = []
     @State var recipient: NewUser?
     
@@ -95,12 +95,13 @@ struct Chat: View {
                                 .fill(.clear)
                                 .frame(height: 100)
                             LazyVStack {
-                                ForEach(messages.sorted(by: { $0.0.createdAt ?? .now() <
-                                    $1.0.createdAt ?? .now() }), id: \.0.id) { message, b in
-                                        MessageRow(message: message, b: b)
-                                            .frame(maxWidth: .infinity, alignment: b ? .trailing
+                                if let recipient = recipient, let messages = currentUserConversations[recipient.id] {
+                                    ForEach(messages, id:\.0.id) { message, currentUserIsSender in
+                                        MessageRow(message: message, currentUserIsSender: currentUserIsSender)
+                                            .frame(maxWidth: .infinity, alignment: currentUserIsSender ? .trailing
                                                    : .leading)
                                     }
+                                }
                             }
                         }
                         .defaultScrollAnchor(.bottom)
@@ -126,28 +127,6 @@ struct Chat: View {
                                         } else {
                                             print("Errors retrieving users")
                                         }
-                                        
-//                                        //Updating the CurrentUser Status
-//                                        let usersPredicate = NewUser.keys.email == email
-//                                        let users = await queryAWSUsers(where: usersPredicate)
-//                                        if users.count >= 1 {
-//                                            currentUser = users[0]
-//                                        }
-//                                        
-//                                        //Updating the Recipient Status
-//                                        let recipientPredicate = NewUser.keys.id == recipient?.id
-//                                        let recipients = await queryAWSUsers(where: recipientPredicate)
-//                                        if recipients.count >= 1 {
-//                                            recipient = recipients[0]
-//                                        }
-//                                        
-//                                        //Updating Messages
-//                                        if let currentUser = currentUser, let recipient = recipient {
-//                                            messages = await queryConversation(sender: currentUser,
-//                                                                               recipient: recipient)
-//                                        } else {
-//                                            print("Error updating the users")
-//                                        }
                                     }
                                 }
                             } label: {
@@ -234,6 +213,7 @@ struct Chat: View {
         Task {
             do {
                 for try await querySnapshot in messageSubscription {
+                    var updatedConversations: Set<String> = Set()
                     for message in querySnapshot.items {
                         // Check if the message ID has already been observed
                         if !observedMessageIDs.contains(message.id) {
@@ -242,32 +222,56 @@ struct Chat: View {
                             // Update the observedMessageIDs set to mark this message as observed
                             observedMessageIDs.insert(message.id)
                             //Updating Messages
-                            if let currentUser = currentUser, let recipient = recipient {
+                            if let currentUser = currentUser {
                                 
                                 let msgMessageNewUsers = message.MessageNewUsers
                                 try await msgMessageNewUsers?.fetch()
                                 
                                 if let msgMessageNewUsers = msgMessageNewUsers {
-                                    for messageNewUser in msgMessageNewUsers.elements {
-                                        if messageNewUser.newuserID == currentUser.id {
-                                            allUserMessages.append(message)
+                                    if msgMessageNewUsers.elements.count == 2 {
+                                        let currentMessageNewUser: MessageNewUser
+                                        let recipientMessageNewUser: MessageNewUser
+                                        if msgMessageNewUsers.elements[0].newuserID == currentUser.id {
+                                            currentMessageNewUser = msgMessageNewUsers.elements[0]
+                                            recipientMessageNewUser = msgMessageNewUsers.elements[1]
+                                        } else if msgMessageNewUsers.elements[1].newuserID == currentUser.id {
+                                            currentMessageNewUser = msgMessageNewUsers.elements[1]
+                                            recipientMessageNewUser = msgMessageNewUsers.elements[0]
+                                        } else {
+                                            continue
                                         }
-                                        //Dictionary with message-bool tuples
-                                        if messageNewUser.newuserID == currentUser.id, let isSender = messageNewUser.isSender, isSender {
-                                            messages.append((message, true))
-                                        } else if messageNewUser.newuserID == recipient.id, let isSender = messageNewUser.isSender, !isSender {
-                                            messages.append((message, false))
+                                        
+                                        //RecipientMessageNewUser has been assigned at this point
+                                        let key = recipientMessageNewUser.newuserID
+                                        let value = (message, currentMessageNewUser.isSender)
+                                        
+                                        if !currentUserConversations.keys.contains(key) {
+                                            currentUserConversations[key] = []
                                         }
+                                        currentUserConversations[key]!.append(value)
+                                        updatedConversations.insert(key)
+                                    } else {
+                                        print("MessageNewUser count does not equal 2")
                                     }
                                 }
-                                
-//                                messages = await queryConversation(sender: currentUser,
-//                                                                   recipient: recipient, messageSnapshot: querySnapshot.items)
                                 print(messages)
                             } else {
                                 print("Error updating the users")
                             }
                         }
+                    }
+                    for key in updatedConversations {
+                        currentUserConversations[key]! = 
+                        currentUserConversations[key]!.sorted(by: {
+                            //$0.0.createdAt ?? .now() < $1.0.createdAt ?? .now()
+                            let lhs = $0.0.creationDate
+                            let rhs = $1.0.creationDate
+                            print("lhs \(lhs)")
+                            print("rhs \(rhs)")
+                            return lhs < rhs
+                        })
+                        print("key \(key)")
+                        print("Current User Conversations: \(currentUserConversations[key])")
                     }
                 }
             } catch {

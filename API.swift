@@ -1288,7 +1288,7 @@ public struct DeleteNewImageInput: GraphQLMapConvertible {
 public struct CreateMessageNewUserInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID? = nil, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, version: Int? = nil) {
+  public init(id: GraphQLID? = nil, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, version: Int? = nil) {
     graphQLMap = ["id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "_version": version]
   }
 
@@ -1301,9 +1301,9 @@ public struct CreateMessageNewUserInput: GraphQLMapConvertible {
     }
   }
 
-  public var isSender: Bool? {
+  public var isSender: Bool {
     get {
-      return graphQLMap["isSender"] as! Bool?
+      return graphQLMap["isSender"] as! Bool
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "isSender")
@@ -9575,7 +9575,7 @@ public final class CreateMessageNewUserMutation: GraphQLMutation {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("isSender", type: .scalar(Bool.self)),
+        GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
         GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -9591,7 +9591,7 @@ public final class CreateMessageNewUserMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+      public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
         self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
@@ -9613,9 +9613,9 @@ public final class CreateMessageNewUserMutation: GraphQLMutation {
         }
       }
 
-      public var isSender: Bool? {
+      public var isSender: Bool {
         get {
-          return snapshot["isSender"] as? Bool
+          return snapshot["isSender"]! as! Bool
         }
         set {
           snapshot.updateValue(newValue, forKey: "isSender")
@@ -9736,7 +9736,7 @@ public final class UpdateMessageNewUserMutation: GraphQLMutation {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("isSender", type: .scalar(Bool.self)),
+        GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
         GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -9752,7 +9752,7 @@ public final class UpdateMessageNewUserMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+      public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
         self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
@@ -9774,9 +9774,9 @@ public final class UpdateMessageNewUserMutation: GraphQLMutation {
         }
       }
 
-      public var isSender: Bool? {
+      public var isSender: Bool {
         get {
-          return snapshot["isSender"] as? Bool
+          return snapshot["isSender"]! as! Bool
         }
         set {
           snapshot.updateValue(newValue, forKey: "isSender")
@@ -9897,7 +9897,7 @@ public final class DeleteMessageNewUserMutation: GraphQLMutation {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("isSender", type: .scalar(Bool.self)),
+        GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
         GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -9913,7 +9913,7 @@ public final class DeleteMessageNewUserMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+      public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
         self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
@@ -9935,9 +9935,9 @@ public final class DeleteMessageNewUserMutation: GraphQLMutation {
         }
       }
 
-      public var isSender: Bool? {
+      public var isSender: Bool {
         get {
-          return snapshot["isSender"] as? Bool
+          return snapshot["isSender"]! as! Bool
         }
         set {
           snapshot.updateValue(newValue, forKey: "isSender")
@@ -27424,7 +27424,7 @@ public final class GetMessageNewUserQuery: GraphQLQuery {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("isSender", type: .scalar(Bool.self)),
+        GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
         GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -27440,7 +27440,7 @@ public final class GetMessageNewUserQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+      public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
         self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
@@ -27462,9 +27462,9 @@ public final class GetMessageNewUserQuery: GraphQLQuery {
         }
       }
 
-      public var isSender: Bool? {
+      public var isSender: Bool {
         get {
-          return snapshot["isSender"] as? Bool
+          return snapshot["isSender"]! as! Bool
         }
         set {
           snapshot.updateValue(newValue, forKey: "isSender")
@@ -27643,7 +27643,7 @@ public final class ListMessageNewUsersQuery: GraphQLQuery {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("isSender", type: .scalar(Bool.self)),
+          GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
           GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -27659,7 +27659,7 @@ public final class ListMessageNewUsersQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
           self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
@@ -27681,9 +27681,9 @@ public final class ListMessageNewUsersQuery: GraphQLQuery {
           }
         }
 
-        public var isSender: Bool? {
+        public var isSender: Bool {
           get {
-            return snapshot["isSender"] as? Bool
+            return snapshot["isSender"]! as! Bool
           }
           set {
             snapshot.updateValue(newValue, forKey: "isSender")
@@ -27865,7 +27865,7 @@ public final class SyncMessageNewUsersQuery: GraphQLQuery {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("isSender", type: .scalar(Bool.self)),
+          GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
           GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -27881,7 +27881,7 @@ public final class SyncMessageNewUsersQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
           self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
@@ -27903,9 +27903,9 @@ public final class SyncMessageNewUsersQuery: GraphQLQuery {
           }
         }
 
-        public var isSender: Bool? {
+        public var isSender: Bool {
           get {
-            return snapshot["isSender"] as? Bool
+            return snapshot["isSender"]! as! Bool
           }
           set {
             snapshot.updateValue(newValue, forKey: "isSender")
@@ -28089,7 +28089,7 @@ public final class MessageNewUsersByNewuserIdQuery: GraphQLQuery {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("isSender", type: .scalar(Bool.self)),
+          GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
           GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -28105,7 +28105,7 @@ public final class MessageNewUsersByNewuserIdQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
           self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
@@ -28127,9 +28127,9 @@ public final class MessageNewUsersByNewuserIdQuery: GraphQLQuery {
           }
         }
 
-        public var isSender: Bool? {
+        public var isSender: Bool {
           get {
-            return snapshot["isSender"] as? Bool
+            return snapshot["isSender"]! as! Bool
           }
           set {
             snapshot.updateValue(newValue, forKey: "isSender")
@@ -28313,7 +28313,7 @@ public final class MessageNewUsersByMessageIdQuery: GraphQLQuery {
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-          GraphQLField("isSender", type: .scalar(Bool.self)),
+          GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
           GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -28329,7 +28329,7 @@ public final class MessageNewUsersByMessageIdQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
           self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
@@ -28351,9 +28351,9 @@ public final class MessageNewUsersByMessageIdQuery: GraphQLQuery {
           }
         }
 
-        public var isSender: Bool? {
+        public var isSender: Bool {
           get {
-            return snapshot["isSender"] as? Bool
+            return snapshot["isSender"]! as! Bool
           }
           set {
             snapshot.updateValue(newValue, forKey: "isSender")
@@ -43513,7 +43513,7 @@ public final class OnCreateMessageNewUserSubscription: GraphQLSubscription {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("isSender", type: .scalar(Bool.self)),
+        GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
         GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -43529,7 +43529,7 @@ public final class OnCreateMessageNewUserSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+      public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
         self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
@@ -43551,9 +43551,9 @@ public final class OnCreateMessageNewUserSubscription: GraphQLSubscription {
         }
       }
 
-      public var isSender: Bool? {
+      public var isSender: Bool {
         get {
-          return snapshot["isSender"] as? Bool
+          return snapshot["isSender"]! as! Bool
         }
         set {
           snapshot.updateValue(newValue, forKey: "isSender")
@@ -43672,7 +43672,7 @@ public final class OnUpdateMessageNewUserSubscription: GraphQLSubscription {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("isSender", type: .scalar(Bool.self)),
+        GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
         GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -43688,7 +43688,7 @@ public final class OnUpdateMessageNewUserSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+      public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
         self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
@@ -43710,9 +43710,9 @@ public final class OnUpdateMessageNewUserSubscription: GraphQLSubscription {
         }
       }
 
-      public var isSender: Bool? {
+      public var isSender: Bool {
         get {
-          return snapshot["isSender"] as? Bool
+          return snapshot["isSender"]! as! Bool
         }
         set {
           snapshot.updateValue(newValue, forKey: "isSender")
@@ -43831,7 +43831,7 @@ public final class OnDeleteMessageNewUserSubscription: GraphQLSubscription {
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        GraphQLField("isSender", type: .scalar(Bool.self)),
+        GraphQLField("isSender", type: .nonNull(.scalar(Bool.self))),
         GraphQLField("newuserID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("messageID", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
@@ -43847,7 +43847,7 @@ public final class OnDeleteMessageNewUserSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, isSender: Bool? = nil, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+      public init(id: GraphQLID, isSender: Bool, newuserId: GraphQLID, messageId: GraphQLID, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
         self.init(snapshot: ["__typename": "MessageNewUser", "id": id, "isSender": isSender, "newuserID": newuserId, "messageID": messageId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
@@ -43869,9 +43869,9 @@ public final class OnDeleteMessageNewUserSubscription: GraphQLSubscription {
         }
       }
 
-      public var isSender: Bool? {
+      public var isSender: Bool {
         get {
-          return snapshot["isSender"] as? Bool
+          return snapshot["isSender"]! as! Bool
         }
         set {
           snapshot.updateValue(newValue, forKey: "isSender")

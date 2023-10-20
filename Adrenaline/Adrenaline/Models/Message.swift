@@ -2,17 +2,17 @@
 import Amplify
 import Foundation
 
-public struct Message: Model, Identifiable {
+public struct Message: Model {
   public let id: String
   public var body: String
-  public var creationDate: Temporal.Date
+  public var creationDate: Temporal.DateTime
   public var MessageNewUsers: List<MessageNewUser>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
   public init(id: String = UUID().uuidString,
       body: String,
-      creationDate: Temporal.Date,
+      creationDate: Temporal.DateTime,
       MessageNewUsers: List<MessageNewUser>? = []) {
     self.init(id: id,
       body: body,
@@ -23,7 +23,7 @@ public struct Message: Model, Identifiable {
   }
   internal init(id: String = UUID().uuidString,
       body: String,
-      creationDate: Temporal.Date,
+      creationDate: Temporal.DateTime,
       MessageNewUsers: List<MessageNewUser>? = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {

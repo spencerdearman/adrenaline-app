@@ -1,4 +1,4 @@
-type Post @model @auth(rules: [{ allow: private }]) {
+type Post @model @auth(rules: [{allow: private}]) {
   id: ID!
   title: String
   description: String
@@ -8,21 +8,21 @@ type Post @model @auth(rules: [{ allow: private }]) {
   newuserID: ID! @index(name: "byNewUser")
 }
 
-type NewImage @model @auth(rules: [{ allow: private }]) {
+type NewImage @model @auth(rules: [{allow: private}]) {
   id: ID!
   s3key: String!
   uploadDate: AWSDateTime!
   postID: ID! @index(name: "byPost")
 }
 
-type MessageNewUser @model @auth(rules: [{ allow: private }]) {
+type MessageNewUser @model @auth(rules: [{allow: private}]) {
   id: ID!
-  isSender: Boolean
+  isSender: Boolean!
   newuserID: ID! @index(name: "byNewUser")
   messageID: ID! @index(name: "byMessage")
 }
 
-type NewUser @model @auth(rules: [{ allow: private }]) {
+type NewUser @model @auth(rules: [{allow: private}]) {
   id: ID!
   firstName: String!
   lastName: String!
@@ -37,7 +37,7 @@ type NewUser @model @auth(rules: [{ allow: private }]) {
   posts: [Post] @hasMany(indexName: "byNewUser", fields: ["id"])
 }
 
-type NewAthlete @model @auth(rules: [{ allow: private }]) {
+type NewAthlete @model @auth(rules: [{allow: private}]) {
   id: ID!
   user: NewUser! @belongsTo
   team: NewTeam @belongsTo
@@ -59,40 +59,40 @@ type NewAthlete @model @auth(rules: [{ allow: private }]) {
   newteamID: ID! @index(name: "byNewTeam")
 }
 
-type Video @model @auth(rules: [{ allow: private }]) {
+type Video @model @auth(rules: [{allow: private}]) {
   id: ID!
   s3key: String!
   uploadDate: AWSDateTime!
   postID: ID! @index(name: "byPost")
 }
 
-type CoachUser @model @auth(rules: [{ allow: private }]) {
+type CoachUser @model @auth(rules: [{allow: private}]) {
   id: ID!
   user: NewUser @belongsTo
   team: NewTeam @belongsTo
 }
 
-type NewFollowed @model @auth(rules: [{ allow: private }]) {
+type NewFollowed @model @auth(rules: [{allow: private}]) {
   id: ID!
   email: AWSEmail!
   users: [NewUser!]! @manyToMany(relationName: "NewUserNewFollowed")
 }
 
-type NewTeam @model @auth(rules: [{ allow: private }]) {
+type NewTeam @model @auth(rules: [{allow: private}]) {
   id: ID!
   name: String!
   coach: CoachUser @hasOne
   athletes: [NewAthlete!]! @hasMany(indexName: "byNewTeam", fields: ["id"])
 }
 
-type College @model @auth(rules: [{ allow: private }]) {
+type College @model @auth(rules: [{allow: private}]) {
   id: ID!
   name: String!
   imageLink: AWSURL!
   athletes: [NewAthlete!]! @hasMany(indexName: "byCollege", fields: ["id"])
 }
 
-type NewMeet @model @auth(rules: [{ allow: private }]) {
+type NewMeet @model @auth(rules: [{allow: private}]) {
   id: ID!
   meetID: Int!
   name: String!
@@ -107,7 +107,7 @@ type NewMeet @model @auth(rules: [{ allow: private }]) {
   events: [NewEvent!]! @hasMany(indexName: "byNewMeet", fields: ["id"])
 }
 
-type NewEvent @model @auth(rules: [{ allow: private }]) {
+type NewEvent @model @auth(rules: [{allow: private}]) {
   id: ID!
   meet: NewMeet! @belongsTo
   name: String!
@@ -118,7 +118,7 @@ type NewEvent @model @auth(rules: [{ allow: private }]) {
   newmeetID: ID! @index(name: "byNewMeet")
 }
 
-type Dive @model @auth(rules: [{ allow: private }]) {
+type Dive @model @auth(rules: [{allow: private}]) {
   id: ID!
   event: NewEvent! @belongsTo
   athlete: NewAthlete! @belongsTo
@@ -133,17 +133,17 @@ type Dive @model @auth(rules: [{ allow: private }]) {
   neweventID: ID! @index(name: "byNewEvent")
 }
 
-type JudgeScore @model @auth(rules: [{ allow: private }]) {
+type JudgeScore @model @auth(rules: [{allow: private}]) {
   id: ID!
   dive: Dive! @belongsTo
   score: Float!
   diveID: ID! @index(name: "byDive")
 }
 
-type Message @model @auth(rules: [{ allow: private }]) {
+type Message @model @auth(rules: [{allow: private}]) {
   id: ID!
   body: String!
-  creationDate: AWSDate!
+  creationDate: AWSDateTime!
   MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byMessage", fields: ["id"])
 }
  

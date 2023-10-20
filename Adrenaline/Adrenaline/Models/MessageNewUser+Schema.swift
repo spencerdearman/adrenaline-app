@@ -34,7 +34,7 @@ extension MessageNewUser {
     
     model.fields(
       .field(messageNewUser.id, is: .required, ofType: .string),
-      .field(messageNewUser.isSender, is: .optional, ofType: .bool),
+      .field(messageNewUser.isSender, is: .required, ofType: .bool),
       .field(messageNewUser.newuserID, is: .required, ofType: .string),
       .field(messageNewUser.messageID, is: .required, ofType: .string),
       .field(messageNewUser.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),

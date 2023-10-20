@@ -33,7 +33,7 @@ extension Message {
     model.fields(
       .field(message.id, is: .required, ofType: .string),
       .field(message.body, is: .required, ofType: .string),
-      .field(message.creationDate, is: .required, ofType: .date),
+      .field(message.creationDate, is: .required, ofType: .dateTime),
       .hasMany(message.MessageNewUsers, is: .optional, ofType: MessageNewUser.self, associatedWith: MessageNewUser.keys.messageID),
       .field(message.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(message.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)

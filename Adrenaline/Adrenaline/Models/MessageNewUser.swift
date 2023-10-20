@@ -4,14 +4,14 @@ import Foundation
 
 public struct MessageNewUser: Model {
   public let id: String
-  public var isSender: Bool?
+  public var isSender: Bool
   public var newuserID: String
   public var messageID: String
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
   public init(id: String = UUID().uuidString,
-      isSender: Bool? = nil,
+      isSender: Bool,
       newuserID: String,
       messageID: String) {
     self.init(id: id,
@@ -22,7 +22,7 @@ public struct MessageNewUser: Model {
       updatedAt: nil)
   }
   internal init(id: String = UUID().uuidString,
-      isSender: Bool? = nil,
+      isSender: Bool,
       newuserID: String,
       messageID: String,
       createdAt: Temporal.DateTime? = nil,
