@@ -27,8 +27,8 @@ def handler(event, context):
 
     for record in records:
         # Establishes landscape resolution pairs
-        resolution_widths = [640, 960, 1280]
-        resolution_heights = [360, 540, 720]
+        resolution_widths = [640, 960, 1280, 1920]
+        resolution_heights = [360, 540, 720, 1080]
 
         source_s3_key = record["s3"]["object"]["key"].replace("%40", "@")
         source_s3_bucket = record["s3"]["bucket"]["name"]
