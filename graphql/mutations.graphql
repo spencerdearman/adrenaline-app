@@ -1,5 +1,56 @@
 # this is an auto generated file. This will be overwritten
 
+mutation CreateTokens(
+  $input: CreateTokensInput!
+  $condition: ModelTokensConditionInput
+) {
+  createTokens(input: $input, condition: $condition) {
+    id
+    token
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdateTokens(
+  $input: UpdateTokensInput!
+  $condition: ModelTokensConditionInput
+) {
+  updateTokens(input: $input, condition: $condition) {
+    id
+    token
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeleteTokens(
+  $input: DeleteTokensInput!
+  $condition: ModelTokensConditionInput
+) {
+  deleteTokens(input: $input, condition: $condition) {
+    id
+    token
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 mutation CreatePost(
   $input: CreatePostInput!
   $condition: ModelPostConditionInput
@@ -257,6 +308,11 @@ mutation CreateNewUser(
       startedAt
       __typename
     }
+    tokens {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -330,6 +386,11 @@ mutation UpdateNewUser(
       startedAt
       __typename
     }
+    tokens {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -399,6 +460,11 @@ mutation DeleteNewUser(
       __typename
     }
     posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    tokens {
       nextToken
       startedAt
       __typename

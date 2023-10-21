@@ -165,10 +165,6 @@ private struct GraphCollegesKey: EnvironmentKey {
     static let defaultValue: [GraphCollege] = []
 }
 
-private struct VideoStoreKey: EnvironmentKey {
-    static let defaultValue: VideoStore = VideoStore()
-}
-
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -354,11 +350,6 @@ extension EnvironmentValues {
         get { self[GraphCollegesKey.self] }
         set { self[GraphCollegesKey.self] = newValue }
     }
-    
-    var videoStore: VideoStore {
-        get { self[VideoStoreKey.self] }
-        set { self[VideoStoreKey.self] = newValue }
-    }
 }
 
 extension View {
@@ -373,6 +364,8 @@ extension UINavigationController {
         interactivePopGestureRecognizer?.delegate = nil
     }
 }
+
+let CLOUDFRONT_BASE_URL = "https://d3mgzcs3lrwvom.cloudfront.net/"
 
 @main
 struct AdrenalineApp: App {
@@ -393,7 +386,6 @@ struct AdrenalineApp: App {
                 .environment(\.graphMeets, appLogic.meets)
                 .environment(\.graphTeams, appLogic.teams)
                 .environment(\.graphColleges, appLogic.colleges)
-                .environment(\.videoStore, appLogic.videoStore)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)
@@ -428,7 +420,7 @@ struct AdrenalineApp: App {
                 .environment(\.dropFollowedByEmail, modelDataController.dropFollowedByEmail)
                 .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
                 .environment(\.dropFollowedFromUser, modelDataController.dropFollowedFromUser)
-                .onChange(of: appLogic.dataStoreReady) { _ in
+                .onChange(of: appLogic.dataStoreReady) {
                     print(appLogic.dataStoreReady
                           ? "DataStore ready"
                           : "DataStore not ready")
@@ -451,10 +443,10 @@ struct AdrenalineApp: App {
                             //     .testMetrics(0, includePlatform: false)
                             // await SkillRating(diveStatistics: nil)
                             //     .testMetrics(0, onlyPlatform: true)
-                            let moc = modelDataController.container.viewContext
-                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
-                                entityName: "DivingMeet")
-                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
+//                            let moc = modelDataController.container.viewContext
+//                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
+//                                entityName: "DivingMeet")
+//                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
                             
 //                            try await meetParser.parseMeets(storedMeets: meets)
                             

@@ -115,7 +115,6 @@ struct Chat: View {
                                     } else {
                                         messageNotEmpty = false
                                     }
-                                    text = newText
                                 }
                             Button {
                                 if messageNotEmpty {

@@ -156,8 +156,7 @@ struct RecruitingView: View {
 
 struct VideosView: View {
     @EnvironmentObject private var appLogic: AppLogic
-    @Environment(\.videoStore) private var videoStore
-    @State private var videos: [VideoItem] = []
+    @State private var videos: [VideoPlayerViewModel] = []
     @State private var isDownloading: Bool = false
     @AppStorage("email") private var email: String = ""
     
@@ -172,10 +171,10 @@ struct VideosView: View {
                     LazyVGrid(columns: [
                         GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
                             ForEach(videos.indices, id: \.self) { index in
-                                videos[index].view
+                                BufferVideoPlayerView(videoPlayerVM: videos[index])
                                     .frame(width: size, height: size)
                                     .onAppear {
-                                        videos[index].player?.seek(to: .zero)
+                                        videos[index].player.seek(to: .zero)
                                     }
                             }
                         }
@@ -203,34 +202,9 @@ struct VideosView: View {
         .onAppear {
             if videos.isEmpty, email != "" {
                 Task {
-                    guard let listItems = await videoStore.getVideoItemsByEmail(email: email) else {
+                    guard let listItems = await getVideosByEmail(email: email) else {
                         return
                     }
-                    
-                    isDownloading = true
-                    
-                    videos = await withTaskGroup(of: (Int, VideoItem?).self,
-                                                 returning: [VideoItem].self) { [self] group in
-                        // Associates each work item with an Int to achieve original order later
-                        for item in listItems.enumerated().map({ ($0.0, $0.1) }) {
-                            group.addTask {
-                                await (item.0, videoStore.downloadVideoItem(item: item.1,
-                                                                            email: email))
-                            }
-                        }
-                        
-                        var results: [(Int, VideoItem)] = []
-                        
-                        for await result in group {
-                            if result.1 != nil {
-                                results.append((result.0, result.1!))
-                            }
-                        }
-                        
-                        return results.sorted(by: { $0.0 < $1.0 }).map { $0.1 }
-                    }
-                    
-                    isDownloading = false
                 }
             }
         }
@@ -357,7 +331,7 @@ struct StatisticsView: View {
                 .padding(.top)
                 .padding(.bottom, maxHeightOffset)
             }
-            .onChange(of: maxHeightOffsetScaled) { _ in
+            .onChange(of: maxHeightOffsetScaled) {
                 print(maxHeightOffset)
             }
             .onAppear {
@@ -375,10 +349,10 @@ struct StatisticsView: View {
                 }
             }
         }
-        .onChange(of: categorySelection) { _ in
+        .onChange(of: categorySelection) {
             updateFilteredStats()
         }
-        .onChange(of: heightSelection) { _ in
+        .onChange(of: heightSelection) {
             updateFilteredStats()
         }
     }

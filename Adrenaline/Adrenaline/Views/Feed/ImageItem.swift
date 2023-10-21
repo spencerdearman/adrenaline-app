@@ -130,7 +130,7 @@ struct ImageFeedItemExpandedView: View {
         .onAppear {
             fadeIn()
         }
-        .onChange(of: feedModel.showTile) { show in
+        .onChange(of: feedModel.showTile) {
             fadeOut()
         }
     }

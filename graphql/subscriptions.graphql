@@ -1,5 +1,47 @@
 # this is an auto generated file. This will be overwritten
 
+subscription OnCreateTokens($filter: ModelSubscriptionTokensFilterInput) {
+  onCreateTokens(filter: $filter) {
+    id
+    token
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnUpdateTokens($filter: ModelSubscriptionTokensFilterInput) {
+  onUpdateTokens(filter: $filter) {
+    id
+    token
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnDeleteTokens($filter: ModelSubscriptionTokensFilterInput) {
+  onDeleteTokens(filter: $filter) {
+    id
+    token
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 subscription OnCreatePost($filter: ModelSubscriptionPostFilterInput) {
   onCreatePost(filter: $filter) {
     id
@@ -233,6 +275,11 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
+    tokens {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -303,6 +350,11 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
+    tokens {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -369,6 +421,11 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       __typename
     }
     posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    tokens {
       nextToken
       startedAt
       __typename

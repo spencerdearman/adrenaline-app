@@ -8,26 +8,35 @@
 import SwiftUI
 import AVKit
 
+
 enum PostMedia {
-    case video(VideoItem)
+    case video(VideoPlayerViewModel)
     case image(Image)
 }
 
 struct PostMediaItem: Identifiable {
     var id: String = UUID().uuidString
-    
     var data: PostMedia
+    var useVideoThumbnail: Bool
+    
     var view: any View {
         if case let .video(v) = self.data {
-            v.view
+            if useVideoThumbnail, let url = URL(string: v.thumbnailURL) {
+                return AsyncImage(url: url)
+            }
+            
+            return BufferVideoPlayerView(videoPlayerVM: v)
         } else if case let .image(i) = self.data {
-            i
+            return i
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         } else {
-            EmptyView()
+            return EmptyView()
         }
     }
     
-    init(data: PostMedia) {
+    init(data: PostMedia, useVideoThumbnail: Bool = false) {
         self.data = data
+        self.useVideoThumbnail = useVideoThumbnail
     }
 }

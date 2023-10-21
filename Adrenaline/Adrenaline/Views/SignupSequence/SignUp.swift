@@ -50,8 +50,12 @@ struct SignUp: View {
                 SignUpField(email: $email, field)
             }
             Button {
-                Task {
-                    try? await state.signUp()
+                // Passwords match
+                if !state.fields[0].value.isEmpty,
+                    state.fields[1].value == state.fields[2].value {
+                    Task {
+                        try? await state.signUp()
+                    }
                 }
             } label: {
                 ColorfulButton(title: "Sign Up")
@@ -108,9 +112,9 @@ struct SignUpField: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "envelope.open.fill")
-                .onChange(of: fieldValue) { newValue in
-                    signUpField.value = newValue
-                    email = newValue
+                .onChange(of: fieldValue) {
+                    signUpField.value = fieldValue
+                    email = fieldValue
                 }
         case .password:
             SecureField("Password", text: $signUpField.value)

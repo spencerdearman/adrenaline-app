@@ -8,6 +8,7 @@
 import SwiftUI
 import Amplify
 import Authenticator
+import AVKit
 
 // Global timeoutInterval to use for online loading pages
 let timeoutInterval: TimeInterval = 30

@@ -112,7 +112,7 @@ struct FeedBase: View {
             ]
         }
         
-        .onChange(of: feedModel.showTile) { value in
+        .onChange(of: feedModel.showTile) {
             withAnimation {
                 feedModel.showTab.toggle()
                 showNav.toggle()

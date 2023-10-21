@@ -1,3 +1,9 @@
+type Tokens @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  token: String!
+  newuserID: ID! @index(name: "byNewUser")
+}
+
 type Post @model @auth(rules: [{allow: private}]) {
   id: ID!
   title: String
@@ -35,6 +41,7 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   followed: [NewFollowed!]! @manyToMany(relationName: "NewUserNewFollowed")
   MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byNewUser", fields: ["id"])
   posts: [Post] @hasMany(indexName: "byNewUser", fields: ["id"])
+  tokens: [Tokens] @hasMany(indexName: "byNewUser", fields: ["id"])
 }
 
 type NewAthlete @model @auth(rules: [{allow: private}]) {
