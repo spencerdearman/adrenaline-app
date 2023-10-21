@@ -23,7 +23,6 @@ class AppLogic: ObservableObject {
     @Published var teams: [GraphTeam] = []
     @Published var colleges: [GraphCollege] = []
     @Published var dataStoreReady: Bool = false
-    var videoStore: VideoStore = VideoStore()
     
     func configureAmplify() {
         do {

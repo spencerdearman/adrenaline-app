@@ -165,10 +165,6 @@ private struct GraphCollegesKey: EnvironmentKey {
     static let defaultValue: [GraphCollege] = []
 }
 
-private struct VideoStoreKey: EnvironmentKey {
-    static let defaultValue: VideoStore = VideoStore()
-}
-
 extension EnvironmentValues {
     var modelDB: ModelDataController {
         get { self[ModelDB.self] }
@@ -354,11 +350,6 @@ extension EnvironmentValues {
         get { self[GraphCollegesKey.self] }
         set { self[GraphCollegesKey.self] = newValue }
     }
-    
-    var videoStore: VideoStore {
-        get { self[VideoStoreKey.self] }
-        set { self[VideoStoreKey.self] = newValue }
-    }
 }
 
 extension View {
@@ -395,7 +386,6 @@ struct AdrenalineApp: App {
                 .environment(\.graphMeets, appLogic.meets)
                 .environment(\.graphTeams, appLogic.teams)
                 .environment(\.graphColleges, appLogic.colleges)
-                .environment(\.videoStore, appLogic.videoStore)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)

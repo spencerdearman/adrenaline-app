@@ -30,9 +30,13 @@ func createPost(user: NewUser, title: String, description: String,
     do {
         for (name, data) in videosData {
             let storageKey = "videos/\(email)/\(name).mp4"
+            print("storage key: \(storageKey)")
+            // Set task to initially use normal video file
             var task = Amplify.Storage.uploadData(key: storageKey, data: data)
             
-            let compressedFileURL = VideoStore.getCompressedFileURL(email: email, name: name)
+            // Check if compressed version exists, if yes, reassign task var to upload compressed
+            // video
+            let compressedFileURL = getCompressedFileURL(email: email, name: name)
             print("Compressed URL to upload: \(compressedFileURL)")
             if FileManager.default.fileExists(atPath: compressedFileURL.path) {
                 print("Compressed file exists")

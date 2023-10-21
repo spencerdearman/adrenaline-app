@@ -13,7 +13,6 @@ import UIKit
 struct NewPostView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) var dismiss
-    @Environment(\.videoStore) var videoStore
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var mediaItems: [PostMediaItem] = []
@@ -61,11 +60,6 @@ struct NewPostView: View {
                             ForEach(mediaItems) { item in
                                 AnyView(item.view
                                     .frame(width: size, height: size))
-                                .onAppear {
-                                    if case let .video(v) = item.data {
-                                        v.player?.seek(to: .zero)
-                                    }
-                                }
                             }
                         }
                     }
@@ -95,12 +89,15 @@ struct NewPostView: View {
                                 buttonPressed = true
                                 
                                 if let user = try await getUserByEmail(email: email) {
+                                    print("user is \(user.email)")
                                     let post = try await createPost(user: user, title: title,
                                                                     description: description,
                                                                     videosData: videoData,
                                                                     imagesData: imageData)
                                     
                                     let (_, _) = try await savePost(user: user, post: post)
+                                } else {
+                                    print("Could not get user with email \(email)")
                                 }
                                 
                                 didDismiss()
@@ -143,14 +140,15 @@ struct NewPostView: View {
                         // Bypass saving to the cloud and locally store
                         // Note: will need to save to cloud and cache when
                         //       post is confirmed
-                        let name = UUID().uuidString
-                        guard let url = await videoStore.saveVideo(data: data, email: email, name: name) else { return }
-                        let video = VideoItem(key: name, player: AVPlayer(url: url))
+                        let id = UUID().uuidString
+                        guard let url = await saveVideo(data: data, email: email, name: id) else { return }
+//                        var video = VideoItem(email: email, videoId: id)
                         
                         // Store Data and URL where data is saved in case it
                         // needs deleted
-                        videoData[name] = data
-                        mediaItems.append(PostMediaItem(data: PostMedia.video(video)))
+                        videoData[id] = data
+                        try await mediaItems.append(PostMediaItem(data: PostMedia.image(imageFromVideo(url: url, at: .zero))))
+                                          
                     } else if let data = selectedFileData,
                               type.conforms(to: UTType.image) {
                         guard let uiImage = UIImage(data: data) else { return }
