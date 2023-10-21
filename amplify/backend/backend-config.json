@@ -1,4 +1,10 @@
 {
+  "analytics": {
+    "adrenaline": {
+      "providerPlugin": "awscloudformation",
+      "service": "Pinpoint"
+    }
+  },
   "api": {
     "adrenaline": {
       "dependsOn": [
@@ -55,6 +61,14 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
+    }
+  },
+  "notifications": {
+    "adrenaline": {
+      "channels": [
+        "APNS"
+      ],
+      "service": "Pinpoint"
     }
   },
   "storage": {

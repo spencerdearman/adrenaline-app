@@ -1,5 +1,102 @@
 # this is an auto generated file. This will be overwritten
 
+query GetTokens($id: ID!) {
+  getTokens(id: $id) {
+    id
+    token
+    newuserID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListTokens(
+  $filter: ModelTokensFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTokens(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      token
+      newuserID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncTokens(
+  $filter: ModelTokensFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncTokens(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      token
+      newuserID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query TokensByNewuserID(
+  $newuserID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelTokensFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  tokensByNewuserID(
+    newuserID: $newuserID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      token
+      newuserID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
 query GetPost($id: ID!) {
   getPost(id: $id) {
     id
@@ -404,6 +501,11 @@ query GetNewUser($id: ID!) {
       __typename
     }
     posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    tokens {
       nextToken
       startedAt
       __typename
