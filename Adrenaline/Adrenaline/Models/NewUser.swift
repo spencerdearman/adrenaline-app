@@ -15,6 +15,7 @@ public class NewUser: Model, Identifiable {
   public var followed: List<NewUserNewFollowed>?
   public var MessageNewUsers: List<MessageNewUser>?
   public var posts: List<Post>?
+  public var tokens: List<Tokens>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newUserAthleteId: String?
@@ -32,6 +33,7 @@ public class NewUser: Model, Identifiable {
       followed: List<NewUserNewFollowed> = [],
       MessageNewUsers: List<MessageNewUser>? = [],
       posts: List<Post>? = [],
+      tokens: List<Tokens>? = [],
       newUserAthleteId: String? = nil,
       newUserCoachId: String? = nil) {
     self.init(id: id,
@@ -46,6 +48,7 @@ public class NewUser: Model, Identifiable {
       followed: followed,
       MessageNewUsers: MessageNewUsers,
       posts: posts,
+      tokens: tokens,
       createdAt: nil,
       updatedAt: nil,
       newUserAthleteId: newUserAthleteId,
@@ -63,6 +66,7 @@ public class NewUser: Model, Identifiable {
       followed: List<NewUserNewFollowed> = [],
       MessageNewUsers: List<MessageNewUser>? = [],
       posts: List<Post>? = [],
+      tokens: List<Tokens>? = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
       newUserAthleteId: String? = nil,
@@ -79,6 +83,7 @@ public class NewUser: Model, Identifiable {
       self.followed = followed
       self.MessageNewUsers = MessageNewUsers
       self.posts = posts
+      self.tokens = tokens
       self.createdAt = createdAt
       self.updatedAt = updatedAt
       self.newUserAthleteId = newUserAthleteId
