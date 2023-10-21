@@ -50,8 +50,12 @@ struct SignUp: View {
                 SignUpField(email: $email, field)
             }
             Button {
-                Task {
-                    try? await state.signUp()
+                // Passwords match
+                if !state.fields[0].value.isEmpty,
+                    state.fields[1].value == state.fields[2].value {
+                    Task {
+                        try? await state.signUp()
+                    }
                 }
             } label: {
                 ColorfulButton(title: "Sign Up")
