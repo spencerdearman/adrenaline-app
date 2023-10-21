@@ -89,7 +89,6 @@ struct NewPostView: View {
                                 buttonPressed = true
                                 
                                 if let user = try await getUserByEmail(email: email) {
-                                    print("user is \(user.email)")
                                     let post = try await createPost(user: user, title: title,
                                                                     description: description,
                                                                     videosData: videoData,
