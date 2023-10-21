@@ -49,7 +49,6 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   tokens: [Tokens] @hasMany(indexName: "byNewUser", fields: ["id"])
   savedPosts: [UserSavedPost] @hasMany(indexName: "byNewUser", fields: ["id"])
   favoritesIds: [String!]!
-}
 
 type NewAthlete @model @auth(rules: [{allow: private}]) {
   id: ID!
