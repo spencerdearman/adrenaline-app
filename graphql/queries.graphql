@@ -1,5 +1,133 @@
 # this is an auto generated file. This will be overwritten
 
+query GetUserSavedPost($id: ID!) {
+  getUserSavedPost(id: $id) {
+    id
+    newuserID
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListUserSavedPosts(
+  $filter: ModelUserSavedPostFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listUserSavedPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      newuserID
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncUserSavedPosts(
+  $filter: ModelUserSavedPostFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncUserSavedPosts(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      newuserID
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query UserSavedPostsByNewuserID(
+  $newuserID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserSavedPostFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  userSavedPostsByNewuserID(
+    newuserID: $newuserID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      newuserID
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query UserSavedPostsByPostID(
+  $postID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelUserSavedPostFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  userSavedPostsByPostID(
+    postID: $postID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      newuserID
+      postID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
 query GetTokens($id: ID!) {
   getTokens(id: $id) {
     id
@@ -100,8 +228,7 @@ query TokensByNewuserID(
 query GetPost($id: ID!) {
   getPost(id: $id) {
     id
-    title
-    description
+    caption
     creationDate
     images {
       nextToken
@@ -114,6 +241,11 @@ query GetPost($id: ID!) {
       __typename
     }
     newuserID
+    usersSaving {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -131,8 +263,7 @@ query ListPosts(
   listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      title
-      description
+      caption
       creationDate
       newuserID
       createdAt
@@ -162,8 +293,7 @@ query SyncPosts(
   ) {
     items {
       id
-      title
-      description
+      caption
       creationDate
       newuserID
       createdAt
@@ -195,8 +325,7 @@ query PostsByNewuserID(
   ) {
     items {
       id
-      title
-      description
+      caption
       creationDate
       newuserID
       createdAt
@@ -506,6 +635,11 @@ query GetNewUser($id: ID!) {
       __typename
     }
     tokens {
+      nextToken
+      startedAt
+      __typename
+    }
+    savedPosts {
       nextToken
       startedAt
       __typename

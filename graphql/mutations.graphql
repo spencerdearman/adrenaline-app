@@ -1,5 +1,56 @@
 # this is an auto generated file. This will be overwritten
 
+mutation CreateUserSavedPost(
+  $input: CreateUserSavedPostInput!
+  $condition: ModelUserSavedPostConditionInput
+) {
+  createUserSavedPost(input: $input, condition: $condition) {
+    id
+    newuserID
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdateUserSavedPost(
+  $input: UpdateUserSavedPostInput!
+  $condition: ModelUserSavedPostConditionInput
+) {
+  updateUserSavedPost(input: $input, condition: $condition) {
+    id
+    newuserID
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeleteUserSavedPost(
+  $input: DeleteUserSavedPostInput!
+  $condition: ModelUserSavedPostConditionInput
+) {
+  deleteUserSavedPost(input: $input, condition: $condition) {
+    id
+    newuserID
+    postID
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
 mutation CreateTokens(
   $input: CreateTokensInput!
   $condition: ModelTokensConditionInput
@@ -57,8 +108,7 @@ mutation CreatePost(
 ) {
   createPost(input: $input, condition: $condition) {
     id
-    title
-    description
+    caption
     creationDate
     images {
       nextToken
@@ -71,6 +121,11 @@ mutation CreatePost(
       __typename
     }
     newuserID
+    usersSaving {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -86,8 +141,7 @@ mutation UpdatePost(
 ) {
   updatePost(input: $input, condition: $condition) {
     id
-    title
-    description
+    caption
     creationDate
     images {
       nextToken
@@ -100,6 +154,11 @@ mutation UpdatePost(
       __typename
     }
     newuserID
+    usersSaving {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -115,8 +174,7 @@ mutation DeletePost(
 ) {
   deletePost(input: $input, condition: $condition) {
     id
-    title
-    description
+    caption
     creationDate
     images {
       nextToken
@@ -129,6 +187,11 @@ mutation DeletePost(
       __typename
     }
     newuserID
+    usersSaving {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -313,6 +376,11 @@ mutation CreateNewUser(
       startedAt
       __typename
     }
+    savedPosts {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -391,6 +459,11 @@ mutation UpdateNewUser(
       startedAt
       __typename
     }
+    savedPosts {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -465,6 +538,11 @@ mutation DeleteNewUser(
       __typename
     }
     tokens {
+      nextToken
+      startedAt
+      __typename
+    }
+    savedPosts {
       nextToken
       startedAt
       __typename

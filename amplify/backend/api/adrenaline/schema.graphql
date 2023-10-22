@@ -1,3 +1,9 @@
+type UserSavedPost @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  newuserID: ID! @index(name: "byNewUser")
+  postID: ID! @index(name: "byPost")
+}
+
 type Tokens @model @auth(rules: [{allow: private}]) {
   id: ID!
   token: String!
@@ -6,12 +12,12 @@ type Tokens @model @auth(rules: [{allow: private}]) {
 
 type Post @model @auth(rules: [{allow: private}]) {
   id: ID!
-  title: String
-  description: String
+  caption: String
   creationDate: AWSDateTime!
   images: [NewImage] @hasMany(indexName: "byPost", fields: ["id"])
   videos: [Video] @hasMany(indexName: "byPost", fields: ["id"])
   newuserID: ID! @index(name: "byNewUser")
+  usersSaving: [UserSavedPost] @hasMany(indexName: "byPost", fields: ["id"])
 }
 
 type NewImage @model @auth(rules: [{allow: private}]) {
@@ -42,6 +48,7 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byNewUser", fields: ["id"])
   posts: [Post] @hasMany(indexName: "byNewUser", fields: ["id"])
   tokens: [Tokens] @hasMany(indexName: "byNewUser", fields: ["id"])
+  savedPosts: [UserSavedPost] @hasMany(indexName: "byNewUser", fields: ["id"])
 }
 
 type NewAthlete @model @auth(rules: [{allow: private}]) {
