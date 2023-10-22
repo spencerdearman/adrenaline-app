@@ -669,52 +669,7 @@ struct NewSignupSequence: View {
                     showAthleteError = false
                 }
                 Task {
-                    do {
-                        guard let savedUser = savedUser else { return }
-                        print("Printing the saved User: \(savedUser)")
-                        
-                        // Create the athlete item using the saved user, team, and college
-                        let athlete = NewAthlete(
-                            user: savedUser,
-                            heightFeet: heightFeet,
-                            heightInches: Int(heightInches),
-                            weight: weight,
-                            weightUnit: weightUnitString,
-                            gender: genderString,
-                            age: age,
-                            graduationYear: gradYear,
-                            highSchool: highSchool,
-                            hometown: hometown)
-                        
-                        // Save the athlete item
-                        let savedItem = try await Amplify.DataStore.save(athlete)
-                        withAnimation(.openCard) {
-                            athleteCreationSuccessful = true
-                        }
-                        print("Saved item: \(savedItem)")
-                    } catch let error as DataStoreError {
-                        withAnimation(.closeCard) {
-                            athleteCreationSuccessful = false
-                        }
-                        print("Error creating item: \(error)")
-                    } catch {
-                        withAnimation(.closeCard) {
-                            athleteCreationSuccessful = false
-                        }
-                        print("Unexpected error: \(error)")
-                    }
-                    withAnimation(.openCard) {
-                        if athleteAllFieldsFilled {
-                            if athleteCreationSuccessful {
-                                buttonPressed = false
-                                pageIndex = 4
-                            } else {
-                                showAthleteError = true
-                            }
-                        } else {
-                            buttonPressed = true
-                        }
-                    }
+                    await saveNewAthlete()
                 }
             } label: {
                 ColorfulButton(title: "Continue")
@@ -745,6 +700,56 @@ struct NewSignupSequence: View {
                 }
             } label: {
                 ColorfulButton(title: "Take me to my profile")
+            }
+        }
+    }
+    
+    func saveNewAthlete() async {
+        do {
+            guard let user = savedUser else { return }
+            print("Printing the saved User: \(user)")
+            
+            // Create the athlete item using the saved user, team, and college
+            let athlete = NewAthlete(
+                user: user,
+                heightFeet: heightFeet,
+                heightInches: Int(heightInches),
+                weight: weight,
+                weightUnit: weightUnitString,
+                gender: genderString,
+                age: age,
+                graduationYear: gradYear,
+                highSchool: highSchool,
+                hometown: hometown)
+            
+            // Save the athlete item
+            let savedItem = try await Amplify.DataStore.save(athlete)
+            
+            withAnimation(.openCard) {
+                athleteCreationSuccessful = true
+            }
+            print("Saved item: \(savedItem)")
+        } catch let error as DataStoreError {
+            withAnimation(.closeCard) {
+                athleteCreationSuccessful = false
+            }
+            print("Error creating item: \(error)")
+        } catch {
+            withAnimation(.closeCard) {
+                athleteCreationSuccessful = false
+            }
+            print("Unexpected error: \(error)")
+        }
+        withAnimation(.openCard) {
+            if athleteAllFieldsFilled {
+                if athleteCreationSuccessful {
+                    buttonPressed = false
+                    pageIndex = 4
+                } else {
+                    showAthleteError = true
+                }
+            } else {
+                buttonPressed = true
             }
         }
     }

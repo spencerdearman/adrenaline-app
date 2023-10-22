@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Amplify
 
 struct DiverView: View {
     var graphUser: GraphUser
@@ -54,8 +55,9 @@ struct DiverView: View {
 }
 
 struct ProfileContent: View {
-    @State var scoreValues: [String] = ["Meets", "Metrics", "Recruiting", "Statistics", "Videos"]
+    @State var scoreValues: [String] = ["Posts", "Results", "Recruiting", "Saved"]
     @State var selectedPage: Int = 0
+    @State var newUser: NewUser? = nil
     var graphUser: GraphUser
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
@@ -78,24 +80,39 @@ struct ProfileContent: View {
             if scoreValues.last != "Favorites" {
                 scoreValues.append("Favorites")
             }
+            
+            Task {
+                let predicate = NewUser.keys.email == graphUser.email
+                let savedUsers = await queryAWSUsers(where: predicate)
+                if savedUsers.count != 1 {
+                    print("Invalid user count, returning...")
+                    return
+                }
+                
+                newUser = savedUsers[0]
+            }
         }
         
         Group {
             switch selectedPage {
                 case 0:
-                    AnyView(MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false))
+                    AnyView(PostsView())
                 case 1:
-                    AnyView(MetricsView(graphUser: graphUser))
-                case 2:
-                    AnyView(RecruitingView())
-                case 3:
-                    AnyView(StatisticsView(diveMeetsID: graphUser.diveMeetsID))
-                case 4:
-                    AnyView(VideosView())
-                case 5:
-                    AnyView(FavoritesView(graphUser: graphUser))
-                default:
                     AnyView(MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false))
+                case 2:
+                    if let user = newUser {
+                        AnyView(RecruitingView(newUser: user))
+                    }
+                case 3:
+                    AnyView(SavedPostsView())
+                case 4:
+                    if let user = newUser {
+                        AnyView(FavoritesView(newUser: user))
+                    }
+                default:
+                    if let newUser = newUser {
+                        AnyView(MeetListView(diveMeetsID: newUser.diveMeetsID, nameShowing: false))
+                    }
             }
         }
         .offset(y: -screenHeight * 0.05)
@@ -127,12 +144,12 @@ struct MeetListView: View {
 }
 
 struct MetricsView: View {
-    var graphUser: GraphUser
+    var diveMeetsID: String?
     
     private let screenWidth = UIScreen.main.bounds.width
     
     var body: some View {
-        if let diveMeetsID = graphUser.diveMeetsID {
+        if let diveMeetsID = diveMeetsID {
             SkillsGraph(
                 profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
                 diveMeetsID)
@@ -148,16 +165,198 @@ struct MetricsView: View {
     }
 }
 
-struct RecruitingView: View {
+struct RecruitingDataView: View {
+    var newAthlete: NewAthlete
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
     var body: some View {
-        Text("Welcome to the Recruiting View")
+        VStack {
+            HStack {
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 4)
+                    HStack {
+                        Image(systemName: "ruler.fill")
+                            .resizable()
+                            .rotationEffect(.degrees(90))
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: screenWidth * 0.07,
+                                   height: screenWidth * 0.07)
+                        
+                        Spacer()
+                        Text("\(newAthlete.heightFeet)' \(newAthlete.heightInches)\"")
+                    }
+                    .padding()
+                }
+                
+                Spacer()
+                
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 4)
+                    HStack {
+                        Image(systemName: "scalemass.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: screenWidth * 0.07,
+                                   height: screenWidth * 0.07)
+                        Spacer()
+                        Text("\(newAthlete.weight) \(newAthlete.weightUnit)")
+                    }
+                    .padding()
+                }
+            }
+            
+            Spacer()
+            
+            HStack {
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 4)
+                    HStack {
+                        Image(systemName: "snowflake")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: screenWidth * 0.07,
+                                   height: screenWidth * 0.07)
+                        Spacer()
+                        Text("\(newAthlete.gender)")
+                    }
+                    .padding()
+                }
+                
+                Spacer()
+                
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 4)
+                    HStack {
+                        Image(systemName: "graduationcap.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: screenWidth * 0.07,
+                                   height: screenWidth * 0.07)
+                        Spacer()
+                        Text(verbatim: "\(newAthlete.graduationYear)")
+                    }
+                    .padding()
+                }
+            }
+            
+            Spacer()
+            
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 4)
+                HStack {
+                    Image(systemName: "book.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: screenWidth * 0.07,
+                               height: screenWidth * 0.07)
+                    Spacer()
+                    Text("\(newAthlete.highSchool)")
+                }
+                .padding()
+            }
+            
+            Spacer()
+            
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 4)
+                
+                HStack {
+                    VStack {
+                        Text("Springboard")
+                        Text(String(format: "%.1f", newAthlete.springboardRating ?? 0.0))
+                            .bold()
+                    }
+                    .padding()
+                    
+                    Spacer()
+                    
+                    VStack {
+                        Text("Platform")
+                        Text(String(format: "%.1f", newAthlete.platformRating ?? 0.0))
+                            .bold()
+                    }
+                    .padding()
+                    
+                    Spacer()
+                    
+                    VStack {
+                        Text("Total")
+                        Text(String(format: "%.1f", newAthlete.totalRating ?? 0.0))
+                            .bold()
+                    }
+                    .padding()
+                }
+                .padding([.leading, .trailing])
+            }
+        }
+        .padding()
     }
 }
 
-struct VideosView: View {
+struct RecruitingView: View {
+    var newUser: NewUser
+    @State var newAthlete: NewAthlete?
+    @State var loaded: Bool = false
+    
+    var body: some View {
+        ScrollView {
+            // Gives view time to query AWS before showing anything (avoids glitching when top
+            // portion appears after lower portion)
+            if loaded {
+                VStack {
+                    if let athlete = newAthlete {
+                        RecruitingDataView(newAthlete: athlete)
+                        
+                        Divider()
+                    }
+                    
+                    MetricsView(diveMeetsID: newUser.diveMeetsID)
+                    
+                    Divider()
+                    
+                    StatisticsView(diveMeetsID: newUser.diveMeetsID)
+                }
+                .padding()
+                
+            }
+        }
+        .onAppear {
+            Task {
+                let athletes = await queryAWSAthletes().filter { $0.user.id == newUser.id }
+                if athletes.count != 1 {
+                    print("Invalid athletes count, returning...")
+                } else {
+                    newAthlete = athletes[0]
+                }
+                
+                loaded = true
+            }
+        }
+    }
+}
+
+struct PostsView: View {
     @EnvironmentObject private var appLogic: AppLogic
     @State private var videos: [VideoPlayerViewModel] = []
-    @State private var isDownloading: Bool = false
     @AppStorage("email") private var email: String = ""
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -171,43 +370,21 @@ struct VideosView: View {
                     LazyVGrid(columns: [
                         GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
                             ForEach(videos.indices, id: \.self) { index in
-                                BufferVideoPlayerView(videoPlayerVM: videos[index])
-                                    .frame(width: size, height: size)
-                                    .onAppear {
-                                        videos[index].player.seek(to: .zero)
-                                    }
+                                Text("Video \(index + 1)")
                             }
                         }
                 }
             } else {
                 Spacer()
             }
-            
-            if isDownloading {
-                BackgroundBubble(vPadding: 20, hPadding: 40) {
-                    VStack {
-                        Text("Getting videos...")
-                        ProgressView()
-                    }
-                }
-                
-                Spacer()
-                Spacer()
-                Spacer()
-                Spacer()
-                Spacer()
-            }
         }
         .padding([.leading, .trailing, .bottom])
-        .onAppear {
-            if videos.isEmpty, email != "" {
-                Task {
-                    guard let listItems = await getVideosByEmail(email: email) else {
-                        return
-                    }
-                }
-            }
-        }
+    }
+}
+
+struct SavedPostsView: View {
+    var body: some View {
+        Text("Saved Posts View")
     }
 }
 
@@ -367,8 +544,8 @@ struct StatisticsView: View {
 struct FavoritesView: View {
     @Environment(\.getUser) private var getUser
     @State private var followedUsers: [Followed] = []
-    var graphUser: GraphUser
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    var newUser: NewUser
     
     private let cornerRadius: CGFloat = 30
     

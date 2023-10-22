@@ -171,23 +171,19 @@ struct MeetList: View {
                 // Waiting for parse results to finish
             } else if !createdMeets {
                 ZStack {
-                    Rectangle()
-                        .fill(Custom.darkGray)
-                        .mask(RoundedRectangle(cornerRadius: 40))
                     VStack {
                         Text("Getting meets list...")
                         ProgressView()
                     }
+                    .padding(.top)
                 }
                 // Parse results have finished and meet list is empty
             } else {
                 ZStack {
-                    Rectangle()
-                        .fill(Custom.darkGray)
-                        .mask(RoundedRectangle(cornerRadius: 40))
                     VStack {
                         Text("No meet data found")
                     }
+                    .padding(.top)
                 }
             }
         }
