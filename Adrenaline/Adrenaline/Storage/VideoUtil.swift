@@ -93,7 +93,6 @@ func getVideosByEmail(email: String) async -> [VideoPlayerViewModel]? {
         })
         
         return sorted.map {
-            print($0.key)
             // Remove extension from key name
             guard let basename = $0.key.split(separator: "/").last else { return VideoPlayerViewModel(video: VideoItem(), initialResolution: .p540) }
             let videoId = String(basename.dropLast(4))
