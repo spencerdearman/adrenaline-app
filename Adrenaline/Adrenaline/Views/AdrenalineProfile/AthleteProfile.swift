@@ -337,13 +337,19 @@ struct StatisticsView: View {
             .onAppear {
                 if stats.isEmpty, let diveMeetsID = diveMeetsID {
                     Task {
-                        if await parser.parseProfile(diveMeetsID: diveMeetsID) {
-                            
-                            guard let parsedStats = parser.profileData.diveStatistics else { return }
-                            stats = parsedStats
-                            filteredStats = stats
-                        } else {
-                            print("Failed to parse profile")
+                        if !cachedStats.keys.contains(diveMeetsID) {
+                            if await parser.parseProfile(diveMeetsID: diveMeetsID) {
+                                
+                                guard let parsedStats = parser.profileData.diveStatistics else { return }
+                                cachedStats[diveMeetsID] = parsedStats
+                            } else {
+                                print("Failed to parse profile")
+                            }
+                        }
+                        
+                        if let cached = cachedStats[diveMeetsID] {
+                            stats = cached
+                            filteredStats = cached
                         }
                     }
                 }
