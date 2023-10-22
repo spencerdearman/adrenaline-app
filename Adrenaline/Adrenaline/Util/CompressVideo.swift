@@ -7,6 +7,7 @@
 
 import AVFoundation
 
+@MainActor
 class CompressVideo {
     // add these properties
     var assetWriter: AVAssetWriter!
