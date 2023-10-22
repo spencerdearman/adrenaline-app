@@ -16,6 +16,7 @@ public class NewUser: Model, Identifiable {
   public var MessageNewUsers: List<MessageNewUser>?
   public var posts: List<Post>?
   public var tokens: List<Tokens>?
+  public var savedPosts: List<UserSavedPost>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newUserAthleteId: String?
@@ -34,6 +35,7 @@ public class NewUser: Model, Identifiable {
       MessageNewUsers: List<MessageNewUser>? = [],
       posts: List<Post>? = [],
       tokens: List<Tokens>? = [],
+      savedPosts: List<UserSavedPost>? = [],
       newUserAthleteId: String? = nil,
       newUserCoachId: String? = nil) {
     self.init(id: id,
@@ -49,6 +51,7 @@ public class NewUser: Model, Identifiable {
       MessageNewUsers: MessageNewUsers,
       posts: posts,
       tokens: tokens,
+      savedPosts: savedPosts,
       createdAt: nil,
       updatedAt: nil,
       newUserAthleteId: newUserAthleteId,
@@ -67,6 +70,7 @@ public class NewUser: Model, Identifiable {
       MessageNewUsers: List<MessageNewUser>? = [],
       posts: List<Post>? = [],
       tokens: List<Tokens>? = [],
+      savedPosts: List<UserSavedPost>? = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
       newUserAthleteId: String? = nil,
@@ -84,6 +88,7 @@ public class NewUser: Model, Identifiable {
       self.MessageNewUsers = MessageNewUsers
       self.posts = posts
       self.tokens = tokens
+      self.savedPosts = savedPosts
       self.createdAt = createdAt
       self.updatedAt = updatedAt
       self.newUserAthleteId = newUserAthleteId

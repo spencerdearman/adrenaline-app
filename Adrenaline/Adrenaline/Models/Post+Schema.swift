@@ -6,12 +6,12 @@ extension Post {
   // MARK: - CodingKeys 
    public enum CodingKeys: String, ModelKey {
     case id
-    case title
-    case description
+    case caption
     case creationDate
     case images
     case videos
     case newuserID
+    case usersSaving
     case createdAt
     case updatedAt
   }
@@ -36,12 +36,12 @@ extension Post {
     
     model.fields(
       .field(post.id, is: .required, ofType: .string),
-      .field(post.title, is: .optional, ofType: .string),
-      .field(post.description, is: .optional, ofType: .string),
+      .field(post.caption, is: .optional, ofType: .string),
       .field(post.creationDate, is: .required, ofType: .dateTime),
       .hasMany(post.images, is: .optional, ofType: NewImage.self, associatedWith: NewImage.keys.postID),
       .hasMany(post.videos, is: .optional, ofType: Video.self, associatedWith: Video.keys.postID),
       .field(post.newuserID, is: .required, ofType: .string),
+      .hasMany(post.usersSaving, is: .optional, ofType: UserSavedPost.self, associatedWith: UserSavedPost.keys.postID),
       .field(post.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(post.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
