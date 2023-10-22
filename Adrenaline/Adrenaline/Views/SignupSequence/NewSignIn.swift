@@ -9,19 +9,15 @@ import SwiftUI
 import Authenticator
 
 struct NewSignIn: View {
-    @Environment(\.colorScheme) var currentMode
+    @Environment(\.colorScheme) private var currentMode
     @ObservedObject var state: SignInState
-    @State var text = ""
-    @State var password = ""
-    @State var circleInitialY = CGFloat.zero
-    @State var circleY = CGFloat.zero
+    @State private var username = ""
     @Binding var email: String
     @Binding var signupCompleted: Bool
     @FocusState var isEmailFocused: Bool
     @FocusState var isPasswordFocused: Bool
-    @State var appear = [false, false, false]
+    @State private var appear = [false, false, false]
     private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
         ZStack {
@@ -51,15 +47,15 @@ struct NewSignIn: View {
     
     var form: some View {
         Group {
-            TextField("Email Address", text: $state.username)
+            TextField("Email Address", text: $username)
                 .textContentType(.emailAddress)
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .focused($isEmailFocused)
                 .customField(icon: "envelope.open.fill")
-                .onChange(of: state.username) {
-                    email = state.username
+                .onChange(of: username) {
+                    email = username
                 }
             
             SecureField("Password", text: $state.password)
@@ -68,7 +64,7 @@ struct NewSignIn: View {
                 .focused($isPasswordFocused)
             
             Button {
-                email = state.username
+                state.username = email
                 Task {
                     try? await state.signIn()
                     signupCompleted = true
@@ -139,7 +135,9 @@ struct TextFieldModifier: ViewModifier {
                 HStack {
                     Image(systemName: icon)
                         .frame(width: 36, height: 36)
-                        .foregroundColor(iconColor != nil ? iconColor : .gray.opacity(0.5))
+                        .foregroundColor(iconColor != nil 
+                                         ? iconColor
+                                         : .gray.opacity(0.5))
                         .background(.thinMaterial)
                         .cornerRadius(14)
                         .modifier(OutlineOverlay(cornerRadius: 14))
