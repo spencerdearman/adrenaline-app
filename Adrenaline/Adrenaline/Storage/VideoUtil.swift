@@ -46,7 +46,7 @@ func saveVideo(data: Data, email: String, name: String) async -> URL? {
         
         try data.write(to: url)
         
-        let compressor = CompressVideo()
+        let compressor = await CompressVideo()
         try await compressor.compressFile(url) { (compressedURL) in
             print("Compressed video to URL: \(compressedURL)")
         }
