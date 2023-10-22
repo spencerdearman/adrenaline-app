@@ -65,8 +65,8 @@ extension NewAthlete {
       .field(newAthlete.platformRating, is: .optional, ofType: .double),
       .field(newAthlete.totalRating, is: .optional, ofType: .double),
       .hasMany(newAthlete.dives, is: .optional, ofType: Dive.self, associatedWith: Dive.keys.newathleteID),
-      .field(newAthlete.collegeID, is: .required, ofType: .string),
-      .field(newAthlete.newteamID, is: .required, ofType: .string),
+      .field(newAthlete.collegeID, is: .optional, ofType: .string),
+      .field(newAthlete.newteamID, is: .optional, ofType: .string),
       .field(newAthlete.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(newAthlete.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

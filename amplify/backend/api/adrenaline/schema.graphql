@@ -62,8 +62,8 @@ type NewAthlete @model @auth(rules: [{allow: private}]) {
   platformRating: Float
   totalRating: Float
   dives: [Dive!] @hasMany(indexName: "byNewAthlete", fields: ["id"])
-  collegeID: ID! @index(name: "byCollege")
-  newteamID: ID! @index(name: "byNewTeam")
+  collegeID: ID @index(name: "byCollege")
+  newteamID: ID @index(name: "byNewTeam")
 }
 
 type Video @model @auth(rules: [{allow: private}]) {

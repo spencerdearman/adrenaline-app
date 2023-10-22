@@ -673,17 +673,9 @@ struct NewSignupSequence: View {
                         guard let savedUser = savedUser else { return }
                         print("Printing the saved User: \(savedUser)")
                         
-                        let team = NewTeam(name: "DEFAULT")
-                        let savedTeam = try await Amplify.DataStore.save(team)
-                        
-                        let college = College(name: "DEFAULT", imageLink: "NIL")
-                        let savedCollege = try await Amplify.DataStore.save(college)
-                        
                         // Create the athlete item using the saved user, team, and college
                         let athlete = NewAthlete(
                             user: savedUser,
-                            team: savedTeam,
-                            college: savedCollege,
                             heightFeet: heightFeet,
                             heightInches: Int(heightInches),
                             weight: weight,

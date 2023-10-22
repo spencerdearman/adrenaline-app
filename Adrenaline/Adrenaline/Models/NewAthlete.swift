@@ -20,8 +20,8 @@ public struct NewAthlete: Model {
   public var platformRating: Double?
   public var totalRating: Double?
   public var dives: List<Dive>?
-  public var collegeID: String
-  public var newteamID: String
+  public var collegeID: String?
+  public var newteamID: String?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
@@ -41,7 +41,9 @@ public struct NewAthlete: Model {
       springboardRating: Double? = nil,
       platformRating: Double? = nil,
       totalRating: Double? = nil,
-      dives: List<Dive> = []) {
+      dives: List<Dive> = [],
+      collegeID: String? = nil,
+      newteamID: String? = nil) {
     self.init(id: id,
       user: user,
       team: team,
@@ -59,6 +61,8 @@ public struct NewAthlete: Model {
       platformRating: platformRating,
       totalRating: totalRating,
       dives: dives,
+      collegeID: collegeID,
+      newteamID: newteamID,
       createdAt: nil,
       updatedAt: nil)
   }
@@ -79,6 +83,8 @@ public struct NewAthlete: Model {
       platformRating: Double? = nil,
       totalRating: Double? = nil,
       dives: List<Dive> = [],
+      collegeID: String? = nil,
+      newteamID: String? = nil,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
@@ -98,8 +104,8 @@ public struct NewAthlete: Model {
       self.platformRating = platformRating
       self.totalRating = totalRating
       self.dives = dives
-      self.collegeID = college == nil ? "": college!.id
-      self.newteamID = team == nil ? "": team!.id
+      self.collegeID = collegeID
+      self.newteamID = newteamID
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
