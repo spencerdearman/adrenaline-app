@@ -388,7 +388,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didReceiveRemoteNotification userInfo: [AnyHashable: Any]
     ) async -> UIBackgroundFetchResult {
-        
         do {
             try await Amplify.Notifications.Push.recordNotificationReceived(userInfo)
         } catch {
@@ -409,7 +408,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    
     // Called when a user opens (taps or clicks) a notification.
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
