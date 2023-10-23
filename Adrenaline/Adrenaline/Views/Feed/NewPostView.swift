@@ -17,9 +17,10 @@ struct NewPostView: View {
     @State private var mediaItems: [PostMediaItem] = []
     @State private var videoData: [String: Data] = [:]
     @State private var imageData: [String: Data] = [:]
+    @State private var idOrder: [String] = []
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var buttonPressed: Bool = false
-    @State private var showPostError: Bool = false
+    @State private var postErrorMsg: String? = nil
     @AppStorage("email") private var email: String = ""
     
     private let screenHeight = UIScreen.main.bounds.height
@@ -75,8 +76,8 @@ struct NewPostView: View {
                 // Store Data and URL where data is saved in case it
                 // needs deleted
                 videoData[id] = data
-                return try await PostMediaItem(data: PostMedia.image(imageFromVideo(url: url, 
-                                                                                    at: .zero)))
+                return try await PostMediaItem(id: id, data: PostMedia.image(imageFromVideo(url: url,
+                                                                                            at: .zero)))
                 
             } else if let data = selectedFileData,
                       type.conforms(to: UTType.image) {
@@ -85,7 +86,7 @@ struct NewPostView: View {
                 
                 let name = UUID().uuidString
                 imageData[name] = data
-                return PostMediaItem(data: PostMedia.image(image))
+                return PostMediaItem(id: name, data: PostMedia.image(image))
             }
         } catch {
             print("Failed to get PostMediaItem")
@@ -109,122 +110,132 @@ struct NewPostView: View {
     
     var body: some View {
         NavigationView {
-                VStack {
-                    if mediaItems.isEmpty {
-                        PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
-                            VStack {
-                                Image(systemName: "photo.on.rectangle")
-                                    .font(.system(size: 48, weight: .bold))
-                                
-                                Text("Add media to start creating a post")
-                                    .padding(.top)
+            VStack {
+                if mediaItems.isEmpty {
+                    PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
+                        VStack {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.system(size: 48, weight: .bold))
+                            
+                            Text("Add media to start creating a post")
+                                .padding(.top)
+                        }
+                        .padding()
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                    }
+                } else {
+                    // https://www.appcoda.com/scrollview-paging/
+                    ScrollView(.horizontal) {
+                        LazyHStack(spacing: 0) {
+                            ForEach(mediaItems) { item in
+                                AnyView(item.view)
+                                    .clipShape(RoundedRectangle(cornerRadius: 25))
+                                    .padding(.horizontal, 10)
+                                    .containerRelativeFrame(.horizontal)
+                                    .scrollTransition(.animated, axis: .horizontal) {
+                                        content, phase in
+                                        content
+                                            .opacity(phase.isIdentity ? 1.0 : 0.8)
+                                            .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
+                                    }
                             }
-                            .padding()
+                        }
+                    }
+                    .scrollTargetBehavior(.paging)
+                }
+                
+                TextField("Caption", text: $caption, axis: .vertical)
+                    .textFieldStyle(.roundedBorder)
+                    .lineLimit(6, reservesSpace: true)
+                
+                
+                Spacer()
+                
+                HStack {
+                    PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
+                        Image(systemName: "photo.on.rectangle")
+                            .font(.system(size: 22, weight: .bold))
+                            .frame(width: 48, height: 48)
                             .foregroundColor(.secondary)
                             .background(.ultraThinMaterial)
                             .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                        }
-                    } else {
-                        // https://www.appcoda.com/scrollview-paging/
-                        ScrollView(.horizontal) {
-                            LazyHStack(spacing: 0) {
-                                ForEach(mediaItems) { item in
-                                    AnyView(item.view)
-                                        .clipShape(RoundedRectangle(cornerRadius: 25))
-                                        .padding(.horizontal, 10)
-                                        .containerRelativeFrame(.horizontal)
-                                        .scrollTransition(.animated, axis: .horizontal) {
-                                            content, phase in
-                                            content
-                                                .opacity(phase.isIdentity ? 1.0 : 0.8)
-                                                .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
-                                        }
-                                }
-                            }
-                        }
-                        .scrollTargetBehavior(.paging)
                     }
-                    
-                    TextField("Caption", text: $caption, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                        .lineLimit(6, reservesSpace: true)
-                    
                     
                     Spacer()
                     
-                    HStack {
-                        PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
-                            Image(systemName: "photo.on.rectangle")
-                                .font(.system(size: 22, weight: .bold))
-                                .frame(width: 48, height: 48)
-                                .foregroundColor(.secondary)
-                                .background(.ultraThinMaterial)
-                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                        }
-                        
-                        Spacer()
-                        
-                        if buttonPressed {
-                            ProgressView()
-                                .padding(.trailing)
-                        } else if showPostError {
-                            Text("Post must have media")
-                                .foregroundStyle(.red)
-                        }
-                        
-                        Button {
-                            Task {
+                    if buttonPressed {
+                        ProgressView()
+                            .padding(.trailing)
+                    } else if let msg = postErrorMsg {
+                        Text(msg)
+                            .foregroundStyle(.red)
+                    }
+                    
+                    Button {
+                        Task {
+                            do {
                                 buttonPressed = true
                                 
                                 // Break early if attempting to post without media
                                 if !containsMedia {
-                                    showPostError = true
+                                    postErrorMsg = "Post must have media"
                                     buttonPressed = false
                                     return
                                 } else {
                                     // Clears post error if press Post with media attached
-                                    showPostError = false
+                                    postErrorMsg = nil
                                 }
                                 
                                 if let user = try await getUserByEmail(email: email) {
                                     let post = try await createPost(user: user, caption: caption,
                                                                     videosData: videoData,
-                                                                    imagesData: imageData)
+                                                                    imagesData: imageData,
+                                                                    idOrder: idOrder)
+                                    print("Created Post")
                                     
                                     let (_, _) = try await savePost(user: user, post: post)
+                                    print("Saved Post")
                                 } else {
                                     print("Could not get user with email \(email)")
                                 }
                                 
                                 didDismiss()
+                            } catch {
+                                print("\(error)")
+                                postErrorMsg = "Failed to create post, please try again"
                                 
-                                buttonPressed = false
                             }
-                        } label: {
-                            Text("Post")
-                                .padding()
-                                .font(.system(size: 22, weight: .bold))
-                                .frame(height: 48)
-                                .foregroundColor(currentMode == .light ? .white : .secondary)
-                                .background(Rectangle()
-                                    .foregroundStyle(Color.gray))
-                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                            
+                            buttonPressed = false
                         }
-                        .disabled(buttonPressed)
+                    } label: {
+                        Text("Post")
+                            .padding()
+                            .font(.system(size: 22, weight: .bold))
+                            .frame(height: 48)
+                            .foregroundColor(currentMode == .light ? .white : .secondary)
+                            .background(Rectangle()
+                                .foregroundStyle(Color.gray))
+                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                     }
+                    .disabled(buttonPressed)
                 }
-                .padding()
-                .navigationTitle("New Post")
+            }
+            .padding()
+            .navigationTitle("New Post")
         }
         .onChange(of: selectedItems) {
             clearMediaItems()
             
             Task {
                 mediaItems = await loadMediaItems(selectedItems)
-             
+                idOrder = mediaItems.map { $0.id }
+                
                 // Resets missing media post error if mediaItems gets updated with media
                 if containsMedia {
-                    showPostError = false
+                    postErrorMsg = nil
                 }
             }
         }
