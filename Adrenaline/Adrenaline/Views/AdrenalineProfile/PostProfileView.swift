@@ -9,29 +9,70 @@ import SwiftUI
 import Amplify
 
 struct PostProfileItem: Hashable, Identifiable {
+    let id = UUID().uuidString
+    var post: Post
+    var email: String
+    var mediaItems: [PostMediaItem] = []
+    var collapsedView: any View = EmptyView()
+    var expandedView: any View = EmptyView()
+    
+    init(post: Post, email: String, namespace: Namespace.ID,
+         postShowing: Binding<String?>) async throws {
+        self.post = post
+        self.email = email
+        self.mediaItems = try await getMediaItems()
+        
+        self.collapsedView = PostProfileCollapsedView(postShowing: postShowing, id: self.id,
+                                                      namespace: namespace,
+                                                      post: self.post, email: self.email, firstMediaItem: self.mediaItems.first)
+        self.expandedView = PostProfileExpandedView(postShowing: postShowing, id: self.id,
+                                                    namespace: namespace,
+                                                    post: self.post, email: self.email, mediaItems: self.mediaItems)
+    }
+    
+    private func getMediaItems() async throws -> [PostMediaItem] {
+        let videos = self.post.videos
+        let images = self.post.images
+        try await videos?.fetch()
+        try await images?.fetch()
+        
+        var aggregateItems: [(Temporal.DateTime, PostMediaItem)] = []
+        
+        if let videos = videos {
+            for video in videos.elements {
+                aggregateItems.append((video.uploadDate,
+                                       PostMediaItem(id: video.id, data: PostMedia.video(
+                                        VideoPlayerViewModel(
+                                            video: VideoItem(email: email, videoId: video.id),
+                                            initialResolution: .p1080)))))
+            }
+        }
+        
+        if let images = images {
+            for image in images.elements {
+                guard let url = URL(
+                    string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg") else { continue }
+                aggregateItems.append((image.uploadDate,
+                                       PostMediaItem(id: image.id, data: PostMedia.asyncImage(
+                                        AsyncImage(url: url) { phase in
+                                            phase.image != nil
+                                                    ? AnyView(phase.image!
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit))
+                                                    : AnyView(ProgressView())}))))
+            }
+        }
+        
+        // Returns a list of PostMediaItems sorted ascending by upload date
+        return aggregateItems.sorted(by: { $0.0 < $1.0 }).map { $0.1 }
+    }
+    
     static func == (lhs: PostProfileItem, rhs: PostProfileItem) -> Bool {
         lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-    }
-    
-    let id = UUID().uuidString
-    var post: Post
-    var email: String
-    var collapsedView: any View = EmptyView()
-    var expandedView: any View = EmptyView()
-    
-    init(post: Post, email: String, namespace: Namespace.ID, postShowing: Binding<String?>) {
-        self.post = post
-        self.email = email
-        self.collapsedView = PostProfileCollapsedView(postShowing: postShowing, id: self.id,
-                                                      namespace: namespace,
-                                                      post: self.post, email: self.email)
-        self.expandedView = PostProfileExpandedView(postShowing: postShowing, id: self.id,
-                                                    namespace: namespace,
-                                                    post: self.post, email: self.email)
     }
 }
 
@@ -43,6 +84,7 @@ struct PostProfileCollapsedView: View {
     var namespace: Namespace.ID
     var post: Post
     var email: String
+    var firstMediaItem: PostMediaItem?
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -71,37 +113,15 @@ struct PostProfileCollapsedView: View {
         
         .onAppear {
             // Get first piece of media from post to use as thumbnail if not yet assigned
-            if thumbnail == nil {
+            if thumbnail == nil, let item = firstMediaItem {
                 Task {
-                    let videos = post.videos
-                    let images = post.images
-                    try await videos?.fetch()
-                    try await images?.fetch()
-                    
-                    var earliestMedia: (Temporal.DateTime, String)? = nil
-                    
-                    if let videos = videos {
-                        for video in videos.elements {
-                            if earliestMedia == nil || video.uploadDate < earliestMedia!.0 {
-                                earliestMedia = (video.uploadDate,
-                                                 getVideoThumbnailURL(email: email,
-                                                                      videoId: video.id))
-                            }
-                        }
+                    if case let .video(v) = item.data {
+                        guard let url = URL(string: v.thumbnailURL) else { return }
+                        thumbnail = url
+                    } else {
+                        guard let url = URL(string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(email.replacingOccurrences(of: "@", with: "%40"))/\(item.id).jpg") else { return }
+                        thumbnail = url
                     }
-                    
-                    if let images = images {
-                        for image in images.elements {
-                            if earliestMedia == nil || image.uploadDate < earliestMedia!.0 {
-                                earliestMedia = (image.uploadDate,
-                                                 "\(CLOUDFRONT_IMAGE_BASE_URL)\(email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg")
-                            }
-                        }
-                    }
-                    
-                    guard let urlString = earliestMedia?.1,
-                          let url = URL(string: urlString) else { return }
-                    thumbnail = url
                 }
             }
         }
@@ -115,16 +135,48 @@ struct PostProfileExpandedView: View {
     var namespace: Namespace.ID
     var post: Post
     var email: String
+    var mediaItems: [PostMediaItem]
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(.red)
+            RoundedRectangle(cornerRadius: 30)
+                .fill(.ultraThinMaterial)
+                .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
+                        radius: 15, x: 0, y: 30)
             
-            Text("\(post.id)")
+            VStack {
+                ScrollView(.horizontal) {
+                    LazyHStack(spacing: 0) {
+                        ForEach(mediaItems) { item in
+                            AnyView(item.view)
+                                .clipShape(RoundedRectangle(cornerRadius: 25))
+                                .padding(.horizontal, 30)
+                                .containerRelativeFrame(.horizontal)
+                                .scrollTransition(.animated, axis: .horizontal) {
+                                    content, phase in
+                                    content
+                                        .opacity(phase.isIdentity ? 1.0 : 0.8)
+                                        .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
+                                }
+                        }
+                    }
+                    .frame(height: 450)
+                }
+                .scrollTargetBehavior(.paging)
+                
+                
+                ZStack(alignment: .topLeading) {
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(.thinMaterial)
+                    
+                    Text(post.caption ?? "")
+                        .padding()
+                }
+            }
+            .padding(.top)
             
             CloseButtonWithPostShowing(postShowing: $postShowing)
         }

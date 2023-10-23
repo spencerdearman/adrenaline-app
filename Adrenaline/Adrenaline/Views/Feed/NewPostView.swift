@@ -21,6 +21,7 @@ struct NewPostView: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var buttonPressed: Bool = false
     @State private var postErrorMsg: String? = nil
+    @State private var isLoadingMediaItems: Bool = false
     @AppStorage("email") private var email: String = ""
     
     private let screenHeight = UIScreen.main.bounds.height
@@ -111,7 +112,7 @@ struct NewPostView: View {
     var body: some View {
         NavigationView {
             VStack {
-                if mediaItems.isEmpty {
+                if mediaItems.isEmpty, !isLoadingMediaItems {
                     PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
                         VStack {
                             Image(systemName: "photo.on.rectangle")
@@ -125,6 +126,9 @@ struct NewPostView: View {
                         .background(.ultraThinMaterial)
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                     }
+                } else if isLoadingMediaItems {
+                     ProgressView()
+                        .padding(.vertical)
                 } else {
                     // https://www.appcoda.com/scrollview-paging/
                     ScrollView(.horizontal) {
@@ -230,7 +234,11 @@ struct NewPostView: View {
             clearMediaItems()
             
             Task {
+                isLoadingMediaItems = true
+                
                 mediaItems = await loadMediaItems(selectedItems)
+                isLoadingMediaItems = false
+                
                 idOrder = mediaItems.map { $0.id }
                 
                 // Resets missing media post error if mediaItems gets updated with media
