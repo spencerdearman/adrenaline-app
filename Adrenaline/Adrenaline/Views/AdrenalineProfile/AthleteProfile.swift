@@ -96,7 +96,9 @@ struct ProfileContent: View {
         Group {
             switch selectedPage {
                 case 0:
-                    AnyView(PostsView())
+                    if let user = newUser {
+                        AnyView(PostsView(newUser: user))
+                    }
                 case 1:
                     AnyView(MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false))
                 case 2:
@@ -356,29 +358,39 @@ struct RecruitingView: View {
 
 struct PostsView: View {
     @EnvironmentObject private var appLogic: AppLogic
-    @State private var videos: [VideoPlayerViewModel] = []
-    @AppStorage("email") private var email: String = ""
+    @State private var posts: [Post] = []
+    var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
-        VStack {
-            if !videos.isEmpty {
+        ZStack {
+            if !posts.isEmpty {
                 let size: CGFloat = 125
                 ScrollView(showsIndicators: false) {
                     LazyVGrid(columns: [
                         GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
-                            ForEach(videos.indices, id: \.self) { index in
-                                Text("Video \(index + 1)")
+                            ForEach(posts, id: \.id) { post in
+                                ZStack {
+                                    Rectangle()
+                                        .fill(.ultraThinMaterial)
+                                        .mask(RoundedRectangle(cornerRadius: 40))
+                                        .shadow(radius: 4)
+                                    Text("Post \(String(post.id.prefix(5)))")
+                                }
                             }
                         }
+                        .padding(.top)
                 }
-            } else {
-                Spacer()
             }
         }
-        .padding([.leading, .trailing, .bottom])
+        .onAppear {
+            Task {
+                let pred = Post.keys.newuserID == newUser.id
+                posts = try await query(where: pred)
+            }
+        }
     }
 }
 

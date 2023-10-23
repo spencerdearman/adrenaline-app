@@ -19,8 +19,8 @@ func getCurrentDateTime() -> String {
 // Creates a Post object given a user, title, description, and potential videos and images data
 // Note: This function saves images and videos to S3 to get the links and stop carrying the Data,
 //       but this doesn't save to the DataStore until savePost() is called
-func createPost(user: NewUser, title: String, description: String,
-                videosData: [String: Data], imagesData: [String: Data]) async throws -> Post {
+func createPost(user: NewUser, caption: String, videosData: [String: Data],
+                imagesData: [String: Data]) async throws -> Post {
     var videos: [Video]? = nil
     var images: [NewImage]? = nil
     let email = user.email.lowercased()
@@ -70,7 +70,7 @@ func createPost(user: NewUser, title: String, description: String,
         let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)
         let videosList = videos == nil ? nil : List<Video>.init(elements: videos!)
         
-        return Post(id: postId, title: title, description: description, creationDate: .now(),
+        return Post(id: postId, caption: caption, creationDate: .now(),
                     images: imagesList, videos: videosList, newuserID: user.id)
         
     }
