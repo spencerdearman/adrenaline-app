@@ -368,17 +368,28 @@ struct PostsView: View {
     
     var body: some View {
         let size: CGFloat = 125
-        ScrollView(showsIndicators: false) {
-            LazyVGrid(columns: [
-                GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
-                    ForEach($posts, id: \.id) { post in
-                        ZStack {
-                            AnyView(post.collapsedView.wrappedValue)
-                                .frame(width: size, height: size)
-                        }
+        
+        ZStack {
+            if let showingId = postShowing {
+                ForEach($posts) { post in
+                    if post.post.wrappedValue.id == showingId {
+                        AnyView(post.expandedView.wrappedValue)
                     }
                 }
-                .padding(.top)
+            }
+            
+            ScrollView(showsIndicators: false) {
+                LazyVGrid(columns: [
+                    GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
+                        ForEach($posts, id: \.id) { post in
+                            ZStack {
+                                AnyView(post.collapsedView.wrappedValue)
+                                    .frame(width: size, height: size)
+                            }
+                        }
+                    }
+                    .padding(.top)
+            }
         }
         .onAppear {
             Task {

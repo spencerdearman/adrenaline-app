@@ -8,7 +8,15 @@
 import SwiftUI
 import Amplify
 
-struct PostProfileItem {
+struct PostProfileItem: Hashable, Identifiable {
+    static func == (lhs: PostProfileItem, rhs: PostProfileItem) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     let id = UUID().uuidString
     var post: Post
     var email: String
@@ -19,11 +27,11 @@ struct PostProfileItem {
         self.post = post
         self.email = email
         self.collapsedView = PostProfileCollapsedView(postShowing: postShowing, id: self.id,
-                                                       namespace: namespace,
+                                                      namespace: namespace,
                                                       post: self.post, email: self.email)
         self.expandedView = PostProfileExpandedView(postShowing: postShowing, id: self.id,
-                                                     namespace: namespace,
-                                                     post: self.post, email: self.email)
+                                                    namespace: namespace,
+                                                    post: self.post, email: self.email)
     }
 }
 
@@ -47,8 +55,9 @@ struct PostProfileCollapsedView: View {
                         .resizable()
                         .aspectRatio(1, contentMode: .fill)
                         .onTapGesture {
-                            print("Tapped \(post.id)")
-                            postShowing = post.id
+                            withAnimation(.openCard) {
+                                postShowing = post.id
+                            }
                         }
                 } placeholder: {
                     ProgressView()
@@ -61,7 +70,6 @@ struct PostProfileCollapsedView: View {
         }
         
         .onAppear {
-            print(post)
             // Get first piece of media from post to use as thumbnail if not yet assigned
             if thumbnail == nil {
                 Task {
@@ -75,7 +83,7 @@ struct PostProfileCollapsedView: View {
                     if let videos = videos {
                         for video in videos.elements {
                             if earliestMedia == nil || video.uploadDate < earliestMedia!.0 {
-                                earliestMedia = (video.uploadDate, 
+                                earliestMedia = (video.uploadDate,
                                                  getVideoThumbnailURL(email: email,
                                                                       videoId: video.id))
                             }
@@ -92,7 +100,7 @@ struct PostProfileCollapsedView: View {
                     }
                     
                     guard let urlString = earliestMedia?.1,
-                            let url = URL(string: urlString) else { return }
+                          let url = URL(string: urlString) else { return }
                     thumbnail = url
                 }
             }
@@ -113,10 +121,14 @@ struct PostProfileExpandedView: View {
     
     var body: some View {
         ZStack {
-            Text("Expanded")
+            Rectangle()
+                .fill(.red)
+            
+            Text("\(post.id)")
             
             CloseButtonWithPostShowing(postShowing: $postShowing)
         }
+        .zIndex(10)
     }
 }
 
@@ -132,7 +144,7 @@ struct CloseButtonWithPostShowing: View {
         } label: {
             CloseButton()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(25)
         .ignoresSafeArea()
     }
