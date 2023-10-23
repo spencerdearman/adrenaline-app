@@ -56,10 +56,10 @@ struct PostProfileItem: Hashable, Identifiable {
                                        PostMediaItem(id: image.id, data: PostMedia.asyncImage(
                                         AsyncImage(url: url) { phase in
                                             phase.image != nil
-                                                    ? AnyView(phase.image!
+                                            ? AnyView(phase.image!
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit))
-                                                    : AnyView(ProgressView())}))))
+                                            : AnyView(ProgressView())}))))
             }
         }
         
@@ -168,15 +168,50 @@ struct PostProfileExpandedView: View {
                 .scrollTargetBehavior(.paging)
                 
                 
-                ZStack(alignment: .topLeading) {
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(.thinMaterial)
+                HStack(alignment: .top) {
+                    ZStack(alignment: .topLeading) {
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(.ultraThinMaterial)
+                            .backgroundStyle(opacity: 0.4)
+                            .shadow(color: .gray.opacity(0.15), radius: 5)
+                        
+                        Text(post.caption ?? "")
+                            .foregroundColor(.secondary)
+                            .padding()
+                    }
+                    .frame(width: screenWidth * 0.8)
                     
-                    Text(post.caption ?? "")
-                        .padding()
+                    Menu {
+                        Button {
+                            print("Editing")
+                        } label: {
+                            HStack {
+                                Image(systemName: "pencil")
+                                Text("Edit")
+                            }
+                        }
+                        Button {
+                            print("Deleting")
+                        } label: {
+                            HStack {
+                                Image(systemName: "trash.fill")
+                                Text("Delete")
+                            }
+                            .foregroundStyle(Color.red)
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .font(.system(size: 28, weight: .light))
+                            .frame(width: 48, height: 48)
+                            .foregroundColor(.secondary)
+                            .background(.ultraThinMaterial)
+                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                            .shadow(color: .gray.opacity(0.15), radius: 5)
+                    }
+                    
                 }
             }
-            .padding(.top)
+            .padding()
             
             CloseButtonWithPostShowing(postShowing: $postShowing)
         }
