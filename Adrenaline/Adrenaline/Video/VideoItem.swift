@@ -36,7 +36,6 @@ struct VideoItem {
         for res in Resolution.allCases {
             if let url = URL(string: "\(videoUrlHead)_\(res.displayValue.dropLast(1)).m3u8") {
                 streams.append(Stream(resolution: res, streamURL: url))
-                print(url.absoluteString)
             } else {
                 print("Failed to get url for resolution \(res.displayValue)")
             }

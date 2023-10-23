@@ -395,14 +395,15 @@ struct PostsView: View {
             Task {
                 let pred = Post.keys.newuserID == newUser.id
                 let postModels: [Post] = try await query(where: pred)
-                posts = postModels.map {
-                    PostProfileItem(post: $0, email: newUser.email, namespace: namespace, postShowing: $postShowing)
+                var profileItems: [PostProfileItem] = []
+                for post in postModels {
+                    try await profileItems.append(PostProfileItem(post: post, email: newUser.email, namespace: namespace, postShowing: $postShowing))
                 }
+                
                 // Sorts descending by date so most recent posts appear first
-                .sorted(by: {
+                posts = profileItems.sorted(by: {
                     $0.post.creationDate > $1.post.creationDate
                 })
-                print("Posts empty? \(posts.isEmpty)")
             }
         }
     }
