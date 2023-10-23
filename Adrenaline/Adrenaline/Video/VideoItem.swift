@@ -31,7 +31,7 @@ struct VideoItem {
     init(email: String, videoId: String) {
         self.name = "videos/\(email)/\(videoId)"
         var streams: [Stream] = []
-        let videoUrlHead = getVideoUrlKey(email: email, videoId: videoId)
+        let videoUrlHead = getVideoHLSUrlKey(email: email, videoId: videoId)
 
         for res in Resolution.allCases {
             if let url = URL(string: "\(videoUrlHead)_\(res.displayValue.dropLast(1)).m3u8") {
