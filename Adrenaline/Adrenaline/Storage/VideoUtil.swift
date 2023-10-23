@@ -29,13 +29,18 @@ func getVideoPathURL(email: String, name: String) -> URL {
 }
 
 // Returns the full URL minus the "_{RESOLUTION}.m3u8" suffix
-func getVideoUrlKey(email: String, videoId: String) -> String {
-    return CLOUDFRONT_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/HLS/\(videoId)"
+func getVideoHLSUrlKey(email: String, videoId: String) -> String {
+    return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/HLS/\(videoId)"
+}
+
+// Returns the full URL minus the "_{RESOLUTION}.m3u8" suffix
+func getVideoThumbnailUrl(email: String, videoId: String) -> String {
+    return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/Thumbnails/\(videoId).0000000.jpg"
 }
 
 // Returns the full URL for the thumbnail of a video
 func getVideoThumbnailURL(email: String, videoId: String) -> String {
-    return CLOUDFRONT_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/Thumbnails/\(videoId).0000000.jpg"
+    return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/Thumbnails/\(videoId).0000000.jpg"
 }
 
 func saveVideo(data: Data, email: String, name: String) async -> URL? {
@@ -59,22 +64,30 @@ func saveVideo(data: Data, email: String, name: String) async -> URL? {
     return nil
 }
 
-func uploadVideo(data: Data, email: String, name: String) async {
-    let key = "\(email.lowercased())/\(name).mp4"
+func uploadVideo(data: Data, email: String, name: String) async throws {
+    let key = "videos/\(email.lowercased())/\(name).mp4"
     print("Uploading video: \(key)")
+
+    // Set task to initially use normal video file
+    var task = Amplify.Storage.uploadData(key: key, data: data)
     
-    do {
-        
-        let task = Amplify.Storage.uploadData(key: "videos/\(key)", data: data)
-        
-        let _ = try await task.value
-        print("Video \(key) uploaded")
-        
-    } catch let error as StorageError {
-        print("Cannot download video \(key): \(error.errorDescription). \(error.recoverySuggestion)")
-    } catch {
-        print("Unknown error when loading video \(key): \(error)")
+    // Check if compressed version exists, if yes, reassign task var to upload compressed video
+    let compressedFileURL = getCompressedFileURL(email: email, name: name)
+    print("Compressed URL to upload: \(compressedFileURL)")
+    if FileManager.default.fileExists(atPath: compressedFileURL.path) {
+        print("Compressed file exists")
+        if let compressedData = NSData(contentsOfFile: compressedFileURL.path) {
+            print("Uploading compressed data...")
+            task = Amplify.Storage.uploadData(key: key,
+                                              data: compressedData as Data)
+        } else {
+            print("Failed to get compressed data")
+        }
     }
+    print("Assigned storage task...")
+        
+    let _ = try await task.value
+    print("Video \(name) uploaded")
 }
 
 // Gets all of the S3 storage items to download for a given email, sorted
