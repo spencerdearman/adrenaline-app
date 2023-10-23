@@ -15,7 +15,7 @@ enum PostMedia {
 }
 
 struct PostMediaItem: Identifiable {
-    var id: String = UUID().uuidString
+    var id: String
     var data: PostMedia
     var useVideoThumbnail: Bool
     
@@ -35,7 +35,8 @@ struct PostMediaItem: Identifiable {
         }
     }
     
-    init(data: PostMedia, useVideoThumbnail: Bool = false) {
+    init(id: String = UUID().uuidString, data: PostMedia, useVideoThumbnail: Bool = false) {
+        self.id = id
         self.data = data
         self.useVideoThumbnail = useVideoThumbnail
     }
