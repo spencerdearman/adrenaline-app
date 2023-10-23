@@ -16,11 +16,20 @@ func getCurrentDateTime() -> String {
     return df.string(from: Date.now)
 }
 
+// Attempts to upload an image to S3
+func uploadImage(data: Data, email: String, name: String) async throws {
+    let key = "images/\(email)/\(name).jpg"
+    let task = Amplify.Storage.uploadData(key: key, data: data)
+    
+    let _ = try await task.value
+    print("Image \(name) uploaded")
+}
+
 // Creates a Post object given a user, title, description, and potential videos and images data
 // Note: This function saves images and videos to S3 to get the links and stop carrying the Data,
 //       but this doesn't save to the DataStore until savePost() is called
 func createPost(user: NewUser, caption: String, videosData: [String: Data],
-                imagesData: [String: Data]) async throws -> Post {
+                imagesData: [String: Data], idOrder: [String]) async throws -> Post {
     var videos: [Video]? = nil
     var images: [NewImage]? = nil
     let email = user.email.lowercased()
@@ -28,43 +37,18 @@ func createPost(user: NewUser, caption: String, videosData: [String: Data],
     let postId = UUID().uuidString
     
     do {
-        for (name, data) in videosData {
-            let storageKey = "videos/\(email)/\(name).mp4"
-            print("storage key: \(storageKey)")
-            // Set task to initially use normal video file
-            var task = Amplify.Storage.uploadData(key: storageKey, data: data)
-            
-            // Check if compressed version exists, if yes, reassign task var to upload compressed
-            // video
-            let compressedFileURL = getCompressedFileURL(email: email, name: name)
-            print("Compressed URL to upload: \(compressedFileURL)")
-            if FileManager.default.fileExists(atPath: compressedFileURL.path) {
-                print("Compressed file exists")
-                if let compressedData = NSData(contentsOfFile: compressedFileURL.path) {
-                    print("Uploading compressed data...")
-                    task = Amplify.Storage.uploadData(key: storageKey,
-                                                      data: compressedData as Data)
-                } else {
-                    print("Failed to get compressed data")
-                }
+        for id in idOrder {
+            if videosData.keys.contains(id) {
+                try await uploadVideo(data: videosData[id]!, email: email, name: id)
+                
+                if videos == nil { videos = [] }
+                videos?.append(Video(id: id, s3key: id, uploadDate: .now(), postID: postId))
+            } else if imagesData.keys.contains(id) {
+                try await uploadImage(data: imagesData[id]!, email: email, name: id)
+                
+                if images == nil { images = [] }
+                images?.append(NewImage(id: id, s3key: id, uploadDate: .now(), postID: postId))
             }
-            print("Assigned storage task...")
-            
-            let _ = try await task.value
-            print("Video \(name) uploaded")
-            
-            if videos == nil { videos = [] }
-            videos?.append(Video(id: name, s3key: name, uploadDate: .now(), postID: postId))
-        }
-        
-        for (name, data) in imagesData {
-            let task = Amplify.Storage.uploadData(key: "images/\(email)/\(name).jpg", data: data)
-            
-            let _ = try await task.value
-            print("Image \(name) uploaded")
-            
-            if images == nil { images = [] }
-            images?.append(NewImage(id: name, s3key: name, uploadDate: .now(), postID: postId))
         }
         
         let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)
@@ -72,7 +56,6 @@ func createPost(user: NewUser, caption: String, videosData: [String: Data],
         
         return Post(id: postId, caption: caption, creationDate: .now(),
                     images: imagesList, videos: videosList, newuserID: user.id)
-        
     }
 }
 
