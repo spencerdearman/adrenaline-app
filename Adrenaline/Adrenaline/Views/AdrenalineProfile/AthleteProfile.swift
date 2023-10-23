@@ -358,37 +358,40 @@ struct RecruitingView: View {
 
 struct PostsView: View {
     @EnvironmentObject private var appLogic: AppLogic
-    @State private var posts: [Post] = []
+    @Namespace var namespace
+    @State private var posts: [PostProfileItem] = []
+    @State private var postShowing: String? = nil
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
-        ZStack {
-            if !posts.isEmpty {
-                let size: CGFloat = 125
-                ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: [
-                        GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
-                            ForEach(posts, id: \.id) { post in
-                                ZStack {
-                                    Rectangle()
-                                        .fill(.ultraThinMaterial)
-                                        .mask(RoundedRectangle(cornerRadius: 40))
-                                        .shadow(radius: 4)
-                                    Text("Post \(String(post.id.prefix(5)))")
-                                }
-                            }
+        let size: CGFloat = 125
+        ScrollView(showsIndicators: false) {
+            LazyVGrid(columns: [
+                GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
+                    ForEach($posts, id: \.id) { post in
+                        ZStack {
+                            AnyView(post.collapsedView.wrappedValue)
+                                .frame(width: size, height: size)
                         }
-                        .padding(.top)
+                    }
                 }
-            }
+                .padding(.top)
         }
         .onAppear {
             Task {
                 let pred = Post.keys.newuserID == newUser.id
-                posts = try await query(where: pred)
+                let postModels: [Post] = try await query(where: pred)
+                posts = postModels.map {
+                    PostProfileItem(post: $0, email: newUser.email, namespace: namespace, postShowing: $postShowing)
+                }
+                // Sorts descending by date so most recent posts appear first
+                .sorted(by: {
+                    $0.post.creationDate > $1.post.creationDate
+                })
+                print("Posts empty? \(posts.isEmpty)")
             }
         }
     }
