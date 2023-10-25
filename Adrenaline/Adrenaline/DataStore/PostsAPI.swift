@@ -108,6 +108,9 @@ func deletePost(user: NewUser, post: Post) async throws -> NewUser {
         try await videos.fetch()
         for video in videos {
             let _ = try await deleteFromDataStore(object: video)
+            try await removeVideoFromS3(email: user.email, videoId: video.id)
+            // This removal will trigger a lambda function that removes the streams from the streams
+            // bucket
         }
     }
     
@@ -115,12 +118,23 @@ func deletePost(user: NewUser, post: Post) async throws -> NewUser {
         try await images.fetch()
         for image in images {
             let _ = try await deleteFromDataStore(object: image)
+            try await removeImageFromS3(email: user.email, imageId: image.id)
         }
     }
     
     try await deleteFromDataStore(object: post)
     
     return savedUser
+}
+
+// Convenience function to abstract file path
+private func removeVideoFromS3(email: String, videoId: String) async throws {
+    try await Amplify.Storage.remove(key: "videos/\(email)/\(videoId).mp4")
+}
+
+// Convenience function to abstract file path
+private func removeImageFromS3(email: String, imageId: String) async throws {
+    try await Amplify.Storage.remove(key: "images/\(email)/\(imageId).jpg")
 }
 
 struct PostsAPITestView: View {

@@ -10,24 +10,26 @@ import Amplify
 
 struct PostProfileItem: Hashable, Identifiable {
     let id = UUID().uuidString
+    var user: NewUser
     var post: Post
-    var email: String
     var mediaItems: [PostMediaItem] = []
     var collapsedView: any View = EmptyView()
     var expandedView: any View = EmptyView()
     
-    init(post: Post, email: String, namespace: Namespace.ID,
-         postShowing: Binding<String?>) async throws {
+    init(user: NewUser, post: Post, namespace: Namespace.ID,
+         postShowing: Binding<String?>, hasDeletedPost: Binding<Bool>) async throws {
+        self.user = user
         self.post = post
-        self.email = email
         self.mediaItems = try await getMediaItems()
         
         self.collapsedView = PostProfileCollapsedView(postShowing: postShowing, id: self.id,
-                                                      namespace: namespace,
-                                                      post: self.post, email: self.email, firstMediaItem: self.mediaItems.first)
-        self.expandedView = PostProfileExpandedView(postShowing: postShowing, id: self.id,
-                                                    namespace: namespace,
-                                                    post: self.post, email: self.email, mediaItems: self.mediaItems)
+                                                      namespace: namespace, user: self.user,
+                                                      post: self.post,
+                                                      firstMediaItem: self.mediaItems.first)
+        self.expandedView = PostProfileExpandedView(postShowing: postShowing,
+                                                    hasDeletedPost: hasDeletedPost, id: self.id,
+                                                    namespace: namespace, user: self.user,
+                                                    post: self.post, mediaItems: self.mediaItems)
     }
     
     private func getMediaItems() async throws -> [PostMediaItem] {
@@ -43,7 +45,7 @@ struct PostProfileItem: Hashable, Identifiable {
                 aggregateItems.append((video.uploadDate,
                                        PostMediaItem(id: video.id, data: PostMedia.video(
                                         VideoPlayerViewModel(
-                                            video: VideoItem(email: email, videoId: video.id),
+                                            video: VideoItem(email: user.email, videoId: video.id),
                                             initialResolution: .p1080)))))
             }
         }
@@ -51,7 +53,7 @@ struct PostProfileItem: Hashable, Identifiable {
         if let images = images {
             for image in images.elements {
                 guard let url = URL(
-                    string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg") else { continue }
+                    string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(user.email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg") else { continue }
                 aggregateItems.append((image.uploadDate,
                                        PostMediaItem(id: image.id, data: PostMedia.asyncImage(
                                         AsyncImage(url: url) { phase in
@@ -80,10 +82,10 @@ struct PostProfileCollapsedView: View {
     @Environment(\.colorScheme) var currentMode
     @State private var thumbnail: URL? = nil
     @Binding var postShowing: String?
-    var id: String
-    var namespace: Namespace.ID
-    var post: Post
-    var email: String
+    let id: String
+    let namespace: Namespace.ID
+    let user: NewUser
+    let post: Post
     var firstMediaItem: PostMediaItem?
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -119,7 +121,7 @@ struct PostProfileCollapsedView: View {
                         guard let url = URL(string: v.thumbnailURL) else { return }
                         thumbnail = url
                     } else {
-                        guard let url = URL(string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(email.replacingOccurrences(of: "@", with: "%40"))/\(item.id).jpg") else { return }
+                        guard let url = URL(string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(user.email.replacingOccurrences(of: "@", with: "%40"))/\(item.id).jpg") else { return }
                         thumbnail = url
                     }
                 }
@@ -130,11 +132,14 @@ struct PostProfileCollapsedView: View {
 
 struct PostProfileExpandedView: View {
     @Environment(\.colorScheme) var currentMode
+    @AppStorage("email") private var email: String = ""
+    @State private var showingAlert: Bool = false
     @Binding var postShowing: String?
-    var id: String
-    var namespace: Namespace.ID
-    var post: Post
-    var email: String
+    @Binding var hasDeletedPost: Bool
+    let id: String
+    let namespace: Namespace.ID
+    let user: NewUser
+    let post: Post
     var mediaItems: [PostMediaItem]
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -182,22 +187,38 @@ struct PostProfileExpandedView: View {
                     .frame(width: screenWidth * 0.8)
                     
                     Menu {
-                        Button {
-                            print("Editing")
-                        } label: {
-                            HStack {
-                                Image(systemName: "pencil")
-                                Text("Edit")
+                        // TODO: temp until auth user id is established to check that only current
+                        //       user has access to these options on their own posts
+                        if email == user.email {
+                            Button {
+                                Task {
+                                    print("Editing")
+                                }
+                            } label: {
+                                HStack {
+                                    Image(systemName: "pencil")
+                                    Text("Edit")
+                                }
+                                .foregroundColor(.primary)
                             }
-                        }
-                        Button {
-                            print("Deleting")
-                        } label: {
-                            HStack {
-                                Image(systemName: "trash.fill")
-                                Text("Delete")
+                            Button(role: .destructive) {
+                                showingAlert = true
+                            } label: {
+                                HStack {
+                                    Image(systemName: "trash.fill")
+                                    Text("Delete")
+                                }
                             }
-                            .foregroundStyle(Color.red)
+                        } else {
+                            Button {
+                                print("Saving...")
+                            } label: {
+                                HStack {
+                                    Image(systemName: "square.and.arrow.down")
+                                    Text("Save")
+                                }
+                                .foregroundColor(.primary)
+                            }
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")
@@ -216,6 +237,25 @@ struct PostProfileExpandedView: View {
             CloseButtonWithPostShowing(postShowing: $postShowing)
         }
         .zIndex(10)
+        .alert("Are you sure you want to delete this post?", isPresented: $showingAlert) {
+            Button("Cancel", role: .cancel) {
+                print("Cancel delete")
+                showingAlert = false
+            }
+            Button("Delete", role: .destructive) {
+                Task {
+                    print("Initiating deletion...")
+                    
+                    let _ = try await deletePost(user: user, post: post)
+                    
+                    showingAlert = false
+                    hasDeletedPost = true
+                    // Note: We reset postShowing in PostsView after it detects the change in
+                    //       hasDeletedPost so we leave the user sitting on the expanded view
+                    //       until the posts grid can be updated with the post removed
+                }
+            }
+        }
     }
 }
 
