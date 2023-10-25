@@ -361,10 +361,28 @@ struct PostsView: View {
     @Namespace var namespace
     @State private var posts: [PostProfileItem] = []
     @State private var postShowing: String? = nil
+    @State private var hasDeletedPost: Bool = false
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    private func updatePosts() async throws {
+        let pred = Post.keys.newuserID == newUser.id
+        let postModels: [Post] = try await query(where: pred)
+        var profileItems: [PostProfileItem] = []
+        for post in postModels {
+            try await profileItems.append(PostProfileItem(user: newUser, post: post,
+                                                          namespace: namespace,
+                                                          postShowing: $postShowing,
+                                                          hasDeletedPost: $hasDeletedPost))
+        }
+        
+        // Sorts descending by date so most recent posts appear first
+        posts = profileItems.sorted(by: {
+            $0.post.creationDate > $1.post.creationDate
+        })
+    }
     
     var body: some View {
         let size: CGFloat = 125
@@ -391,19 +409,17 @@ struct PostsView: View {
                     .padding(.top)
             }
         }
+        .onChange(of: hasDeletedPost) {
+            if hasDeletedPost {
+                Task {
+                    try await updatePosts()
+                    hasDeletedPost = false
+                }
+            }
+        }
         .onAppear {
             Task {
-                let pred = Post.keys.newuserID == newUser.id
-                let postModels: [Post] = try await query(where: pred)
-                var profileItems: [PostProfileItem] = []
-                for post in postModels {
-                    try await profileItems.append(PostProfileItem(post: post, email: newUser.email, namespace: namespace, postShowing: $postShowing))
-                }
-                
-                // Sorts descending by date so most recent posts appear first
-                posts = profileItems.sorted(by: {
-                    $0.post.creationDate > $1.post.creationDate
-                })
+                try await updatePosts()
             }
         }
     }
