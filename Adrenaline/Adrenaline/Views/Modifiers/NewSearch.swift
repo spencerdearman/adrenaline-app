@@ -43,6 +43,20 @@ enum SearchItem: Hashable, Identifiable {
         }
     }
     
+    var subtitle: String {
+        if case .user( _) = self {
+            return "User"
+        } else if case .meet(_) = self {
+            return "Meet"
+        } else if case .team(_) = self {
+            return "Team"
+        } else if case .college(_) = self {
+            return "College"
+        } else {
+            return ""
+        }
+    }
+    
     case user(GraphUser)
     case meet(GraphMeet)
     case team(GraphTeam)
@@ -87,10 +101,18 @@ struct NewSearchView: View {
                 Button {
                     text = suggestion.title
                 } label: {
-                    ListRow(title: suggestion.title,
-                            icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
-                    .foregroundColor(.primary)
+                    HStack {
+                        ListRow(title: suggestion.title,
+                                icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
+                        .foregroundColor(.primary)
+                        
+                        if searchScope == .all {
+                            Text(suggestion.subtitle)
+                                .foregroundColor(.gray)
+                        }
+                    }
                 }
+                // Uses item's title to determine if search text matches
                 .searchCompletion(suggestion.title)
             }
         }
