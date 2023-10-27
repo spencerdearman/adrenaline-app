@@ -85,7 +85,7 @@ struct NavigationBar: View {
                     }
                 } label: {
                     Group {
-                        if appLogic.dataStoreReady {
+                        if diveMeetsID.wrappedValue != "" {
                             AsyncImage(url: URL(string:
                                                     "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID.wrappedValue).jpg?&x=511121484"),
                                        transaction: .init(animation: .easeOut)) { phase in
