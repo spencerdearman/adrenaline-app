@@ -31,7 +31,7 @@ enum SearchItem: Hashable, Identifiable {
     
     var title: String {
         if case .user(let user) = self {
-            return user.email
+            return user.firstName + " " + user.lastName
         } else if case .meet(let meet) = self {
             return meet.name
         } else if case .team(let team) = self {
@@ -182,7 +182,11 @@ struct NewSearchView: View {
                   let selected = selectedItem,
                   user.id.uuidString == selected.id {
             return ZStack {
-                Text(user.email)
+                VStack {
+                    Text(user.firstName + " " + user.lastName)
+                    Text(user.email)
+                    Text(user.diveMeetsID ?? "")
+                }
                 
                 closeButton
             }
