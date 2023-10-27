@@ -144,20 +144,30 @@ struct NewSearchView: View {
     }
     
     var content: some View {
-        ScrollView(showsIndicators: false) {
+        ScrollView {
             VStack {
-                ForEach(results) { item in
-                    if results.count != 0 {
-                        Divider()
+                VStack {
+                    if text == "" {
+                        ForEach(recentSearches) { item in
+                            ListRow(title: item.title, icon: "clock.arrow.circlepath")
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    showResult = true
+                                    selectedItem = item
+                                    updateRecentSearches(item: item)
+                                }
+                        }
+                        .zIndex(3)
                     }
-                    Button {
-                        showResult = true
-                        selectedItem = item
-                        updateRecentSearches(item: item)
-                    } label:  {
+                    ForEach(results) { item in
                         ListRow(title: item.title, icon: "magnifyingglass")
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                showResult = true
+                                selectedItem = item
+                                updateRecentSearches(item: item)
+                            }
                     }
-                    .buttonStyle(.plain)
                 }
                 .padding(20)
                 .background(.ultraThinMaterial)
@@ -177,6 +187,7 @@ struct NewSearchView: View {
                 }
             }
         }
+        .scrollIndicators(.hidden)
     }
     
     var closeButton: some View {
@@ -283,7 +294,9 @@ struct NewSearchView: View {
         if text.isEmpty {
             return recentSearches
         } else {
-            return results.filter { $0.title.localizedCaseInsensitiveContains(text) }
+            return results
+                .filter { $0.title.localizedCaseInsensitiveContains(text) }
+                .sorted(by: { $0.title < $1.title })
         }
     }
 }
