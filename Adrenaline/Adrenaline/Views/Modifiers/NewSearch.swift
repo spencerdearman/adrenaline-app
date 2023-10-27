@@ -84,7 +84,7 @@ struct NewSearchView: View {
         recentSearches.insert(item, at: 0)
         
         // Keeps the three most recent searches
-        if recentSearches.count == 4 {
+        if recentSearches.count > 5 {
             recentSearches.removeLast()
         }
     }
