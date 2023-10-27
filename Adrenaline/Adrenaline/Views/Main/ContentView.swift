@@ -61,10 +61,13 @@ struct ContentView: View {
             let users = await queryAWSUsers(where: emailPredicate)
             if users.count >= 1 {
                 newUser = users[0]
-                let userPredicate = users[0].newUserAthleteId ?? "" == NewAthlete.keys.id.rawValue
-                let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
-                if athletes.count >= 1 {
-                    newAthlete = athletes[0]
+                
+                if newUser?.accountType == "Athlete" {
+                    let userPredicate = users[0].newUserAthleteId ?? "" == NewAthlete.keys.id.rawValue
+                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
+                    if athletes.count >= 1 {
+                        newAthlete = athletes[0]
+                    }
                 }
                 
                 diveMeetsID = newUser?.diveMeetsID ?? ""
