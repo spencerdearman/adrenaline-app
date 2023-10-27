@@ -96,7 +96,7 @@ struct NewSearchView: View {
                 Spacer()
             }
         }
-        .searchable(text: $text) {
+        .searchable(text: $text, placement: .navigationBarDrawer(displayMode: .always)) {
             ForEach(suggestions) { suggestion in
                 Button {
                     text = suggestion.title
