@@ -114,7 +114,7 @@ struct FollowingTestView: View {
             Task {
 //                print("hello")
 //                try await clearLocalDataStore()
-                let users = await queryUsers()
+                let users = await queryAWSUsers()
 //                print(users)
                 if users.isEmpty {
                     print("empty")
@@ -125,11 +125,11 @@ struct FollowingTestView: View {
                     print("not empty")
                     for user in users {
                         if user.firstName == "Logan" {
-                            logan = NewUser(from: user)
+                            logan = user
                         } else if user.firstName == "Spencer" {
-                            spencer = NewUser(from: user)
+                            spencer = user
                         } else if user.firstName == "Andrew" {
-                            andrew = NewUser(from: user)
+                            andrew = user
                         }
                     }
                 }

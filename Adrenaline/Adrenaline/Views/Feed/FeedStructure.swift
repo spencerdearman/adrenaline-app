@@ -19,7 +19,7 @@ class FeedItem: Hashable, Identifiable {
     
     func hash(into hasher: inout Hasher) {
             hasher.combine(id)
-        }
+    }
 
     static func == (lhs: FeedItem, rhs: FeedItem) -> Bool {
         return lhs.id == rhs.id

@@ -9,7 +9,7 @@ import SwiftUI
 import Amplify
 
 struct DiverView: View {
-    var graphUser: GraphUser
+    var newUser: NewUser
     @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -24,10 +24,10 @@ struct DiverView: View {
     var body: some View {
         VStack {
             // Showing DiveMeets Linking Screen
-            if (graphUser.diveMeetsID == nil || graphUser.diveMeetsID == "") {
+            if (newUser.diveMeetsID == nil || newUser.diveMeetsID == "") {
                 Spacer()
                 NavigationLink(destination: {
-                    DiveMeetsLink(graphUser: graphUser)
+                    DiveMeetsLink(newUser: newUser)
                 }, label: {
                     ZStack {
                         Rectangle()
@@ -46,7 +46,7 @@ struct DiverView: View {
                 Spacer()
                 Spacer()
             } else {
-                ProfileContent(graphUser: graphUser)
+                ProfileContent(newUser: newUser)
                     .padding(.top, screenHeight * 0.05)
             }
             Spacer()
@@ -57,8 +57,7 @@ struct DiverView: View {
 struct ProfileContent: View {
     @State var scoreValues: [String] = ["Posts", "Results", "Recruiting", "Saved"]
     @State var selectedPage: Int = 0
-    @State var newUser: NewUser? = nil
-    var graphUser: GraphUser
+    var newUser: NewUser
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -80,41 +79,22 @@ struct ProfileContent: View {
             if scoreValues.last != "Favorites" {
                 scoreValues.append("Favorites")
             }
-            
-            Task {
-                let predicate = NewUser.keys.email == graphUser.email
-                let savedUsers = await queryAWSUsers(where: predicate)
-                if savedUsers.count != 1 {
-                    print("Invalid user count, returning...")
-                    return
-                }
-                
-                newUser = savedUsers[0]
-            }
         }
         
         Group {
             switch selectedPage {
                 case 0:
-                    if let user = newUser {
-                        AnyView(PostsView(newUser: user))
-                    }
+                    AnyView(PostsView(newUser: newUser))
                 case 1:
-                    AnyView(MeetListView(diveMeetsID: graphUser.diveMeetsID, nameShowing: false))
+                    AnyView(MeetListView(diveMeetsID: newUser.diveMeetsID, nameShowing: false))
                 case 2:
-                    if let user = newUser {
-                        AnyView(RecruitingView(newUser: user))
-                    }
+                    AnyView(RecruitingView(newUser: newUser))
                 case 3:
                     AnyView(SavedPostsView())
                 case 4:
-                    if let user = newUser {
-                        AnyView(FavoritesView(newUser: user))
-                    }
+                    AnyView(FavoritesView(newUser: newUser))
                 default:
-                    if let newUser = newUser {
-                        AnyView(MeetListView(diveMeetsID: newUser.diveMeetsID, nameShowing: false))
-                    }
+                    AnyView(MeetListView(diveMeetsID: newUser.diveMeetsID, nameShowing: false))
             }
         }
         .offset(y: -screenHeight * 0.05)

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0005FA472AA24355004A65CA /* GraphUserGraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0005FA462AA24355004A65CA /* GraphUserGraphFollowed.swift */; };
 		0006B39B2AE35A89009863D7 /* BufferVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B39A2AE35A89009863D7 /* BufferVideoPlayerView.swift */; };
 		0006B39E2AE35B46009863D7 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B39D2AE35B46009863D7 /* VideoPlayerViewModel.swift */; };
 		0006B3A12AE35C12009863D7 /* VideoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B3A02AE35C12009863D7 /* VideoItem.swift */; };
@@ -32,21 +31,15 @@
 		005057512ABFB038000B082D /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050574D2ABFB037000B082D /* Post.swift */; };
 		005057552ABFB11D000B082D /* NewImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005057532ABFB11D000B082D /* NewImage.swift */; };
 		005057562ABFB11D000B082D /* NewImage+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005057542ABFB11D000B082D /* NewImage+Schema.swift */; };
-		0050AE892AABA43000697021 /* GraphCollege.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE882AABA43000697021 /* GraphCollege.swift */; };
 		0050AE8B2AABA4A600697021 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8A2AABA4A600697021 /* Video.swift */; };
 		0050AE8D2AABA56600697021 /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8C2AABA56600697021 /* Video+Schema.swift */; };
-		0059AD302AA241D40076AF00 /* GraphMeet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2C2AA241D40076AF00 /* GraphMeet.swift */; };
-		0059AD312AA241D40076AF00 /* GraphUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2D2AA241D40076AF00 /* GraphUser.swift */; };
-		0059AD322AA241D40076AF00 /* GraphTeam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD2E2AA241D40076AF00 /* GraphTeam.swift */; };
-		0059AD352AA242440076AF00 /* GraphAthlete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0059AD342AA242440076AF00 /* GraphAthlete.swift */; };
 		006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */; };
 		0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5A92A426D9E0040600E /* TileSwapView.swift */; };
 		0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5AB2A4377920040600E /* SwipeModifier.swift */; };
 		006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006651322A7C466300A373F6 /* CollegeLogoParser.swift */; };
 		0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */; };
-		006BDEA32AE5DAAE009D384E /* UserSavedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006BDEA12AE5DAAE009D384E /* UserSavedPost.swift */; };
 		006BDEA42AE5DAAE009D384E /* UserSavedPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006BDEA22AE5DAAE009D384E /* UserSavedPost+Schema.swift */; };
-		0074428A2AAB195E00CEE032 /* GraphFollowed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 007442892AAB195E00CEE032 /* GraphFollowed.swift */; };
+		00759D0F2AEB7EB40079BCCB /* UserSavedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */; };
 		0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */; };
 		008CB5652A61000400935537 /* NavigationViewBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008CB5642A61000400935537 /* NavigationViewBackButton.swift */; };
 		008CB5672A61B3EE00935537 /* ProfileParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008CB5662A61B3EE00935537 /* ProfileParser.swift */; };
@@ -178,7 +171,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0005FA462AA24355004A65CA /* GraphUserGraphFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphUserGraphFollowed.swift; sourceTree = "<group>"; };
 		0006B39A2AE35A89009863D7 /* BufferVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferVideoPlayerView.swift; sourceTree = "<group>"; };
 		0006B39D2AE35B46009863D7 /* VideoPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewModel.swift; sourceTree = "<group>"; };
 		0006B3A02AE35C12009863D7 /* VideoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoItem.swift; sourceTree = "<group>"; };
@@ -203,21 +195,15 @@
 		0050574D2ABFB037000B082D /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		005057532ABFB11D000B082D /* NewImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewImage.swift; sourceTree = "<group>"; };
 		005057542ABFB11D000B082D /* NewImage+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewImage+Schema.swift"; sourceTree = "<group>"; };
-		0050AE882AABA43000697021 /* GraphCollege.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphCollege.swift; sourceTree = "<group>"; };
 		0050AE8A2AABA4A600697021 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		0050AE8C2AABA56600697021 /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
-		0059AD2C2AA241D40076AF00 /* GraphMeet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphMeet.swift; sourceTree = "<group>"; };
-		0059AD2D2AA241D40076AF00 /* GraphUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphUser.swift; sourceTree = "<group>"; };
-		0059AD2E2AA241D40076AF00 /* GraphTeam.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphTeam.swift; sourceTree = "<group>"; };
-		0059AD342AA242440076AF00 /* GraphAthlete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphAthlete.swift; sourceTree = "<group>"; };
 		006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
 		0065C5A92A426D9E0040600E /* TileSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSwapView.swift; sourceTree = "<group>"; };
 		0065C5AB2A4377920040600E /* SwipeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeModifier.swift; sourceTree = "<group>"; };
 		006651322A7C466300A373F6 /* CollegeLogoParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CollegeLogoParser.swift; path = Adrenaline/Model/CollegeLogoParser.swift; sourceTree = SOURCE_ROOT; };
 		0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalingScrollView.swift; sourceTree = "<group>"; };
-		006BDEA12AE5DAAE009D384E /* UserSavedPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSavedPost.swift; sourceTree = "<group>"; };
 		006BDEA22AE5DAAE009D384E /* UserSavedPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserSavedPost+Schema.swift"; sourceTree = "<group>"; };
-		007442892AAB195E00CEE032 /* GraphFollowed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphFollowed.swift; sourceTree = "<group>"; };
+		00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSavedPost.swift; sourceTree = "<group>"; };
 		0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingsView.swift; sourceTree = "<group>"; };
 		008CB5642A61000400935537 /* NavigationViewBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewBackButton.swift; sourceTree = "<group>"; };
 		008CB5662A61B3EE00935537 /* ProfileParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileParser.swift; sourceTree = "<group>"; };
@@ -402,13 +388,6 @@
 				00ADF5092A93304800C85C7F /* DataStoreAPI.swift */,
 				00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */,
 				00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */,
-				0059AD342AA242440076AF00 /* GraphAthlete.swift */,
-				0050AE882AABA43000697021 /* GraphCollege.swift */,
-				007442892AAB195E00CEE032 /* GraphFollowed.swift */,
-				0059AD2C2AA241D40076AF00 /* GraphMeet.swift */,
-				0059AD2E2AA241D40076AF00 /* GraphTeam.swift */,
-				0059AD2D2AA241D40076AF00 /* GraphUser.swift */,
-				0005FA462AA24355004A65CA /* GraphUserGraphFollowed.swift */,
 				00CEDFD32ABFC71500F079CE /* PostsAPI.swift */,
 			);
 			path = DataStore;
@@ -751,7 +730,7 @@
 				4DA482CA2AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift */,
 				0006B3A32AE39C72009863D7 /* Tokens.swift */,
 				0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */,
-				006BDEA12AE5DAAE009D384E /* UserSavedPost.swift */,
+				00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */,
 				006BDEA22AE5DAAE009D384E /* UserSavedPost+Schema.swift */,
 				0050AE8A2AABA4A600697021 /* Video.swift */,
 				0050AE8C2AABA56600697021 /* Video+Schema.swift */,
@@ -887,7 +866,6 @@
 				00FEF7BB2A2A990900AAFC7C /* EntryPageView.swift in Sources */,
 				4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */,
 				4D50E7962A293DEC009BFBFA /* DiveStatisticsParser.swift in Sources */,
-				0059AD302AA241D40076AF00 /* GraphMeet.swift in Sources */,
 				4D8B9C1929F8D395002B53AD /* Home.swift in Sources */,
 				4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */,
 				4DA482E82AA98BE8003DFA3B /* Message.swift in Sources */,
@@ -901,11 +879,9 @@
 				4DA482DE2AA98BE8003DFA3B /* Dive.swift in Sources */,
 				0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */,
 				00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */,
-				0074428A2AAB195E00CEE032 /* GraphFollowed.swift in Sources */,
 				000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */,
 				4D1A31C32A97006500128F81 /* MeetItem.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
-				0059AD352AA242440076AF00 /* GraphAthlete.swift in Sources */,
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
 				00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */,
@@ -938,13 +914,10 @@
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
 				002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */,
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,
-				0005FA472AA24355004A65CA /* GraphUserGraphFollowed.swift in Sources */,
 				002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */,
-				0050AE892AABA43000697021 /* GraphCollege.swift in Sources */,
 				005057512ABFB038000B082D /* Post.swift in Sources */,
 				4DA482EB2AA98BE8003DFA3B /* CoachUser+Schema.swift in Sources */,
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
-				006BDEA32AE5DAAE009D384E /* UserSavedPost.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
 				0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */,
 				4DA481CD2AA789E4003DFA3B /* MessagesView.swift in Sources */,
@@ -956,7 +929,6 @@
 				0006B3A42AE39C72009863D7 /* Tokens+Schema.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
 				4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */,
-				0059AD312AA241D40076AF00 /* GraphUser.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
 				4DA482E32AA98BE8003DFA3B /* NewFollowed.swift in Sources */,
 				4DA482E92AA98BE8003DFA3B /* Dive+Schema.swift in Sources */,
@@ -987,6 +959,7 @@
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
 				4DA482DC2AA98BE8003DFA3B /* NewEvent+Schema.swift in Sources */,
 				0006B3A52AE39C72009863D7 /* Tokens.swift in Sources */,
+				00759D0F2AEB7EB40079BCCB /* UserSavedPost.swift in Sources */,
 				4DA482EA2AA98BE8003DFA3B /* JudgeScore.swift in Sources */,
 				4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */,
 				4DA482F02AA98BE8003DFA3B /* NewUser.swift in Sources */,
@@ -1019,7 +992,6 @@
 				4DA481CF2AA78A01003DFA3B /* MessageRow.swift in Sources */,
 				4D1A31B52A96B44F00128F81 /* LogoView.swift in Sources */,
 				00B79D712AE11E3600031D05 /* CompressVideo.swift in Sources */,
-				0059AD322AA241D40076AF00 /* GraphTeam.swift in Sources */,
 				000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */,
 				4D50E7942A293A22009BFBFA /* DiveTableData.swift in Sources */,
 				00F9665F29AEEF0900F3720B /* FloatingMenuBar.swift in Sources */,

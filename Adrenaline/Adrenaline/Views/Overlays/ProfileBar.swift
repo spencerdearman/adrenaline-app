@@ -12,7 +12,7 @@ struct ProfileBar: View {
     @ObservedObject var state: SignedInState
     @Binding var showAccount: Bool
     @Binding var email: String
-    @Binding var graphUser: GraphUser?
+    @Binding var newUser: NewUser?
     @Binding var newAthlete: NewAthlete?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -53,7 +53,7 @@ struct ProfileBar: View {
                 }
                 
                 NavigationLink {
-                    SettingsView(state: state, email: $email, graphUser: $graphUser, newAthlete: $newAthlete)
+                    SettingsView(state: state, email: $email, newUser: $newUser, newAthlete: $newAthlete)
                 } label: {
                     Image(systemName: "gear")
                     .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)

@@ -43,47 +43,12 @@ func queryAWSAthletes(where predicate: QueryPredicate? = nil,
     return []
 }
 
-
-// Returns GraphUser class list
-func queryUsers(where predicate: QueryPredicate? = nil,
-                sortBy: QuerySortInput? = nil) async -> [GraphUser] {
-    do {
-        let queryResult: [NewUser] = try await query(where: predicate, sortBy: sortBy)
-        let result = queryResult.map { newUser in
-            GraphUser.init(from: newUser)
-        }
-        return result
-    } catch let error as DataStoreError {
-        print("Failed to load data from DataStore : \(error)")
-    } catch {
-        print("Unexpected error while calling DataStore : \(error)")
-    }
-    
-    return []
-}
-
 // Saves to DataStore without converting object from Swift class
 // Note: updating is the same as saving an existing object, so this is also used for updating
 func saveToDataStore<M: Model>(object: M) async throws -> M {
     let savedObject = try await Amplify.DataStore.save(object)
     
     return savedObject
-}
-
-func saveUser(user: GraphUser) async throws -> NewUser {
-    let newUser = NewUser(from: user)
-    let savedUser = try await saveToDataStore(object: newUser)
-    print("Saved user: \(savedUser)")
-    
-    return savedUser
-}
-
-func saveAthlete(athlete: GraphAthlete) async throws -> NewAthlete {
-    let newAthlete = NewAthlete(from: athlete)
-    let savedAthlete = try await saveToDataStore(object: newAthlete)
-    print("Saved athlete: \(savedAthlete)")
-    
-    return savedAthlete
 }
 
 func saveFollowed(followed: NewFollowed) async throws -> NewFollowed {
@@ -200,10 +165,9 @@ func deleteFromDataStore<M: Model>(object: M) async throws {
 }
 
 func deleteUserByEmail(email: String) async throws {
-    for user in await queryUsers() {
+    for user in await queryAWSUsers() {
         if user.email == email {
-            let newUser = NewUser(from: user)
-            try await deleteFromDataStore(object: newUser)
+            try await deleteFromDataStore(object: user)
             print("Deleted user: \(user.email)")
         }
     }
