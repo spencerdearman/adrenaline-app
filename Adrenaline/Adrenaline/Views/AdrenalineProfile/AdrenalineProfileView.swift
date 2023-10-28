@@ -169,7 +169,7 @@ struct PersonalInfoView: View {
     @State private var athlete: NewAthlete? = nil
     @State var selectedCollege: String = ""
     @State private var starred: Bool = false
-    @State var isShowingStar: Bool = true
+    @AppStorage("authUserId") private var authUserId: String = ""
     @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
     @ScaledMetric private var bubbleHeightScaled: CGFloat = 85
     
@@ -188,6 +188,10 @@ struct PersonalInfoView: View {
             default:
                 return bubbleHeightScaled * 1.2
         }
+    }
+    
+    private var isShowingStar: Bool {
+        user.id != authUserId
     }
     
     private func isFollowedByUser(email: String, user: User) -> Bool {
