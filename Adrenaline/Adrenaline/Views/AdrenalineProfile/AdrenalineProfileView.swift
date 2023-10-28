@@ -13,18 +13,67 @@ func getCollegeImageFilename(name: String) -> String {
     return name.replacingOccurrences(of: " ", with: "_")
 }
 
+// Wrapper view to decouple the ProfileBar that requires state and showAccount from a general
+// profile view
+struct AdrenalineProfileWrapperView: View {
+    @ObservedObject private var state: SignedInState
+    @Binding var showAccount: Bool
+    
+    var user: NewUser?
+    var authUserId: String
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
+    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>) {
+        self.state = state
+        self.authUserId = authUserId
+        self.user = nil
+        self._showAccount = showAccount
+    }
+    
+    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>) {
+        self.state = state
+        self.authUserId = newUser.id
+        self.user = newUser
+        self._showAccount = showAccount
+    }
+    
+    var body: some View {
+        ZStack {
+            if let user = user {
+                AdrenalineProfileView(newUser: user)
+            } else {
+                AdrenalineProfileView(authUserId: authUserId)
+            }
+        }
+        .overlay{
+            ProfileBar(state: state, showAccount: $showAccount, user: user)
+                .frame(width: screenWidth)
+        }
+    }
+}
+
 struct AdrenalineProfileView: View {
-    @ObservedObject var state: SignedInState
-    @Environment(\.colorScheme) var currentMode
+    @Environment(\.colorScheme) private var currentMode
     @Environment(\.dismiss) private var dismiss
     @State private var offset: CGFloat = 0
     @State private var swiped: Bool = false
-    @Binding var email: String
-    @Binding var newUser: NewUser?
-    @Binding var newAthlete: NewAthlete?
-    @Binding var showAccount: Bool
+    @State private var user: NewUser? = nil
+    
+    var authUserId: String
+    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    init(authUserId: String) {
+        self.authUserId = authUserId
+    }
+    
+    init(newUser: NewUser) {
+        self.authUserId = newUser.id
+        user = newUser
+    }
     
     private var bgColor: Color {
         currentMode == .light ? .white : .black
@@ -52,7 +101,8 @@ struct AdrenalineProfileView: View {
                 .frame(height: screenHeight * 0.7)
                 .offset(x: screenWidth * 0.2, y: -screenHeight * 0.4)
                 .scaleEffect(0.7)
-            if let user = newUser {
+            
+            if let user = user {
                 VStack {
                     ProfileImage(diverID: (user.diveMeetsID ?? ""))
                         .frame(width: 200, height: 130)
@@ -62,7 +112,7 @@ struct AdrenalineProfileView: View {
                         .onAppear {
                             offset = screenHeight * 0.45
                         }
-                    PersonalInfoView(newUser: $newUser, email: $email, athlete: $newAthlete)
+                    PersonalInfoView(user: user)
                 }
                 .offset(y: -screenHeight * 0.25)
                 .padding([.leading, .trailing, .top])
@@ -98,9 +148,17 @@ struct AdrenalineProfileView: View {
                 .offset(y: swiped ? screenHeight * 0.07 : screenHeight * 0.25)
             }
         }
-        .overlay{
-            ProfileBar(state: state, showAccount: $showAccount, email: $email, newUser: $newUser, newAthlete: $newAthlete)
-                .frame(width: screenWidth)
+        .onAppear {
+            if user == nil {
+                Task {
+                    let pred = NewUser.keys.id == authUserId
+                    let users = await queryAWSUsers(where: pred)
+                    
+                    if users.count == 1 {
+                        user = users[0]
+                    }
+                }
+            }
         }
     }
 }
@@ -108,14 +166,14 @@ struct AdrenalineProfileView: View {
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Binding var newUser: NewUser?
-    @Binding var email: String
-    @Binding var athlete: NewAthlete?
+    @State private var athlete: NewAthlete? = nil
     @State var selectedCollege: String = ""
     @State private var starred: Bool = false
     @State var isShowingStar: Bool = true
     @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
     @ScaledMetric private var bubbleHeightScaled: CGFloat = 85
+    
+    var user: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
     
@@ -125,10 +183,10 @@ struct PersonalInfoView: View {
     
     private var bubbleHeight: CGFloat {
         switch dynamicTypeSize {
-        case .xSmall, .small, .medium:
-            return 85
-        default:
-            return bubbleHeightScaled * 1.2
+            case .xSmall, .small, .medium:
+                return 85
+            default:
+                return bubbleHeightScaled * 1.2
         }
     }
     
@@ -160,65 +218,62 @@ struct PersonalInfoView: View {
                             .frame(width: screenWidth * 0.15,
                                    height: screenWidth * 0.15)
                     }
-                    if let user = newUser {
-                        VStack {
-                            HStack (alignment: .firstTextBaseline) {
-                                Text((user.firstName) + " " +
-                                     (user.lastName)).font(.title3).fontWeight(.semibold)
-                                Text(user.accountType)
-                                    .foregroundColor(.secondary)
-                                if isShowingStar {
-                                    Image(systemName: starred ? "star.fill" : "star")
-                                        .foregroundColor(starred
-                                                         ? Color.yellow
-                                                         : Color.primary)
-                                        .onTapGesture {
-                                            withAnimation {
-                                                starred.toggle()
-                                            }
+                    
+                    VStack {
+                        HStack (alignment: .firstTextBaseline) {
+                            Text((user.firstName) + " " +
+                                 (user.lastName)).font(.title3).fontWeight(.semibold)
+                            Text(user.accountType)
+                                .foregroundColor(.secondary)
+                            if isShowingStar {
+                                Image(systemName: starred ? "star.fill" : "star")
+                                    .foregroundColor(starred
+                                                     ? Color.yellow
+                                                     : Color.primary)
+                                    .onTapGesture {
+                                        withAnimation {
+                                            starred.toggle()
                                         }
-                                }
+                                    }
                             }
-                            if user.accountType != "Spectator" {
-                                if currentMode == .light {
-                                    Divider()
-                                } else {
-                                    WhiteDivider()
+                        }
+                        if user.accountType != "Spectator" {
+                            if currentMode == .light {
+                                Divider()
+                            } else {
+                                WhiteDivider()
+                            }
+                            HStack (alignment: .firstTextBaseline) {
+                                //                                    if user.accountType == "Athlete" {
+                                HStack {
+                                    Image(systemName: "mappin.and.ellipse")
+                                    if let hometown = athlete?.hometown, !hometown.isEmpty {
+                                        Text(hometown)
+                                    } else {
+                                        Text("?")
+                                    }
                                 }
-                                HStack (alignment: .firstTextBaseline) {
-                                    //                                    if user.accountType == "Athlete" {
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                    if let age = athlete?.age {
+                                        Text(String(age))
+                                    } else {
+                                        Text("?")
+                                    }
+                                }
+                                //                                    }
+                                if user.diveMeetsID != "" {
                                     HStack {
-                                        Image(systemName: "mappin.and.ellipse")
-                                        if let hometown = athlete?.hometown, !hometown.isEmpty {
-                                            Text(hometown)
+                                        Image(systemName: "figure.pool.swim")
+                                        if let diveMeetsID = user.diveMeetsID {
+                                            Text(diveMeetsID)
                                         } else {
                                             Text("?")
-                                        }
-                                    }
-                                    HStack {
-                                        Image(systemName: "person.fill")
-                                        if let age = athlete?.age {
-                                            Text(String(age))
-                                        } else {
-                                            Text("?")
-                                        }
-                                    }
-                                    //                                    }
-                                    if user.diveMeetsID != "" {
-                                        HStack {
-                                            Image(systemName: "figure.pool.swim")
-                                            if let diveMeetsID = user.diveMeetsID {
-                                                Text(diveMeetsID)
-                                            } else {
-                                                Text("?")
-                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    } else {
-                        Text("Error with Graph User")
                     }
                 }
                 .frame(width: screenWidth * 0.8)
@@ -226,6 +281,14 @@ struct PersonalInfoView: View {
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
         .onAppear {
+            if user.accountType == "Athlete" {
+                Task {
+                    let athletes = await queryAWSAthletes().filter { $0.user.id == user.id }
+                    if athletes.count == 1 {
+                        athlete = athletes[0]
+                    }
+                }
+            }
         }
     }
 }

@@ -27,8 +27,7 @@ struct ContentView: View {
     @AppStorage("authUserId") var authUserId: String = ""
     @State var showAccount: Bool = false
     @State var diveMeetsID: String = ""
-    @State var newUser: NewUser?
-    @State var newAthlete: NewAthlete?
+    @State var newUser: NewUser? = nil
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -62,14 +61,6 @@ struct ContentView: View {
             let users = await queryAWSUsers(where: idPredicate)
             if users.count == 1 {
                 newUser = users[0]
-                
-                if newUser?.accountType == "Athlete" {
-                    let athletes = await queryAWSAthletes().filter { $0.user.id == newUser?.id }
-                    if athletes.count == 1 {
-                        newAthlete = athletes[0]
-                    }
-                }
-                
                 diveMeetsID = newUser?.diveMeetsID ?? ""
             } else {
                 print("Failed attempt \(numAttempts + 1) getting DiveMeetsID, retrying...")
@@ -128,9 +119,16 @@ struct ContentView: View {
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
                             NavigationView {
-                                AdrenalineProfileView(state: state, email: $email,
-                                                      newUser: $newUser, newAthlete: $newAthlete,
-                                                      showAccount: $showAccount)
+                                // Need to use WrapperView here since we have to pass in state
+                                // and showAccount for popover profile
+                                if let user = newUser {
+                                    AdrenalineProfileWrapperView(state: state, newUser: user,
+                                                                 showAccount: $showAccount)
+                                } else {
+                                    AdrenalineProfileWrapperView(state: state,
+                                                                 authUserId: authUserId,
+                                                                 showAccount: $showAccount)
+                                }
                             }
                         })
                         .onAppear {
