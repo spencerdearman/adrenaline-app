@@ -365,7 +365,10 @@ extension UINavigationController {
     }
 }
 
-let CLOUDFRONT_BASE_URL = "https://d3mgzcs3lrwvom.cloudfront.net/"
+let CLOUDFRONT_STREAM_BASE_URL = "https://d3mgzcs3lrwvom.cloudfront.net/"
+let CLOUDFRONT_IMAGE_BASE_URL = "https://dc666cmbq88s6.cloudfront.net/"
+let MAIN_BUCKET = "adrenalinexxxxx153503-main"
+let STREAMS_BUCKET = "adrenaline-main-video-streams"
 
 @main
 struct AdrenalineApp: App {

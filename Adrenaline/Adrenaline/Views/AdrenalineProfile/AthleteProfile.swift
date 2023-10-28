@@ -338,37 +338,68 @@ struct RecruitingView: View {
 
 struct PostsView: View {
     @EnvironmentObject private var appLogic: AppLogic
-    @State private var posts: [Post] = []
+    @Namespace var namespace
+    @State private var posts: [PostProfileItem] = []
+    @State private var postShowing: String? = nil
+    @State private var hasDeletedPost: Bool = false
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
+    private func updatePosts() async throws {
+        let pred = Post.keys.newuserID == newUser.id
+        let postModels: [Post] = try await query(where: pred)
+        var profileItems: [PostProfileItem] = []
+        for post in postModels {
+            try await profileItems.append(PostProfileItem(user: newUser, post: post,
+                                                          namespace: namespace,
+                                                          postShowing: $postShowing,
+                                                          hasDeletedPost: $hasDeletedPost))
+        }
+        
+        // Sorts descending by date so most recent posts appear first
+        posts = profileItems.sorted(by: {
+            $0.post.creationDate > $1.post.creationDate
+        })
+    }
+    
     var body: some View {
+        let size: CGFloat = 125
+        
         ZStack {
-            if !posts.isEmpty {
-                let size: CGFloat = 125
-                ScrollView(showsIndicators: false) {
-                    LazyVGrid(columns: [
-                        GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
-                            ForEach(posts, id: \.id) { post in
-                                ZStack {
-                                    Rectangle()
-                                        .fill(.ultraThinMaterial)
-                                        .mask(RoundedRectangle(cornerRadius: 40))
-                                        .shadow(radius: 4)
-                                    Text("Post \(String(post.id.prefix(5)))")
-                                }
+            if let showingId = postShowing {
+                ForEach($posts) { post in
+                    if post.post.wrappedValue.id == showingId {
+                        AnyView(post.expandedView.wrappedValue)
+                    }
+                }
+            }
+            
+            ScrollView(showsIndicators: false) {
+                LazyVGrid(columns: [
+                    GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
+                        ForEach($posts, id: \.id) { post in
+                            ZStack {
+                                AnyView(post.collapsedView.wrappedValue)
+                                    .frame(width: size, height: size)
                             }
                         }
-                        .padding(.top)
+                    }
+                    .padding(.top)
+            }
+        }
+        .onChange(of: hasDeletedPost) {
+            if hasDeletedPost {
+                Task {
+                    try await updatePosts()
+                    hasDeletedPost = false
                 }
             }
         }
         .onAppear {
             Task {
-                let pred = Post.keys.newuserID == newUser.id
-                posts = try await query(where: pred)
+                try await updatePosts()
             }
         }
     }

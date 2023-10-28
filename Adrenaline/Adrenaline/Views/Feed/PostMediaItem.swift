@@ -12,10 +12,11 @@ import AVKit
 enum PostMedia {
     case video(VideoPlayerViewModel)
     case image(Image)
+    case asyncImage(AsyncImage<AnyView>)
 }
 
 struct PostMediaItem: Identifiable {
-    var id: String = UUID().uuidString
+    var id: String
     var data: PostMedia
     var useVideoThumbnail: Bool
     
@@ -30,12 +31,15 @@ struct PostMediaItem: Identifiable {
             return i
                 .resizable()
                 .aspectRatio(contentMode: .fit)
+        } else if case let .asyncImage(i) = self.data {
+            return i
         } else {
             return EmptyView()
         }
     }
     
-    init(data: PostMedia, useVideoThumbnail: Bool = false) {
+    init(id: String = UUID().uuidString, data: PostMedia, useVideoThumbnail: Bool = false) {
+        self.id = id
         self.data = data
         self.useVideoThumbnail = useVideoThumbnail
     }
