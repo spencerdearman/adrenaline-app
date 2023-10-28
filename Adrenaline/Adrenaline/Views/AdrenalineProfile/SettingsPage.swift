@@ -14,7 +14,7 @@ struct SettingsView: View {
     @State var isPinned = false
     @State var isDeleted = false
     @Binding var email: String
-    @Binding var graphUser: GraphUser?
+    @Binding var newUser: NewUser?
     @Binding var newAthlete: NewAthlete?
     
     var body: some View {
@@ -44,7 +44,7 @@ struct SettingsView: View {
                                 .offset(x: -100, y: 20)
                                 .scaleEffect(1.6)
                                 .rotationEffect(Angle(degrees: 60)))
-                        Text("\(graphUser?.firstName ?? "") \(graphUser?.lastName ?? "")")
+                        Text("\(newUser?.firstName ?? "") \(newUser?.lastName ?? "")")
                             .font(.title.weight(.semibold))
                     }
                     .frame(maxWidth: .infinity)

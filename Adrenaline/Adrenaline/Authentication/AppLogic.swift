@@ -18,10 +18,10 @@ import AWSS3StoragePlugin
 class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
     @Published var initialized: Bool = false
-    @Published var users: [GraphUser] = []
-    @Published var meets: [GraphMeet] = []
-    @Published var teams: [GraphTeam] = []
-    @Published var colleges: [GraphCollege] = []
+    @Published var users: [NewUser] = []
+    @Published var meets: [NewMeet] = []
+    @Published var teams: [NewTeam] = []
+    @Published var colleges: [College] = []
     @Published var dataStoreReady: Bool = false
     
     func configureAmplify() {
@@ -136,13 +136,12 @@ class AppLogic: ObservableObject {
     private func queryData() async {
         // load data at start of app when user signed in
         if self.users.isEmpty {
-            self.users = await queryUsers()
+            self.users = await queryAWSUsers()
         }
         
         if self.meets.isEmpty {
             do {
-                let newMeets: [NewMeet] = try await query()
-                self.meets = newMeets.map { GraphMeet(from: $0) }
+                self.meets = try await query()
             } catch {
                 print("Failed to query meets")
             }
@@ -150,8 +149,7 @@ class AppLogic: ObservableObject {
         
         if self.teams.isEmpty {
             do {
-                let newTeams: [NewTeam] = try await query()
-                self.teams = newTeams.map { GraphTeam(from: $0) }
+                self.teams = try await query()
             } catch {
                 print("Failed to query teams")
             }
@@ -159,8 +157,7 @@ class AppLogic: ObservableObject {
         
         if self.colleges.isEmpty {
             do {
-                let colleges: [College] = try await query()
-                self.colleges = colleges.map { GraphCollege(from: $0) }
+                self.colleges = try await query()
             } catch {
                 print("Failed to query colleges")
             }

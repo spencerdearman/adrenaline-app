@@ -20,7 +20,7 @@ struct AdrenalineProfileView: View {
     @State private var offset: CGFloat = 0
     @State private var swiped: Bool = false
     @Binding var email: String
-    @Binding var graphUser: GraphUser?
+    @Binding var newUser: NewUser?
     @Binding var newAthlete: NewAthlete?
     @Binding var showAccount: Bool
     private let screenWidth = UIScreen.main.bounds.width
@@ -52,7 +52,7 @@ struct AdrenalineProfileView: View {
                 .frame(height: screenHeight * 0.7)
                 .offset(x: screenWidth * 0.2, y: -screenHeight * 0.4)
                 .scaleEffect(0.7)
-            if let user = graphUser {
+            if let user = newUser {
                 VStack {
                     ProfileImage(diverID: (user.diveMeetsID ?? ""))
                         .frame(width: 200, height: 130)
@@ -62,7 +62,7 @@ struct AdrenalineProfileView: View {
                         .onAppear {
                             offset = screenHeight * 0.45
                         }
-                    PersonalInfoView(graphUser: $graphUser, email: $email, athlete: $newAthlete)
+                    PersonalInfoView(newUser: $newUser, email: $email, athlete: $newAthlete)
                 }
                 .offset(y: -screenHeight * 0.25)
                 .padding([.leading, .trailing, .top])
@@ -76,9 +76,9 @@ struct AdrenalineProfileView: View {
                     VStack {
                         let type = user.accountType
                         if type == AccountType.athlete.rawValue {
-                            DiverView(graphUser: user)
+                            DiverView(newUser: user)
                         } else if type == AccountType.coach.rawValue {
-                            CoachView(graphUser: user)
+                            CoachView(newUser: user)
                         } else if type == AccountType.spectator.rawValue {
                             Text("This is a spectator profile")
                         } else {
@@ -99,7 +99,7 @@ struct AdrenalineProfileView: View {
             }
         }
         .overlay{
-            ProfileBar(state: state, showAccount: $showAccount, email: $email, graphUser: $graphUser, newAthlete: $newAthlete)
+            ProfileBar(state: state, showAccount: $showAccount, email: $email, newUser: $newUser, newAthlete: $newAthlete)
                 .frame(width: screenWidth)
         }
     }
@@ -108,7 +108,7 @@ struct AdrenalineProfileView: View {
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @Binding var graphUser: GraphUser?
+    @Binding var newUser: NewUser?
     @Binding var email: String
     @Binding var athlete: NewAthlete?
     @State var selectedCollege: String = ""
@@ -160,7 +160,7 @@ struct PersonalInfoView: View {
                             .frame(width: screenWidth * 0.15,
                                    height: screenWidth * 0.15)
                     }
-                    if let user = graphUser {
+                    if let user = newUser {
                         VStack {
                             HStack (alignment: .firstTextBaseline) {
                                 Text((user.firstName) + " " +
@@ -423,7 +423,7 @@ struct PersonalInfoView: View {
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
-    var graphUser: GraphUser
+    var newUser: NewUser
     var body: some View {
         VStack {
             Text("ReMake the DiveMeets Link")

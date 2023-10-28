@@ -62,9 +62,8 @@ struct NewSignupSequence: View {
     @Binding var email: String
     
     // User States
+    private let defaultNewUser: NewUser = NewUser(firstName: "", lastName: "",                   email: "", accountType: "Athlete")
     @State var savedUser: NewUser? = nil
-    @StateObject var newUser: GraphUser = GraphUser(firstName: "", lastName: "",
-                                              email: "", accountType: "Athlete")
     
     // General States
     @State var buttonPressed: Bool = false
@@ -228,10 +227,12 @@ struct NewSignupSequence: View {
                     .matchedGeometryEffect(id: "form", in: namespace)
                 case 4:
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Welcome to Adrenaline \(newUser.firstName)!")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
+                        if let savedUser = savedUser {
+                            Text("Welcome to Adrenaline \(savedUser.firstName)!")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                        }
                         
                         welcomeForm.slideFadeIn(show: appear[2], offset: 10)
                     }
@@ -254,7 +255,10 @@ struct NewSignupSequence: View {
             .modifier(OutlineModifier(cornerRadius: 30))
             .onAppear {
                 animate()
-                newUser.email = email
+                if savedUser == nil {
+                    savedUser = defaultNewUser
+                }
+                savedUser!.email = email
             }
             .frame(width: screenWidth * 0.9)
         }
@@ -268,7 +272,10 @@ struct NewSignupSequence: View {
         Group {
             Button {
                 accountType = "Athlete"
-                newUser.accountType = "Athlete"
+                if savedUser == nil {
+                    savedUser = defaultNewUser
+                }
+                savedUser!.accountType = "Athlete"
             } label: {
                 ZStack {
                     Rectangle()
@@ -294,7 +301,10 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Coach"
-                newUser.accountType = accountType
+                if savedUser == nil {
+                    savedUser = defaultNewUser
+                }
+                savedUser!.accountType = accountType
             } label: {
                 ZStack {
                     Rectangle()
@@ -320,7 +330,10 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Spectator"
-                newUser.accountType = accountType
+                if savedUser == nil {
+                    savedUser = defaultNewUser
+                }
+                savedUser!.accountType = accountType
             } label: {
                 ZStack {
                     Rectangle()
@@ -371,7 +384,10 @@ struct NewSignupSequence: View {
                 .focused($isFirstFocused)
                 .textContentType(.givenName)
                 .onChange(of: firstName) {
-                    newUser.firstName = firstName
+                    if savedUser == nil {
+                        savedUser = defaultNewUser
+                    }
+                    savedUser!.firstName = firstName
                 }
         
             TextField("Last Name", text: $lastName)
@@ -380,7 +396,10 @@ struct NewSignupSequence: View {
                 .focused($isLastFocused)
                 .textContentType(.familyName)
                 .onChange(of: lastName) {
-                    newUser.lastName = lastName
+                    if savedUser == nil {
+                        savedUser = defaultNewUser
+                    }
+                    savedUser!.lastName = lastName
                 }
             
             TextField("Phone Number", text: $phone)
@@ -390,7 +409,10 @@ struct NewSignupSequence: View {
                 .textContentType(.telephoneNumber)
                 .onChange(of: phone) {
                     phone = formatPhoneString(string: phone)
-                    newUser.phone = removePhoneFormatting(string: phone)
+                    if savedUser == nil {
+                        savedUser = defaultNewUser
+                    }
+                    savedUser!.phone = removePhoneFormatting(string: phone)
                 }
             
             Divider()
@@ -399,16 +421,18 @@ struct NewSignupSequence: View {
                 searchSubmitted = true
                 if basicAllFieldsFilled {
                     buttonPressed = false
-                    if newUser.accountType != "Spectator" {
+                    if let savedUser = savedUser, savedUser.accountType != "Spectator" {
                         withAnimation(.openCard) {
                             pageIndex = 2
                         }
                     } else {
                         Task {
                             do {
-                                savedUser = try await saveUser(user: newUser)
-                                userCreationSuccessful = true
-                                print("Saved New User")
+                                if let savedUser = savedUser {
+                                    let _ = try await saveToDataStore(object: savedUser)
+                                    userCreationSuccessful = true
+                                    print("Saved New User")
+                                }
                             } catch {
                                 showBasicError = true
                                 print("Could not save user to DataStore: \(error)")
@@ -457,7 +481,10 @@ struct NewSignupSequence: View {
                         let (key, value) = record
                         Button {
                             selectedDict[value] = true
-                            newUser.diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                            if savedUser == nil {
+                                savedUser = defaultNewUser
+                            }
+                            savedUser!.diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
                         } label: {
                             ZStack {
                                 Rectangle()
@@ -498,14 +525,16 @@ struct NewSignupSequence: View {
                 showBasicError = false
                 Task {
                     do {
-                        savedUser = try await saveUser(user: newUser)
-                        userCreationSuccessful = true
-                        print("Saved New User")
-                        
-                        if newUser.accountType == "Coach" {
-                            let coach = CoachUser(user: savedUser)
-                            let savedCoach = try await Amplify.DataStore.save(coach)
-                            print("Saved Coach Profile \(savedCoach)")
+                        if let savedUser = savedUser {
+                            let _ = try await saveToDataStore(object: savedUser)
+                            userCreationSuccessful = true
+                            print("Saved New User")
+                            
+                            if savedUser.accountType == "Coach" {
+                                let coach = CoachUser(user: savedUser)
+                                let savedCoach = try await Amplify.DataStore.save(coach)
+                                print("Saved Coach Profile \(savedCoach)")
+                            }
                         }
                     } catch {
                         showBasicError = true
@@ -514,7 +543,10 @@ struct NewSignupSequence: View {
                     if userCreationSuccessful {
                         withAnimation {
                             print("Selected Next")
-                            if newUser.accountType == "Athlete" {
+                            if savedUser == nil {
+                                savedUser = defaultNewUser
+                            }
+                            if savedUser!.accountType == "Athlete" {
                                 pageIndex = 3
                             } else {
                                 pageIndex = 4
@@ -557,9 +589,10 @@ struct NewSignupSequence: View {
                                 pageIndex = 2
                             }
                             do {
-                                let newUser = try await saveUser(user: newUser)
-                                print("Saved New User")
-                                savedUser = newUser
+                                if let savedUser = savedUser {
+                                    let _ = try await saveToDataStore(object: savedUser)
+                                    print("Saved New User")
+                                }
                             } catch {
                                 print("Could not save user to DataStore: \(error)")
                             }

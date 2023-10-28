@@ -26,7 +26,7 @@ struct ContentView: View {
     @AppStorage("email") var email: String = ""
     @State var showAccount: Bool = false
     @State var diveMeetsID: String = ""
-    @State var graphUser: GraphUser?
+    @State var newUser: NewUser?
     @State var newAthlete: NewAthlete?
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -58,16 +58,19 @@ struct ContentView: View {
             try await Task.sleep(seconds: pow(Double(numAttempts), 2))
             
             let emailPredicate = NewUser.keys.email == email
-            let users = await queryUsers(where: emailPredicate)
+            let users = await queryAWSUsers(where: emailPredicate)
             if users.count >= 1 {
-                graphUser = users[0]
-                let userPredicate = users[0].athleteId ?? "" == NewAthlete.keys.id.rawValue
-                let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
-                if athletes.count >= 1 {
-                    newAthlete = athletes[0]
+                newUser = users[0]
+                
+                if newUser?.accountType == "Athlete" {
+                    let userPredicate = users[0].newUserAthleteId ?? "" == NewAthlete.keys.id.rawValue
+                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
+                    if athletes.count >= 1 {
+                        newAthlete = athletes[0]
+                    }
                 }
                 
-                diveMeetsID = graphUser?.diveMeetsID ?? ""
+                diveMeetsID = newUser?.diveMeetsID ?? ""
             } else {
                 print("Failed attempt \(numAttempts + 1) getting DiveMeetsID, retrying...")
                 await getCurrentUserDiveMeetsID(numAttempts: numAttempts + 1)
@@ -125,7 +128,7 @@ struct ContentView: View {
                         .fullScreenCover(isPresented: $showAccount, content: {
                             NavigationView {
                                 AdrenalineProfileView(state: state, email: $email, 
-                                                      graphUser: $graphUser, newAthlete: $newAthlete,
+                                                      newUser: $newUser, newAthlete: $newAthlete,
                                                       showAccount: $showAccount)
                             }
                         })

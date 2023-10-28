@@ -15,15 +15,23 @@ enum SearchScope: String, CaseIterable {
 }
 
 enum SearchItem: Hashable, Identifiable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    static func == (lhs: SearchItem, rhs: SearchItem) -> Bool {
+        lhs.id == rhs.id
+    }
+    
     var id: String {
         if case .meet(let meet) = self {
-            return meet.id.uuidString
+            return meet.id
         } else if case .user(let user) = self {
-            return user.id.uuidString
+            return user.id
         } else if case .team(let team) = self {
-            return team.id.uuidString
+            return team.id
         } else if case .college(let college) = self {
-            return college.id.uuidString
+            return college.id
         } else {
             return ""
         }
@@ -42,7 +50,7 @@ enum SearchItem: Hashable, Identifiable {
             return ""
         }
     }
-    
+  
     var subtitle: String {
         if case .user( _) = self {
             return "User"
@@ -57,17 +65,17 @@ enum SearchItem: Hashable, Identifiable {
         }
     }
     
-    case user(GraphUser)
-    case meet(GraphMeet)
-    case team(GraphTeam)
-    case college(GraphCollege)
+    case user(NewUser)
+    case meet(NewMeet)
+    case team(NewTeam)
+    case college(College)
 }
 
 struct NewSearchView: View {
-    @Environment(\.graphUsers) private var graphUsers
-    @Environment(\.graphMeets) private var graphMeets
-    @Environment(\.graphTeams) private var graphTeams
-    @Environment(\.graphColleges) private var graphColleges
+    @Environment(\.newUsers) private var newUsers
+    @Environment(\.newMeets) private var newMeets
+    @Environment(\.newTeams) private var newTeams
+    @Environment(\.colleges) private var colleges
     @State var text = ""
     @State var showResult: Bool = false
     @State var selectedItem: SearchItem? = nil
@@ -123,11 +131,11 @@ struct NewSearchView: View {
         }
         .onAppear {
             searchItems = [
-                .meet(GraphMeet(meetID: 1, name: "Test Meet 1", startDate: Temporal.Date(Date()),
+                .meet(NewMeet(meetID: 1, name: "Test Meet 1", startDate: Temporal.Date(Date()),
                                 endDate: Temporal.Date(Date()),
                                 city: "Pittsburgh", state: "PA", country: "United States",
                                 link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9080", meetType: 2)),
-                .meet(GraphMeet(meetID: 2, name: "Test Meet 2", startDate: Temporal.Date(Date()),
+                .meet(NewMeet(meetID: 2, name: "Test Meet 2", startDate: Temporal.Date(Date()),
                                 endDate: Temporal.Date(Date()),
                                 city: "Oakton", state: "VA", country: "United States",
                                 link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9088", meetType: 2)),
@@ -136,10 +144,10 @@ struct NewSearchView: View {
                 //                                      imageLink: "https://www.google.com"))
             ]
             
-            searchItems += graphMeets.map { .meet($0) }
-            searchItems += graphUsers.map { .user($0) }
-            searchItems += graphTeams.map { .team($0) }
-            searchItems += graphColleges.map { .college($0) }
+            searchItems += newMeets.map { .meet($0) }
+            searchItems += newUsers.map { .user($0) }
+            searchItems += newTeams.map { .team($0) }
+            searchItems += colleges.map { .college($0) }
         }
     }
     
@@ -205,7 +213,7 @@ struct NewSearchView: View {
     private func getSearchItemView(item: SearchItem) -> any View {
         if case .meet(let meet) = item,
            let selected = selectedItem,
-           meet.id.uuidString == selected.id {
+           meet.id == selected.id {
             return ZStack {
                 NavigationView {
                     MeetPageView(meetLink: meet.link)
@@ -213,7 +221,7 @@ struct NewSearchView: View {
             }
         } else if case .user(let user) = item,
                   let selected = selectedItem,
-                  user.id.uuidString == selected.id {
+                  user.id == selected.id {
             return ZStack {
                 VStack {
                     Text(user.firstName + " " + user.lastName)
@@ -225,7 +233,7 @@ struct NewSearchView: View {
             }
         } else if case .team(let team) = item,
                   let selected = selectedItem,
-                  team.id.uuidString == selected.id {
+                  team.id == selected.id {
             return ZStack {
                 Text(team.name)
                 
@@ -233,7 +241,7 @@ struct NewSearchView: View {
             }
         } else if case .college(let college) = item,
                   let selected = selectedItem,
-                  college.id.uuidString == selected.id {
+                  college.id == selected.id {
             return ZStack {
                 Text(college.name)
                 

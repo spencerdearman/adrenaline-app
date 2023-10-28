@@ -149,20 +149,20 @@ private struct DropFollowedFromUserKey: EnvironmentKey {
     static let defaultValue: (User, Followed) -> () = { _, _ in }
 }
 
-private struct GraphUsersKey: EnvironmentKey {
-    static let defaultValue: [GraphUser] = []
+private struct NewUsersKey: EnvironmentKey {
+    static let defaultValue: [NewUser] = []
 }
 
-private struct GraphMeetsKey: EnvironmentKey {
-    static let defaultValue: [GraphMeet] = []
+private struct NewMeetsKey: EnvironmentKey {
+    static let defaultValue: [NewMeet] = []
 }
 
-private struct GraphTeamsKey: EnvironmentKey {
-    static let defaultValue: [GraphTeam] = []
+private struct NewTeamsKey: EnvironmentKey {
+    static let defaultValue: [NewTeam] = []
 }
 
-private struct GraphCollegesKey: EnvironmentKey {
-    static let defaultValue: [GraphCollege] = []
+private struct CollegesKey: EnvironmentKey {
+    static let defaultValue: [College] = []
 }
 
 extension EnvironmentValues {
@@ -331,24 +331,24 @@ extension EnvironmentValues {
         set { self[DropFollowedFromUserKey.self] = newValue }
     }
     
-    var graphUsers: [GraphUser] {
-        get { self[GraphUsersKey.self] }
-        set { self[GraphUsersKey.self] = newValue }
+    var newUsers: [NewUser] {
+        get { self[NewUsersKey.self] }
+        set { self[NewUsersKey.self] = newValue }
     }
     
-    var graphMeets: [GraphMeet] {
-        get { self[GraphMeetsKey.self] }
-        set { self[GraphMeetsKey.self] = newValue }
+    var newMeets: [NewMeet] {
+        get { self[NewMeetsKey.self] }
+        set { self[NewMeetsKey.self] = newValue }
     }
 
-    var graphTeams: [GraphTeam] {
-        get { self[GraphTeamsKey.self] }
-        set { self[GraphTeamsKey.self] = newValue }
+    var newTeams: [NewTeam] {
+        get { self[NewTeamsKey.self] }
+        set { self[NewTeamsKey.self] = newValue }
     }
 
-    var graphColleges: [GraphCollege] {
-        get { self[GraphCollegesKey.self] }
-        set { self[GraphCollegesKey.self] = newValue }
+    var colleges: [College] {
+        get { self[CollegesKey.self] }
+        set { self[CollegesKey.self] = newValue }
     }
 }
 
@@ -385,10 +385,10 @@ struct AdrenalineApp: App {
             ContentView()
                 .environmentObject(appLogic)
                 .environment(\.authenticated, appLogic.isSignedIn)
-                .environment(\.graphUsers, appLogic.users)
-                .environment(\.graphMeets, appLogic.meets)
-                .environment(\.graphTeams, appLogic.teams)
-                .environment(\.graphColleges, appLogic.colleges)
+                .environment(\.newUsers, appLogic.users)
+                .environment(\.newMeets, appLogic.meets)
+                .environment(\.newTeams, appLogic.teams)
+                .environment(\.colleges, appLogic.colleges)
                 .environment(\.managedObjectContext, modelDataController.container.viewContext)
                 .environment(\.modelDB, modelDataController)
                 .environmentObject(meetParser)
