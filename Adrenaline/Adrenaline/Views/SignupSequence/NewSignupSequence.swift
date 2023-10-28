@@ -416,16 +416,15 @@ struct NewSignupSequence: View {
                                 showBasicError = true
                                 print("Could not save user to DataStore: \(error)")
                             }
+                            
                             if userCreationSuccessful {
-                                withAnimation {
-                                    print("Selected Next")
-                                    pageIndex = 3
+                                withAnimation(.openCard) {
+                                    pageIndex = 4
                                 }
                             }
                         }
-                        withAnimation(.openCard) {
-                            pageIndex = 4
-                        }
+                        
+                        
                     }
                 } else {
                     buttonPressed = true
