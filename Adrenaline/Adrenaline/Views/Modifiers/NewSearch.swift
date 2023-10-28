@@ -31,13 +31,27 @@ enum SearchItem: Hashable, Identifiable {
     
     var title: String {
         if case .user(let user) = self {
-            return user.email
+            return user.firstName + " " + user.lastName
         } else if case .meet(let meet) = self {
             return meet.name
         } else if case .team(let team) = self {
             return team.name
         } else if case .college(let college) = self {
             return college.name
+        } else {
+            return ""
+        }
+    }
+    
+    var subtitle: String {
+        if case .user( _) = self {
+            return "User"
+        } else if case .meet(_) = self {
+            return "Meet"
+        } else if case .team(_) = self {
+            return "Team"
+        } else if case .college(_) = self {
+            return "College"
         } else {
             return ""
         }
@@ -70,7 +84,7 @@ struct NewSearchView: View {
         recentSearches.insert(item, at: 0)
         
         // Keeps the three most recent searches
-        if recentSearches.count == 4 {
+        if recentSearches.count > 5 {
             recentSearches.removeLast()
         }
     }
@@ -82,15 +96,23 @@ struct NewSearchView: View {
                 Spacer()
             }
         }
-        .searchable(text: $text) {
+        .searchable(text: $text, placement: .navigationBarDrawer(displayMode: .always)) {
             ForEach(suggestions) { suggestion in
                 Button {
                     text = suggestion.title
                 } label: {
-                    ListRow(title: suggestion.title,
-                            icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
-                    .foregroundColor(.primary)
+                    HStack {
+                        ListRow(title: suggestion.title,
+                                icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
+                        .foregroundColor(.primary)
+                        
+                        if searchScope == .all {
+                            Text(suggestion.subtitle)
+                                .foregroundColor(.gray)
+                        }
+                    }
                 }
+                // Uses item's title to determine if search text matches
                 .searchCompletion(suggestion.title)
             }
         }
@@ -122,20 +144,30 @@ struct NewSearchView: View {
     }
     
     var content: some View {
-        ScrollView(showsIndicators: false) {
+        ScrollView {
             VStack {
-                ForEach(results) { item in
-                    if results.count != 0 {
-                        Divider()
+                VStack {
+                    if text == "" {
+                        ForEach(recentSearches) { item in
+                            ListRow(title: item.title, icon: "clock.arrow.circlepath")
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    showResult = true
+                                    selectedItem = item
+                                    updateRecentSearches(item: item)
+                                }
+                        }
+                        .zIndex(3)
                     }
-                    Button {
-                        showResult = true
-                        selectedItem = item
-                        updateRecentSearches(item: item)
-                    } label:  {
+                    ForEach(results) { item in
                         ListRow(title: item.title, icon: "magnifyingglass")
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                showResult = true
+                                selectedItem = item
+                                updateRecentSearches(item: item)
+                            }
                     }
-                    .buttonStyle(.plain)
                 }
                 .padding(20)
                 .background(.ultraThinMaterial)
@@ -155,6 +187,7 @@ struct NewSearchView: View {
                 }
             }
         }
+        .scrollIndicators(.hidden)
     }
     
     var closeButton: some View {
@@ -182,7 +215,11 @@ struct NewSearchView: View {
                   let selected = selectedItem,
                   user.id.uuidString == selected.id {
             return ZStack {
-                Text(user.email)
+                VStack {
+                    Text(user.firstName + " " + user.lastName)
+                    Text(user.email)
+                    Text(user.diveMeetsID ?? "")
+                }
                 
                 closeButton
             }
@@ -257,7 +294,9 @@ struct NewSearchView: View {
         if text.isEmpty {
             return recentSearches
         } else {
-            return results.filter { $0.title.localizedCaseInsensitiveContains(text) }
+            return results
+                .filter { $0.title.localizedCaseInsensitiveContains(text) }
+                .sorted(by: { $0.title < $1.title })
         }
     }
 }
