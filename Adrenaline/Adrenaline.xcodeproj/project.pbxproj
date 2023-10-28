@@ -20,6 +20,7 @@
 		002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002A1B3329DB7C4700A26FED /* ProfileHTMLCache.swift */; };
 		002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002A1B7F29DB94A400A26FED /* MeetDBTestView.swift */; };
 		002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002A1BB529DCF2F900A26FED /* GetTextAsync.swift */; };
+		0034B5D42AECFCEC00A2D7A1 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 0034B5D32AECFCEC00A2D7A1 /* CachedAsyncImage */; };
 		0037877929D4F40900D3CD59 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0037877729D4F40900D3CD59 /* Cache.swift */; };
 		0037877A29D4F40900D3CD59 /* ProfileMeetCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0037877829D4F40900D3CD59 /* ProfileMeetCache.swift */; };
 		0037877C29D4F41800D3CD59 /* MeetParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0037877B29D4F41800D3CD59 /* MeetParser.swift */; };
@@ -339,6 +340,7 @@
 				4D13F3C42A9D563F0081823D /* Authenticator in Frameworks */,
 				4DF9F7FE2A85E3730049CCD3 /* AWSAPIPlugin in Frameworks */,
 				4DF9F8062A85E3730049CCD3 /* Amplify in Frameworks */,
+				0034B5D42AECFCEC00A2D7A1 /* CachedAsyncImage in Frameworks */,
 				4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */,
 				4D76438C2A70F733000F35CB /* SwiftUIGIF in Frameworks */,
 				4DF9F8022A85E3730049CCD3 /* AWSDataStorePlugin in Frameworks */,
@@ -787,6 +789,7 @@
 				4DF9F8032A85E3730049CCD3 /* AWSS3StoragePlugin */,
 				4DF9F8052A85E3730049CCD3 /* Amplify */,
 				4D13F3C32A9D563F0081823D /* Authenticator */,
+				0034B5D32AECFCEC00A2D7A1 /* CachedAsyncImage */,
 			);
 			productName = DiveMeets;
 			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
@@ -821,6 +824,7 @@
 				4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */,
 				4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */,
 				4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */,
+				0034B5D22AECFCEB00A2D7A1 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
 			);
 			productRefGroup = 4D74FE9429AE7B9800401178 /* Products */;
 			projectDirPath = "";
@@ -1216,6 +1220,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		0034B5D22AECFCEB00A2D7A1 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-cached-async-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
 		4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/aws-amplify/amplify-ui-swift-authenticator";
@@ -1251,6 +1263,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		0034B5D32AECFCEC00A2D7A1 /* CachedAsyncImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0034B5D22AECFCEB00A2D7A1 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
+			productName = CachedAsyncImage;
+		};
 		4D13F3C32A9D563F0081823D /* Authenticator */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */;

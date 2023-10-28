@@ -7,12 +7,13 @@
 
 import SwiftUI
 import AVKit
+import CachedAsyncImage
 
 
 enum PostMedia {
     case video(VideoPlayerViewModel)
     case image(Image)
-    case asyncImage(AsyncImage<AnyView>)
+    case asyncImage(CachedAsyncImage<AnyView>)
 }
 
 struct PostMediaItem: Identifiable {
