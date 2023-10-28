@@ -341,7 +341,7 @@ struct PostsView: View {
     @Namespace var namespace
     @State private var posts: [PostProfileItem] = []
     @State private var postShowing: String? = nil
-    @State private var hasDeletedPost: Bool = false
+    @State private var shouldRefreshPosts: Bool = false
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -355,7 +355,7 @@ struct PostsView: View {
             try await profileItems.append(PostProfileItem(user: newUser, post: post,
                                                           namespace: namespace,
                                                           postShowing: $postShowing,
-                                                          hasDeletedPost: $hasDeletedPost))
+                                                          shouldRefreshPosts: $shouldRefreshPosts))
         }
         
         // Sorts descending by date so most recent posts appear first
@@ -389,11 +389,11 @@ struct PostsView: View {
                     .padding(.top)
             }
         }
-        .onChange(of: hasDeletedPost) {
-            if hasDeletedPost {
+        .onChange(of: shouldRefreshPosts) {
+            if shouldRefreshPosts {
                 Task {
                     try await updatePosts()
-                    hasDeletedPost = false
+                    shouldRefreshPosts = false
                 }
             }
         }
