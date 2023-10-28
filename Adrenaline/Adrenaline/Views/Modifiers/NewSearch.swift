@@ -223,11 +223,7 @@ struct NewSearchView: View {
                   let selected = selectedItem,
                   user.id == selected.id {
             return ZStack {
-                VStack {
-                    Text(user.firstName + " " + user.lastName)
-                    Text(user.email)
-                    Text(user.diveMeetsID ?? "")
-                }
+                AdrenalineProfileView(newUser: user)
                 
                 closeButton
             }
