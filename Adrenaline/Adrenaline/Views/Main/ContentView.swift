@@ -122,10 +122,15 @@ struct ContentView: View {
                             NavigationView {
                                 // Need to use WrapperView here since we have to pass in state
                                 // and showAccount for popover profile
-                                if let user = newUser {
+                                if let user = newUser, user.accountType != "Spectator" {
                                     AdrenalineProfileWrapperView(state: state, newUser: user,
                                                                  showAccount: $showAccount)
+                                } else if let _ = newUser {
+                                    SettingsView(state: state, newUser: newUser,
+                                                 showAccount: $showAccount)
                                 } else {
+                                    // In the event that a NewUser can't be queried, this is the
+                                    // default view
                                     AdrenalineProfileWrapperView(state: state,
                                                                  authUserId: authUserId,
                                                                  showAccount: $showAccount)
