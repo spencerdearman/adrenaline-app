@@ -367,8 +367,9 @@ struct NewSignupSequence: View {
         }
     }
     
+    // Phone can be empty since it is optional
     var basicAllFieldsFilled: Bool {
-        !firstName.isEmpty && !lastName.isEmpty && !phone.isEmpty
+        !firstName.isEmpty && !lastName.isEmpty
     }
     
     var basicInfoForm: some View {
