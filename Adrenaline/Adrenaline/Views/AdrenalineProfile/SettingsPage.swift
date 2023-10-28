@@ -85,6 +85,7 @@ struct SettingsView: View {
                 .tint(.red)
                 .onTapGesture {
                     Task {
+                        UserDefaults.standard.removeObject(forKey: "authUserId")
                         await state.signOut()
                     }
                     presentationMode.wrappedValue.dismiss()

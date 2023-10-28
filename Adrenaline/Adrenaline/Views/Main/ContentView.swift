@@ -24,6 +24,7 @@ struct ContentView: View {
     @State private var tabBarState: Visibility = .visible
     @AppStorage("signupCompleted") var signupCompleted: Bool = false
     @AppStorage("email") var email: String = ""
+    @AppStorage("authUserId") var authUserId: String = ""
     @State var showAccount: Bool = false
     @State var diveMeetsID: String = ""
     @State var newUser: NewUser?
@@ -57,15 +58,14 @@ struct ContentView: View {
             // Waits with exponential backoff to give DataStore time to update
             try await Task.sleep(seconds: pow(Double(numAttempts), 2))
             
-            let emailPredicate = NewUser.keys.email == email
-            let users = await queryAWSUsers(where: emailPredicate)
-            if users.count >= 1 {
+            let idPredicate = NewUser.keys.id == authUserId
+            let users = await queryAWSUsers(where: idPredicate)
+            if users.count == 1 {
                 newUser = users[0]
                 
                 if newUser?.accountType == "Athlete" {
-                    let userPredicate = users[0].newUserAthleteId ?? "" == NewAthlete.keys.id.rawValue
-                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
-                    if athletes.count >= 1 {
+                    let athletes = await queryAWSAthletes().filter { $0.user.id == newUser?.id }
+                    if athletes.count == 1 {
                         newAthlete = athletes[0]
                     }
                 }
@@ -100,6 +100,7 @@ struct ContentView: View {
                         NewSignupSequence(signupCompleted: $signupCompleted, email: $email)
                             .onAppear {
                                 Task {
+                                    authUserId = state.user.userId
                                     try await Amplify.DataStore.clear()
                                 }
                             }
@@ -111,9 +112,9 @@ struct ContentView: View {
                                 }
                             
                             Chat(email: $email, diveMeetsID: $diveMeetsID, showAccount: $showAccount)
-                            .tabItem {
-                                Label("Chat", systemImage: "message")
-                            }
+                                .tabItem {
+                                    Label("Chat", systemImage: "message")
+                                }
                             
                             RankingsView(tabBarState: $tabBarState)
                                 .tabItem {
@@ -127,7 +128,7 @@ struct ContentView: View {
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
                             NavigationView {
-                                AdrenalineProfileView(state: state, email: $email, 
+                                AdrenalineProfileView(state: state, email: $email,
                                                       newUser: $newUser, newAthlete: $newAthlete,
                                                       showAccount: $showAccount)
                             }
