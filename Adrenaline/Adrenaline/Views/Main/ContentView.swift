@@ -76,7 +76,8 @@ struct ContentView: View {
             if appLogic.initialized {
                 Authenticator(
                     signInContent: { state in
-                        NewSignIn(state: state, email: $email, signupCompleted: $signupCompleted)
+                        NewSignIn(state: state, email: $email, authUserId: $authUserId,
+                                  signupCompleted: $signupCompleted)
                     }, signUpContent: { state in
                         SignUp(state: state, email: $email, signupCompleted: $signupCompleted)
                     }, confirmSignUpContent: { state in
