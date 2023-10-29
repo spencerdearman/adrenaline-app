@@ -266,16 +266,6 @@ struct PersonalInfoView: View {
                                     }
                                 }
                                 //                                    }
-                                if user.diveMeetsID != "" {
-                                    HStack {
-                                        Image(systemName: "figure.pool.swim")
-                                        if let diveMeetsID = user.diveMeetsID {
-                                            Text(diveMeetsID)
-                                        } else {
-                                            Text("?")
-                                        }
-                                    }
-                                }
                             }
                         }
                     }
