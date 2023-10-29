@@ -9,12 +9,19 @@ import SwiftUI
 import Authenticator
 
 struct SettingsView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
     @ObservedObject var state: SignedInState
     @State var isPinned = false
     @State var isDeleted = false
+    @Binding var showAccount: Bool
     
     var newUser: NewUser?
+    
+    init(state: SignedInState, newUser: NewUser?, showAccount: Binding<Bool> = .constant(false)) {
+        self.state = state
+        self.newUser = newUser
+        self._showAccount = showAccount
+    }
     
     var body: some View {
             List {
@@ -92,5 +99,23 @@ struct SettingsView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Account")
+            .toolbar {
+                if newUser?.accountType == "Spectator" {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            withAnimation(.closeCard) {
+                                showAccount = false
+                            }
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 17, weight: .bold))
+                                .frame(width: 36, height: 36)
+                                .foregroundColor(.secondary)
+                                .background(.ultraThinMaterial)
+                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                        }
+                    }
+                }
+            }
     }
 }

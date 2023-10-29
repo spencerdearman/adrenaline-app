@@ -191,8 +191,10 @@ struct NewSignupSequence: View {
                             if searchSubmitted && !personTimedOut && !linksParsed {
                                 ZStack {
                                     SwiftUIWebView(firstName: $firstName, lastName: $lastName,
-                                                   parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
-                                                   linksParsed: $linksParsed, timedOut: $personTimedOut)
+                                                   parsedLinks: $parsedLinks,
+                                                   dmSearchSubmitted: $dmSearchSubmitted,
+                                                   linksParsed: $linksParsed,
+                                                   timedOut: $personTimedOut)
                                     VStack(alignment: .leading, spacing: 20) {
                                         if currentMode == .light {
                                             Image("LoginBackground")
@@ -286,7 +288,8 @@ struct NewSignupSequence: View {
                         .cornerRadius(30)
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
-                                .stroke(accountType == "Athlete" ? Color.secondary : .clear, lineWidth: 2)
+                                .stroke(accountType == "Athlete" ? Color.secondary : .clear,
+                                        lineWidth: 2)
                         )
                         .padding(5)
                     
@@ -311,7 +314,8 @@ struct NewSignupSequence: View {
                         .cornerRadius(30)
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
-                                .stroke(accountType == "Coach" ? Color.secondary : .clear, lineWidth: 2)
+                                .stroke(accountType == "Coach" ? Color.secondary : .clear,
+                                        lineWidth: 2)
                         )
                         .padding(5)
                     
@@ -336,7 +340,8 @@ struct NewSignupSequence: View {
                         .cornerRadius(30)
                         .overlay(
                             RoundedRectangle(cornerRadius: 30)
-                                .stroke(accountType == "Spectator" ? Color.secondary : .clear, lineWidth: 2)
+                                .stroke(accountType == "Spectator" ? Color.secondary : .clear,
+                                        lineWidth: 2)
                         )
                         .padding(5)
                     
@@ -367,27 +372,37 @@ struct NewSignupSequence: View {
         }
     }
     
+    // Phone can be empty since it is optional
     var basicAllFieldsFilled: Bool {
-        !firstName.isEmpty && !lastName.isEmpty && !phone.isEmpty
+        !firstName.isEmpty && !lastName.isEmpty
     }
     
     var basicInfoForm: some View {
         Group {
             TextField("First Name", text: $firstName)
                 .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && firstName.isEmpty ? Custom.error : nil))
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && firstName.isEmpty
+                                            ? Custom.error
+                                            : nil))
                 .focused($isFirstFocused)
                 .textContentType(.givenName)
             
             TextField("Last Name", text: $lastName)
                 .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && lastName.isEmpty ? Custom.error : nil))
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && lastName.isEmpty
+                                            ? Custom.error
+                                            : nil))
                 .focused($isLastFocused)
                 .textContentType(.familyName)
             
             TextField("Phone Number", text: $phone)
                 .keyboardType(.numberPad)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && phone.isEmpty ? Custom.error : nil))
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && phone.isEmpty
+                                            ? Custom.error
+                                            : nil))
                 .focused($isPhoneFocused)
                 .textContentType(.telephoneNumber)
                 .onChange(of: phone) {
@@ -415,16 +430,15 @@ struct NewSignupSequence: View {
                                 showBasicError = true
                                 print("Could not save user to DataStore: \(error)")
                             }
+                            
                             if userCreationSuccessful {
-                                withAnimation {
-                                    print("Selected Next")
-                                    pageIndex = 3
+                                withAnimation(.openCard) {
+                                    pageIndex = 4
                                 }
                             }
                         }
-                        withAnimation(.openCard) {
-                            pageIndex = 4
-                        }
+                        
+                        
                     }
                 } else {
                     buttonPressed = true
@@ -470,7 +484,10 @@ struct NewSignupSequence: View {
                                     }
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 30)
-                                            .stroke(selectedDict[value] == true ? Color.secondary : .clear, lineWidth: 2)
+                                            .stroke(selectedDict[value] == true
+                                                    ? Color.secondary
+                                                    : .clear,
+                                                    lineWidth: 2)
                                     )
                                     .padding(5)
                                 
@@ -580,7 +597,8 @@ struct NewSignupSequence: View {
     }
     
     var athleteAllFieldsFilled: Bool {
-        heightFeet != 0 && heightInches != -1 && weight != 0 && age != 0 && gradYear != 0 && !highSchool.isEmpty && !hometown.isEmpty
+        heightFeet != 0 && heightInches != -1 && weight != 0 && age != 0 && gradYear != 0 &&
+        !highSchool.isEmpty && !hometown.isEmpty
     }
     
     var athleteInfoForm: some View {
@@ -590,7 +608,10 @@ struct NewSignupSequence: View {
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightFeet == 0 ? Custom.error : nil))
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && heightFeet == 0
+                                                ? Custom.error
+                                                : nil))
                     .focused($isFirstFocused)
                     .onChange(of: heightFeet) {
                         heightFeet = heightFeet
@@ -599,7 +620,10 @@ struct NewSignupSequence: View {
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && heightInches == 0 ? Custom.error : nil))
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && heightInches == 0
+                                                ? Custom.error
+                                                : nil))
                     .focused($isFirstFocused)
                     .onChange(of: heightInches) {
                         heightInches = heightInches
@@ -610,7 +634,10 @@ struct NewSignupSequence: View {
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && weight == 0 ? Custom.error : nil))
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && weight == 0
+                                                ? Custom.error
+                                                : nil))
                     .focused($isLastFocused)
                 
                 BubbleSelectView(selection: $weightUnit)
@@ -626,7 +653,10 @@ struct NewSignupSequence: View {
             HStack {
                 TextField("Age", value: $age, formatter: .ageFormatter)
                     .keyboardType(.numberPad)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && age == 0 ? Custom.error : nil))
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && age == 0
+                                                ? Custom.error
+                                                : nil))
                     .focused($isPhoneFocused)
                     .onChange(of: age) {
                         age = age
@@ -645,21 +675,30 @@ struct NewSignupSequence: View {
             TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
                 .keyboardType(.numberPad)
                 .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && gradYear == 0 ? Custom.error : nil))
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && gradYear == 0
+                                            ? Custom.error
+                                            : nil))
                 .focused($isFirstFocused)
                 .onChange(of: gradYear) {
                     gradYear = gradYear
                 }
             TextField("High School", text: $highSchool)
                 .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && highSchool.isEmpty ? Custom.error : nil))
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && highSchool.isEmpty
+                                            ? Custom.error
+                                            : nil))
                 .focused($isFirstFocused)
                 .onChange(of: highSchool) {
                     highSchool = highSchool
                 }
             TextField("Hometown", text: $hometown)
                 .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && hometown.isEmpty ? Custom.error : nil))
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && hometown.isEmpty
+                                            ? Custom.error
+                                            : nil))
                 .focused($isFirstFocused)
                 .onChange(of: hometown) {
                     hometown = hometown
