@@ -136,7 +136,8 @@ class AppLogic: ObservableObject {
     private func queryData() async {
         // load data at start of app when user signed in
         if self.users.isEmpty {
-            self.users = await queryAWSUsers()
+            let pred = NewUser.keys.accountType != "Spectator"
+            self.users = await queryAWSUsers(where: pred)
         }
         
         if self.meets.isEmpty {
