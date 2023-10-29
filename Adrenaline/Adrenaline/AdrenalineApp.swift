@@ -345,7 +345,7 @@ extension EnvironmentValues {
         get { self[NewTeamsKey.self] }
         set { self[NewTeamsKey.self] = newValue }
     }
-
+    
     var colleges: [College] {
         get { self[CollegesKey.self] }
         set { self[CollegesKey.self] = newValue }
@@ -435,7 +435,7 @@ struct AdrenalineApp: App {
     @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -491,9 +491,6 @@ struct AdrenalineApp: App {
                         let user = try await Amplify.Auth.getCurrentUser().userId
                         try await Amplify.Notifications.Push.identifyUser(userId: user)
                     }
-                    
-                    
-                
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without
                     //     starting over)
