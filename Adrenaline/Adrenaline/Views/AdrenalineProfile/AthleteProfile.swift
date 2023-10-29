@@ -148,53 +148,58 @@ struct MetricsView: View {
 }
 
 struct RecruitingDataView: View {
+    @State private var currentUserIsCoach: Bool = false
+    @AppStorage("authUserId") private var authUserId: String = ""
     var newAthlete: NewAthlete
     
     private let screenWidth = UIScreen.main.bounds.width
     
     var body: some View {
         VStack {
-            HStack {
-                ZStack {
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .mask(RoundedRectangle(cornerRadius: 40))
-                        .shadow(radius: 4)
-                    HStack {
-                        Image(systemName: "ruler.fill")
-                            .resizable()
-                            .rotationEffect(.degrees(90))
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: screenWidth * 0.07,
-                                   height: screenWidth * 0.07)
-                        
-                        Spacer()
-                        Text("\(newAthlete.heightFeet)' \(newAthlete.heightInches)\"")
+            
+            if currentUserIsCoach {
+                HStack {
+                    ZStack {
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .mask(RoundedRectangle(cornerRadius: 40))
+                            .shadow(radius: 4)
+                        HStack {
+                            Image(systemName: "ruler.fill")
+                                .resizable()
+                                .rotationEffect(.degrees(90))
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: screenWidth * 0.07,
+                                       height: screenWidth * 0.07)
+                            
+                            Spacer()
+                            Text("\(newAthlete.heightFeet)' \(newAthlete.heightInches)\"")
+                        }
+                        .padding()
                     }
-                    .padding()
+                    
+                    Spacer()
+                    
+                    ZStack {
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .mask(RoundedRectangle(cornerRadius: 40))
+                            .shadow(radius: 4)
+                        HStack {
+                            Image(systemName: "scalemass.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: screenWidth * 0.07,
+                                       height: screenWidth * 0.07)
+                            Spacer()
+                            Text("\(newAthlete.weight) \(newAthlete.weightUnit)")
+                        }
+                        .padding()
+                    }
                 }
                 
                 Spacer()
-                
-                ZStack {
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .mask(RoundedRectangle(cornerRadius: 40))
-                        .shadow(radius: 4)
-                    HStack {
-                        Image(systemName: "scalemass.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: screenWidth * 0.07,
-                                   height: screenWidth * 0.07)
-                        Spacer()
-                        Text("\(newAthlete.weight) \(newAthlete.weightUnit)")
-                    }
-                    .padding()
-                }
             }
-            
-            Spacer()
             
             HStack {
                 ZStack {
@@ -236,24 +241,26 @@ struct RecruitingDataView: View {
             
             Spacer()
             
-            ZStack {
-                Rectangle()
-                    .fill(.ultraThinMaterial)
-                    .mask(RoundedRectangle(cornerRadius: 40))
-                    .shadow(radius: 4)
-                HStack {
-                    Image(systemName: "book.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: screenWidth * 0.07,
-                               height: screenWidth * 0.07)
-                    Spacer()
-                    Text("\(newAthlete.highSchool)")
+            if currentUserIsCoach {
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 4)
+                    HStack {
+                        Image(systemName: "book.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: screenWidth * 0.07,
+                                   height: screenWidth * 0.07)
+                        Spacer()
+                        Text("\(newAthlete.highSchool)")
+                    }
+                    .padding()
                 }
-                .padding()
+                
+                Spacer()
             }
-            
-            Spacer()
             
             ZStack {
                 Rectangle()
@@ -291,6 +298,15 @@ struct RecruitingDataView: View {
             }
         }
         .padding()
+        .onAppear {
+            Task {
+                let pred = NewUser.keys.id == authUserId
+                let users = await queryAWSUsers(where: pred)
+                if users.count == 1, users[0].accountType == "Coach" {
+                    currentUserIsCoach = true
+                }
+            }
+        }
     }
 }
 
