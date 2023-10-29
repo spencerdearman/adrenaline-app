@@ -13,9 +13,8 @@ struct SettingsView: View {
     @ObservedObject var state: SignedInState
     @State var isPinned = false
     @State var isDeleted = false
-    @Binding var email: String
-    @Binding var newUser: NewUser?
-    @Binding var newAthlete: NewAthlete?
+    
+    var newUser: NewUser?
     
     var body: some View {
             List {
@@ -85,6 +84,7 @@ struct SettingsView: View {
                 .tint(.red)
                 .onTapGesture {
                     Task {
+                        UserDefaults.standard.removeObject(forKey: "authUserId")
                         await state.signOut()
                     }
                     presentationMode.wrappedValue.dismiss()
@@ -94,8 +94,3 @@ struct SettingsView: View {
             .navigationTitle("Account")
     }
 }
-//struct AccountView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        SettingsView()
-//    }
-//}

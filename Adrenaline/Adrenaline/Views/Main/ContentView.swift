@@ -24,10 +24,10 @@ struct ContentView: View {
     @State private var tabBarState: Visibility = .visible
     @AppStorage("signupCompleted") var signupCompleted: Bool = false
     @AppStorage("email") var email: String = ""
+    @AppStorage("authUserId") var authUserId: String = ""
     @State var showAccount: Bool = false
     @State var diveMeetsID: String = ""
-    @State var newUser: NewUser?
-    @State var newAthlete: NewAthlete?
+    @State var newUser: NewUser? = nil
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -57,19 +57,10 @@ struct ContentView: View {
             // Waits with exponential backoff to give DataStore time to update
             try await Task.sleep(seconds: pow(Double(numAttempts), 2))
             
-            let emailPredicate = NewUser.keys.email == email
-            let users = await queryAWSUsers(where: emailPredicate)
-            if users.count >= 1 {
+            let idPredicate = NewUser.keys.id == authUserId
+            let users = await queryAWSUsers(where: idPredicate)
+            if users.count == 1 {
                 newUser = users[0]
-                
-                if newUser?.accountType == "Athlete" {
-                    let userPredicate = users[0].newUserAthleteId ?? "" == NewAthlete.keys.id.rawValue
-                    let athletes = await queryAWSAthletes(where: userPredicate as? QueryPredicate)
-                    if athletes.count >= 1 {
-                        newAthlete = athletes[0]
-                    }
-                }
-                
                 diveMeetsID = newUser?.diveMeetsID ?? ""
             } else {
                 print("Failed attempt \(numAttempts + 1) getting DiveMeetsID, retrying...")
@@ -85,7 +76,8 @@ struct ContentView: View {
             if appLogic.initialized {
                 Authenticator(
                     signInContent: { state in
-                        NewSignIn(state: state, email: $email, signupCompleted: $signupCompleted)
+                        NewSignIn(state: state, email: $email, authUserId: $authUserId,
+                                  signupCompleted: $signupCompleted)
                     }, signUpContent: { state in
                         SignUp(state: state, email: $email, signupCompleted: $signupCompleted)
                     }, confirmSignUpContent: { state in
@@ -100,6 +92,7 @@ struct ContentView: View {
                         NewSignupSequence(signupCompleted: $signupCompleted, email: $email)
                             .onAppear {
                                 Task {
+                                    authUserId = state.user.userId
                                     try await Amplify.DataStore.clear()
                                 }
                             }
@@ -111,9 +104,9 @@ struct ContentView: View {
                                 }
                             
                             Chat(email: $email, diveMeetsID: $diveMeetsID, showAccount: $showAccount)
-                            .tabItem {
-                                Label("Chat", systemImage: "message")
-                            }
+                                .tabItem {
+                                    Label("Chat", systemImage: "message")
+                                }
                             
                             RankingsView(tabBarState: $tabBarState)
                                 .tabItem {
@@ -127,9 +120,16 @@ struct ContentView: View {
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
                             NavigationView {
-                                AdrenalineProfileView(state: state, email: $email, 
-                                                      newUser: $newUser, newAthlete: $newAthlete,
-                                                      showAccount: $showAccount)
+                                // Need to use WrapperView here since we have to pass in state
+                                // and showAccount for popover profile
+                                if let user = newUser {
+                                    AdrenalineProfileWrapperView(state: state, newUser: user,
+                                                                 showAccount: $showAccount)
+                                } else {
+                                    AdrenalineProfileWrapperView(state: state,
+                                                                 authUserId: authUserId,
+                                                                 showAccount: $showAccount)
+                                }
                             }
                         })
                         .onAppear {

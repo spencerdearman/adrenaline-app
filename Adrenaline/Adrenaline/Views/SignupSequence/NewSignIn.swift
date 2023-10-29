@@ -7,12 +7,14 @@
 
 import SwiftUI
 import Authenticator
+import Amplify
 
 struct NewSignIn: View {
     @Environment(\.colorScheme) private var currentMode
     @ObservedObject var state: SignInState
     @State private var username = ""
     @Binding var email: String
+    @Binding var authUserId: String
     @Binding var signupCompleted: Bool
     @FocusState var isEmailFocused: Bool
     @FocusState var isPasswordFocused: Bool
@@ -67,6 +69,13 @@ struct NewSignIn: View {
                 state.username = email
                 Task {
                     try? await state.signIn()
+                    
+                    let pred = NewUser.keys.email == email
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        authUserId = users[0].id
+                    }
+                    
                     signupCompleted = true
                 }
             } label: {

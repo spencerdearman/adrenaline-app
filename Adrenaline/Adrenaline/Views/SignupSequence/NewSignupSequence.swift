@@ -54,6 +54,7 @@ struct ButtonInfo: Identifiable {
 
 struct NewSignupSequence: View {
     @Environment(\.colorScheme) var currentMode
+    @AppStorage("authUserId") private var authUserId: String = ""
     @Namespace var namespace
     @ScaledMetric var pickerFontSize: CGFloat = 18
     
@@ -62,7 +63,6 @@ struct NewSignupSequence: View {
     @Binding var email: String
     
     // User States
-    private let defaultNewUser: NewUser = NewUser(firstName: "", lastName: "",                   email: "", accountType: "Athlete")
     @State var savedUser: NewUser? = nil
     
     // General States
@@ -82,6 +82,7 @@ struct NewSignupSequence: View {
     @State var firstName: String = ""
     @State var lastName: String = ""
     @State var phone: String = ""
+    @State var diveMeetsID: String? = nil
     @State var userCreationSuccessful: Bool = false
     @State var showBasicError: Bool = false
     
@@ -147,6 +148,16 @@ struct NewSignupSequence: View {
         return result.sorted(by: { $0.0 < $1.0 })
     }
     
+    private func createNewUser() -> NewUser {
+        return NewUser(id: authUserId, firstName: firstName,
+                       lastName: lastName, email: email,
+                       phone: phone == ""
+                       ? nil
+                       : removePhoneFormatting(string: phone),
+                       diveMeetsID: diveMeetsID,
+                       accountType: accountType)
+    }
+    
     var body: some View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
@@ -154,98 +165,98 @@ struct NewSignupSequence: View {
             
             Group {
                 switch pageIndex {
-                case 0:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Account Type")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .frame(height: screenHeight * 0.6)
-                    .matchedGeometryEffect(id: "form1", in: namespace)
-                case 1:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Basic Info")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form1", in: namespace)
-                case 2:
-                    Group {
-                        if searchSubmitted && !personTimedOut && !linksParsed {
-                            ZStack {
-                                SwiftUIWebView(firstName: $firstName, lastName: $lastName,
-                                               parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
-                                               linksParsed: $linksParsed, timedOut: $personTimedOut)
-                                VStack(alignment: .leading, spacing: 20) {
-                                    if currentMode == .light {
-                                        Image("LoginBackground")
-                                    } else {
-                                        Image("LoginBackground-Dark")
-                                    }
-                                    Text("Loading...")
-                                        .font(.largeTitle).bold()
-                                        .foregroundColor(.primary)
-                                        .slideFadeIn(show: appear[0], offset: 30)
-                                }
-                            }
-                        } else {
-                            if linksParsed || personTimedOut {
-                                VStack(alignment: .leading, spacing: 20) {
-                                    diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                                }
-                                .frame(height: screenHeight * 0.5)
-                                .matchedGeometryEffect(id: "form", in: namespace)
-                            } else {
-                                VStack(alignment: .leading, spacing: 20) {
-                                    Text("Searching")
-                                        .font(.largeTitle).bold()
-                                        .foregroundColor(.primary)
-                                        .slideFadeIn(show: appear[0], offset: 30)
-                                }
-                                .matchedGeometryEffect(id: "form", in: namespace)
-                            }
-                        }
-                    }
-                    .onDisappear {
-                        searchSubmitted = false
-                    }
-                case 3:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Recruiting Info")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                case 4:
-                    VStack(alignment: .leading, spacing: 20) {
-                        if let savedUser = savedUser {
-                            Text("Welcome to Adrenaline \(savedUser.firstName)!")
+                    case 0:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Account Type")
                                 .font(.largeTitle).bold()
                                 .foregroundColor(.primary)
                                 .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
                         }
-                        
-                        welcomeForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                default:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Basic Information")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
+                        .frame(height: screenHeight * 0.6)
+                        .matchedGeometryEffect(id: "form1", in: namespace)
+                    case 1:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Basic Info")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form1", in: namespace)
+                    case 2:
+                        Group {
+                            if searchSubmitted && !personTimedOut && !linksParsed {
+                                ZStack {
+                                    SwiftUIWebView(firstName: $firstName, lastName: $lastName,
+                                                   parsedLinks: $parsedLinks, dmSearchSubmitted: $dmSearchSubmitted,
+                                                   linksParsed: $linksParsed, timedOut: $personTimedOut)
+                                    VStack(alignment: .leading, spacing: 20) {
+                                        if currentMode == .light {
+                                            Image("LoginBackground")
+                                        } else {
+                                            Image("LoginBackground-Dark")
+                                        }
+                                        Text("Loading...")
+                                            .font(.largeTitle).bold()
+                                            .foregroundColor(.primary)
+                                            .slideFadeIn(show: appear[0], offset: 30)
+                                    }
+                                }
+                            } else {
+                                if linksParsed || personTimedOut {
+                                    VStack(alignment: .leading, spacing: 20) {
+                                        diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                                    }
+                                    .frame(height: screenHeight * 0.5)
+                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                } else {
+                                    VStack(alignment: .leading, spacing: 20) {
+                                        Text("Searching")
+                                            .font(.largeTitle).bold()
+                                            .foregroundColor(.primary)
+                                            .slideFadeIn(show: appear[0], offset: 30)
+                                    }
+                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                }
+                            }
+                        }
+                        .onDisappear {
+                            searchSubmitted = false
+                        }
+                    case 3:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Recruiting Info")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    case 4:
+                        VStack(alignment: .leading, spacing: 20) {
+                            if let savedUser = savedUser {
+                                Text("Welcome to Adrenaline \(savedUser.firstName)!")
+                                    .font(.largeTitle).bold()
+                                    .foregroundColor(.primary)
+                                    .slideFadeIn(show: appear[0], offset: 30)
+                            }
+                            
+                            welcomeForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    default:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Basic Information")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
                 }
             }
             .padding(20)
@@ -255,10 +266,6 @@ struct NewSignupSequence: View {
             .modifier(OutlineModifier(cornerRadius: 30))
             .onAppear {
                 animate()
-                if savedUser == nil {
-                    savedUser = defaultNewUser
-                }
-                savedUser!.email = email
             }
             .frame(width: screenWidth * 0.9)
         }
@@ -272,10 +279,6 @@ struct NewSignupSequence: View {
         Group {
             Button {
                 accountType = "Athlete"
-                if savedUser == nil {
-                    savedUser = defaultNewUser
-                }
-                savedUser!.accountType = "Athlete"
             } label: {
                 ZStack {
                     Rectangle()
@@ -301,10 +304,6 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Coach"
-                if savedUser == nil {
-                    savedUser = defaultNewUser
-                }
-                savedUser!.accountType = accountType
             } label: {
                 ZStack {
                     Rectangle()
@@ -330,10 +329,6 @@ struct NewSignupSequence: View {
             
             Button {
                 accountType = "Spectator"
-                if savedUser == nil {
-                    savedUser = defaultNewUser
-                }
-                savedUser!.accountType = accountType
             } label: {
                 ZStack {
                     Rectangle()
@@ -383,24 +378,12 @@ struct NewSignupSequence: View {
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && firstName.isEmpty ? Custom.error : nil))
                 .focused($isFirstFocused)
                 .textContentType(.givenName)
-                .onChange(of: firstName) {
-                    if savedUser == nil {
-                        savedUser = defaultNewUser
-                    }
-                    savedUser!.firstName = firstName
-                }
-        
+            
             TextField("Last Name", text: $lastName)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill", iconColor: buttonPressed && lastName.isEmpty ? Custom.error : nil))
                 .focused($isLastFocused)
                 .textContentType(.familyName)
-                .onChange(of: lastName) {
-                    if savedUser == nil {
-                        savedUser = defaultNewUser
-                    }
-                    savedUser!.lastName = lastName
-                }
             
             TextField("Phone Number", text: $phone)
                 .keyboardType(.numberPad)
@@ -409,10 +392,6 @@ struct NewSignupSequence: View {
                 .textContentType(.telephoneNumber)
                 .onChange(of: phone) {
                     phone = formatPhoneString(string: phone)
-                    if savedUser == nil {
-                        savedUser = defaultNewUser
-                    }
-                    savedUser!.phone = removePhoneFormatting(string: phone)
                 }
             
             Divider()
@@ -421,18 +400,17 @@ struct NewSignupSequence: View {
                 searchSubmitted = true
                 if basicAllFieldsFilled {
                     buttonPressed = false
-                    if let savedUser = savedUser, savedUser.accountType != "Spectator" {
+                    if accountType != "Spectator" {
                         withAnimation(.openCard) {
                             pageIndex = 2
                         }
                     } else {
                         Task {
                             do {
-                                if let savedUser = savedUser {
-                                    let _ = try await saveToDataStore(object: savedUser)
-                                    userCreationSuccessful = true
-                                    print("Saved New User")
-                                }
+                                let user = createNewUser()
+                                savedUser = try await saveToDataStore(object: user)
+                                userCreationSuccessful = true
+                                print("Saved New User")
                             } catch {
                                 showBasicError = true
                                 print("Could not save user to DataStore: \(error)")
@@ -481,10 +459,7 @@ struct NewSignupSequence: View {
                         let (key, value) = record
                         Button {
                             selectedDict[value] = true
-                            if savedUser == nil {
-                                savedUser = defaultNewUser
-                            }
-                            savedUser!.diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                            diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
                         } label: {
                             ZStack {
                                 Rectangle()
@@ -520,21 +495,20 @@ struct NewSignupSequence: View {
             }
             
             Divider()
-
+            
             Button {
                 showBasicError = false
                 Task {
                     do {
-                        if let savedUser = savedUser {
-                            let _ = try await saveToDataStore(object: savedUser)
-                            userCreationSuccessful = true
-                            print("Saved New User")
-                            
-                            if savedUser.accountType == "Coach" {
-                                let coach = CoachUser(user: savedUser)
-                                let savedCoach = try await Amplify.DataStore.save(coach)
-                                print("Saved Coach Profile \(savedCoach)")
-                            }
+                        let user = createNewUser()
+                        savedUser = try await saveToDataStore(object: user)
+                        userCreationSuccessful = true
+                        print("Saved New User")
+                        
+                        if accountType == "Coach" {
+                            let coach = CoachUser(user: savedUser)
+                            let savedCoach = try await Amplify.DataStore.save(coach)
+                            print("Saved Coach Profile \(savedCoach)")
                         }
                     } catch {
                         showBasicError = true
@@ -543,10 +517,7 @@ struct NewSignupSequence: View {
                     if userCreationSuccessful {
                         withAnimation {
                             print("Selected Next")
-                            if savedUser == nil {
-                                savedUser = defaultNewUser
-                            }
-                            if savedUser!.accountType == "Athlete" {
+                            if accountType == "Athlete" {
                                 pageIndex = 3
                             } else {
                                 pageIndex = 4
@@ -589,10 +560,9 @@ struct NewSignupSequence: View {
                                 pageIndex = 2
                             }
                             do {
-                                if let savedUser = savedUser {
-                                    let _ = try await saveToDataStore(object: savedUser)
-                                    print("Saved New User")
-                                }
+                                let user = createNewUser()
+                                savedUser = try await saveToDataStore(object: user)
+                                print("Saved New User")
                             } catch {
                                 print("Could not save user to DataStore: \(error)")
                             }
