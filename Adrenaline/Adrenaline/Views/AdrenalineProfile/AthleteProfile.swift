@@ -150,14 +150,33 @@ struct MetricsView: View {
 struct RecruitingDataView: View {
     @State private var currentUserIsCoach: Bool = false
     @AppStorage("authUserId") private var authUserId: String = ""
+    var newUser: NewUser
     var newAthlete: NewAthlete
     
     private let screenWidth = UIScreen.main.bounds.width
     
     var body: some View {
         VStack {
-            
             if currentUserIsCoach {
+                ZStack {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .mask(RoundedRectangle(cornerRadius: 40))
+                        .shadow(radius: 4)
+                    HStack {
+                        Image(systemName: "envelope.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: screenWidth * 0.07,
+                                   height: screenWidth * 0.07)
+                        Spacer()
+                        Text("\(newUser.email)")
+                    }
+                    .padding()
+                }
+                
+                Spacer()
+                
                 HStack {
                     ZStack {
                         Rectangle()
@@ -300,6 +319,7 @@ struct RecruitingDataView: View {
         .padding()
         .onAppear {
             Task {
+                // Get currentUser and check accountType to determine what is displayed
                 let pred = NewUser.keys.id == authUserId
                 let users = await queryAWSUsers(where: pred)
                 if users.count == 1, users[0].accountType == "Coach" {
@@ -322,7 +342,7 @@ struct RecruitingView: View {
             if loaded {
                 VStack {
                     if let athlete = newAthlete {
-                        RecruitingDataView(newAthlete: athlete)
+                        RecruitingDataView(newUser: newUser, newAthlete: athlete)
                         
                         Divider()
                     }
