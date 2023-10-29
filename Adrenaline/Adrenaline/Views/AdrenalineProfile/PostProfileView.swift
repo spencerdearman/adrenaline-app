@@ -22,7 +22,7 @@ struct PostProfileItem: Hashable, Identifiable {
     var expandedView: any View = EmptyView()
     
     init(user: NewUser, post: Post, namespace: Namespace.ID,
-         postShowing: Binding<String?>, hasDeletedPost: Binding<Bool>) async throws {
+         postShowing: Binding<String?>, shouldRefreshPosts: Binding<Bool>) async throws {
         self.user = user
         self.post = post
         self.mediaItems = try await getMediaItems()
@@ -32,7 +32,7 @@ struct PostProfileItem: Hashable, Identifiable {
                                                       post: self.post,
                                                       firstMediaItem: self.mediaItems.first)
         self.expandedView = PostProfileExpandedView(postShowing: postShowing,
-                                                    hasDeletedPost: hasDeletedPost, id: self.id,
+                                                    shouldRefreshPosts: shouldRefreshPosts, id: self.id,
                                                     namespace: namespace, user: self.user,
                                                     post: self.post, mediaItems: self.mediaItems)
     }
@@ -139,8 +139,10 @@ struct PostProfileExpandedView: View {
     @Environment(\.colorScheme) var currentMode
     @AppStorage("authUserId") private var authUserId: String = ""
     @State private var showingAlert: Bool = false
+    @State private var isEditingPost: Bool = false
+    @State private var caption: String = ""
     @Binding var postShowing: String?
-    @Binding var hasDeletedPost: Bool
+    @Binding var shouldRefreshPosts: Bool
     let id: String
     let namespace: Namespace.ID
     let user: NewUser
@@ -177,64 +179,106 @@ struct PostProfileExpandedView: View {
                 }
                 .scrollTargetBehavior(.paging)
                 
-                
                 HStack(alignment: .top) {
                     ZStack(alignment: .topLeading) {
-                        RoundedRectangle(cornerRadius: 14)
-                            .fill(.ultraThinMaterial)
-                            .backgroundStyle(opacity: 0.4)
-                            .shadow(color: .gray.opacity(0.15), radius: 5)
-                        
-                        Text(post.caption ?? "")
-                            .foregroundColor(.secondary)
-                            .padding()
+                        if isEditingPost {
+                            TextField("Caption", text: $caption, axis: .vertical)
+                                .padding(EdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 14))
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                                .background(.ultraThinMaterial)
+                                .backgroundStyle(cornerRadius: 14, opacity: 0.15)
+                                .shadow(color: .gray.opacity(0.3), radius: 5)
+                                .lineLimit(6, reservesSpace: true)
+                        } else {
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(.ultraThinMaterial)
+                                .backgroundStyle(opacity: 0.4)
+                                .shadow(color: .gray.opacity(0.15), radius: 5)
+                            
+                            Text(post.caption ?? "")
+                                .foregroundColor(.secondary)
+                                .padding()
+                        }
                     }
                     .frame(width: screenWidth * 0.8)
-                    
-                    Menu {
-                        // TODO: temp until auth user id is established to check that only current
-                        //       user has access to these options on their own posts
-                        if authUserId == user.id {
+                  
+                    VStack {
+                        if isEditingPost {
                             Button {
                                 Task {
-                                    print("Editing")
+                                    var newPost = post
+                                    newPost.caption = caption
+                                    let _ = try await saveToDataStore(object: newPost)
+                                    shouldRefreshPosts = true
                                 }
                             } label: {
-                                HStack {
-                                    Image(systemName: "pencil")
-                                    Text("Edit")
-                                }
-                                .foregroundColor(.primary)
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 28, weight: .light))
+                                    .frame(width: 48, height: 48)
+                                    .foregroundColor(.secondary)
+                                    .background(.ultraThinMaterial)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .shadow(color: .gray.opacity(0.15), radius: 5)
                             }
-                            Button(role: .destructive) {
-                                showingAlert = true
+                            
+                            Button {
+                                isEditingPost = false
                             } label: {
-                                HStack {
-                                    Image(systemName: "trash.fill")
-                                    Text("Delete")
-                                }
+                                Image(systemName: "xmark")
+                                    .font(.system(size: 28, weight: .light))
+                                    .frame(width: 48, height: 48)
+                                    .foregroundColor(.secondary)
+                                    .background(.ultraThinMaterial)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .shadow(color: .gray.opacity(0.15), radius: 5)
                             }
                         } else {
-                            Button {
-                                print("Saving...")
-                            } label: {
-                                HStack {
-                                    Image(systemName: "square.and.arrow.down")
-                                    Text("Save")
+                            Menu {
+                                // TODO: temp until auth user id is established to check that only current
+                                //       user has access to these options on their own posts
+                                if authUserId == user.id {
+                                    Button {
+                                        Task {
+                                            isEditingPost = true
+                                            caption = post.caption ?? ""
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Image(systemName: "pencil")
+                                            Text("Edit")
+                                        }
+                                        .foregroundColor(.primary)
+                                    }
+                                    Button(role: .destructive) {
+                                        showingAlert = true
+                                    } label: {
+                                        HStack {
+                                            Image(systemName: "trash.fill")
+                                            Text("Delete")
+                                        }
+                                    }
+                                } else {
+                                    Button {
+                                        print("Saving...")
+                                    } label: {
+                                        HStack {
+                                            Image(systemName: "square.and.arrow.down")
+                                            Text("Save")
+                                        }
+                                        .foregroundColor(.primary)
+                                    }
                                 }
-                                .foregroundColor(.primary)
+                            } label: {
+                                Image(systemName: "ellipsis.circle")
+                                    .font(.system(size: 28, weight: .light))
+                                    .frame(width: 48, height: 48)
+                                    .foregroundColor(.secondary)
+                                    .background(.ultraThinMaterial)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .shadow(color: .gray.opacity(0.15), radius: 5)
                             }
                         }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .font(.system(size: 28, weight: .light))
-                            .frame(width: 48, height: 48)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                            .shadow(color: .gray.opacity(0.15), radius: 5)
                     }
-                    
                 }
             }
             .padding()
@@ -254,9 +298,9 @@ struct PostProfileExpandedView: View {
                     let _ = try await deletePost(user: user, post: post)
                     
                     showingAlert = false
-                    hasDeletedPost = true
+                    shouldRefreshPosts = true
                     // Note: We reset postShowing in PostsView after it detects the change in
-                    //       hasDeletedPost so we leave the user sitting on the expanded view
+                    //       shouldRefreshPosts so we leave the user sitting on the expanded view
                     //       until the posts grid can be updated with the post removed
                 }
             }
