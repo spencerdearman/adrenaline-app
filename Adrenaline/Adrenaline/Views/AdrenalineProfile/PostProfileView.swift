@@ -7,6 +7,11 @@
 
 import SwiftUI
 import Amplify
+import CachedAsyncImage
+
+extension URLCache {
+    static let imageCache = URLCache(memoryCapacity: 512_000_000, diskCapacity: 10_000_000_000)
+}
 
 struct PostProfileItem: Hashable, Identifiable {
     let id = UUID().uuidString
@@ -56,7 +61,7 @@ struct PostProfileItem: Hashable, Identifiable {
                     string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(user.email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg") else { continue }
                 aggregateItems.append((image.uploadDate,
                                        PostMediaItem(id: image.id, data: PostMedia.asyncImage(
-                                        AsyncImage(url: url) { phase in
+                                        CachedAsyncImage(url: url, urlCache: .imageCache) { phase in
                                             phase.image != nil
                                             ? AnyView(phase.image!
                                                 .resizable()
@@ -94,7 +99,7 @@ struct PostProfileCollapsedView: View {
     var body: some View {
         ZStack {
             if let imageURL = thumbnail {
-                AsyncImage(url: imageURL) { image in
+                CachedAsyncImage(url: imageURL, urlCache: .imageCache) { image in
                     image
                         .resizable()
                         .aspectRatio(1, contentMode: .fill)
@@ -132,7 +137,7 @@ struct PostProfileCollapsedView: View {
 
 struct PostProfileExpandedView: View {
     @Environment(\.colorScheme) var currentMode
-    @AppStorage("email") private var email: String = ""
+    @AppStorage("authUserId") private var authUserId: String = ""
     @State private var showingAlert: Bool = false
     @State private var isEditingPost: Bool = false
     @State private var caption: String = ""
@@ -196,7 +201,7 @@ struct PostProfileExpandedView: View {
                         }
                     }
                     .frame(width: screenWidth * 0.8)
-                    
+                  
                     VStack {
                         if isEditingPost {
                             Button {
@@ -231,7 +236,7 @@ struct PostProfileExpandedView: View {
                             Menu {
                                 // TODO: temp until auth user id is established to check that only current
                                 //       user has access to these options on their own posts
-                                if email == user.email {
+                                if authUserId == user.id {
                                     Button {
                                         Task {
                                             isEditingPost = true
