@@ -52,8 +52,8 @@ enum SearchItem: Hashable, Identifiable {
     }
   
     var subtitle: String {
-        if case .user( _) = self {
-            return "User"
+        if case .user(let user) = self {
+            return user.accountType
         } else if case .meet(_) = self {
             return "Meet"
         } else if case .team(_) = self {
@@ -114,7 +114,7 @@ struct NewSearchView: View {
                                 icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
                         .foregroundColor(.primary)
                         
-                        if searchScope == .all {
+                        if searchScope == .all || searchScope == .users {
                             Text(suggestion.subtitle)
                                 .foregroundColor(.gray)
                         }
