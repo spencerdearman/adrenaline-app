@@ -108,7 +108,7 @@ struct ContentView: View {
                                     Label("Chat", systemImage: "message")
                                 }
                             
-                            RankingsView(tabBarState: $tabBarState)
+                            RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState, showAccount: $showAccount)
                                 .tabItem {
                                     Label("Rankings", systemImage: "trophy")
                                 }
