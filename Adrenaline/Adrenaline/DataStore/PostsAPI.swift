@@ -128,23 +128,35 @@ func deletePost(user: NewUser, post: Post) async throws -> NewUser {
 }
 
 // Create UserSavedPost object to associate a post saved by a user
-func userSavePost(user: NewUser, post: Post) async throws {
-    let userSavedPost = try await saveToDataStore(object: UserSavedPost(newuserID: user.id,
-                                                                        postID: post.id))
-    
-    if let list = user.savedPosts {
-        try await list.fetch()
-        user.savedPosts = List<UserSavedPost>.init(elements: list.elements + [userSavedPost])
+func userSavePost(user: NewUser, post: Post) async throws -> UserSavedPost {
+    do {
+        let userSavedPost = UserSavedPost(newuserID: user.id, postID: post.id)
+        let savedPost = try await saveToDataStore(object: userSavedPost)
+        
+        if let list = user.savedPosts {
+            try await list.fetch()
+            user.savedPosts = List<UserSavedPost>.init(elements: list.elements + [userSavedPost])
+        } else {
+            user.savedPosts = List<UserSavedPost>.init(elements: [userSavedPost])
+        }
         
         let _ = try await saveToDataStore(object: user)
-    }
-    
-    if let list = post.usersSaving {
-        try await list.fetch()
-        let elems = list.elements + [userSavedPost]
         
-        let newPost = Post(from: post, usersSaving: elems)
+        let newPost: Post
+        if let list = post.usersSaving {
+            try await list.fetch()
+            let elems = list.elements + [userSavedPost]
+            newPost = Post(from: post, usersSaving: elems)
+        } else {
+            newPost = Post(from: post, usersSaving: [userSavedPost])
+        }
+        
         let _ = try await saveToDataStore(object: newPost)
+        
+        return savedPost
+    } catch {
+        print("\(error)")
+        throw error
     }
 }
 

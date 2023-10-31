@@ -64,9 +64,11 @@ struct CoachView: View {
 
 
 struct CoachProfileContent: View {
+    @AppStorage("authUserId") private var authUserId: String = ""
     @StateObject private var parser = ProfileParser()
-    @State var scoreValues: [String] = ["Judging", "Divers", "Metrics", "Recruiting", "Statistics"]
-    @State var selectedPage: Int = 1
+    @State var scoreValues: [String] = ["Posts", "Judging", "Divers", "Metrics", "Recruiting",
+                                        "Statistics"]
+    @State var selectedPage: Int = 0
     @State var profileLink: String = ""
     @State var judgingData: ProfileJudgingData? = nil
     @State var coachDiversData: ProfileCoachDiversData? = nil
@@ -94,8 +96,14 @@ struct CoachProfileContent: View {
         .scrollScale(0.7)
         .frame(height: 40)
         .onAppear {
-            profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (diveMeetsID)
             Task {
+                profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (diveMeetsID)
+                
+                // If viewing the user's own profile, show Saved and Favorites tab
+                if newUser.id == authUserId {
+                    scoreValues += ["Saved", "Favorites"]
+                }
+                
                 if !cachedJudging.keys.contains(diveMeetsID) ||
                     !cachedDivers.keys.contains(diveMeetsID) {
                     if await !parser.parseProfile(link: profileLink) {
@@ -114,6 +122,8 @@ struct CoachProfileContent: View {
         Group {
             switch selectedPage {
                 case 0:
+                    PostsView(newUser: newUser)
+                case 1:
                     if let judging = judgingData {
                         JudgedList(data: judging)
                     } else if diveMeetsID == "" {
@@ -132,7 +142,7 @@ struct CoachProfileContent: View {
                             }
                         }
                     }
-                case 1:
+                case 2:
                     if let divers = coachDiversData {
                         DiversList(divers: divers)
                             .offset(y: -20)
@@ -152,12 +162,16 @@ struct CoachProfileContent: View {
                             }
                         }
                     }
-                case 2:
-                    CoachMetricsView()
                 case 3:
-                    CoachRecruitingView()
+                    CoachMetricsView()
                 case 4:
+                    CoachRecruitingView()
+                case 5:
                     CoachStatisticsView()
+                case 6:
+                    SavedPostsView(newUser: newUser)
+                case 7:
+                    FavoritesView(newUser: newUser)
                 default:
                     if let judging = judgingData {
                         JudgedList(data: judging)
