@@ -22,6 +22,7 @@ struct NewPostView: View {
     @State private var buttonPressed: Bool = false
     @State private var postErrorMsg: String? = nil
     @State private var isLoadingMediaItems: Bool = false
+    @State private var isCoachesOnlyChecked: Bool = false
     @AppStorage("email") private var email: String = ""
     
     private let screenHeight = UIScreen.main.bounds.height
@@ -154,6 +155,24 @@ struct NewPostView: View {
                     .textFieldStyle(.roundedBorder)
                     .lineLimit(6, reservesSpace: true)
                 
+                HStack {
+                    Text("Only visible to coaches")
+                        .foregroundColor(.primary)
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(Custom.medBlue)
+                        .opacity(isCoachesOnlyChecked ? 1.0 : 0.0)
+                        .overlay(Circle()
+                            .strokeBorder(Custom.medBlue, lineWidth: 1)
+                            .fill(.clear))
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.1)) {
+                                isCoachesOnlyChecked.toggle()
+                            }
+                        }
+                    
+                    Spacer()
+                }
+                .font(.system(size: 20))
                 
                 Spacer()
                 
