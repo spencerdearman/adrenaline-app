@@ -127,6 +127,61 @@ func deletePost(user: NewUser, post: Post) async throws -> NewUser {
     return savedUser
 }
 
+// Create UserSavedPost object to associate a post saved by a user
+func userSavePost(user: NewUser, post: Post) async throws -> UserSavedPost {
+    do {
+        let userSavedPost = UserSavedPost(newuserID: user.id, postID: post.id)
+        let savedPost = try await saveToDataStore(object: userSavedPost)
+        
+        if let list = user.savedPosts {
+            try await list.fetch()
+            user.savedPosts = List<UserSavedPost>.init(elements: list.elements + [userSavedPost])
+        } else {
+            user.savedPosts = List<UserSavedPost>.init(elements: [userSavedPost])
+        }
+        
+        let _ = try await saveToDataStore(object: user)
+        
+        let newPost: Post
+        if let list = post.usersSaving {
+            try await list.fetch()
+            let elems = list.elements + [userSavedPost]
+            newPost = Post(from: post, usersSaving: elems)
+        } else {
+            newPost = Post(from: post, usersSaving: [userSavedPost])
+        }
+        
+        let _ = try await saveToDataStore(object: newPost)
+        
+        return savedPost
+    } catch {
+        print("\(error)")
+        throw error
+    }
+}
+
+// Remove savedPost object and its associations with the user and post
+func userUnsavePost(user: NewUser, post: Post, savedPost: UserSavedPost) async throws {
+    if let list = user.savedPosts {
+        try await list.fetch()
+        user.savedPosts = List<UserSavedPost>.init(elements: list.elements.filter {
+            $0.id != savedPost.id
+        })
+        
+        let _ = try await saveToDataStore(object: user)
+    }
+    
+    if let list = post.usersSaving {
+        try await list.fetch()
+        let elems = list.elements.filter { $0.id != savedPost.id }
+        
+        let newPost = Post(from: post, usersSaving: elems)
+        let _ = try await saveToDataStore(object: newPost)
+    }
+    
+    let _ = try await deleteFromDataStore(object: savedPost)
+}
+
 // Convenience function to abstract file path
 private func removeVideoFromS3(email: String, videoId: String) async throws {
     try await Amplify.Storage.remove(key: "videos/\(email)/\(videoId).mp4")
@@ -135,6 +190,22 @@ private func removeVideoFromS3(email: String, videoId: String) async throws {
 // Convenience function to abstract file path
 private func removeImageFromS3(email: String, imageId: String) async throws {
     try await Amplify.Storage.remove(key: "images/\(email)/\(imageId).jpg")
+}
+
+extension Post {
+    // Add another initializer to easily update usersSaving through API call, but not accessible
+    // outside this file
+    fileprivate init(from: Post, usersSaving: [UserSavedPost]) {
+        self.init(id: from.id,
+                  caption: from.caption,
+                  creationDate: from.creationDate,
+                  images: from.images,
+                  videos: from.videos,
+                  newuserID: from.newuserID,
+                  usersSaving: List<UserSavedPost>.init(elements: usersSaving),
+                  createdAt: from.createdAt,
+                  updatedAt: from.updatedAt)
+    }
 }
 
 struct PostsAPITestView: View {

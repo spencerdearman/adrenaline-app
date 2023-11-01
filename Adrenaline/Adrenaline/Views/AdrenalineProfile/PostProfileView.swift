@@ -112,9 +112,7 @@ struct PostProfileCollapsedView: View {
                     ProgressView()
                 }
             } else {
-                Image(systemName: "x.circle.fill")
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fill)
+                ProgressView()
             }
         }
         
@@ -137,20 +135,40 @@ struct PostProfileCollapsedView: View {
 
 struct PostProfileExpandedView: View {
     @Environment(\.colorScheme) var currentMode
+    // authUserId is the userId of the current user
     @AppStorage("authUserId") private var authUserId: String = ""
     @State private var showingAlert: Bool = false
     @State private var isEditingPost: Bool = false
+    @State private var savedPost: UserSavedPost? = nil
+    @State private var currentUser: NewUser? = nil
     @State private var caption: String = ""
     @Binding var postShowing: String?
     @Binding var shouldRefreshPosts: Bool
     let id: String
     let namespace: Namespace.ID
+    // user is the user that owns the post
     let user: NewUser
+    // post is the post owned by the above user
     let post: Post
     var mediaItems: [PostMediaItem]
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    // Checks UserSavedPost to see if viewing user has saved this post, and if yes, assign
+    // it to the State to be removed if the user unsaves
+    private func getSavedPost() async throws {
+        let pred = UserSavedPost.keys.newuserID == authUserId &&
+        UserSavedPost.keys.postID == post.id
+        let savedPosts: [UserSavedPost] = try await query(where: pred)
+        if savedPosts.count == 1 {
+            print("Found saved post")
+            savedPost = savedPosts[0]
+        } else {
+            print("No single post found, setting to nil")
+            savedPost = nil
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -198,10 +216,11 @@ struct PostProfileExpandedView: View {
                             Text(post.caption ?? "")
                                 .foregroundColor(.secondary)
                                 .padding()
+                                .lineLimit(6, reservesSpace: true)
                         }
                     }
                     .frame(width: screenWidth * 0.8)
-                  
+                    
                     VStack {
                         if isEditingPost {
                             Button {
@@ -234,8 +253,7 @@ struct PostProfileExpandedView: View {
                             }
                         } else {
                             Menu {
-                                // TODO: temp until auth user id is established to check that only current
-                                //       user has access to these options on their own posts
+                                // If post owner is current user
                                 if authUserId == user.id {
                                     Button {
                                         Task {
@@ -257,9 +275,33 @@ struct PostProfileExpandedView: View {
                                             Text("Delete")
                                         }
                                     }
+                                    // If post owner is not current user and has already saved this post
+                                } else if let saved = savedPost {
+                                    Button {
+                                        if let currentUser = currentUser {
+                                            Task {
+                                                try await userUnsavePost(user: currentUser, post: post,
+                                                                         savedPost: saved)
+                                                savedPost = nil
+                                                postShowing = post.id
+                                            }
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Image(systemName: "square.and.arrow.down.fill")
+                                            Text("Saved")
+                                        }
+                                        .foregroundColor(.primary)
+                                    }
+                                    // If post owner is not current user and has not saved this post
                                 } else {
                                     Button {
-                                        print("Saving...")
+                                        if let currentUser = currentUser {
+                                            Task {
+                                                savedPost = try await userSavePost(user: currentUser, post: post)
+                                                postShowing = post.id
+                                            }
+                                        }
                                     } label: {
                                         HStack {
                                             Image(systemName: "square.and.arrow.down")
@@ -302,6 +344,17 @@ struct PostProfileExpandedView: View {
                     // Note: We reset postShowing in PostsView after it detects the change in
                     //       shouldRefreshPosts so we leave the user sitting on the expanded view
                     //       until the posts grid can be updated with the post removed
+                }
+            }
+        }
+        .onAppear {
+            Task {
+                try await getSavedPost()
+                
+                let pred = NewUser.keys.id == authUserId
+                let users = await queryAWSUsers(where: pred)
+                if users.count == 1 {
+                    currentUser = users[0]
                 }
             }
         }

@@ -701,10 +701,6 @@
 		4DA482BE2AA98BE8003DFA3B /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				005057532ABFB11D000B082D /* NewImage.swift */,
-				005057542ABFB11D000B082D /* NewImage+Schema.swift */,
-				0050574D2ABFB037000B082D /* Post.swift */,
-				0050574C2ABFB037000B082D /* Post+Schema.swift */,
 				4DA482C42AA98BE8003DFA3B /* AmplifyModels.swift */,
 				4DA482D22AA98BE8003DFA3B /* CoachUser.swift */,
 				4DA482CE2AA98BE8003DFA3B /* CoachUser+Schema.swift */,
@@ -724,6 +720,8 @@
 				4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */,
 				4DA482C62AA98BE8003DFA3B /* NewFollowed.swift */,
 				4DA482D42AA98BE8003DFA3B /* NewFollowed+Schema.swift */,
+				005057532ABFB11D000B082D /* NewImage.swift */,
+				005057542ABFB11D000B082D /* NewImage+Schema.swift */,
 				4DA482D02AA98BE8003DFA3B /* NewMeet.swift */,
 				4DA482C82AA98BE8003DFA3B /* NewMeet+Schema.swift */,
 				4DA482D12AA98BE8003DFA3B /* NewTeam.swift */,
@@ -732,6 +730,8 @@
 				4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */,
 				4DA482D52AA98BE8003DFA3B /* NewUserNewFollowed.swift */,
 				4DA482CA2AA98BE8003DFA3B /* NewUserNewFollowed+Schema.swift */,
+				0050574D2ABFB037000B082D /* Post.swift */,
+				0050574C2ABFB037000B082D /* Post+Schema.swift */,
 				0006B3A32AE39C72009863D7 /* Tokens.swift */,
 				0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */,
 				00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */,
