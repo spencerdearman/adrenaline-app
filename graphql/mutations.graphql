@@ -126,6 +126,7 @@ mutation CreatePost(
       startedAt
       __typename
     }
+    isCoachesOnly
     createdAt
     updatedAt
     _version
@@ -159,6 +160,7 @@ mutation UpdatePost(
       startedAt
       __typename
     }
+    isCoachesOnly
     createdAt
     updatedAt
     _version
@@ -192,6 +194,7 @@ mutation DeletePost(
       startedAt
       __typename
     }
+    isCoachesOnly
     createdAt
     updatedAt
     _version

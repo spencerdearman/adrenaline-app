@@ -246,6 +246,7 @@ query GetPost($id: ID!) {
       startedAt
       __typename
     }
+    isCoachesOnly
     createdAt
     updatedAt
     _version
@@ -266,6 +267,7 @@ query ListPosts(
       caption
       creationDate
       newuserID
+      isCoachesOnly
       createdAt
       updatedAt
       _version
@@ -296,6 +298,7 @@ query SyncPosts(
       caption
       creationDate
       newuserID
+      isCoachesOnly
       createdAt
       updatedAt
       _version
@@ -328,6 +331,7 @@ query PostsByNewuserID(
       caption
       creationDate
       newuserID
+      isCoachesOnly
       createdAt
       updatedAt
       _version

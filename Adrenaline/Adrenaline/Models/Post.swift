@@ -10,6 +10,7 @@ public struct Post: Model {
   public var videos: List<Video>?
   public var newuserID: String
   public var usersSaving: List<UserSavedPost>?
+  public var isCoachesOnly: Bool
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
@@ -19,7 +20,8 @@ public struct Post: Model {
       images: List<NewImage>? = [],
       videos: List<Video>? = [],
       newuserID: String,
-      usersSaving: List<UserSavedPost>? = []) {
+      usersSaving: List<UserSavedPost>? = [],
+      isCoachesOnly: Bool) {
     self.init(id: id,
       caption: caption,
       creationDate: creationDate,
@@ -27,6 +29,7 @@ public struct Post: Model {
       videos: videos,
       newuserID: newuserID,
       usersSaving: usersSaving,
+      isCoachesOnly: isCoachesOnly,
       createdAt: nil,
       updatedAt: nil)
   }
@@ -37,6 +40,7 @@ public struct Post: Model {
       videos: List<Video>? = [],
       newuserID: String,
       usersSaving: List<UserSavedPost>? = [],
+      isCoachesOnly: Bool,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
@@ -46,6 +50,7 @@ public struct Post: Model {
       self.videos = videos
       self.newuserID = newuserID
       self.usersSaving = usersSaving
+      self.isCoachesOnly = isCoachesOnly
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
@@ -55,13 +60,15 @@ public struct Post: Model {
                             caption: String? = nil,
                             images: List<NewImage>? = [],
                             videos: List<Video>? = [],
-                            newuserID: String) {
+                            newuserID: String,
+                            isCoachesOnly: Bool) {
         self.init(id: id,
                   caption: caption,
                   creationDate: .now(),
                   images: images,
                   videos: videos,
                   newuserID: newuserID,
+                  isCoachesOnly: isCoachesOnly,
                   createdAt: nil,
                   updatedAt: nil)
     }

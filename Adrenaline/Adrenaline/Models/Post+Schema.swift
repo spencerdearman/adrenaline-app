@@ -12,6 +12,7 @@ extension Post {
     case videos
     case newuserID
     case usersSaving
+    case isCoachesOnly
     case createdAt
     case updatedAt
   }
@@ -42,6 +43,7 @@ extension Post {
       .hasMany(post.videos, is: .optional, ofType: Video.self, associatedWith: Video.keys.postID),
       .field(post.newuserID, is: .required, ofType: .string),
       .hasMany(post.usersSaving, is: .optional, ofType: UserSavedPost.self, associatedWith: UserSavedPost.keys.postID),
+      .field(post.isCoachesOnly, is: .required, ofType: .bool),
       .field(post.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(post.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
