@@ -72,8 +72,9 @@ struct NewPostView: View {
                 // Note: will need to save to cloud and cache when
                 //       post is confirmed
                 let id = UUID().uuidString
-                guard let url = await saveVideo(data: data, email: email, name: id) else { return nil }
-                //                        var video = VideoItem(email: email, videoId: id)
+                guard let url = await saveVideo(data: data, email: email, name: id) else {
+                    return nil
+                }
                 
                 // Store Data and URL where data is saved in case it
                 // needs deleted
@@ -128,7 +129,7 @@ struct NewPostView: View {
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                     }
                 } else if isLoadingMediaItems {
-                     ProgressView()
+                    ProgressView()
                         .padding(.vertical)
                 } else {
                     // https://www.appcoda.com/scrollview-paging/
@@ -212,10 +213,12 @@ struct NewPostView: View {
                                 }
                                 
                                 if let user = try await getUserByEmail(email: email) {
-                                    let post = try await createPost(user: user, caption: caption,
+                                    let post = try await createPost(user: user,
+                                                                    caption: caption,
                                                                     videosData: videoData,
                                                                     imagesData: imageData,
-                                                                    idOrder: idOrder)
+                                                                    idOrder: idOrder,
+                                                                    isCoachesOnly: isCoachesOnlyChecked)
                                     print("Created Post")
                                     
                                     let (_, _) = try await savePost(user: user, post: post)

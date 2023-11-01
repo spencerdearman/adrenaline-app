@@ -298,7 +298,8 @@ struct PostProfileExpandedView: View {
                                     Button {
                                         if let currentUser = currentUser {
                                             Task {
-                                                savedPost = try await userSavePost(user: currentUser, post: post)
+                                                savedPost = try await userSavePost(user: currentUser,
+                                                                                   post: post)
                                                 postShowing = post.id
                                             }
                                         }
