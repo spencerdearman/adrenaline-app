@@ -283,7 +283,7 @@ struct PostProfileExpandedView: View {
                                                 try await userUnsavePost(user: currentUser, post: post,
                                                                          savedPost: saved)
                                                 savedPost = nil
-                                                shouldRefreshPosts = true
+                                                postShowing = post.id
                                             }
                                         }
                                     } label: {
@@ -299,6 +299,7 @@ struct PostProfileExpandedView: View {
                                         if let currentUser = currentUser {
                                             Task {
                                                 savedPost = try await userSavePost(user: currentUser, post: post)
+                                                postShowing = post.id
                                             }
                                         }
                                     } label: {
