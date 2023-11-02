@@ -103,10 +103,12 @@ struct ContentView: View {
                                     Label("Home", systemImage: "house")
                                 }
                             
-                            Chat(email: $email, diveMeetsID: $diveMeetsID, showAccount: $showAccount)
-                                .tabItem {
-                                    Label("Chat", systemImage: "message")
-                                }
+                            if let user = newUser, user.accountType != "Spectator" {
+                                Chat(email: $email, diveMeetsID: $diveMeetsID, showAccount: $showAccount)
+                                    .tabItem {
+                                        Label("Chat", systemImage: "message")
+                                    }
+                            }
                             
                             RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState, showAccount: $showAccount)
                                 .tabItem {
