@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Amplify
+import Combine
 
 struct DiverView: View {
     var newUser: NewUser
@@ -159,7 +160,8 @@ struct RecruitingDataView: View {
     
     var body: some View {
         VStack {
-            if currentUserIsCoach {
+            // If current user is a Coach profile, or if current user is viewing their own profile
+            if currentUserIsCoach || authUserId == newUser.id {
                 ZStack {
                     Rectangle()
                         .fill(.ultraThinMaterial)
@@ -703,8 +705,9 @@ struct StatisticsView: View {
 }
 
 struct FavoritesView: View {
-    @Environment(\.getUser) private var getUser
-    @State private var followedUsers: [Followed] = []
+    @State private var favoriteUsers: [NewUser] = []
+    @State private var showSheet: Bool = false
+    @State private var selectedUser: NewUser? = nil
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     var newUser: NewUser
     
@@ -714,35 +717,22 @@ struct FavoritesView: View {
         min(maxHeightOffsetScaled, 90)
     }
     
-    // Gets DiveMeetsID from followed entity to get ProfileImage for the list
-    private func getDiveMeetsID(followed: Followed) -> String? {
-        if let diveMeetsID = followed.diveMeetsID {
-            return diveMeetsID
-        } else if let email = followed.email,
-                  let user = getUser(email),
-                  let diveMeetsID = user.diveMeetsID {
-            return diveMeetsID
-        } else {
-            return nil
-        }
-    }
-    
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 10) {
-                ForEach(followedUsers, id: \.self) { followed in
+                ForEach(favoriteUsers) { favorite in
                     ZStack {
                         RoundedRectangle(cornerRadius: cornerRadius)
                             .fill(Custom.specialGray)
                             .shadow(radius: 5)
                         HStack(alignment: .center) {
-                            ProfileImage(diverID: getDiveMeetsID(followed: followed) ?? "")
+                            ProfileImage(diverID: favorite.diveMeetsID ?? "")
                                 .frame(width: 100, height: 100)
                                 .scaleEffect(0.3)
                             HStack(alignment: .firstTextBaseline) {
-                                Text((followed.firstName ?? "") + " " + (followed.lastName ?? ""))
+                                Text((favorite.firstName ?? "") + " " + (favorite.lastName ?? ""))
                                     .padding()
-                                Text(followed.email == nil ? "DiveMeets" : "Adrenaline")
+                                Text(favorite.accountType)
                                     .foregroundColor(Custom.secondaryColor)
                                 Spacer()
                             }
@@ -750,10 +740,47 @@ struct FavoritesView: View {
                         }
                     }
                     .padding([.leading, .trailing])
+                    .onTapGesture {
+                        print("Tapped")
+                        selectedUser = favorite
+                        showSheet = true
+                    }
                 }
             }
             .padding(.top)
             .padding(.bottom, maxHeightOffset)
+        }
+        .onChange(of: showSheet) {
+            if !showSheet {
+                selectedUser = nil
+            }
+        }
+        .sheet(isPresented: $showSheet) {
+            NavigationView {
+                if let user = selectedUser {
+                    AdrenalineProfileView(newUser: user)
+                }
+            }
+        }
+        .onAppear {
+            Task {
+                favoriteUsers = []
+
+                let users = await queryAWSUsers()
+                
+                // Gets updated current user to compare favorites ids
+                let currentUsers = users.filter { $0.id == newUser.id }
+                if currentUsers.count != 1 {
+                    return
+                }
+                let user = currentUsers[0]
+                
+                // Filters out current user's favorites from all users
+                let ids = user.favoritesIds
+                let favorites = users.filter { ids.contains($0.id) }
+                
+                favoriteUsers = favorites
+           }
         }
     }
 }
