@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+enum BoardSelection: String, CaseIterable {
+    case springboard = "Springboard"
+    case combined = "Combined"
+    case platform = "Platform"
+}
+
 enum RankingType: String, CaseIterable {
     case springboard = "Springboard"
     case combined = "Combined"
@@ -33,7 +39,33 @@ struct RankingsView: View {
     @State private var gender: Gender = .male
     @State private var maleRatings: GenderRankingList = []
     @State private var femaleRatings: GenderRankingList = []
+    @State private var contentHasScrolled: Bool = false
+    @State private var feedModel: FeedModel = FeedModel()
+    @State private var selection: BoardSelection = .springboard
+    @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
+    @Binding var showAccount: Bool
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
+    @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
+    @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
+    @ScaledMetric private var typeBGWidthScaled: CGFloat = 40
+    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    
+    private var typeBubbleWidth: CGFloat {
+        min(typeBubbleWidthScaled, 150)
+    }
+    private var typeBubbleHeight: CGFloat {
+        min(typeBubbleHeightScaled, 48)
+    }
+    private var typeBGWidth: CGFloat {
+        min(typeBGWidthScaled, 55)
+    }
+    
+    private var typeBubbleColor: Color {
+        currentMode == .light ? Color.white : Color.black
+    }
     
     private let skill = SkillRating(diveStatistics: nil)
     
@@ -64,56 +96,157 @@ struct RankingsView: View {
     }
     
     var body: some View {
-        if networkIsConnected {
-            NavigationView {
-                VStack {
-                    Text("Rankings")
-                        .font(.title)
-                        .bold()
+        ZStack {
+            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+            Image(currentMode == .light ? "RankingsBackground-Light" : "RankingsBackground-Dark")
+                .frame(height: screenHeight * 0.8)
+                .offset(x: -screenWidth * 0.1, y: screenHeight * 0.05)
+            if networkIsConnected {
+                ScrollView {
+                    scrollDetection
                     
-                    BubbleSelectView(selection: $rankingType)
-                        .padding([.leading, .trailing])
+                    Rectangle()
+                        .fill(.clear)
+                        .frame(height: screenHeight * 0.08)
                     
-                    BubbleSelectView(selection: $gender)
-                        .padding([.leading, .trailing])
-                    
-                    Divider()
+                    boardSelector
                     
                     RankingListView(tabBarState: $tabBarState, rankingType: $rankingType, gender: $gender,
                                     maleRatings: $maleRatings, femaleRatings: $femaleRatings)
                     
                     Spacer()
                 }
-            }
-            .onAppear {
-                if let males = getMaleAthletes() {
-                    maleRatings = []
-                    for male in males {
-                        if let diveMeetsID = male.diveMeetsID, diveMeetsID != "" {
-                            maleRatings.append((male, male.springboardRating,
-                                                male.platformRating,
-                                                male.totalRating))
+                .onAppear {
+                    if let males = getMaleAthletes() {
+                        maleRatings = []
+                        for male in males {
+                            if let diveMeetsID = male.diveMeetsID, diveMeetsID != "" {
+                                maleRatings.append((male, male.springboardRating,
+                                                    male.platformRating,
+                                                    male.totalRating))
+                            }
                         }
+                        
+                        maleRatings = normalizeRatings(ratings: maleRatings)
                     }
                     
-                    maleRatings = normalizeRatings(ratings: maleRatings)
-                }
-                
-                if let females = getFemaleAthletes() {
-                    femaleRatings = []
-                    for female in females {
-                        if let diveMeetsID = female.diveMeetsID, diveMeetsID != "" {
-                            femaleRatings.append((female, female.springboardRating,
-                                                  female.platformRating,
-                                                  female.totalRating))
+                    if let females = getFemaleAthletes() {
+                        femaleRatings = []
+                        for female in females {
+                            if let diveMeetsID = female.diveMeetsID, diveMeetsID != "" {
+                                femaleRatings.append((female, female.springboardRating,
+                                                      female.platformRating,
+                                                      female.totalRating))
+                            }
                         }
+                        
+                        femaleRatings = normalizeRatings(ratings: femaleRatings)
                     }
-                    
-                    femaleRatings = normalizeRatings(ratings: femaleRatings)
+                }
+            } else {
+                NotConnectedView()
+            }
+        }
+        .overlay (
+            NavigationBar(title: "Rankings",
+                          diveMeetsID: $diveMeetsID,
+                          showAccount: $showAccount,
+                          contentHasScrolled: $contentHasScrolled,
+                          feedModel: $feedModel)
+            .frame(width: screenWidth)
+        )
+        
+    }
+    
+    var scrollDetection: some View {
+        GeometryReader { proxy in
+            let offset = proxy.frame(in: .named("scroll")).minY
+            Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
+        }
+        .onPreferenceChange(ScrollPreferenceKey.self) { offset in
+            withAnimation(.easeInOut) {
+                if offset < 0 {
+                    contentHasScrolled = true
+                } else {
+                    contentHasScrolled = false
                 }
             }
-        } else {
-            NotConnectedView()
+        }
+    }
+    
+    var boardSelector: some View {
+        HStack {
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .cornerRadius(30)
+                    .frame(width: typeBubbleWidth * 3 + 5,
+                           height: typeBGWidth)
+                RoundedRectangle(cornerRadius: 30)
+                    .frame(width: typeBubbleWidth,
+                           height: typeBubbleHeight)
+                    .foregroundColor(Custom.darkGray.opacity(0.9))
+                    .offset(x: rankingType == .springboard
+                            ? -typeBubbleWidth / 1
+                            : (rankingType == .combined ? 0 : typeBubbleWidth))
+                    .animation(.spring(response: 0.2), value: rankingType)
+                    .clipShape(RoundedRectangle(cornerRadius: 30))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(Color.primary.opacity(0.5), lineWidth: 1) 
+                            .offset(x: rankingType == .springboard
+                                    ? -typeBubbleWidth / 1
+                                    : (rankingType == .combined ? 0 : typeBubbleWidth))// Adjust the lineWidth as needed
+                            .animation(.spring(response: 0.2), value: rankingType)
+                    )
+                HStack(spacing: 0) {
+                    Button(action: {
+                        rankingType = .springboard
+                    }, label: {
+                        Text(BoardSelection.springboard.rawValue)
+                            .animation(nil, value: rankingType)
+                    })
+                    .frame(width: typeBubbleWidth,
+                           height: typeBubbleHeight)
+                    .cornerRadius(30)
+                    Button(action: {
+                        rankingType = .combined
+                    }, label: {
+                        Text(BoardSelection.combined.rawValue)
+                            .animation(nil, value: rankingType)
+                    })
+                    .frame(width: typeBubbleWidth + 2,
+                           height: typeBubbleHeight)
+                    .cornerRadius(30)
+                    Button(action: {
+                        rankingType = .platform
+                    }, label: {
+                        Text(BoardSelection.platform.rawValue)
+                            .animation(nil, value: rankingType)
+                    })
+                    .frame(width: typeBubbleWidth + 2,
+                           height: typeBubbleHeight)
+                    .cornerRadius(30)
+                }
+                .foregroundColor(.primary)
+            }
+            
+            Button {
+                withAnimation(.closeCard) {
+                    if gender == .male {
+                        gender = .female
+                    } else {
+                        gender = .male
+                    }
+                }
+            } label: {
+                Text(gender.rawValue)
+                    .font(.system(size: 17, weight: .bold))
+                    .frame(width: 36, height: 36)
+                    .foregroundColor(.secondary)
+                    .background(gender == .male ? Color.blue.opacity(0.3) : Color.pink.opacity(0.3))
+                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+            }
         }
     }
 }
