@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ProfileRow: View {
     var user: NewUser
     @Binding var newMessages: Set<String>
