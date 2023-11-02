@@ -20,6 +20,9 @@
       },
       "storage": {
         "adrenaline": {}
+      },
+      "analytics": {
+        "adrenaline": {}
       }
     }
   }

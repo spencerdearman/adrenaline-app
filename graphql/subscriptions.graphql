@@ -323,16 +323,6 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       coachUserTeamId
       __typename
     }
-    followed {
-      nextToken
-      startedAt
-      __typename
-    }
-    MessageNewUsers {
-      nextToken
-      startedAt
-      __typename
-    }
     posts {
       nextToken
       startedAt
@@ -348,6 +338,7 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
+    favoritesIds
     createdAt
     updatedAt
     _version
@@ -403,16 +394,6 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       coachUserTeamId
       __typename
     }
-    followed {
-      nextToken
-      startedAt
-      __typename
-    }
-    MessageNewUsers {
-      nextToken
-      startedAt
-      __typename
-    }
     posts {
       nextToken
       startedAt
@@ -428,6 +409,7 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
+    favoritesIds
     createdAt
     updatedAt
     _version
@@ -483,16 +465,6 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       coachUserTeamId
       __typename
     }
-    followed {
-      nextToken
-      startedAt
-      __typename
-    }
-    MessageNewUsers {
-      nextToken
-      startedAt
-      __typename
-    }
     posts {
       nextToken
       startedAt
@@ -508,6 +480,7 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
+    favoritesIds
     createdAt
     updatedAt
     _version
@@ -532,6 +505,7 @@ subscription OnCreateNewAthlete(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -605,6 +579,7 @@ subscription OnUpdateNewAthlete(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -678,6 +653,7 @@ subscription OnDeleteNewAthlete(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -794,6 +770,7 @@ subscription OnCreateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -836,6 +813,7 @@ subscription OnUpdateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -878,6 +856,7 @@ subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -905,66 +884,6 @@ subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
     _lastChangedAt
     coachUserUserId
     coachUserTeamId
-    __typename
-  }
-}
-
-subscription OnCreateNewFollowed(
-  $filter: ModelSubscriptionNewFollowedFilterInput
-) {
-  onCreateNewFollowed(filter: $filter) {
-    id
-    email
-    users {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-subscription OnUpdateNewFollowed(
-  $filter: ModelSubscriptionNewFollowedFilterInput
-) {
-  onUpdateNewFollowed(filter: $filter) {
-    id
-    email
-    users {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-subscription OnDeleteNewFollowed(
-  $filter: ModelSubscriptionNewFollowedFilterInput
-) {
-  onDeleteNewFollowed(filter: $filter) {
-    id
-    email
-    users {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
     __typename
   }
 }
@@ -1654,135 +1573,6 @@ subscription OnDeleteMessage($filter: ModelSubscriptionMessageFilterInput) {
     MessageNewUsers {
       nextToken
       startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-subscription OnCreateNewUserNewFollowed(
-  $filter: ModelSubscriptionNewUserNewFollowedFilterInput
-) {
-  onCreateNewUserNewFollowed(filter: $filter) {
-    id
-    newUserId
-    newFollowedId
-    newUser {
-      id
-      firstName
-      lastName
-      email
-      phone
-      diveMeetsID
-      accountType
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newUserAthleteId
-      newUserCoachId
-      __typename
-    }
-    newFollowed {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-subscription OnUpdateNewUserNewFollowed(
-  $filter: ModelSubscriptionNewUserNewFollowedFilterInput
-) {
-  onUpdateNewUserNewFollowed(filter: $filter) {
-    id
-    newUserId
-    newFollowedId
-    newUser {
-      id
-      firstName
-      lastName
-      email
-      phone
-      diveMeetsID
-      accountType
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newUserAthleteId
-      newUserCoachId
-      __typename
-    }
-    newFollowed {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-subscription OnDeleteNewUserNewFollowed(
-  $filter: ModelSubscriptionNewUserNewFollowedFilterInput
-) {
-  onDeleteNewUserNewFollowed(filter: $filter) {
-    id
-    newUserId
-    newFollowedId
-    newUser {
-      id
-      firstName
-      lastName
-      email
-      phone
-      diveMeetsID
-      accountType
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newUserAthleteId
-      newUserCoachId
-      __typename
-    }
-    newFollowed {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
     createdAt

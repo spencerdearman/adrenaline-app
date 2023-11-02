@@ -12,11 +12,10 @@ public class NewUser: Model, Identifiable {
   public var accountType: String
   public var athlete: NewAthlete?
   public var coach: CoachUser?
-  public var followed: List<NewUserNewFollowed>?
-  public var MessageNewUsers: List<MessageNewUser>?
   public var posts: List<Post>?
   public var tokens: List<Tokens>?
   public var savedPosts: List<UserSavedPost>?
+  public var favoritesIds: [String]
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newUserAthleteId: String?
@@ -31,11 +30,10 @@ public class NewUser: Model, Identifiable {
       accountType: String,
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
-      followed: List<NewUserNewFollowed> = [],
-      MessageNewUsers: List<MessageNewUser>? = [],
       posts: List<Post>? = [],
       tokens: List<Tokens>? = [],
       savedPosts: List<UserSavedPost>? = [],
+      favoritesIds: [String] = [],
       newUserAthleteId: String? = nil,
       newUserCoachId: String? = nil) {
     self.init(id: id,
@@ -47,11 +45,10 @@ public class NewUser: Model, Identifiable {
       accountType: accountType,
       athlete: athlete,
       coach: coach,
-      followed: followed,
-      MessageNewUsers: MessageNewUsers,
       posts: posts,
       tokens: tokens,
       savedPosts: savedPosts,
+      favoritesIds: favoritesIds,
       createdAt: nil,
       updatedAt: nil,
       newUserAthleteId: newUserAthleteId,
@@ -66,11 +63,10 @@ public class NewUser: Model, Identifiable {
       accountType: String,
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
-      followed: List<NewUserNewFollowed> = [],
-      MessageNewUsers: List<MessageNewUser>? = [],
       posts: List<Post>? = [],
       tokens: List<Tokens>? = [],
       savedPosts: List<UserSavedPost>? = [],
+      favoritesIds: [String] = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
       newUserAthleteId: String? = nil,
@@ -84,11 +80,10 @@ public class NewUser: Model, Identifiable {
       self.accountType = accountType
       self.athlete = athlete
       self.coach = coach
-      self.followed = followed
-      self.MessageNewUsers = MessageNewUsers
       self.posts = posts
       self.tokens = tokens
       self.savedPosts = savedPosts
+      self.favoritesIds = favoritesIds
       self.createdAt = createdAt
       self.updatedAt = updatedAt
       self.newUserAthleteId = newUserAthleteId
