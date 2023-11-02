@@ -53,107 +53,112 @@ struct Chat: View {
             }
             Group {
                 switch selection {
-                case 0:
-                    ScrollView {
-                        scrollDetection
-                        VStack {
-                            LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(users.indices, id: \.self) { index in
-                                    let user = users[index]
-                                    if index != 0 { Divider() }
-                                    ProfileRow(user: user, newMessages: $newMessages)
-                                        .onTapGesture {
-                                            withAnimation {
-                                                newMessages.remove(user.id)
-                                                selection = 1
-                                                feedModel.showTab = false
-                                            }
-                                            Task {
-                                                let recipientPredicate = NewUser.keys.id == user.id
-                                                let recipientUsers = await
-                                                queryAWSUsers(where: recipientPredicate)
-                                                if recipientUsers.count >= 1 {
-                                                    recipient = recipientUsers[0]
+                    case 0:
+                        ScrollView {
+                            scrollDetection
+                            VStack {
+                                LazyVGrid(columns: columns, spacing: 20) {
+                                    ForEach(users.indices, id: \.self) { index in
+                                        let user = users[index]
+                                        if index != 0 { Divider() }
+                                        ProfileRow(user: user, newMessages: $newMessages)
+                                            .onTapGesture {
+                                                withAnimation {
+                                                    newMessages.remove(user.id)
+                                                    selection = 1
+                                                    feedModel.showTab = false
+                                                }
+                                                Task {
+                                                    let recipientPredicate = NewUser.keys.id == user.id
+                                                    let recipientUsers = await
+                                                    queryAWSUsers(where: recipientPredicate)
+                                                    if recipientUsers.count >= 1 {
+                                                        recipient = recipientUsers[0]
+                                                    }
                                                 }
                                             }
-                                        }
+                                    }
+                                    .padding(.horizontal, 20)
                                 }
-                                .padding(.horizontal, 20)
                             }
+                            .padding(20)
+                            .background(.ultraThinMaterial)
+                            .modifier(OutlineOverlay(cornerRadius: 30))
+                            .backgroundStyle(cornerRadius: 30)
+                            .padding(20)
+                            .padding(.vertical, 80)
                         }
-                        .padding(20)
-                        .background(.ultraThinMaterial)
-                        .modifier(OutlineOverlay(cornerRadius: 30))
-                        .backgroundStyle(cornerRadius: 30)
-                        .padding(20)
-                        .padding(.vertical, 80)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                    
-                case 1:
-                    VStack {
-                        ScrollView (showsIndicators: false) {
-                            Rectangle()
-                                .fill(.clear)
-                                .frame(height: 100)
-                            LazyVStack {
-                                if let recipient = recipient, let messages = currentUserConversations[recipient.id] {
-                                    ForEach(messages, id:\.0.id) { message, currentUserIsSender in
-                                        MessageRow(message: message, currentUserIsSender: currentUserIsSender)
-                                            .frame(maxWidth: .infinity, alignment: currentUserIsSender ? .trailing
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                        
+                    case 1:
+                        VStack {
+                            ScrollView (showsIndicators: false) {
+                                Rectangle()
+                                    .fill(.clear)
+                                    .frame(height: 100)
+                                LazyVStack {
+                                    if let recipient = recipient,
+                                        let messages = currentUserConversations[recipient.id] {
+                                        ForEach(messages, id:\.0.id) { message, currentUserIsSender in
+                                            MessageRow(message: message,
+                                                       currentUserIsSender: currentUserIsSender)
+                                            .frame(maxWidth: .infinity,
+                                                   alignment:
+                                                    currentUserIsSender
+                                                   ? .trailing
                                                    : .leading)
-                                    }
-                                }
-                            }
-                        }
-                        .defaultScrollAnchor(.bottom)
-                        HStack {
-                            TextField("Enter message", text: $text)
-                                .onChange(of: text, initial: true) { _, newText in
-                                    if text != "" {
-                                        messageNotEmpty = true
-                                    } else {
-                                        messageNotEmpty = false
-                                    }
-                                }
-                            Button {
-                                if messageNotEmpty {
-                                    Task {
-                                        //Actual Sending Procedure
-                                        if let currentUser = currentUser, let recipient = recipient {
-                                            didTapSend(message: text, sender: currentUser,
-                                                       recipient: recipient)
-                                            
-                                            text.removeAll()
-                                        } else {
-                                            print("Errors retrieving users")
                                         }
                                     }
                                 }
-                            } label: {
-                                Image(systemName: "arrow.up.circle.fill")
-                                    .foregroundColor(messageNotEmpty ? .blue.opacity(0.7) :
-                                            .blue.opacity(0.4))
-                                    .frame(width: 40, height: 40)
-                                    .scaleEffect(1.6)
                             }
+                            .defaultScrollAnchor(.bottom)
+                            HStack {
+                                TextField("Enter message", text: $text)
+                                    .onChange(of: text, initial: true) { _, newText in
+                                        if text != "" {
+                                            messageNotEmpty = true
+                                        } else {
+                                            messageNotEmpty = false
+                                        }
+                                    }
+                                Button {
+                                    if messageNotEmpty {
+                                        Task {
+                                            //Actual Sending Procedure
+                                            if let currentUser = currentUser, let recipient = recipient {
+                                                didTapSend(message: text, sender: currentUser,
+                                                           recipient: recipient)
+                                                
+                                                text.removeAll()
+                                            } else {
+                                                print("Errors retrieving users")
+                                            }
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: "arrow.up.circle.fill")
+                                        .foregroundColor(messageNotEmpty ? .blue.opacity(0.7) :
+                                                .blue.opacity(0.4))
+                                        .frame(width: 40, height: 40)
+                                        .scaleEffect(1.6)
+                                }
+                            }
+                            .padding(.leading, 10)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(30)
+                            .modifier(OutlineOverlay(cornerRadius: 30))
                         }
-                        .padding(.leading, 10)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(30)
-                        .modifier(OutlineOverlay(cornerRadius: 30))
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                default:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("DEFAULT")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    default:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("DEFAULT")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
                 }
             }
         }
@@ -203,14 +208,19 @@ struct Chat: View {
             }
         }
     }
-
+    
     // This function is used to observe changes in the Message model
     func observeNewMessages() {
         // Set up a subscription to observe new messages
         let messageSubscription = Amplify.DataStore.observeQuery(for: Message.self)
+        
         Task {
             do {
                 for try await querySnapshot in messageSubscription {
+                    // Dict of keys of user Ids and values of  datetimes of the least recently sent
+                    // message in that conversation. This will be how the users array is updated at
+                    // the end to sort descending by message send datetime
+                    var sortOrder: [String: Temporal.DateTime] = [:]
                     var updatedConversations: Set<String> = Set()
                     for message in querySnapshot.items {
                         // Check if the message ID has already been observed
@@ -229,7 +239,8 @@ struct Chat: View {
                                         if msgMessageNewUsers.elements[0].newuserID == currentUser.id {
                                             currentMessageNewUser = msgMessageNewUsers.elements[0]
                                             recipientMessageNewUser = msgMessageNewUsers.elements[1]
-                                        } else if msgMessageNewUsers.elements[1].newuserID == currentUser.id {
+                                        } else if msgMessageNewUsers.elements[1].newuserID ==
+                                                    currentUser.id {
                                             currentMessageNewUser = msgMessageNewUsers.elements[1]
                                             recipientMessageNewUser = msgMessageNewUsers.elements[0]
                                         } else {
@@ -245,9 +256,23 @@ struct Chat: View {
                                             currentUserConversations[key] = []
                                         }
                                         currentUserConversations[key]!.append(value)
+                                        
+                                        // If we haven't seen this person's conversation yet, just
+                                        // add their creationDate directly
+                                        if !sortOrder.keys.contains(key) {
+                                            sortOrder[key] = message.creationDate
+                                            // If we have already seen this person's conversation
+                                            // and the incoming message was sent more recently than
+                                            // the last we have seen, update the sortOrder
+                                        } else if let val = sortOrder[key],
+                                                  val < message.creationDate {
+                                            sortOrder[key] = message.creationDate
+                                        }
+                                        
                                         updatedConversations.insert(key)
                                         
-                                        // Update the observedMessageIDs set to mark this message as observed
+                                        // Update the observedMessageIDs set to mark this message as
+                                        // observed
                                         observedMessageIDs.insert(message.id)
                                     } else {
                                         print("MessageNewUser count != 2")
@@ -258,11 +283,38 @@ struct Chat: View {
                             }
                         }
                     }
+                    
                     for key in updatedConversations {
-                        currentUserConversations[key]! = 
-                        currentUserConversations[key]!.sorted(by: { $0.0.creationDate < $1.0.creationDate })
+                        currentUserConversations[key]! =
+                        currentUserConversations[key]!.sorted(by: {
+                            $0.0.creationDate < $1.0.creationDate
+                        })
                     }
                     newMessages = updatedConversations
+                    
+                    // Sorts all conversations in reverse chronological order by last sent message
+                    let sorted = sortOrder.map { ($0.key, $0.value) }.sorted {
+                        $0.1 > $1.1
+                    }
+                    
+                    // Gets all user ids in sorted order
+                    let userIds = sorted.map { $0.0 }
+                    
+                    print(users.map { $0.id })
+                    // Uses userIds to determine the appropriate indices for each of the users to
+                    // be placed in based on this ordering
+                    // https://stackoverflow.com/a/51683055/22068672
+                    let reorderedUsers = users.sorted {
+                        guard let first = userIds.firstIndex(of: $0.id) else { return false }
+                        guard let second = userIds.firstIndex(of: $1.id) else { return true }
+                        
+                        return first < second
+                    }
+                    
+                    print("Reordered: \(reorderedUsers.map { $0.id })")
+                    withAnimation {
+                        users = reorderedUsers
+                    }
                 }
             } catch {
                 print("Error observing new messages: \(error)")
