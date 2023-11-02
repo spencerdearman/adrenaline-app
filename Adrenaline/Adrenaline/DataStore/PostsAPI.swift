@@ -29,7 +29,7 @@ func uploadImage(data: Data, email: String, name: String) async throws {
 // Note: This function saves images and videos to S3 to get the links and stop carrying the Data,
 //       but this doesn't save to the DataStore until savePost() is called
 func createPost(user: NewUser, caption: String, videosData: [String: Data],
-                imagesData: [String: Data], idOrder: [String]) async throws -> Post {
+                imagesData: [String: Data], idOrder: [String], isCoachesOnly: Bool) async throws -> Post {
     var videos: [Video]? = nil
     var images: [NewImage]? = nil
     let email = user.email.lowercased()
@@ -55,7 +55,8 @@ func createPost(user: NewUser, caption: String, videosData: [String: Data],
         let videosList = videos == nil ? nil : List<Video>.init(elements: videos!)
         
         return Post(id: postId, caption: caption, creationDate: .now(),
-                    images: imagesList, videos: videosList, newuserID: user.id)
+                    images: imagesList, videos: videosList, newuserID: user.id, 
+                    isCoachesOnly: isCoachesOnly)
     }
 }
 
@@ -202,7 +203,8 @@ extension Post {
                   images: from.images,
                   videos: from.videos,
                   newuserID: from.newuserID,
-                  usersSaving: List<UserSavedPost>.init(elements: usersSaving),
+                  usersSaving: List<UserSavedPost>.init(elements: usersSaving), 
+                  isCoachesOnly: from.isCoachesOnly,
                   createdAt: from.createdAt,
                   updatedAt: from.updatedAt)
     }
@@ -217,7 +219,8 @@ struct PostsAPITestView: View {
             Button {
                 Task {
                     if let user = currentUser {
-                        let post = Post(creationDate: .now(), newuserID: user.id)
+                        let post = Post(creationDate: .now(), newuserID: user.id,
+                                        isCoachesOnly: false)
                         let (savedUser, _) = try await savePost(user: user, post: post)
                         currentUser = savedUser
                         try await currentUser?.posts?.fetch()

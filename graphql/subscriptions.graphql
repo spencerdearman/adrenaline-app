@@ -111,6 +111,7 @@ subscription OnCreatePost($filter: ModelSubscriptionPostFilterInput) {
       startedAt
       __typename
     }
+    isCoachesOnly
     createdAt
     updatedAt
     _version
@@ -141,6 +142,7 @@ subscription OnUpdatePost($filter: ModelSubscriptionPostFilterInput) {
       startedAt
       __typename
     }
+    isCoachesOnly
     createdAt
     updatedAt
     _version
@@ -171,6 +173,7 @@ subscription OnDeletePost($filter: ModelSubscriptionPostFilterInput) {
       startedAt
       __typename
     }
+    isCoachesOnly
     createdAt
     updatedAt
     _version

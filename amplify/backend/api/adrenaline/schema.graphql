@@ -18,6 +18,7 @@ type Post @model @auth(rules: [{allow: private}]) {
   videos: [Video] @hasMany(indexName: "byPost", fields: ["id"])
   newuserID: ID! @index(name: "byNewUser")
   usersSaving: [UserSavedPost] @hasMany(indexName: "byPost", fields: ["id"])
+  isCoachesOnly: Boolean!
 }
 
 type NewImage @model @auth(rules: [{allow: private}]) {

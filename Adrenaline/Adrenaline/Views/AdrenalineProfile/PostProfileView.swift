@@ -142,6 +142,7 @@ struct PostProfileExpandedView: View {
     @State private var savedPost: UserSavedPost? = nil
     @State private var currentUser: NewUser? = nil
     @State private var caption: String = ""
+    @State private var isCoachesOnly: Bool = false
     @Binding var postShowing: String?
     @Binding var shouldRefreshPosts: Bool
     let id: String
@@ -267,6 +268,31 @@ struct PostProfileExpandedView: View {
                                         }
                                         .foregroundColor(.primary)
                                     }
+                                    
+                                    Button {
+                                        Task {
+                                            // Toggle view-level bool to change appearance of view
+                                            isCoachesOnly.toggle()
+                                            
+                                            // Actually save the privacy change to DynamoDB
+                                            var newPost = post
+                                            newPost.isCoachesOnly = isCoachesOnly
+                                            
+                                            let _ = try await saveToDataStore(object: newPost)
+                                        }
+                                    } label: {
+                                        HStack {
+                                            if !isCoachesOnly {
+                                                Image(systemName: "lock.open.fill")
+                                                Text("Public")
+                                            } else {
+                                                Image(systemName: "lock.fill")
+                                                Text("Coaches Only")
+                                            }
+                                        }
+                                        .foregroundColor(.primary)
+                                    }
+                                    
                                     Button(role: .destructive) {
                                         showingAlert = true
                                     } label: {
@@ -298,7 +324,8 @@ struct PostProfileExpandedView: View {
                                     Button {
                                         if let currentUser = currentUser {
                                             Task {
-                                                savedPost = try await userSavePost(user: currentUser, post: post)
+                                                savedPost = try await userSavePost(user: currentUser,
+                                                                                   post: post)
                                                 postShowing = post.id
                                             }
                                         }
@@ -355,6 +382,14 @@ struct PostProfileExpandedView: View {
                 let users = await queryAWSUsers(where: pred)
                 if users.count == 1 {
                     currentUser = users[0]
+                }
+                
+                // Need to query each time appearing since the post input is not
+                // up to date, but we need to update the State
+                let postPred = Post.keys.id == post.id
+                let posts: [Post] = try await query(where: postPred)
+                if posts.count == 1 {
+                    isCoachesOnly = posts[0].isCoachesOnly
                 }
             }
         }

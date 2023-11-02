@@ -376,20 +376,37 @@ struct RecruitingView: View {
 
 struct PostsView: View {
     @EnvironmentObject private var appLogic: AppLogic
+    @AppStorage("authUserId") private var authUserId: String = ""
     @Namespace var namespace
     @State private var posts: [PostProfileItem] = []
     @State private var postShowing: String? = nil
     @State private var shouldRefreshPosts: Bool = false
+    @State private var currentUser: NewUser? = nil
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    private var currentUserIsCoach: Bool {
+        if let current = currentUser {
+            return current.accountType == "Coach"
+        }
+        
+        return false
+    }
     
     private func updatePosts() async throws {
         let pred = Post.keys.newuserID == newUser.id
         let postModels: [Post] = try await query(where: pred)
         var profileItems: [PostProfileItem] = []
         for post in postModels {
+            // Shows all posts if current user is viewing their own profile, but if viewing a
+            // different profile, skips posts that are marked coach only if the current user is not
+            // a coach
+            if currentUser?.id != newUser.id, !currentUserIsCoach, post.isCoachesOnly {
+                continue
+            }
+            
             try await profileItems.append(PostProfileItem(user: newUser, post: post,
                                                           namespace: namespace,
                                                           postShowing: $postShowing,
@@ -437,6 +454,12 @@ struct PostsView: View {
         }
         .onAppear {
             Task {
+                let pred = NewUser.keys.id == authUserId
+                let users = await queryAWSUsers(where: pred)
+                if users.count == 1 {
+                    currentUser = users[0]
+                }
+                
                 try await updatePosts()
             }
         }

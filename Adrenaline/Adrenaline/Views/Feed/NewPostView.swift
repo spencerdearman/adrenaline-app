@@ -22,9 +22,11 @@ struct NewPostView: View {
     @State private var buttonPressed: Bool = false
     @State private var postErrorMsg: String? = nil
     @State private var isLoadingMediaItems: Bool = false
+    @State private var isCoachesOnlyChecked: Bool = false
     @AppStorage("email") private var email: String = ""
     
     private let screenHeight = UIScreen.main.bounds.height
+    private let screenWidth = UIScreen.main.bounds.width
     
     private var containsMedia: Bool {
         !mediaItems.isEmpty
@@ -71,8 +73,9 @@ struct NewPostView: View {
                 // Note: will need to save to cloud and cache when
                 //       post is confirmed
                 let id = UUID().uuidString
-                guard let url = await saveVideo(data: data, email: email, name: id) else { return nil }
-                //                        var video = VideoItem(email: email, videoId: id)
+                guard let url = await saveVideo(data: data, email: email, name: id) else {
+                    return nil
+                }
                 
                 // Store Data and URL where data is saved in case it
                 // needs deleted
@@ -109,6 +112,22 @@ struct NewPostView: View {
         }
     }
     
+    var aggressiveSpacing: some View {
+        Group {
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+            Spacer()
+        }
+    }
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -127,7 +146,7 @@ struct NewPostView: View {
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                     }
                 } else if isLoadingMediaItems {
-                     ProgressView()
+                    ProgressView()
                         .padding(.vertical)
                 } else {
                     // https://www.appcoda.com/scrollview-paging/
@@ -150,10 +169,49 @@ struct NewPostView: View {
                     .scrollTargetBehavior(.paging)
                 }
                 
-                TextField("Caption", text: $caption, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(6, reservesSpace: true)
-                
+                    VStack {
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: screenHeight * 0.005)
+                        HStack {
+                            Spacer()
+                            Text("Only visible to coaches")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                            
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    isCoachesOnlyChecked.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "checkmark.shield")
+                                    .opacity(isCoachesOnlyChecked ? 1.0 : 0.0)
+                                    .frame(width: 36, height: 36)
+                                    .foregroundColor(.secondary)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .stroke(Custom.medBlue, lineWidth: 1.5)
+                                    )
+                                    .background(isCoachesOnlyChecked ? Color.blue.opacity(0.3) : Color.clear)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .scaleEffect(0.8)
+                            }
+                            aggressiveSpacing
+                        }
+                            
+                        Divider()
+                            
+                        TextField("Caption", text: $caption, axis: .vertical)
+                            .lineLimit(6, reservesSpace: true)
+                            .frame(width: screenWidth * 0.85)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background (
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.ultraThinMaterial)
+                            .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
+                                    radius: 15, x: 0, y: 30)
+                    )
                 
                 Spacer()
                 
@@ -193,10 +251,12 @@ struct NewPostView: View {
                                 }
                                 
                                 if let user = try await getUserByEmail(email: email) {
-                                    let post = try await createPost(user: user, caption: caption,
+                                    let post = try await createPost(user: user,
+                                                                    caption: caption,
                                                                     videosData: videoData,
                                                                     imagesData: imageData,
-                                                                    idOrder: idOrder)
+                                                                    idOrder: idOrder,
+                                                                    isCoachesOnly: isCoachesOnlyChecked)
                                     print("Created Post")
                                     
                                     let (_, _) = try await savePost(user: user, post: post)
