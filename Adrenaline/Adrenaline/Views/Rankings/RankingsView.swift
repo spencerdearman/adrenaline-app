@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Amplify
 
 enum BoardSelection: String, CaseIterable {
     case springboard = "Springboard"
@@ -24,16 +25,14 @@ enum GenderInt: Int, CaseIterable {
     case female = 1
 }
 
-//                            [(Athlete, springboard, platform, total)]]
-typealias GenderRankingList = [(Athlete, Double, Double, Double)]
-typealias RankingListItem = (Athlete, Double)
+//                            [(NewAthlete, springboard, platform, total)]]
+typealias GenderRankingList = [(NewAthlete, Double, Double, Double)]
+typealias RankingListItem = (NewAthlete, Double)
 typealias RankingList = [RankingListItem]
 typealias NumberedRankingList = [(Int, RankingListItem)]
 
 struct RankingsView: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.getMaleAthletes) var getMaleAthletes
-    @Environment(\.getFemaleAthletes) var getFemaleAthletes
     @Environment(\.networkIsConnected) private var networkIsConnected
     @State private var rankingType: RankingType = .combined
     @State private var gender: Gender = .male
@@ -67,7 +66,17 @@ struct RankingsView: View {
         currentMode == .light ? Color.white : Color.black
     }
     
-    private let skill = SkillRating(diveStatistics: nil)
+    private let skill = SkillRating()
+    
+    private func getMaleAthletes() async -> [NewAthlete] {
+        let pred = NewAthlete.keys.gender == "M"
+        return await queryAWSAthletes(where: pred)
+    }
+    
+    private func getFemaleAthletes() async -> [NewAthlete] {
+        let pred = NewAthlete.keys.gender == "F"
+        return await queryAWSAthletes(where: pred)
+    }
     
     private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
         var result: GenderRankingList = []
@@ -111,32 +120,35 @@ struct RankingsView: View {
                     
                     boardSelector
                     
-                    RankingListView(tabBarState: $tabBarState, rankingType: $rankingType, gender: $gender,
-                                    maleRatings: $maleRatings, femaleRatings: $femaleRatings)
+                    RankingListView(tabBarState: $tabBarState, rankingType: $rankingType, 
+                                    gender: $gender, maleRatings: $maleRatings,
+                                    femaleRatings: $femaleRatings)
                     
                     Spacer()
                 }
                 .onAppear {
-                    if let males = getMaleAthletes() {
+                    Task {
+                        let males = await getMaleAthletes()
                         maleRatings = []
                         for male in males {
-                            if let diveMeetsID = male.diveMeetsID, diveMeetsID != "" {
-                                maleRatings.append((male, male.springboardRating,
-                                                    male.platformRating,
-                                                    male.totalRating))
+                            if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "", 
+                                let springboard = male.springboardRating,
+                                let platform = male.platformRating,
+                                let total = male.totalRating {
+                                maleRatings.append((male, springboard, platform, total))
                             }
                         }
                         
                         maleRatings = normalizeRatings(ratings: maleRatings)
-                    }
-                    
-                    if let females = getFemaleAthletes() {
+                        
+                        let females = await getFemaleAthletes()
                         femaleRatings = []
                         for female in females {
-                            if let diveMeetsID = female.diveMeetsID, diveMeetsID != "" {
-                                femaleRatings.append((female, female.springboardRating,
-                                                      female.platformRating,
-                                                      female.totalRating))
+                            if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
+                               let springboard = female.springboardRating,
+                               let platform = female.platformRating,
+                               let total = female.totalRating {
+                                femaleRatings.append((female, springboard, platform, total))
                             }
                         }
                         
@@ -276,11 +288,9 @@ struct RankingListView: View {
         
         return keep.sorted(by: {
             if $0.1 > $1.1 { return true }
-            else if $0.1 == $1.1,
-                    let oneLast = $0.0.lastName,
-                    let twoLast = $1.0.lastName,
-                    oneLast < twoLast {
-                return true
+            else if $0.1 == $1.1 {
+                // If they share matching values, sort by first name
+                return $0.0.user.firstName < $1.0.user.firstName
             } else {
                 return false
             }
@@ -371,7 +381,7 @@ struct RankingListView: View {
 struct RankingListDiverView: View {
     @Environment(\.colorScheme) private var currentMode
     var number: Int
-    var athlete: Athlete
+    var athlete: NewAthlete
     var rating: Double
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -387,15 +397,9 @@ struct RankingListDiverView: View {
                 Text(String(number))
                     .padding(.leading)
                     .padding(.trailing, 40)
-                if let email = athlete.email {
-                    Text((athlete.firstName ?? "") +
-                         " "  +
-                         (athlete.lastName ?? ""))
-                    .foregroundColor(Custom.coolBlue)
-                } else {
-                    Text((athlete.firstName ?? "") + " "  + (athlete.lastName ?? ""))
-                        .foregroundColor(.primary)
-                }
+                // TODO: link row to profile
+                Text((athlete.user.firstName) + " "  + (athlete.user.lastName))
+                    .foregroundColor(.primary)
                 
                 Spacer()
                 Text(String(format: "%.1f", rating))
