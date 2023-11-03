@@ -13,11 +13,6 @@ var entriesHtmlCache: [String: String] = [:]
 struct ProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.addFollowedByDiveMeetsID) private var addFollowedByDiveMeetsID
-    @Environment(\.getFollowedByDiveMeetsID) private var getFollowedByDiveMeetsID
-    @Environment(\.getUser) private var getUser
-    @Environment(\.addFollowedToUser) private var addFollowedToUser
-    @Environment(\.dropFollowedFromUser) private var dropFollowedFromUser
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     
     var profileLink: String
@@ -82,16 +77,16 @@ struct ProfileView: View {
         return ""
     }
     
-    private func updateFollowed(diveMeetsID: String) {
-        if let info = parser.profileData.info {
-            addFollowedByDiveMeetsID(info.first, info.last, diveMeetsID)
-            guard let (email, _) = getStoredCredentials() else { return }
-            guard let user = getUser(email) else { return }
-            guard let followed = getFollowedByDiveMeetsID(diveMeetsID) else { return }
-            
-            addFollowedToUser(user, followed)
-        }
-    }
+//    private func updateFollowed(diveMeetsID: String) {
+//        if let info = parser.profileData.info {
+//            addFollowedByDiveMeetsID(info.first, info.last, diveMeetsID)
+//            guard let (email, _) = getStoredCredentials() else { return }
+//            guard let user = getUser(email) else { return }
+//            guard let followed = getFollowedByDiveMeetsID(diveMeetsID) else { return }
+//            
+//            addFollowedToUser(user, followed)
+//        }
+//    }
     
     private func isFollowedByUser(diveMeetsID: String, user: User) -> Bool {
         for followed in user.followedArray {
@@ -150,26 +145,26 @@ struct ProfileView: View {
                                             .foregroundColor(starred
                                                              ? Color.yellow
                                                              : Color.primary)
-                                            .onTapGesture {
-                                                withAnimation {
-                                                    starred.toggle()
-                                                    if starred {
-                                                        updateFollowed(diveMeetsID: diverId)
-                                                    } else {
-                                                        // Gets logged in user
-                                                        guard let (email, _) =
-                                                                getStoredCredentials() else {
-                                                            return
-                                                        }
-                                                        guard let user = getUser(email) else {
-                                                            return
-                                                        }
-                                                        guard let followed = getFollowedByDiveMeetsID(diverId)
-                                                        else { return }
-                                                        dropFollowedFromUser(user, followed)
-                                                    }
-                                                }
-                                            }
+//                                            .onTapGesture {
+//                                                withAnimation {
+//                                                    starred.toggle()
+//                                                    if starred {
+//                                                        updateFollowed(diveMeetsID: diverId)
+//                                                    } else {
+//                                                        // Gets logged in user
+//                                                        guard let (email, _) =
+//                                                                getStoredCredentials() else {
+//                                                            return
+//                                                        }
+//                                                        guard let user = getUser(email) else {
+//                                                            return
+//                                                        }
+//                                                        guard let followed = getFollowedByDiveMeetsID(diverId)
+//                                                        else { return }
+//                                                        dropFollowedFromUser(user, followed)
+//                                                    }
+//                                                }
+//                                            }
                                     }
                                     Divider()
                                     HStack (alignment: .firstTextBaseline) {
@@ -442,16 +437,16 @@ struct ProfileView: View {
                 }
                 
                 // Gets logged in user
-                guard let (email, _) = getStoredCredentials() else { return }
-                guard let user = getUser(email) else { return }
+//                guard let (email, _) = getStoredCredentials() else { return }
+//                guard let user = getUser(email) else { return }
                 
                 // Checks user's followed divers and if this profile is followed by logged in user
                 guard let info = parser.profileData.info else { return }
-                if isFollowedByUser(diveMeetsID: info.diverId, user: user) {
-                    starred = true
-                } else {
-                    starred = false
-                }
+//                if isFollowedByUser(diveMeetsID: info.diverId, user: user) {
+//                    starred = true
+//                } else {
+//                    starred = false
+//                }
                 coachDiversData = parser.profileData.coachDivers
             }
         }
