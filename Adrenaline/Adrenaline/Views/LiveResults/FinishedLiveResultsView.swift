@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftSoup
+import Amplify
 
 struct FinishedLiveResultsView: View {
     @Environment(\.dismiss) private var dismiss
@@ -43,7 +44,8 @@ struct FinishedLiveResultsView: View {
                         .padding()
                         .multilineTextAlignment(.center)
                     Divider()
-                    ScalingScrollView(records: elements, bgColor: .clear, rowSpacing: 50, shadowRadius: 3) { (elem) in
+                    ScalingScrollView(records: elements, bgColor: .clear, rowSpacing: 50, 
+                                      shadowRadius: 3) { (elem) in
                         LivePersonBubbleView(elements: elem)
                     }
                     .padding(.bottom, maxHeightOffset)
@@ -99,6 +101,8 @@ struct FinishedLiveResultsView: View {
 struct LivePersonBubbleView: View {
     @Environment(\.colorScheme) var currentMode
     var elements: [String]
+    @State private var diverNewUser: NewUser? = nil
+    @State private var synchroNewUser: NewUser? = nil
     
     // place, first, last, link, team, score, scoreLink, eventAvgScore, avgRoundScore
     // (synchroFirst, synchroLast, synchroLink, synchroTeam)
@@ -112,7 +116,16 @@ struct LivePersonBubbleView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     HStack(alignment: .firstTextBaseline) {
-                        NavigationLink(destination: ProfileView(profileLink: elements[3])) {
+                        if let diver = diverNewUser {
+                            NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+                                VStack(alignment: .leading) {
+                                    Text(elements[1])
+                                    Text(elements[2])
+                                }
+                                .scaledToFit()
+                                .dynamicTypeSize(.xSmall ... .xLarge)
+                            }
+                        } else {
                             VStack(alignment: .leading) {
                                 Text(elements[1])
                                 Text(elements[2])
@@ -123,7 +136,16 @@ struct LivePersonBubbleView: View {
                         
                         if isSynchro {
                             Text("/")
-                            NavigationLink(destination: ProfileView(profileLink: elements[11])) {
+                            if let diver = synchroNewUser {
+                                NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+                                    VStack(alignment: .leading) {
+                                        Text(elements[9])
+                                        Text(elements[10])
+                                    }
+                                    .scaledToFit()
+                                    .dynamicTypeSize(.xSmall ... .xLarge)
+                                }
+                            } else {
                                 VStack(alignment: .leading) {
                                     Text(elements[9])
                                     Text(elements[10])
@@ -177,6 +199,25 @@ struct LivePersonBubbleView: View {
                 }
             }
             .padding(20)
+            .onAppear {
+                Task {
+                    guard let diveMeetsId = elements[3].split(separator: "=").last else { return }
+                    let pred = NewUser.keys.diveMeetsID == String(diveMeetsId)
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        diverNewUser = users[0]
+                    }
+                    
+                    if isSynchro {
+                        guard let diveMeetsId = elements[11].split(separator: "=").last else { return }
+                        let pred = NewUser.keys.diveMeetsID == String(diveMeetsId)
+                        let users = await queryAWSUsers(where: pred)
+                        if users.count == 1 {
+                            synchroNewUser = users[0]
+                        }
+                    }
+                }
+            }
         }
     }
 }
