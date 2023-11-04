@@ -45,11 +45,10 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   accountType: String!
   athlete: NewAthlete @hasOne
   coach: CoachUser @hasOne
-  followed: [NewFollowed!]! @manyToMany(relationName: "NewUserNewFollowed")
-  MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byNewUser", fields: ["id"])
   posts: [Post] @hasMany(indexName: "byNewUser", fields: ["id"])
   tokens: [Tokens] @hasMany(indexName: "byNewUser", fields: ["id"])
   savedPosts: [UserSavedPost] @hasMany(indexName: "byNewUser", fields: ["id"])
+  favoritesIds: [String!]!
 }
 
 type NewAthlete @model @auth(rules: [{allow: private}]) {
@@ -85,12 +84,6 @@ type CoachUser @model @auth(rules: [{allow: private}]) {
   id: ID!
   user: NewUser @belongsTo
   team: NewTeam @belongsTo
-}
-
-type NewFollowed @model @auth(rules: [{allow: private}]) {
-  id: ID!
-  email: AWSEmail!
-  users: [NewUser!]! @manyToMany(relationName: "NewUserNewFollowed")
 }
 
 type NewTeam @model @auth(rules: [{allow: private}]) {

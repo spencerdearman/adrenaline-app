@@ -623,16 +623,6 @@ query GetNewUser($id: ID!) {
       coachUserTeamId
       __typename
     }
-    followed {
-      nextToken
-      startedAt
-      __typename
-    }
-    MessageNewUsers {
-      nextToken
-      startedAt
-      __typename
-    }
     posts {
       nextToken
       startedAt
@@ -648,6 +638,7 @@ query GetNewUser($id: ID!) {
       startedAt
       __typename
     }
+    favoritesIds
     createdAt
     updatedAt
     _version
@@ -673,6 +664,7 @@ query ListNewUsers(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -708,6 +700,7 @@ query SyncNewUsers(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -734,6 +727,7 @@ query GetNewAthlete($id: ID!) {
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -1072,6 +1066,7 @@ query GetCoachUser($id: ID!) {
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -1147,74 +1142,6 @@ query SyncCoachUsers(
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query GetNewFollowed($id: ID!) {
-  getNewFollowed(id: $id) {
-    id
-    email
-    users {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-query ListNewFolloweds(
-  $filter: ModelNewFollowedFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listNewFolloweds(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query SyncNewFolloweds(
-  $filter: ModelNewFollowedFilterInput
-  $limit: Int
-  $nextToken: String
-  $lastSync: AWSTimestamp
-) {
-  syncNewFolloweds(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    lastSync: $lastSync
-  ) {
-    items {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
     nextToken
@@ -1977,165 +1904,6 @@ query SyncMessages(
       id
       body
       creationDate
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query GetNewUserNewFollowed($id: ID!) {
-  getNewUserNewFollowed(id: $id) {
-    id
-    newUserId
-    newFollowedId
-    newUser {
-      id
-      firstName
-      lastName
-      email
-      phone
-      diveMeetsID
-      accountType
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newUserAthleteId
-      newUserCoachId
-      __typename
-    }
-    newFollowed {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-query ListNewUserNewFolloweds(
-  $filter: ModelNewUserNewFollowedFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listNewUserNewFolloweds(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      newUserId
-      newFollowedId
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query SyncNewUserNewFolloweds(
-  $filter: ModelNewUserNewFollowedFilterInput
-  $limit: Int
-  $nextToken: String
-  $lastSync: AWSTimestamp
-) {
-  syncNewUserNewFolloweds(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    lastSync: $lastSync
-  ) {
-    items {
-      id
-      newUserId
-      newFollowedId
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query NewUserNewFollowedsByNewUserId(
-  $newUserId: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelNewUserNewFollowedFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  newUserNewFollowedsByNewUserId(
-    newUserId: $newUserId
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      newUserId
-      newFollowedId
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    nextToken
-    startedAt
-    __typename
-  }
-}
-
-query NewUserNewFollowedsByNewFollowedId(
-  $newFollowedId: ID!
-  $sortDirection: ModelSortDirection
-  $filter: ModelNewUserNewFollowedFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  newUserNewFollowedsByNewFollowedId(
-    newFollowedId: $newFollowedId
-    sortDirection: $sortDirection
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-  ) {
-    items {
-      id
-      newUserId
-      newFollowedId
       createdAt
       updatedAt
       _version

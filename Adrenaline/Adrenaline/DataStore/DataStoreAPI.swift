@@ -51,22 +51,6 @@ func saveToDataStore<M: Model>(object: M) async throws -> M {
     return savedObject
 }
 
-func saveFollowed(followed: NewFollowed) async throws -> NewFollowed {
-    let result: [NewFollowed] = try await query(where: NewFollowed.keys.email == followed.email)
-    
-    if result.count == 0 {
-        print("Saving new followed")
-        return try await saveToDataStore(object: followed)
-    }
-    else if result.count == 1 {
-        print("Returning existing followed")
-        return result[0]
-    }
-    else {
-        throw NSError()
-    }
-}
-
 func updateUserField(email: String, key: String, value: Any) async throws {
     let users: [NewUser] = try await query(where: NewUser.keys.email == email)
     print(users)
@@ -88,8 +72,8 @@ func updateUserField(email: String, key: String, value: Any) async throws {
             case "diveMeetsId":
                 updatedUser.diveMeetsID = value as? String
                 break
-            case "followed":
-                updatedUser.followed = value as? List<NewUserNewFollowed>
+            case "favoritesIds":
+                updatedUser.favoritesIds = value as? [String] ?? []
                 break
             default:
                 print("Invalid key in NewUser")

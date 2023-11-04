@@ -169,6 +169,7 @@ struct PersonalInfoView: View {
     @State private var athlete: NewAthlete? = nil
     @State var selectedCollege: String = ""
     @State private var starred: Bool = false
+    @State private var currentUser: NewUser? = nil
     @AppStorage("authUserId") private var authUserId: String = ""
     @ScaledMetric private var collegeIconPaddingScaled: CGFloat = -8.0
     @ScaledMetric private var bubbleHeightScaled: CGFloat = 85
@@ -235,10 +236,26 @@ struct PersonalInfoView: View {
                                                      ? Color.yellow
                                                      : Color.primary)
                                     .onTapGesture {
-                                        withAnimation {
-                                            starred.toggle()
+                                        Task {
+                                            withAnimation {
+                                                starred.toggle()
+                                            }
+                                            
+                                            if let currentUser = currentUser {
+                                                // If current user just favorited the profile,
+                                                if starred {
+                                                    print("Starred, following...")
+                                                    await follow(follower: currentUser,
+                                                                 followingId: user.id)
+                                                } else {
+                                                    print("Unstarred, unfollowing...")
+                                                    await unfollow(follower: currentUser,
+                                                                   unfollowingId: user.id)
+                                                }
+                                            }
                                         }
                                     }
+                                
                             }
                         }
                         if user.accountType != "Spectator" {
@@ -275,11 +292,24 @@ struct PersonalInfoView: View {
         }
         .dynamicTypeSize(.xSmall ... .xxLarge)
         .onAppear {
-            if user.accountType == "Athlete" {
-                Task {
+            Task {
+                if user.accountType == "Athlete" {
                     let athletes = await queryAWSAthletes().filter { $0.user.id == user.id }
                     if athletes.count == 1 {
                         athlete = athletes[0]
+                    }
+                }
+                
+                // Get current user for favoriting
+                let pred = NewUser.keys.id == authUserId
+                let users = await queryAWSUsers(where: pred)
+                if users.count == 1 {
+                    currentUser = users[0]
+                }
+                
+                if let currentUser = currentUser, currentUser.favoritesIds.contains(user.id) {
+                    withAnimation {
+                        starred = true
                     }
                 }
             }

@@ -359,16 +359,6 @@ mutation CreateNewUser(
       coachUserTeamId
       __typename
     }
-    followed {
-      nextToken
-      startedAt
-      __typename
-    }
-    MessageNewUsers {
-      nextToken
-      startedAt
-      __typename
-    }
     posts {
       nextToken
       startedAt
@@ -384,6 +374,7 @@ mutation CreateNewUser(
       startedAt
       __typename
     }
+    favoritesIds
     createdAt
     updatedAt
     _version
@@ -442,16 +433,6 @@ mutation UpdateNewUser(
       coachUserTeamId
       __typename
     }
-    followed {
-      nextToken
-      startedAt
-      __typename
-    }
-    MessageNewUsers {
-      nextToken
-      startedAt
-      __typename
-    }
     posts {
       nextToken
       startedAt
@@ -467,6 +448,7 @@ mutation UpdateNewUser(
       startedAt
       __typename
     }
+    favoritesIds
     createdAt
     updatedAt
     _version
@@ -525,16 +507,6 @@ mutation DeleteNewUser(
       coachUserTeamId
       __typename
     }
-    followed {
-      nextToken
-      startedAt
-      __typename
-    }
-    MessageNewUsers {
-      nextToken
-      startedAt
-      __typename
-    }
     posts {
       nextToken
       startedAt
@@ -550,6 +522,7 @@ mutation DeleteNewUser(
       startedAt
       __typename
     }
+    favoritesIds
     createdAt
     updatedAt
     _version
@@ -575,6 +548,7 @@ mutation CreateNewAthlete(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -649,6 +623,7 @@ mutation UpdateNewAthlete(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -723,6 +698,7 @@ mutation DeleteNewAthlete(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -851,6 +827,7 @@ mutation CreateCoachUser(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -896,6 +873,7 @@ mutation UpdateCoachUser(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -941,6 +919,7 @@ mutation DeleteCoachUser(
       phone
       diveMeetsID
       accountType
+      favoritesIds
       createdAt
       updatedAt
       _version
@@ -968,69 +947,6 @@ mutation DeleteCoachUser(
     _lastChangedAt
     coachUserUserId
     coachUserTeamId
-    __typename
-  }
-}
-
-mutation CreateNewFollowed(
-  $input: CreateNewFollowedInput!
-  $condition: ModelNewFollowedConditionInput
-) {
-  createNewFollowed(input: $input, condition: $condition) {
-    id
-    email
-    users {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation UpdateNewFollowed(
-  $input: UpdateNewFollowedInput!
-  $condition: ModelNewFollowedConditionInput
-) {
-  updateNewFollowed(input: $input, condition: $condition) {
-    id
-    email
-    users {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation DeleteNewFollowed(
-  $input: DeleteNewFollowedInput!
-  $condition: ModelNewFollowedConditionInput
-) {
-  deleteNewFollowed(input: $input, condition: $condition) {
-    id
-    email
-    users {
-      nextToken
-      startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
     __typename
   }
 }
@@ -1777,138 +1693,6 @@ mutation DeleteMessage(
     MessageNewUsers {
       nextToken
       startedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation CreateNewUserNewFollowed(
-  $input: CreateNewUserNewFollowedInput!
-  $condition: ModelNewUserNewFollowedConditionInput
-) {
-  createNewUserNewFollowed(input: $input, condition: $condition) {
-    id
-    newUserId
-    newFollowedId
-    newUser {
-      id
-      firstName
-      lastName
-      email
-      phone
-      diveMeetsID
-      accountType
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newUserAthleteId
-      newUserCoachId
-      __typename
-    }
-    newFollowed {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation UpdateNewUserNewFollowed(
-  $input: UpdateNewUserNewFollowedInput!
-  $condition: ModelNewUserNewFollowedConditionInput
-) {
-  updateNewUserNewFollowed(input: $input, condition: $condition) {
-    id
-    newUserId
-    newFollowedId
-    newUser {
-      id
-      firstName
-      lastName
-      email
-      phone
-      diveMeetsID
-      accountType
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newUserAthleteId
-      newUserCoachId
-      __typename
-    }
-    newFollowed {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-mutation DeleteNewUserNewFollowed(
-  $input: DeleteNewUserNewFollowedInput!
-  $condition: ModelNewUserNewFollowedConditionInput
-) {
-  deleteNewUserNewFollowed(input: $input, condition: $condition) {
-    id
-    newUserId
-    newFollowedId
-    newUser {
-      id
-      firstName
-      lastName
-      email
-      phone
-      diveMeetsID
-      accountType
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      newUserAthleteId
-      newUserCoachId
-      __typename
-    }
-    newFollowed {
-      id
-      email
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
       __typename
     }
     createdAt

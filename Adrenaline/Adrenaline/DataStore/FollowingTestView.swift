@@ -9,9 +9,12 @@ import SwiftUI
 import Amplify
 
 struct FollowingTestView: View {
-    @State var logan = NewUser(firstName: "Logan", lastName: "Sherwin", email: "lsherwin10@gmail.com", accountType: "Athlete")
-    @State var spencer = NewUser(firstName: "Spencer", lastName: "Dearman", email: "dearmanspencer@gmail.com", accountType: "Athlete")
-    @State var andrew = NewUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com", accountType: "Athlete")
+    @State var logan = NewUser(firstName: "Logan", lastName: "Sherwin", 
+                               email: "lsherwin10@gmail.com", accountType: "Athlete")
+    @State var spencer = NewUser(firstName: "Spencer", lastName: "Dearman",
+                                 email: "dearmanspencer@gmail.com", accountType: "Athlete")
+    @State var andrew = NewUser(firstName: "Andrew", lastName: "Chen", email: "achen@gmail.com",
+                                accountType: "Athlete")
     
     var body: some View {
         VStack {
@@ -20,32 +23,27 @@ struct FollowingTestView: View {
                     .onTapGesture {
                         Task {
                             do {
-                                if let followed = logan.followed {
-                                    try await followed.fetch()
-                                    print(followed.elements)
-                                } else {
-                                    print([String]())
-                                }
+                                print(logan.favoritesIds)
                             }
                         }
                     }
                 Button(action: {
                     Task {
-                        await unfollow(follower: spencer, unfollowingEmail: "lsherwin10@gmail.com")
+                        await unfollow(follower: spencer, unfollowingId: logan.id)
                     }
                 }) {
                     Image(systemName: "delete.left")
                 }
                 Button(action: {
                     Task {
-                        await follow(follower: spencer, followingEmail: "lsherwin10@gmail.com")
+                        await follow(follower: spencer, followingId: logan.id)
                     }
                 }) {
                     Image(systemName: "arrow.left")
                 }
                 Button(action: {
                     Task {
-                        await follow(follower: logan, followingEmail: "dearmanspencer@gmail.com")
+                        await follow(follower: logan, followingId: spencer.id)
                     }
                 }) {
                     Image(systemName: "arrow.right")
@@ -53,7 +51,7 @@ struct FollowingTestView: View {
                 Button(action: {
                     Task {
                         await unfollow(follower: logan,
-                                       unfollowingEmail: "dearmanspencer@gmail.com")
+                                       unfollowingId: spencer.id)
                     }
                 }) {
                     Image(systemName: "delete.right")
@@ -62,12 +60,7 @@ struct FollowingTestView: View {
                     .onTapGesture {
                         Task {
                             do {
-                                if let followed = spencer.followed {
-                                    try await followed.fetch()
-                                    print(followed.elements)
-                                } else {
-                                    print([String]())
-                                }
+                                print(spencer.favoritesIds)
                             }
                         }
                     }
@@ -76,14 +69,14 @@ struct FollowingTestView: View {
                 Text("Logan")
                 Button(action: {
                     Task {
-                        await follow(follower: andrew, followingEmail: "lsherwin10@gmail.com")
+                        await follow(follower: andrew, followingId: logan.id)
                     }
                 }) {
                     Image(systemName: "arrow.left")
                 }
                 Button(action: {
                     Task {
-                        await follow(follower: logan, followingEmail: "achen@gmail.com")
+                        await follow(follower: logan, followingId: andrew.id)
                     }
                 }) {
                     Image(systemName: "arrow.right")
@@ -94,14 +87,14 @@ struct FollowingTestView: View {
                 Text("Spencer")
                 Button(action: {
                     Task {
-                        await follow(follower: andrew, followingEmail: "dearmanspencer@gmail.com")
+                        await follow(follower: andrew, followingId: spencer.id)
                     }
                 }) {
                     Image(systemName: "arrow.left")
                 }
                 Button(action: {
                     Task {
-                        await follow(follower: spencer, followingEmail: "achen@gmail.com")
+                        await follow(follower: spencer, followingId: andrew.id)
                     }
                 }) {
                     Image(systemName: "arrow.right")
