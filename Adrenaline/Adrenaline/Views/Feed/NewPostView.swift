@@ -281,7 +281,7 @@ struct NewPostView: View {
                             .frame(height: 48)
                             .foregroundColor(currentMode == .light ? .white : .secondary)
                             .background(Rectangle()
-                                .foregroundStyle(Color.gray))
+                                .foregroundStyle(containsMedia ? Custom.medBlue : Color.gray))
                             .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                     }
                     .disabled(buttonPressed)
