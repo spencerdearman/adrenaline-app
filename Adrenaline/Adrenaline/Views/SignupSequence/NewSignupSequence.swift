@@ -149,13 +149,18 @@ struct NewSignupSequence: View {
     }
     
     private func createNewUser() -> NewUser {
+        let tokensList: [String]
+        if let userToken = UserDefaults.standard.string(forKey: "userToken") {
+            tokensList = [userToken]
+        } else { tokensList = [] }
         return NewUser(id: authUserId, firstName: firstName,
                        lastName: lastName, email: email,
                        phone: phone == ""
                        ? nil
                        : removePhoneFormatting(string: phone),
                        diveMeetsID: diveMeetsID,
-                       accountType: accountType)
+                       accountType: accountType,
+                       tokens: tokensList)
     }
     
     var body: some View {
