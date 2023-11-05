@@ -21,6 +21,7 @@ struct Chat: View {
     @Namespace var namespace
     @State var feedModel: FeedModel = FeedModel()
     @State var users: [NewUser] = []
+    @State private var lastUserOrder: [NewUser]? = nil
     @State var currentUser: NewUser?
     @State private var selection: Int = 0
     @State var appear = [false, false, false]
@@ -186,10 +187,18 @@ struct Chat: View {
                 let allUsersPredicate = NewUser.keys.id != currentUser?.id
                 let allUsers = await queryAWSUsers(where: allUsersPredicate)
                 if allUsers.count >= 1 {
-                    users = allUsers
+                    if let lastOrder = lastUserOrder {
+                        let extras = Set(allUsers).subtracting(Set(users))
+                        users = Array(extras) + lastOrder
+                    } else {
+                        users = allUsers
+                    }
                 }
                 observeNewMessages()
             }
+        }
+        .onDisappear {
+            lastUserOrder = users
         }
     }
     
