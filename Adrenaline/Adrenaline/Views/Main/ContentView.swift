@@ -46,25 +46,43 @@ struct ContentView: View {
         hasHomeButton ? 0 : 20
     }
     
-    // Retries getting current user's DiveMeets ID four times in case the user's
-    // NewUser hasn't appeared in the DataStore yet.
+    private func getCurrentUser() async -> NewUser? {
+        let idPredicate = NewUser.keys.id == authUserId
+        let users = await queryAWSUsers(where: idPredicate)
+        if users.count == 1 {
+            return users[0]
+        } else {
+            print("Failed to get NewUser")
+        }
+        
+        return nil
+    }
+    
+    // Retries getting the current user five times in case the user's
+    // NewUser hasn't appeared in the DataStore yet. It then gets the user's diveMeetsID and adds
+    // the current device to its list of tokens if not already added.
     //
     // This only seems to require retries on a fresh app launch, since the NewUser table should
     // never be missing their current user in subsequent app launches.
-    func getCurrentUserDiveMeetsID(numAttempts: Int = 0) async {
-        if numAttempts == 4 { return }
+    private func getDataStoreData(numAttempts: Int = 0) async {
+        if numAttempts == 5 { return }
         do {
             // Waits with exponential backoff to give DataStore time to update
             try await Task.sleep(seconds: pow(Double(numAttempts), 2))
+            guard let user = await getCurrentUser() else {
+                print("Failed attempt \(numAttempts + 1) getting DataStore data, retrying...")
+                return await getDataStoreData(numAttempts: numAttempts + 1)
+            }
             
-            let idPredicate = NewUser.keys.id == authUserId
-            let users = await queryAWSUsers(where: idPredicate)
-            if users.count == 1 {
-                newUser = users[0]
-                diveMeetsID = newUser?.diveMeetsID ?? ""
-            } else {
-                print("Failed attempt \(numAttempts + 1) getting DiveMeetsID, retrying...")
-                await getCurrentUserDiveMeetsID(numAttempts: numAttempts + 1)
+            newUser = user
+            diveMeetsID = user.diveMeetsID ?? ""
+            
+            // Adds device token to user's list of tokens for push notifications
+            guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
+            if !user.tokens.contains(token) {
+                user.tokens.append(token)
+                print("Tokens:", user.tokens)
+                newUser = try await saveToDataStore(object: user)
             }
         } catch {
             print("Sleep failed")
@@ -141,7 +159,7 @@ struct ContentView: View {
                         })
                         .onAppear {
                             Task {
-                                await getCurrentUserDiveMeetsID()
+                                await getDataStoreData()
                             }
                         }
                         .ignoresSafeArea(.keyboard)
