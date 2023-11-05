@@ -188,7 +188,6 @@ struct CircularView: View {
     
     var body: some View {
         ZStack {
-            
             //Static
             if showBackgroundCircle {
                 Circle()

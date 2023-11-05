@@ -299,7 +299,6 @@ struct Chat: View {
                             $0.0.creationDate < $1.0.creationDate
                         })
                     }
-                    newMessages = updatedConversations
                     
                     // Sorts all conversations in reverse chronological order by last sent message
                     let sorted = sortOrder.map { ($0.key, $0.value) }.sorted {
@@ -324,6 +323,11 @@ struct Chat: View {
                     withAnimation {
                         users = reorderedUsers
                     }
+
+                    // Assignment needs to follow user sorting in order for message ring to
+                    // appear with the correct MessageRow
+                    newMessages = updatedConversations
+                    
                 }
             } catch {
                 print("Error observing new messages: \(error)")
