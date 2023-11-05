@@ -56,51 +56,6 @@ private struct IsIndexingMeetsKey: EnvironmentKey {
     static let defaultValue: Bool = false
 }
 
-private struct GetMaleAthletesKey: EnvironmentKey {
-    static let defaultValue: () -> [Athlete]? = { return nil }
-}
-
-private struct GetFemaleAthletesKey: EnvironmentKey {
-    static let defaultValue: () -> [Athlete]? = { return nil }
-}
-
-private struct GetUserKey: EnvironmentKey {
-    static let defaultValue: (String) -> User? = { _ in return nil }
-}
-
-private struct GetUsersKey: EnvironmentKey {
-    static let defaultValue: (String?, String?) -> [User]? = { _, _ in return nil }
-}
-
-private struct GetAthleteKey: EnvironmentKey {
-    static let defaultValue: (String) -> Athlete? = { _ in return nil }
-}
-
-private struct AddUserKey: EnvironmentKey {
-    static let defaultValue: (String, String, String, String?, String, String) -> () = {
-        _, _, _, _, _, _ in }
-}
-
-private struct AddAthleteKey: EnvironmentKey {
-    static let defaultValue: (String, String, String, String?, String) -> () = { _, _, _, _, _ in }
-}
-
-private struct UpdateUserFieldKey: EnvironmentKey {
-    static let defaultValue: (String, String, Any?) -> () = { _, _, _ in }
-}
-
-private struct DropUserKey: EnvironmentKey {
-    static let defaultValue: (String) -> () =  { _ in }
-}
-
-private struct UpdateAthleteFieldKey: EnvironmentKey {
-    static let defaultValue: (String, String, Any?) -> () = { _, _, _ in }
-}
-
-private struct UpdateAthleteSkillRatingKey: EnvironmentKey {
-    static let defaultValue: (String, Double?, Double?) -> () = { _, _, _ in }
-}
-
 private struct DictToTupleKey: EnvironmentKey {
     static let defaultValue: (MeetDict) -> [MeetRecord] = { _ in [] }
 }
@@ -115,38 +70,6 @@ private struct NetworkIsConnectedKey: EnvironmentKey {
 
 private struct NetworkIsCellularKey: EnvironmentKey {
     static let defaultValue: Bool = false
-}
-
-private struct AddFollowedByDiveMeetsIDKey: EnvironmentKey {
-    static let defaultValue: (String, String, String) -> () = { _, _, _ in }
-}
-
-private struct AddFollowedByEmailKey: EnvironmentKey {
-    static let defaultValue: (String, String, String) -> () = { _, _, _ in }
-}
-
-private struct GetFollowedByDiveMeetsIDKey: EnvironmentKey {
-    static let defaultValue: (String) -> Followed? = { _ in return nil }
-}
-
-private struct GetFollowedByEmailKey: EnvironmentKey {
-    static let defaultValue: (String) -> Followed? = { _ in return nil }
-}
-
-private struct DropFollowedByDiveMeetsIDKey: EnvironmentKey {
-    static let defaultValue: (String) -> () = { _ in }
-}
-
-private struct DropFollowedByEmailKey: EnvironmentKey {
-    static let defaultValue: (String) -> () = { _ in }
-}
-
-private struct AddFollowedToUserKey: EnvironmentKey {
-    static let defaultValue: (User, Followed) -> () = { _, _ in }
-}
-
-private struct DropFollowedFromUserKey: EnvironmentKey {
-    static let defaultValue: (User, Followed) -> () = { _, _ in }
 }
 
 private struct NewUsersKey: EnvironmentKey {
@@ -216,61 +139,6 @@ extension EnvironmentValues {
         set { self[IsIndexingMeetsKey.self] = newValue }
     }
     
-    var getMaleAthletes: () -> [Athlete]? {
-        get { self[GetMaleAthletesKey.self] }
-        set { self[GetMaleAthletesKey.self] = newValue }
-    }
-    
-    var getFemaleAthletes: () -> [Athlete]? {
-        get { self[GetFemaleAthletesKey.self] }
-        set { self[GetFemaleAthletesKey.self] = newValue }
-    }
-    
-    var getUser: (String) -> User? {
-        get { self[GetUserKey.self] }
-        set { self[GetUserKey.self] = newValue }
-    }
-    
-    var getUsers: (String?, String?) -> [User]? {
-        get { self[GetUsersKey.self] }
-        set { self[GetUsersKey.self] = newValue }
-    }
-    
-    var getAthlete: (String) -> Athlete? {
-        get { self[GetAthleteKey.self] }
-        set { self[GetAthleteKey.self] = newValue }
-    }
-    
-    var addUser: (String, String, String, String?, String, String) -> () {
-        get { self[AddUserKey.self] }
-        set { self[AddUserKey.self] = newValue }
-    }
-    
-    var addAthlete: (String, String, String, String?, String) -> () {
-        get { self[AddAthleteKey.self] }
-        set { self[AddAthleteKey.self] = newValue }
-    }
-    
-    var updateUserField: (String, String, Any?) -> () {
-        get { self[UpdateUserFieldKey.self] }
-        set { self[UpdateUserFieldKey.self] = newValue }
-    }
-    
-    var dropUser: (String) -> () {
-        get { self[DropUserKey.self] }
-        set { self[DropUserKey.self] = newValue }
-    }
-    
-    var updateAthleteField: (String, String, Any?) -> () {
-        get { self[UpdateAthleteFieldKey.self] }
-        set { self[UpdateAthleteFieldKey.self] = newValue }
-    }
-    
-    var updateAthleteSkillRating: (String, Double?, Double?) -> () {
-        get { self[UpdateAthleteSkillRatingKey.self] }
-        set { self[UpdateAthleteSkillRatingKey.self] = newValue }
-    }
-    
     var dictToTuple: (MeetDict) -> [MeetRecord] {
         get { self[DictToTupleKey.self] }
         set { self[DictToTupleKey.self] = newValue }
@@ -289,46 +157,6 @@ extension EnvironmentValues {
     var networkIsCellular: Bool {
         get { self[NetworkIsCellularKey.self] }
         set { self[NetworkIsCellularKey.self] = newValue }
-    }
-    
-    var addFollowedByDiveMeetsID: (String, String, String) -> () {
-        get { self[AddFollowedByDiveMeetsIDKey.self] }
-        set { self[AddFollowedByDiveMeetsIDKey.self] = newValue }
-    }
-    
-    var addFollowedByEmail: (String, String, String) -> () {
-        get { self[AddFollowedByEmailKey.self] }
-        set { self[AddFollowedByEmailKey.self] = newValue }
-    }
-    
-    var getFollowedByDiveMeetsID: (String) -> Followed? {
-        get { self[GetFollowedByDiveMeetsIDKey.self] }
-        set { self[GetFollowedByDiveMeetsIDKey.self] = newValue }
-    }
-    
-    var getFollowedByEmail: (String) -> Followed? {
-        get { self[GetFollowedByEmailKey.self] }
-        set { self[GetFollowedByEmailKey.self] = newValue }
-    }
-    
-    var dropFollowedByDiveMeetsID: (String) -> () {
-        get { self[DropFollowedByDiveMeetsIDKey.self] }
-        set { self[DropFollowedByDiveMeetsIDKey.self] = newValue }
-    }
-    
-    var dropFollowedByEmail: (String) -> () {
-        get { self[DropFollowedByEmailKey.self] }
-        set { self[DropFollowedByEmailKey.self] = newValue }
-    }
-    
-    var addFollowedToUser: (User, Followed) -> () {
-        get { self[AddFollowedToUserKey.self] }
-        set { self[AddFollowedToUserKey.self] = newValue }
-    }
-    
-    var dropFollowedFromUser: (User, Followed) -> () {
-        get { self[DropFollowedFromUserKey.self] }
-        set { self[DropFollowedFromUserKey.self] = newValue }
     }
     
     var newUsers: [NewUser] {
@@ -400,29 +228,10 @@ struct AdrenalineApp: App {
                 .environment(\.totalMeetsParsedCount, meetParser.totalMeetsParsedCount)
                 .environment(\.isFinishedCounting, meetParser.isFinishedCounting)
                 .environment(\.isIndexingMeets, isIndexingMeets)
-                .environment(\.getMaleAthletes, modelDataController.getMaleAthletes)
-                .environment(\.getFemaleAthletes, modelDataController.getFemaleAthletes)
-                .environment(\.getUser, modelDataController.getUser)
-                .environment(\.getUsers, modelDataController.getUsers)
-                .environment(\.getAthlete, modelDataController.getAthlete)
-                .environment(\.addUser, modelDataController.addUser)
-                .environment(\.addAthlete, modelDataController.addAthlete)
-                .environment(\.updateUserField, modelDataController.updateUserField)
-                .environment(\.dropUser, modelDataController.dropUser)
-                .environment(\.updateAthleteField, modelDataController.updateAthleteField)
-                .environment(\.updateAthleteSkillRating, modelDataController.updateAthleteSkillRating)
                 .environment(\.dictToTuple, modelDataController.dictToTuple)
                 .environment(\.validatePassword, modelDataController.validatePassword)
                 .environment(\.networkIsConnected, networkMonitor.isConnected)
                 .environment(\.networkIsCellular, networkMonitor.isCellular)
-                .environment(\.addFollowedByDiveMeetsID, modelDataController.addFollowedByDiveMeetsID)
-                .environment(\.addFollowedByEmail, modelDataController.addFollowedByEmail)
-                .environment(\.getFollowedByDiveMeetsID, modelDataController.getFollowedByDiveMeetsID)
-                .environment(\.getFollowedByEmail, modelDataController.getFollowedByEmail)
-                .environment(\.dropFollowedByDiveMeetsID, modelDataController.dropFollowedByDiveMeetsID)
-                .environment(\.dropFollowedByEmail, modelDataController.dropFollowedByEmail)
-                .environment(\.addFollowedToUser, modelDataController.addFollowedToUser)
-                .environment(\.dropFollowedFromUser, modelDataController.dropFollowedFromUser)
                 .onChange(of: appLogic.dataStoreReady) {
                     print(appLogic.dataStoreReady
                           ? "DataStore ready"

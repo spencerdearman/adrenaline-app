@@ -133,36 +133,12 @@ class AppLogic: ObservableObject {
     // Other functions for authentication, sign in, sign out, etc.
     
     @MainActor
-    private func queryData() async {
+    func observeSearchData() async {
         // load data at start of app when user signed in
-        if self.users.isEmpty {
-            let pred = NewUser.keys.accountType != "Spectator"
-            self.users = await queryAWSUsers(where: pred)
-        }
-        
-        if self.meets.isEmpty {
-            do {
-                self.meets = try await query()
-            } catch {
-                print("Failed to query meets")
-            }
-        }
-        
-        if self.teams.isEmpty {
-            do {
-                self.teams = try await query()
-            } catch {
-                print("Failed to query teams")
-            }
-        }
-        
-        if self.colleges.isEmpty {
-            do {
-                self.colleges = try await query()
-            } catch {
-                print("Failed to query colleges")
-            }
-        }
+        observeUsers()
+        observeMeets()
+        observeTeams()
+        observeColleges()
     }
     
     // Changing the internal state, this triggers an UI update on the main thread
@@ -176,7 +152,7 @@ class AppLogic: ObservableObject {
             return
         }
         
-        await queryData()
+        await observeSearchData()
     }
     
     // Sign in with Cognito web user interface
@@ -224,5 +200,75 @@ class AppLogic: ObservableObject {
         let options = AuthSignOutRequest.Options(globalSignOut: true)
         let _ = await Amplify.Auth.signOut(options: options)
         print("Signed Out")
+    }
+}
+
+extension AppLogic {
+    func observeUsers() {
+        let userSubscription = Amplify.DataStore.observeQuery(for: NewUser.self)
+
+        Task {
+            do {
+                for try await snapshot in userSubscription {
+                    await MainActor.run {
+                        self.users = snapshot.items.filter { $0.accountType != "Spectator" }
+                        print("updated users")
+                    }
+                }
+            } catch {
+                print("\(error)")
+            }
+        }
+    }
+    
+    func observeMeets() {
+        let meetSubscription = Amplify.DataStore.observeQuery(for: NewMeet.self)
+        
+        Task {
+            do {
+                for try await snapshot in meetSubscription {
+                    await MainActor.run {
+                        self.meets = snapshot.items
+                        print("updated meets")
+                    }
+                }
+            } catch {
+                print("\(error)")
+            }
+        }
+    }
+    
+    func observeTeams() {
+        let teamSubscription = Amplify.DataStore.observeQuery(for: NewTeam.self)
+        
+        Task {
+            do {
+                for try await snapshot in teamSubscription {
+                    await MainActor.run {
+                        self.teams = snapshot.items
+                        print("updated teams")
+                    }
+                }
+            } catch {
+                print("\(error)")
+            }
+        }
+    }
+    
+    func observeColleges() {
+        let collegeSubscription = Amplify.DataStore.observeQuery(for: College.self)
+        
+        Task {
+            do {
+                for try await snapshot in collegeSubscription {
+                    await MainActor.run {
+                        self.colleges = snapshot.items
+                        print("updated colleges")
+                    }
+                }
+            } catch {
+                print("\(error)")
+            }
+        }
     }
 }

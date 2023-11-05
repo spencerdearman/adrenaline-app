@@ -751,6 +751,25 @@ struct NewSignupSequence: View {
             guard let user = savedUser else { return }
             print("Printing the saved User: \(user)")
             
+            var springboard: Double? = nil
+            var platform: Double? = nil
+            var total: Double? = nil
+            
+            if let diveMeetsId = user.diveMeetsID {
+                let parser = ProfileParser()
+                if await !parser.parseProfile(diveMeetsID: diveMeetsId) {
+                    return
+                }
+                
+                if let stats = parser.profileData.diveStatistics {
+                    let skillRating = SkillRating()
+                    
+                    (springboard, platform, total) =
+                    await skillRating.getSkillRating(diveMeetsID: diveMeetsId)
+                    print("Ratings:", springboard, platform, total)
+                }
+            }
+            
             // Create the athlete item using the saved user, team, and college
             let athlete = NewAthlete(
                 user: user,
@@ -762,7 +781,10 @@ struct NewSignupSequence: View {
                 age: age,
                 graduationYear: gradYear,
                 highSchool: highSchool,
-                hometown: hometown)
+                hometown: hometown,
+                springboardRating: springboard,
+                platformRating: platform,
+                totalRating: total)
             
             // Save the athlete item
             let savedItem = try await Amplify.DataStore.save(athlete)

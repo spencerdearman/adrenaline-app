@@ -11,7 +11,7 @@ final class SkillRating {
     let diveStatistics: ProfileDiveStatisticsData
     let diveTableData: [String: DiveData]? = getDiveTableData()
     
-    init(diveStatistics: ProfileDiveStatisticsData?) {
+    init(diveStatistics: ProfileDiveStatisticsData? = nil) {
         if let diveStatistics = diveStatistics {
             self.diveStatistics = diveStatistics
         } else {
@@ -20,7 +20,7 @@ final class SkillRating {
     }
     
     // Separates ProfileDiveStatisticsData into three sets separated by event (1M, 3M, Platform)
-    func getDiverStatsByEvent() -> ([DiveStatistic], [DiveStatistic], [DiveStatistic]) {
+    private func getDiverStatsByEvent() -> ([DiveStatistic], [DiveStatistic], [DiveStatistic]) {
         var oneDives: [DiveStatistic] = []
         var threeDives: [DiveStatistic] = []
         var platformDives: [DiveStatistic] = []
@@ -38,6 +38,7 @@ final class SkillRating {
         return (oneDives, threeDives, platformDives)
     }
     
+    // Used by SkillGraph to compute the stats by category of a given diver
     func getDiverStatsByCategory() -> [Int: [DiveStatistic]] {
         var result: [Int: [DiveStatistic]] = [:]
         
@@ -54,17 +55,17 @@ final class SkillRating {
     }
     
     // Computes average score times DD for a given dive
-    func computeSkillValue(_ dive: DiveStatistic) -> Double {
+    private func computeSkillValue(_ dive: DiveStatistic) -> Double {
         return dive.avgScore * (getDiveDD(data: diveTableData ?? [:], forKey: dive.number,
                                           height: dive.height) ?? 0.0)
     }
     
-    func isSameDiveNumber(a: DiveStatistic, b: DiveStatistic?) -> Bool {
+    private func isSameDiveNumber(a: DiveStatistic, b: DiveStatistic?) -> Bool {
         if let b = b, a.number.dropLast() == b.number.dropLast() { return true }
         return false
     }
     
-    func getBestDive(dive: DiveStatistic, stored: DiveStatistic?) -> DiveStatistic? {
+    private func getBestDive(dive: DiveStatistic, stored: DiveStatistic?) -> DiveStatistic? {
         if let s = stored {
             let diveValue = computeSkillValue(dive)
             let curValue = computeSkillValue(s)
@@ -82,7 +83,7 @@ final class SkillRating {
     
     // Gets top six dives from given set of statistics
     // Note: set of dives should be passed in after filtering by event
-    func getTopDives(dives: [DiveStatistic]) -> [DiveStatistic] {
+    private func getTopDives(dives: [DiveStatistic]) -> [DiveStatistic] {
         var front: DiveStatistic?
         var back: DiveStatistic?
         var reverse: DiveStatistic?
@@ -262,11 +263,11 @@ final class SkillRating {
         return result
     }
     
-    func invertedNumberOfTimes(num: Int) -> Double {
+    private func invertedNumberOfTimes(num: Int) -> Double {
         return 1.01 - (1.0 / Double(num))
     }
     
-    func computeMetric1(dives: [DiveStatistic]) -> Double {
+    private func computeMetric1(dives: [DiveStatistic]) -> Double {
         var sum: Double = 0
         
         for dive in dives {
@@ -280,11 +281,25 @@ final class SkillRating {
     }
     
     // Returns a triple of springboard rating, platform rating, and total rating
-    func getSkillRating(link: String,
+//    private func getSkillRating(link: String,
+//                        metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
+//        let p = ProfileParser()
+//        
+//        let _ = await p.parseProfile(link: link)
+//        guard let stats = p.profileData.diveStatistics else {
+//            print("Failed getting stats")
+//            return (0.0, 0.0, 0.0)
+//        }
+//        
+//        return await getSkillRating(stats: stats, metric: metric)
+//    }
+    
+    // Returns a triple of springboard rating, platform rating, and total rating
+    func getSkillRating(diveMeetsID: String,
                         metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
         let p = ProfileParser()
         
-        let _ = await p.parseProfile(link: link)
+        let _ = await p.parseProfile(diveMeetsID: diveMeetsID)
         guard let stats = p.profileData.diveStatistics else {
             print("Failed getting stats")
             return (0.0, 0.0, 0.0)
@@ -293,7 +308,23 @@ final class SkillRating {
         return await getSkillRating(stats: stats, metric: metric)
     }
     
-    func getSkillRating(stats: ProfileDiveStatisticsData,
+    // Returns a triple of springboard rating, platform rating, and total rating using the default
+    // computeMetric1 function
+    // Note: This recomputes the diver statistics each time since this theoretically would be called
+    // after an update from a meet
+    func getSkillRating(diveMeetsID: String) async -> (Double?, Double?, Double?) {
+        let p = ProfileParser()
+        
+        let _ = await p.parseProfile(diveMeetsID: diveMeetsID)
+        guard let stats = p.profileData.diveStatistics else {
+            print("Failed getting stats")
+            return (nil, nil, nil)
+        }
+        
+        return await getSkillRating(stats: stats, metric: computeMetric1)
+    }
+    
+    private func getSkillRating(stats: ProfileDiveStatisticsData,
                         metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
         let skill = SkillRating(diveStatistics: stats)
         let divesByEvent = skill.getDiverStatsByEvent()
@@ -341,22 +372,22 @@ final class SkillRating {
         let metrics: [([DiveStatistic]) -> Double] = [computeMetric1]
         
         let pairs: [(String, String)] = [
-            ("Tyler Downs", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36256"),
-            ("Logan", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=56961"),
-            ("Holden", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=45186"),
-            ("Spencer", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=51197"),
-            ("Andrew", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=36825"),
-            ("Tim", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=50923"),
-            ("Skylar", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=53397"),
-            ("Trevor", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=63091"),
-            ("David Boudia", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=11408"),
-            ("Josh Parquet", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=37447"),
-            ("Dylan Reed", "https://secure.meetcontrol.com/divemeets/system/profile.php?number=43209"),
+            ("Tyler Downs", "36256"),
+            ("Logan", "56961"),
+            ("Holden", "45186"),
+            ("Spencer", "51197"),
+            ("Andrew", "36825"),
+            ("Tim", "50923"),
+            ("Skylar", "53397"),
+            ("Trevor", "63091"),
+            ("David Boudia", "11408"),
+            ("Josh Parquet", "37447"),
+            ("Dylan Reed", "43209"),
         ]
         
         var ratings: [Double] = []
-        for (name, link) in pairs {
-            let (springboard, platform, total) = await getSkillRating(link: link,
+        for (name, diveMeetsID) in pairs {
+            let (springboard, platform, total) = await getSkillRating(diveMeetsID: diveMeetsID,
                                                                       metric: metrics[index])
             let rating: Double
             if onlyPlatform {

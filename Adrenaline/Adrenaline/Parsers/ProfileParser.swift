@@ -618,17 +618,3 @@ final class ProfileParser: ObservableObject {
             diveMeetsID)
     }
 }
-
-//struct NewProfileParserView: View {
-//    let p: ProfileParser = ProfileParser()
-//    //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=12882"
-//    //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=101707"
-//    //    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=13605"
-//    let profileLink: String = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=44388"
-//
-//    var body: some View {
-//        NavigationView {
-//            ProfileView(profileLink: profileLink)
-//        }
-//    }
-//}
