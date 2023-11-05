@@ -4,12 +4,6 @@ type UserSavedPost @model @auth(rules: [{allow: private}]) {
   postID: ID! @index(name: "byPost")
 }
 
-type Tokens @model @auth(rules: [{allow: private}]) {
-  id: ID!
-  token: String!
-  newuserID: ID! @index(name: "byNewUser")
-}
-
 type Post @model @auth(rules: [{allow: private}]) {
   id: ID!
   caption: String
@@ -46,9 +40,10 @@ type NewUser @model @auth(rules: [{allow: private}]) {
   athlete: NewAthlete @hasOne
   coach: CoachUser @hasOne
   posts: [Post] @hasMany(indexName: "byNewUser", fields: ["id"])
-  tokens: [Tokens] @hasMany(indexName: "byNewUser", fields: ["id"])
+  tokens: [String!]!
   savedPosts: [UserSavedPost] @hasMany(indexName: "byNewUser", fields: ["id"])
   favoritesIds: [String!]!
+}
 
 type NewAthlete @model @auth(rules: [{allow: private}]) {
   id: ID!

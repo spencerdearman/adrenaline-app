@@ -6,11 +6,10 @@ import Foundation
 
 final public class AmplifyModels: AmplifyModelRegistration {
     
-  public let version: String = "a6b3f83401ac97a1253fa5f8b6935a66"
+  public let version: String = "afbd3c58a318abe3167fdb2fcefad90a"
   
   public func registerModels(registry: ModelRegistry.Type) {
     ModelRegistry.register(modelType: UserSavedPost.self)
-    ModelRegistry.register(modelType: Tokens.self)
     ModelRegistry.register(modelType: Post.self)
     ModelRegistry.register(modelType: NewImage.self)
     ModelRegistry.register(modelType: MessageNewUser.self)

@@ -52,7 +52,7 @@ extension NewUser {
       .hasOne(newUser.athlete, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.user, targetNames: ["newUserAthleteId"]),
       .hasOne(newUser.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.user, targetNames: ["newUserCoachId"]),
       .hasMany(newUser.posts, is: .optional, ofType: Post.self, associatedWith: Post.keys.newuserID),
-      .hasMany(newUser.tokens, is: .optional, ofType: Tokens.self, associatedWith: Tokens.keys.newuserID),
+      .field(newUser.tokens, is: .required, ofType: .embeddedCollection(of: String.self)),
       .hasMany(newUser.savedPosts, is: .optional, ofType: UserSavedPost.self, associatedWith: UserSavedPost.keys.newuserID),
       .field(newUser.favoritesIds, is: .required, ofType: .embeddedCollection(of: String.self)),
       .field(newUser.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),

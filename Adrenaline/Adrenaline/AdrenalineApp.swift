@@ -207,6 +207,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             do {
                 try await Amplify.Notifications.Push.registerDevice(apnsToken: deviceToken)
                 let apnsToken = deviceToken.map { String(format: "%02x", $0) }.joined()
+                UserDefaults.standard.set(apnsToken, forKey: "userToken")
                 print(apnsToken)
                 print("Registered with Pinpoint.")
             } catch {

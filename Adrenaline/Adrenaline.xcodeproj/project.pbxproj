@@ -10,8 +10,6 @@
 		0006B39B2AE35A89009863D7 /* BufferVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B39A2AE35A89009863D7 /* BufferVideoPlayerView.swift */; };
 		0006B39E2AE35B46009863D7 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B39D2AE35B46009863D7 /* VideoPlayerViewModel.swift */; };
 		0006B3A12AE35C12009863D7 /* VideoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B3A02AE35C12009863D7 /* VideoItem.swift */; };
-		0006B3A42AE39C72009863D7 /* Tokens+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */; };
-		0006B3A52AE39C72009863D7 /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B3A32AE39C72009863D7 /* Tokens.swift */; };
 		000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE892A94481D006393B7 /* HideTabBarGesture.swift */; };
 		000AAE8C2A9448A8006393B7 /* HideTabBarScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */; };
 		000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DC29E0EF9100B184E9 /* LiveResults.swift */; };
@@ -172,8 +170,6 @@
 		4DB80A5F2AE2FA68000DD1FC /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A5E2AE2FA68000DD1FC /* AWSCognitoAuthPlugin */; };
 		4DB80A612AE2FA68000DD1FC /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A602AE2FA68000DD1FC /* AWSDataStorePlugin */; };
 		4DB80A632AE2FA68000DD1FC /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A622AE2FA68000DD1FC /* AWSLocationGeoPlugin */; };
-		4DB80A662AE41326000DD1FC /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB80A642AE41325000DD1FC /* Tokens.swift */; };
-		4DB80A672AE41326000DD1FC /* Tokens+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB80A652AE41325000DD1FC /* Tokens+Schema.swift */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
 		4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD868EC29F0E69C00FF988D /* keychain-swift.swift */; };
 		4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD880B82A76103D008F69F2 /* CoachProfile.swift */; };
@@ -194,8 +190,6 @@
 		0006B39A2AE35A89009863D7 /* BufferVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferVideoPlayerView.swift; sourceTree = "<group>"; };
 		0006B39D2AE35B46009863D7 /* VideoPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewModel.swift; sourceTree = "<group>"; };
 		0006B3A02AE35C12009863D7 /* VideoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoItem.swift; sourceTree = "<group>"; };
-		0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tokens+Schema.swift"; sourceTree = "<group>"; };
-		0006B3A32AE39C72009863D7 /* Tokens.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
 		000AAE892A94481D006393B7 /* HideTabBarGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarGesture.swift; sourceTree = "<group>"; };
 		000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarScrollView.swift; sourceTree = "<group>"; };
 		000D28DC29E0EF9100B184E9 /* LiveResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResults.swift; sourceTree = "<group>"; };
@@ -338,8 +332,6 @@
 		4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MessageNewUser+Schema.swift"; sourceTree = "<group>"; };
 		4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineProfileView.swift; sourceTree = "<group>"; };
 		4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundBubbleGenerator.swift; sourceTree = "<group>"; };
-		4DB80A642AE41325000DD1FC /* Tokens.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
-		4DB80A652AE41325000DD1FC /* Tokens+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tokens+Schema.swift"; sourceTree = "<group>"; };
 		4DC2DAF12A422193008CCE5A /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		4DC7ACEC29F38828008BBB62 /* Adrenaline.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Adrenaline.entitlements; sourceTree = "<group>"; };
 		4DD868EC29F0E69C00FF988D /* keychain-swift.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "keychain-swift.swift"; sourceTree = "<group>"; };
@@ -763,8 +755,6 @@
 				4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */,
 				4DA482CF2AA98BE8003DFA3B /* NewAthlete.swift */,
 				4DA482C72AA98BE8003DFA3B /* NewAthlete+Schema.swift */,
-				4DB80A642AE41325000DD1FC /* Tokens.swift */,
-				4DB80A652AE41325000DD1FC /* Tokens+Schema.swift */,
 				4DA482D72AA98BE8003DFA3B /* NewEvent.swift */,
 				4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */,
 				005057532ABFB11D000B082D /* NewImage.swift */,
@@ -777,8 +767,6 @@
 				4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */,
 				0050574D2ABFB037000B082D /* Post.swift */,
 				0050574C2ABFB037000B082D /* Post+Schema.swift */,
-				0006B3A32AE39C72009863D7 /* Tokens.swift */,
-				0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */,
 				00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */,
 				006BDEA22AE5DAAE009D384E /* UserSavedPost+Schema.swift */,
 				0050AE8A2AABA4A600697021 /* Video.swift */,
@@ -937,7 +925,6 @@
 				4D50E7962A293DEC009BFBFA /* DiveStatisticsParser.swift in Sources */,
 				4D8B9C1929F8D395002B53AD /* Home.swift in Sources */,
 				4D5220862A49D6EB00D59408 /* ExpandingBubbleView.swift in Sources */,
-				4DB80A662AE41326000DD1FC /* Tokens.swift in Sources */,
 				4DA482E82AA98BE8003DFA3B /* Message.swift in Sources */,
 				4DA482E52AA98BE8003DFA3B /* NewMeet+Schema.swift in Sources */,
 				4D13F3BD2A999F930081823D /* SettingsPage.swift in Sources */,
@@ -951,7 +938,6 @@
 				0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */,
 				00ADF50A2A93304800C85C7F /* DataStoreAPI.swift in Sources */,
 				000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */,
-				4DB80A672AE41326000DD1FC /* Tokens+Schema.swift in Sources */,
 				4D1A31C32A97006500128F81 /* MeetItem.swift in Sources */,
 				4D74FEC029AEBD6F00401178 /* MeetList.swift in Sources */,
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
@@ -999,7 +985,6 @@
 				00287E3D2AF4A56200470767 /* FavoritesView.swift in Sources */,
 				4DA482E42AA98BE8003DFA3B /* NewAthlete+Schema.swift in Sources */,
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
-				0006B3A42AE39C72009863D7 /* Tokens+Schema.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
 				4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
@@ -1029,7 +1014,6 @@
 				00B5BB0C2AA0E8A000E587B5 /* FollowingAPI.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
 				4DA482DC2AA98BE8003DFA3B /* NewEvent+Schema.swift in Sources */,
-				0006B3A52AE39C72009863D7 /* Tokens.swift in Sources */,
 				00759D0F2AEB7EB40079BCCB /* UserSavedPost.swift in Sources */,
 				4DA482EA2AA98BE8003DFA3B /* JudgeScore.swift in Sources */,
 				4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */,
