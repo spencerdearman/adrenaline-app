@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-public class NewUser: Model, Identifiable {
+public class NewUser: Model, Hashable, Identifiable {
   public let id: String
   public var firstName: String
   public var lastName: String
@@ -20,6 +20,14 @@ public class NewUser: Model, Identifiable {
   public var updatedAt: Temporal.DateTime?
   public var newUserAthleteId: String?
   public var newUserCoachId: String?
+    
+  public static func == (lhs: NewUser, rhs: NewUser) -> Bool {
+      lhs.id == rhs.id
+  }
+
+  public func hash(into hasher: inout Hasher) {
+      hasher.combine(id)
+  }
   
   public convenience init(id: String = UUID().uuidString,
       firstName: String,

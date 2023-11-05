@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ProfileRow: View {
     var user: NewUser
     @Binding var newMessages: Set<String>
@@ -16,17 +14,32 @@ struct ProfileRow: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            Image("defaultImage")
-                .resizable()
-                .frame(width: 36, height: 36)
-                .mask(Circle())
-                .padding(12)
-                .background(Color(UIColor.systemBackground).opacity(0.3))
-                .mask(Circle())
-                .onChange(of: newMessages) {
-                    newMessagesBool = newMessages.contains(user.id)
-                }
-                .overlay(CircularView(value: 100, newMessage: $newMessagesBool))
+            AnyView(
+                user.diveMeetsID != nil
+                ? AnyView(AsyncImage(url: URL(string: "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(user.diveMeetsID!).jpg?&x=511121484"),
+                                     transaction: .init(animation: .easeOut)) { phase in
+                                         switch phase {
+                                             case .empty:
+                                                 Color.white
+                                             case .success(let image):
+                                                 image.resizable()
+                                             case .failure(_):
+                                                 Color.gray
+                                             @unknown default:
+                                                 Color.gray
+                                         }
+                                     })
+                : AnyView(Image("defaultImage").resizable())
+            )
+            .frame(width: 36, height: 36)
+            .mask(Circle())
+            .padding(12)
+            .background(Color(UIColor.systemBackground).opacity(0.3))
+            .mask(Circle())
+            .onChange(of: newMessages) {
+                newMessagesBool = newMessages.contains(user.id)
+            }
+            .overlay(CircularView(value: 100, newMessage: $newMessagesBool))
             VStack(alignment: .leading, spacing: 8) {
                 Text(user.accountType)
                     .font(.caption.weight(.medium))
