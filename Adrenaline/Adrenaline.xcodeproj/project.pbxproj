@@ -10,8 +10,6 @@
 		0006B39B2AE35A89009863D7 /* BufferVideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B39A2AE35A89009863D7 /* BufferVideoPlayerView.swift */; };
 		0006B39E2AE35B46009863D7 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B39D2AE35B46009863D7 /* VideoPlayerViewModel.swift */; };
 		0006B3A12AE35C12009863D7 /* VideoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B3A02AE35C12009863D7 /* VideoItem.swift */; };
-		0006B3A42AE39C72009863D7 /* Tokens+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */; };
-		0006B3A52AE39C72009863D7 /* Tokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0006B3A32AE39C72009863D7 /* Tokens.swift */; };
 		000AAE8A2A94481D006393B7 /* HideTabBarGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE892A94481D006393B7 /* HideTabBarGesture.swift */; };
 		000AAE8C2A9448A8006393B7 /* HideTabBarScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */; };
 		000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DC29E0EF9100B184E9 /* LiveResults.swift */; };
@@ -155,6 +153,23 @@
 		4DA482F82AA98BE8003DFA3B /* MessageNewUser+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482DB2AA98BE8003DFA3B /* MessageNewUser+Schema.swift */; };
 		4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */; };
 		4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB1DC7B2A671B910016EE14 /* BackgroundBubbleGenerator.swift */; };
+		4DB80A432AE2F96E000DD1FC /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A422AE2F96E000DD1FC /* AWSAPIPlugin */; };
+		4DB80A452AE2F96E000DD1FC /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A442AE2F96E000DD1FC /* AWSCloudWatchLoggingPlugin */; };
+		4DB80A472AE2F96E000DD1FC /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A462AE2F96E000DD1FC /* AWSCognitoAuthPlugin */; };
+		4DB80A492AE2F96E000DD1FC /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A482AE2F96E000DD1FC /* AWSDataStorePlugin */; };
+		4DB80A4B2AE2F96E000DD1FC /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A4A2AE2F96E000DD1FC /* AWSLocationGeoPlugin */; };
+		4DB80A4D2AE2F96E000DD1FC /* AWSPinpointAnalyticsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A4C2AE2F96E000DD1FC /* AWSPinpointAnalyticsPlugin */; };
+		4DB80A4F2AE2F96E000DD1FC /* AWSPinpointPushNotificationsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A4E2AE2F96E000DD1FC /* AWSPinpointPushNotificationsPlugin */; };
+		4DB80A512AE2F96E000DD1FC /* AWSPluginsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A502AE2F96E000DD1FC /* AWSPluginsCore */; };
+		4DB80A532AE2F96E000DD1FC /* AWSPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A522AE2F96E000DD1FC /* AWSPredictionsPlugin */; };
+		4DB80A552AE2F96E000DD1FC /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A542AE2F96E000DD1FC /* AWSS3StoragePlugin */; };
+		4DB80A572AE2F96E000DD1FC /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A562AE2F96E000DD1FC /* Amplify */; };
+		4DB80A592AE2F96E000DD1FC /* CoreMLPredictionsPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A582AE2F96E000DD1FC /* CoreMLPredictionsPlugin */; };
+		4DB80A5B2AE2FA68000DD1FC /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A5A2AE2FA68000DD1FC /* AWSAPIPlugin */; };
+		4DB80A5D2AE2FA68000DD1FC /* AWSCloudWatchLoggingPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A5C2AE2FA68000DD1FC /* AWSCloudWatchLoggingPlugin */; };
+		4DB80A5F2AE2FA68000DD1FC /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A5E2AE2FA68000DD1FC /* AWSCognitoAuthPlugin */; };
+		4DB80A612AE2FA68000DD1FC /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A602AE2FA68000DD1FC /* AWSDataStorePlugin */; };
+		4DB80A632AE2FA68000DD1FC /* AWSLocationGeoPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = 4DB80A622AE2FA68000DD1FC /* AWSLocationGeoPlugin */; };
 		4DC2DAF22A422193008CCE5A /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC2DAF12A422193008CCE5A /* Colors.swift */; };
 		4DD868ED29F0E69C00FF988D /* keychain-swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD868EC29F0E69C00FF988D /* keychain-swift.swift */; };
 		4DD880B92A76103D008F69F2 /* CoachProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD880B82A76103D008F69F2 /* CoachProfile.swift */; };
@@ -175,8 +190,6 @@
 		0006B39A2AE35A89009863D7 /* BufferVideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferVideoPlayerView.swift; sourceTree = "<group>"; };
 		0006B39D2AE35B46009863D7 /* VideoPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewModel.swift; sourceTree = "<group>"; };
 		0006B3A02AE35C12009863D7 /* VideoItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoItem.swift; sourceTree = "<group>"; };
-		0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tokens+Schema.swift"; sourceTree = "<group>"; };
-		0006B3A32AE39C72009863D7 /* Tokens.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokens.swift; sourceTree = "<group>"; };
 		000AAE892A94481D006393B7 /* HideTabBarGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarGesture.swift; sourceTree = "<group>"; };
 		000AAE8B2A9448A8006393B7 /* HideTabBarScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideTabBarScrollView.swift; sourceTree = "<group>"; };
 		000D28DC29E0EF9100B184E9 /* LiveResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResults.swift; sourceTree = "<group>"; };
@@ -335,15 +348,32 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DB80A592AE2F96E000DD1FC /* CoreMLPredictionsPlugin in Frameworks */,
 				4D13F3C42A9D563F0081823D /* Authenticator in Frameworks */,
 				4DF9F7FE2A85E3730049CCD3 /* AWSAPIPlugin in Frameworks */,
+				4DB80A612AE2FA68000DD1FC /* AWSDataStorePlugin in Frameworks */,
+				4DB80A5F2AE2FA68000DD1FC /* AWSCognitoAuthPlugin in Frameworks */,
 				4DF9F8062A85E3730049CCD3 /* Amplify in Frameworks */,
 				0034B5D42AECFCEC00A2D7A1 /* CachedAsyncImage in Frameworks */,
+				4DB80A492AE2F96E000DD1FC /* AWSDataStorePlugin in Frameworks */,
+				4DB80A512AE2F96E000DD1FC /* AWSPluginsCore in Frameworks */,
+				4DB80A532AE2F96E000DD1FC /* AWSPredictionsPlugin in Frameworks */,
 				4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */,
 				4D76438C2A70F733000F35CB /* SwiftUIGIF in Frameworks */,
+				4DB80A632AE2FA68000DD1FC /* AWSLocationGeoPlugin in Frameworks */,
+				4DB80A5B2AE2FA68000DD1FC /* AWSAPIPlugin in Frameworks */,
+				4DB80A452AE2F96E000DD1FC /* AWSCloudWatchLoggingPlugin in Frameworks */,
+				4DB80A5D2AE2FA68000DD1FC /* AWSCloudWatchLoggingPlugin in Frameworks */,
+				4DB80A4F2AE2F96E000DD1FC /* AWSPinpointPushNotificationsPlugin in Frameworks */,
 				4DF9F8022A85E3730049CCD3 /* AWSDataStorePlugin in Frameworks */,
+				4DB80A572AE2F96E000DD1FC /* Amplify in Frameworks */,
+				4DB80A4B2AE2F96E000DD1FC /* AWSLocationGeoPlugin in Frameworks */,
+				4DB80A432AE2F96E000DD1FC /* AWSAPIPlugin in Frameworks */,
 				4DF9F8002A85E3730049CCD3 /* AWSCognitoAuthPlugin in Frameworks */,
+				4DB80A472AE2F96E000DD1FC /* AWSCognitoAuthPlugin in Frameworks */,
 				4DF9F8042A85E3730049CCD3 /* AWSS3StoragePlugin in Frameworks */,
+				4DB80A4D2AE2F96E000DD1FC /* AWSPinpointAnalyticsPlugin in Frameworks */,
+				4DB80A552AE2F96E000DD1FC /* AWSS3StoragePlugin in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -737,8 +767,6 @@
 				4DA482C32AA98BE8003DFA3B /* NewUser+Schema.swift */,
 				0050574D2ABFB037000B082D /* Post.swift */,
 				0050574C2ABFB037000B082D /* Post+Schema.swift */,
-				0006B3A32AE39C72009863D7 /* Tokens.swift */,
-				0006B3A22AE39C72009863D7 /* Tokens+Schema.swift */,
 				00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */,
 				006BDEA22AE5DAAE009D384E /* UserSavedPost+Schema.swift */,
 				0050AE8A2AABA4A600697021 /* Video.swift */,
@@ -796,6 +824,23 @@
 				4DF9F8052A85E3730049CCD3 /* Amplify */,
 				4D13F3C32A9D563F0081823D /* Authenticator */,
 				0034B5D32AECFCEC00A2D7A1 /* CachedAsyncImage */,
+				4DB80A422AE2F96E000DD1FC /* AWSAPIPlugin */,
+				4DB80A442AE2F96E000DD1FC /* AWSCloudWatchLoggingPlugin */,
+				4DB80A462AE2F96E000DD1FC /* AWSCognitoAuthPlugin */,
+				4DB80A482AE2F96E000DD1FC /* AWSDataStorePlugin */,
+				4DB80A4A2AE2F96E000DD1FC /* AWSLocationGeoPlugin */,
+				4DB80A4C2AE2F96E000DD1FC /* AWSPinpointAnalyticsPlugin */,
+				4DB80A4E2AE2F96E000DD1FC /* AWSPinpointPushNotificationsPlugin */,
+				4DB80A502AE2F96E000DD1FC /* AWSPluginsCore */,
+				4DB80A522AE2F96E000DD1FC /* AWSPredictionsPlugin */,
+				4DB80A542AE2F96E000DD1FC /* AWSS3StoragePlugin */,
+				4DB80A562AE2F96E000DD1FC /* Amplify */,
+				4DB80A582AE2F96E000DD1FC /* CoreMLPredictionsPlugin */,
+				4DB80A5A2AE2FA68000DD1FC /* AWSAPIPlugin */,
+				4DB80A5C2AE2FA68000DD1FC /* AWSCloudWatchLoggingPlugin */,
+				4DB80A5E2AE2FA68000DD1FC /* AWSCognitoAuthPlugin */,
+				4DB80A602AE2FA68000DD1FC /* AWSDataStorePlugin */,
+				4DB80A622AE2FA68000DD1FC /* AWSLocationGeoPlugin */,
 			);
 			productName = DiveMeets;
 			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
@@ -940,7 +985,6 @@
 				00287E3D2AF4A56200470767 /* FavoritesView.swift in Sources */,
 				4DA482E42AA98BE8003DFA3B /* NewAthlete+Schema.swift in Sources */,
 				4D74FEA529AE7C2B00401178 /* ProfileImage.swift in Sources */,
-				0006B3A42AE39C72009863D7 /* Tokens+Schema.swift in Sources */,
 				0040A6BD2A5BC945004C84BF /* FinishedLiveResultsParser.swift in Sources */,
 				4D1A31B72A96BBDC00128F81 /* SearchButton.swift in Sources */,
 				009F41BF2A6ADD8100348C68 /* ModelDataController.swift in Sources */,
@@ -970,7 +1014,6 @@
 				00B5BB0C2AA0E8A000E587B5 /* FollowingAPI.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
 				4DA482DC2AA98BE8003DFA3B /* NewEvent+Schema.swift in Sources */,
-				0006B3A52AE39C72009863D7 /* Tokens.swift in Sources */,
 				00759D0F2AEB7EB40079BCCB /* UserSavedPost.swift in Sources */,
 				4DA482EA2AA98BE8003DFA3B /* JudgeScore.swift in Sources */,
 				4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */,
@@ -1282,6 +1325,91 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */;
 			productName = SwiftUIGIF;
+		};
+		4DB80A422AE2F96E000DD1FC /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSAPIPlugin;
+		};
+		4DB80A442AE2F96E000DD1FC /* AWSCloudWatchLoggingPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSCloudWatchLoggingPlugin;
+		};
+		4DB80A462AE2F96E000DD1FC /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSCognitoAuthPlugin;
+		};
+		4DB80A482AE2F96E000DD1FC /* AWSDataStorePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSDataStorePlugin;
+		};
+		4DB80A4A2AE2F96E000DD1FC /* AWSLocationGeoPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSLocationGeoPlugin;
+		};
+		4DB80A4C2AE2F96E000DD1FC /* AWSPinpointAnalyticsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSPinpointAnalyticsPlugin;
+		};
+		4DB80A4E2AE2F96E000DD1FC /* AWSPinpointPushNotificationsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSPinpointPushNotificationsPlugin;
+		};
+		4DB80A502AE2F96E000DD1FC /* AWSPluginsCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSPluginsCore;
+		};
+		4DB80A522AE2F96E000DD1FC /* AWSPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSPredictionsPlugin;
+		};
+		4DB80A542AE2F96E000DD1FC /* AWSS3StoragePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSS3StoragePlugin;
+		};
+		4DB80A562AE2F96E000DD1FC /* Amplify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = Amplify;
+		};
+		4DB80A582AE2F96E000DD1FC /* CoreMLPredictionsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = CoreMLPredictionsPlugin;
+		};
+		4DB80A5A2AE2FA68000DD1FC /* AWSAPIPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSAPIPlugin;
+		};
+		4DB80A5C2AE2FA68000DD1FC /* AWSCloudWatchLoggingPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSCloudWatchLoggingPlugin;
+		};
+		4DB80A5E2AE2FA68000DD1FC /* AWSCognitoAuthPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSCognitoAuthPlugin;
+		};
+		4DB80A602AE2FA68000DD1FC /* AWSDataStorePlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSDataStorePlugin;
+		};
+		4DB80A622AE2FA68000DD1FC /* AWSLocationGeoPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */;
+			productName = AWSLocationGeoPlugin;
 		};
 		4DEF7D3529BEE796003EAD70 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;

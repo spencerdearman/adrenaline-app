@@ -48,48 +48,6 @@ subscription OnDeleteUserSavedPost(
   }
 }
 
-subscription OnCreateTokens($filter: ModelSubscriptionTokensFilterInput) {
-  onCreateTokens(filter: $filter) {
-    id
-    token
-    newuserID
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-subscription OnUpdateTokens($filter: ModelSubscriptionTokensFilterInput) {
-  onUpdateTokens(filter: $filter) {
-    id
-    token
-    newuserID
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
-subscription OnDeleteTokens($filter: ModelSubscriptionTokensFilterInput) {
-  onDeleteTokens(filter: $filter) {
-    id
-    token
-    newuserID
-    createdAt
-    updatedAt
-    _version
-    _deleted
-    _lastChangedAt
-    __typename
-  }
-}
-
 subscription OnCreatePost($filter: ModelSubscriptionPostFilterInput) {
   onCreatePost(filter: $filter) {
     id
@@ -328,11 +286,7 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
-    tokens {
-      nextToken
-      startedAt
-      __typename
-    }
+    tokens
     savedPosts {
       nextToken
       startedAt
@@ -399,11 +353,7 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
-    tokens {
-      nextToken
-      startedAt
-      __typename
-    }
+    tokens
     savedPosts {
       nextToken
       startedAt
@@ -470,11 +420,7 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       startedAt
       __typename
     }
-    tokens {
-      nextToken
-      startedAt
-      __typename
-    }
+    tokens
     savedPosts {
       nextToken
       startedAt
@@ -505,6 +451,7 @@ subscription OnCreateNewAthlete(
       phone
       diveMeetsID
       accountType
+      tokens
       favoritesIds
       createdAt
       updatedAt
@@ -579,6 +526,7 @@ subscription OnUpdateNewAthlete(
       phone
       diveMeetsID
       accountType
+      tokens
       favoritesIds
       createdAt
       updatedAt
@@ -653,6 +601,7 @@ subscription OnDeleteNewAthlete(
       phone
       diveMeetsID
       accountType
+      tokens
       favoritesIds
       createdAt
       updatedAt
@@ -770,6 +719,7 @@ subscription OnCreateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       phone
       diveMeetsID
       accountType
+      tokens
       favoritesIds
       createdAt
       updatedAt
@@ -813,6 +763,7 @@ subscription OnUpdateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       phone
       diveMeetsID
       accountType
+      tokens
       favoritesIds
       createdAt
       updatedAt
@@ -856,6 +807,7 @@ subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       phone
       diveMeetsID
       accountType
+      tokens
       favoritesIds
       createdAt
       updatedAt

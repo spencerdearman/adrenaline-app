@@ -13,7 +13,7 @@ public class NewUser: Model, Hashable, Identifiable {
   public var athlete: NewAthlete?
   public var coach: CoachUser?
   public var posts: List<Post>?
-  public var tokens: List<Tokens>?
+  public var tokens: [String]
   public var savedPosts: List<UserSavedPost>?
   public var favoritesIds: [String]
   public var createdAt: Temporal.DateTime?
@@ -39,7 +39,7 @@ public class NewUser: Model, Hashable, Identifiable {
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       posts: List<Post>? = [],
-      tokens: List<Tokens>? = [],
+      tokens: [String] = [],
       savedPosts: List<UserSavedPost>? = [],
       favoritesIds: [String] = [],
       newUserAthleteId: String? = nil,
@@ -72,7 +72,7 @@ public class NewUser: Model, Hashable, Identifiable {
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       posts: List<Post>? = [],
-      tokens: List<Tokens>? = [],
+      tokens: [String] = [],
       savedPosts: List<UserSavedPost>? = [],
       favoritesIds: [String] = [],
       createdAt: Temporal.DateTime? = nil,

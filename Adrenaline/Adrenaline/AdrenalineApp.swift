@@ -93,7 +93,7 @@ extension EnvironmentValues {
         get { self[ModelDB.self] }
         set { self[ModelDB.self] = newValue }
     }
-
+    
     var authenticated: Bool {
         get { self[AuthenticatedKey.self] }
         set { self[AuthenticatedKey.self] = newValue }
@@ -168,12 +168,12 @@ extension EnvironmentValues {
         get { self[NewMeetsKey.self] }
         set { self[NewMeetsKey.self] = newValue }
     }
-
+    
     var newTeams: [NewTeam] {
         get { self[NewTeamsKey.self] }
         set { self[NewTeamsKey.self] = newValue }
     }
-
+    
     var colleges: [College] {
         get { self[CollegesKey.self] }
         set { self[CollegesKey.self] = newValue }
@@ -198,6 +198,62 @@ let CLOUDFRONT_IMAGE_BASE_URL = "https://dc666cmbq88s6.cloudfront.net/"
 let MAIN_BUCKET = "adrenalinexxxxx153503-main"
 let STREAMS_BUCKET = "adrenaline-main-video-streams"
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        Task {
+            do {
+                try await Amplify.Notifications.Push.registerDevice(apnsToken: deviceToken)
+                let apnsToken = deviceToken.map { String(format: "%02x", $0) }.joined()
+                UserDefaults.standard.set(apnsToken, forKey: "userToken")
+                print(apnsToken)
+                print("Registered with Pinpoint.")
+            } catch {
+                print("Error registering with Pinpoint: \(error)")
+            }
+        }
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any]
+    ) async -> UIBackgroundFetchResult {
+        
+        do {
+            try await Amplify.Notifications.Push.recordNotificationReceived(userInfo)
+        } catch {
+            print("Error recording receipt of notification: \(error)")
+        }
+        
+        return .newData
+    }
+    
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+    ) -> Bool {
+        UNUserNotificationCenter.current().delegate = self
+        // ...
+        return true
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    // Called when a user opens (taps or clicks) a notification.
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        do {
+            try await Amplify.Notifications.Push.recordNotificationOpened(response)
+        } catch {
+            print("Error recording notification opened: \(error)")
+        }
+    }
+}
+
 @main
 struct AdrenalineApp: App {
     // Only one of these should exist, add @Environment to use variable in views
@@ -207,6 +263,7 @@ struct AdrenalineApp: App {
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
     @StateObject var appLogic = AppLogic()
     @State var isIndexingMeets: Bool = false
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
         WindowGroup {
@@ -240,28 +297,18 @@ struct AdrenalineApp: App {
                 .onAppear {
                     appLogic.configureAmplify()
                     networkMonitor.start()
-                    
+                    Task {
+                        let user = try await Amplify.Auth.getCurrentUser().userId
+                        try await Amplify.Notifications.Push.identifyUser(userId: user)
+                    }
                     // isIndexingMeets is set to false by default so it is only executed from start
                     //     to finish one time (allows indexing to occur in the background without
                     //     starting over)
                     if !isIndexingMeets {
                         isIndexingMeets = true
-                        
                         // Runs this task asynchronously so rest of app can function while this
                         // finishes
                         Task {
-                            // await SkillRating(diveStatistics: nil).testMetrics(0)
-                            // await SkillRating(diveStatistics: nil)
-                            //     .testMetrics(0, includePlatform: false)
-                            // await SkillRating(diveStatistics: nil)
-                            //     .testMetrics(0, onlyPlatform: true)
-//                            let moc = modelDataController.container.viewContext
-//                            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(
-//                                entityName: "DivingMeet")
-//                            let meets = try? moc.fetch(fetchRequest) as? [DivingMeet]
-                            
-//                            try await meetParser.parseMeets(storedMeets: meets)
-                            
                             // Check that each set of meets is not nil and add each to the database
                             if let upcoming = meetParser.upcomingMeets {
                                 modelDataController.addRecords(

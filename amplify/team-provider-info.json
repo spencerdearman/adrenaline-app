@@ -22,7 +22,19 @@
         "adrenaline": {}
       },
       "analytics": {
-        "adrenaline": {}
+        "adrenaline": {},
+        "Pinpoint": {
+          "Name": "adrenaline-main",
+          "Id": "aeb454042fd44e21b75e93a72a2113b4",
+          "Region": "us-east-1"
+        }
+      },
+      "notifications": {
+        "Pinpoint": {
+          "Name": "adrenaline-main",
+          "Id": "aeb454042fd44e21b75e93a72a2113b4",
+          "Region": "us-east-1"
+        }
       }
     }
   }
