@@ -12,6 +12,7 @@ import CachedAsyncImage
 
 enum PostMedia {
     case video(VideoPlayerViewModel)
+    case localVideo(AVPlayer)
     case image(Image)
     case asyncImage(CachedAsyncImage<AnyView>)
 }
@@ -24,10 +25,12 @@ struct PostMediaItem: Identifiable {
     var view: any View {
         if case let .video(v) = self.data {
             if useVideoThumbnail, let url = URL(string: v.thumbnailURL) {
-                return AsyncImage(url: url)
+                return CachedAsyncImage(url: url, urlCache: .imageCache)
             }
             
             return BufferVideoPlayerView(videoPlayerVM: v)
+        } else if case let .localVideo(v) = self.data {
+            return VideoPlayer(player: v)
         } else if case let .image(i) = self.data {
             return i
                 .resizable()
