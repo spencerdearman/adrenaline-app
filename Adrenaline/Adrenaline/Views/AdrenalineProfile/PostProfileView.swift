@@ -195,7 +195,6 @@ struct PostProfileExpandedView: View {
                         ForEach(mediaItems) { item in
                             AnyView(item.view)
                                 .clipShape(RoundedRectangle(cornerRadius: 25))
-                                .padding(.horizontal, 30)
                                 .containerRelativeFrame(.horizontal)
                                 .scrollTransition(.animated, axis: .horizontal) {
                                     content, phase in
