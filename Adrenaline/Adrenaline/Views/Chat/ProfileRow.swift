@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct ProfileRow: View {
     var user: NewUser
@@ -16,8 +17,9 @@ struct ProfileRow: View {
         HStack(alignment: .top, spacing: 16) {
             AnyView(
                 user.diveMeetsID != nil
-                ? AnyView(AsyncImage(url: URL(string: "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(user.diveMeetsID!).jpg?&x=511121484"),
-                                     transaction: .init(animation: .easeOut)) { phase in
+                ? AnyView(CachedAsyncImage(url: URL(string: "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(user.diveMeetsID!).jpg?&x=511121484"),
+                                           urlCache: .imageCache, 
+                                           transaction: .init(animation: .easeOut)) { phase in
                                          switch phase {
                                              case .empty:
                                                  Color.white
