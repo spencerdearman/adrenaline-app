@@ -52,6 +52,10 @@ final class VideoPlayerViewModel: ObservableObject {
         }
     }
     
+    var isVertical: Bool {
+        video.isVertical
+    }
+    
     private func setObserver() {
         if let timeObserverToken = timeObserverToken {
             player.removeTimeObserver(timeObserverToken)
