@@ -9,7 +9,8 @@ import SwiftUI
 import Amplify
 
 struct SavedPostsView: View {
-    @EnvironmentObject private var appLogic: AppLogic
+    // Real-time list of all non-spectator users in the DataStore
+    @Environment(\.newUsers) private var allUsers
     @Namespace var namespace
     @State private var savedPosts: [PostProfileItem] = []
     @State private var postShowing: String? = nil
@@ -26,11 +27,9 @@ struct SavedPostsView: View {
         let savedPostIds = Set(savedPostModels.map { $0.postID })
         let postModels: [Post] = try await query().filter { savedPostIds.contains($0.id) }
         
-        let users = await queryAWSUsers()
-        
         var profileItems: [PostProfileItem] = []
         for post in postModels {
-            let filteredUsers = users.filter { $0.id == post.newuserID }
+            let filteredUsers = allUsers.filter { $0.id == post.newuserID }
             let user: NewUser
             if filteredUsers.count == 1 {
                 user = filteredUsers[0]
