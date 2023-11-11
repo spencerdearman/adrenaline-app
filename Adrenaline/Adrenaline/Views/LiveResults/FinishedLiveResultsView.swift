@@ -48,7 +48,7 @@ struct FinishedLiveResultsView: View {
                                       shadowRadius: 3) { (elem) in
                         LivePersonBubbleView(elements: elem)
                     }
-                    .padding(.bottom, maxHeightOffset)
+                                      .padding(.bottom, maxHeightOffset)
                 }
             } else if timedOut {
                 BackgroundBubble() {
@@ -66,26 +66,26 @@ struct FinishedLiveResultsView: View {
             }
         }
         .onChange(of: html) {
-                Task {
-                    let parseTask = Task {
-                        await parser.getFinishedLiveResultsRecords(html: html)
-                        elements = parser.resultsRecords
-                        eventTitle = parser.eventTitle
-                        // Resets both bools in each Task since this will run as html changes
-                        finishedParsing = true
-                        timedOut = false
-                    }
-                    let timeoutTask = Task {
-                        try await Task.sleep(nanoseconds: UInt64(timeoutInterval) * NSEC_PER_SEC)
-                        parseTask.cancel()
-                        // Resets both bools in each Task since this will run as html changes
-                        finishedParsing = false
-                        timedOut = true
-                    }
-                    
-                    await parseTask.value
-                    timeoutTask.cancel()
+            Task {
+                let parseTask = Task {
+                    await parser.getFinishedLiveResultsRecords(html: html)
+                    elements = parser.resultsRecords
+                    eventTitle = parser.eventTitle
+                    // Resets both bools in each Task since this will run as html changes
+                    finishedParsing = true
+                    timedOut = false
                 }
+                let timeoutTask = Task {
+                    try await Task.sleep(nanoseconds: UInt64(timeoutInterval) * NSEC_PER_SEC)
+                    parseTask.cancel()
+                    // Resets both bools in each Task since this will run as html changes
+                    finishedParsing = false
+                    timedOut = true
+                }
+                
+                await parseTask.value
+                timeoutTask.cancel()
+            }
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -116,42 +116,36 @@ struct LivePersonBubbleView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     HStack(alignment: .firstTextBaseline) {
-                        if let diver = diverNewUser {
-                            NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
-                                VStack(alignment: .leading) {
-                                    Text(elements[1])
-                                    Text(elements[2])
-                                }
-                                .scaledToFit()
-                                .dynamicTypeSize(.xSmall ... .xLarge)
-                            }
-                        } else {
-                            VStack(alignment: .leading) {
-                                Text(elements[1])
-                                Text(elements[2])
-                            }
+                        let stack = VStack(alignment: .leading) {
+                            Text(elements[1])
+                            Text(elements[2])
+                        }
                             .scaledToFit()
                             .dynamicTypeSize(.xSmall ... .xLarge)
+                        
+                        if let diver = diverNewUser {
+                            NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+                                stack
+                            }
+                        } else {
+                            stack
                         }
                         
                         if isSynchro {
+                            let synchroStack = VStack(alignment: .leading) {
+                                Text(elements[9])
+                                Text(elements[10])
+                            }
+                                .scaledToFit()
+                                .dynamicTypeSize(.xSmall ... .xLarge)
+                            
                             Text("/")
                             if let diver = synchroNewUser {
                                 NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
-                                    VStack(alignment: .leading) {
-                                        Text(elements[9])
-                                        Text(elements[10])
-                                    }
-                                    .scaledToFit()
-                                    .dynamicTypeSize(.xSmall ... .xLarge)
+                                    synchroStack
                                 }
                             } else {
-                                VStack(alignment: .leading) {
-                                    Text(elements[9])
-                                    Text(elements[10])
-                                }
-                                .scaledToFit()
-                                .dynamicTypeSize(.xSmall ... .xLarge)
+                                synchroStack
                             }
                         }
                         Spacer()
@@ -181,7 +175,7 @@ struct LivePersonBubbleView: View {
                     Spacer()
                     HStack {
                         Text(elements[4])
-                            
+                        
                         if isSynchro {
                             Text("/")
                             Text(elements[12])

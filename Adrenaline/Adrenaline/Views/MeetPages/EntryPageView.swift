@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Amplify
 
 struct EntryPageView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
+    @State private var entryUsers: [String: NewUser?] = [:]
     var entriesLink: String
     @State var entries: [EventEntry]?
     @ObservedObject var ep: EntriesParser = EntriesParser()
@@ -30,6 +32,19 @@ struct EntryPageView: View {
         currentMode == .light ? .white : .black
     }
     
+    private func getNewUser(link: String) async -> NewUser? {
+        guard let last = link.split(separator: "=").last else { return nil }
+        let diveMeetsId = String(last)
+        
+        let pred = NewUser.keys.diveMeetsID == diveMeetsId
+        let users = await queryAWSUsers(where: pred)
+        if users.count == 1 {
+            return users[0]
+        }
+        
+        return nil
+    }
+    
     var body: some View {
         ZStack {
             if let entries = entries {
@@ -43,29 +58,44 @@ struct EntryPageView: View {
                                     .cornerRadius(30)
                                     .shadow(radius: 10)
                                 EntryView(entry: entry) {
+                                    let name = Text((entry.lastName ?? "") + ", " +
+                                                    (entry.firstName ?? ""))
+                                        .font(.headline)
+                                        .scaledToFit()
+                                    
                                     if let partner = entry.synchroPartner {
                                         return HStack {
                                             VStack {
-                                                NavigationLink(
-                                                    destination: ProfileView(
-                                                        profileLink: entry.link ?? ""),
-                                                    label: {
-                                                        Text((entry.lastName ?? "") + ", " +
-                                                             (entry.firstName ?? ""))
-                                                    })
-                                                .font(.headline)
-                                                .scaledToFit()
+                                                if let link = entry.link, 
+                                                    let user = entryUsers[link],
+                                                   let diver = user {
+                                                    NavigationLink(
+                                                        destination: AdrenalineProfileView(newUser: diver),
+                                                        label: {
+                                                            name
+                                                        })
+                                                } else {
+                                                    name
+                                                }
+                                                
                                                 
                                                 Divider()
                                                 
-                                                NavigationLink(
-                                                    destination: ProfileView(profileLink: partner.link),
-                                                    label: {
-                                                        Text(partner.lastName + ", " +
-                                                             partner.firstName)
-                                                    })
-                                                .font(.headline)
-                                                .scaledToFit()
+                                                let synchroName = Text(partner.lastName + ", " +
+                                                                       partner.firstName)
+                                                    .font(.headline)
+                                                    .scaledToFit()
+                                                if let user = entryUsers[partner.link],
+                                                    let synchro = user {
+                                                    NavigationLink(
+                                                        destination: AdrenalineProfileView(newUser: synchro),
+                                                        label: {
+                                                            synchroName
+                                                        })
+                                                } else {
+                                                    synchroName
+                                                }
+                                                
                                             }
                                             .fixedSize(horizontal: true, vertical: false)
                                             
@@ -79,14 +109,17 @@ struct EntryPageView: View {
                                         }
                                     } else {
                                         return HStack {
-                                            NavigationLink(
-                                                destination: ProfileView(profileLink: entry.link ?? ""),
-                                                label: {
-                                                    Text((entry.lastName ?? "") + ", " +
-                                                         (entry.firstName ?? ""))
-                                                })
-                                            .font(.headline)
-                                            .scaledToFit()
+                                            if let link = entry.link,
+                                               let user = entryUsers[link],
+                                            let diver = user {
+                                                NavigationLink(
+                                                    destination: AdrenalineProfileView(newUser: diver),
+                                                    label: {
+                                                        name
+                                                    })
+                                            } else {
+                                                name
+                                            }
                                             
                                             Text(entry.team ?? "")
                                                 .font(.subheadline)
@@ -123,6 +156,22 @@ struct EntryPageView: View {
                     
                     if let html = getTextModel.text {
                         entries = try await ep.parseEntries(html: html)
+                    }
+                }
+                
+                // Creates dictionary of NewUser objects for relevant users on the entry page
+                // so they are not queried each time the ForEach above is redrawn
+                if entryUsers.isEmpty, let entries = entries {
+                    for entry in entries {
+                        guard let link = entry.link else { continue }
+                        if !entryUsers.keys.contains(link) {
+                            entryUsers[link] = await getNewUser(link: link)
+                        }
+                        
+                        if let partner = entry.synchroPartner,
+                           !entryUsers.keys.contains(partner.link) {
+                            entryUsers[partner.link] = await getNewUser(link: partner.link)
+                        }
                     }
                 }
             }
