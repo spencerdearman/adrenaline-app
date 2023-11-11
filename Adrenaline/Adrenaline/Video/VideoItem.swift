@@ -14,6 +14,7 @@ struct VideoItem {
     let name: String
     let streams: [Stream]
     var thumbnailURL: String
+    var isVertical: Bool
     
     // Key is formatted as videos/email/videoName
     var email: String? {
@@ -26,13 +27,14 @@ struct VideoItem {
         self.name = ""
         self.streams = []
         self.thumbnailURL = ""
+        self.isVertical = false
     }
     
     init(email: String, videoId: String) {
         self.name = "videos/\(email)/\(videoId)"
         var streams: [Stream] = []
         let videoUrlHead = getVideoHLSUrlKey(email: email, videoId: videoId)
-
+        
         for res in Resolution.allCases {
             if let url = URL(string: "\(videoUrlHead)_\(res.displayValue.dropLast(1)).m3u8") {
                 streams.append(Stream(resolution: res, streamURL: url))
@@ -43,6 +45,7 @@ struct VideoItem {
         
         self.streams = streams
         self.thumbnailURL = getVideoThumbnailURL(email: email, videoId: videoId)
+        self.isVertical = isVerticalImage(url: self.thumbnailURL)
     }
 }
 
