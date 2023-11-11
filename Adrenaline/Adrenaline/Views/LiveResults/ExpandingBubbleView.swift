@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Amplify
 
 struct HomeBubbleView: View{
     @Namespace var mainspace
@@ -183,9 +184,19 @@ struct ClosedTileView: View {
 struct OpenTileView: View {
     @Environment(\.colorScheme) var currentMode
     var namespace: Namespace.ID
+    @State private var diver: NewUser? = nil
     @Binding var show: Bool
     @Binding var bubbleData: [String]
     @Binding var abBoardEvent: Bool
+    
+    private var profileLink: String {
+        abBoardEvent ? bubbleData[4] : bubbleData[7]
+    }
+    
+    private var diveMeetsId: String {
+        guard let last = profileLink.split(separator: "=").last else { return "" }
+        return String(last)
+    }
     
     private var bgColor: Color {
         currentMode == .light ? Custom.darkGray : Custom.darkGray
@@ -195,9 +206,8 @@ struct OpenTileView: View {
         currentMode == .light ? .black : .white
     }
     
-    var body: some View{
-        
-        VStack{
+    var body: some View {
+        VStack {
             Spacer()
             VStack(alignment: .leading, spacing: 12){
                 HStack {
@@ -237,17 +247,17 @@ struct OpenTileView: View {
                                 .matchedGeometryEffect(id: "board", in: namespace)
                         }
                     }
-                    NavigationLink {
-                        ProfileView(profileLink: abBoardEvent ? bubbleData[4] : bubbleData[7])
-                    } label: {
-                        MiniProfileImage(diverID: abBoardEvent
-                                         ? String(bubbleData[4].components(separatedBy: "=").last ?? "")
-                                         : String(bubbleData[7].components(separatedBy: "=").last ?? ""),
-                                         width: 150, height: 200)
-                            .scaledToFit()
-                            .padding(.horizontal)
-                            .shadow(radius: 10)
+                    
+                    if let user = diver {
+                        NavigationLink {
+                            AdrenalineProfileView(newUser: user)
+                        } label: {
+                            miniProfileImage
+                        }
+                    } else {
+                        miniProfileImage
                     }
+                    
                 }
                 if !abBoardEvent {
                     ZStack{
@@ -292,5 +302,26 @@ struct OpenTileView: View {
                 .matchedGeometryEffect(id: "mask", in: namespace)
         )
         .frame(height: abBoardEvent ? 275 : 500)
+        .onAppear {
+            if diver == nil {
+                Task {
+                    let pred = NewUser.keys.diveMeetsID == diveMeetsId
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        diver = users[0]
+                    }
+                }
+            }
+        }
+    }
+    
+    var miniProfileImage: some View {
+        MiniProfileImage(diverID: abBoardEvent
+                         ? String(bubbleData[4].components(separatedBy: "=").last ?? "")
+                         : String(bubbleData[7].components(separatedBy: "=").last ?? ""),
+                         width: 150, height: 200)
+        .scaledToFit()
+        .padding(.horizontal)
+        .shadow(radius: 10)
     }
 }

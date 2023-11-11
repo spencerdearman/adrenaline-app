@@ -9,6 +9,7 @@
 
 import SwiftUI
 import SwiftSoup
+import Amplify
 
 extension String {
     func slice(from: String, to: String) -> String? {
@@ -575,12 +576,22 @@ struct LoadingView: View {
 struct LastDiverView: View
 {
     @Environment(\.colorScheme) var currentMode
+    @State private var newUser: NewUser? = nil
     @Binding var lastInfo:
     //  name, link, last round place, last round total, order, place, total, dive, height, dd,
     //score total, [judges scores]
     (String, String, Int, Double, Int, Int, Double, String, String, Double, Double, String)
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    private var profileLink: String {
+        lastInfo.1
+    }
+    
+    private var diveMeetsId: String {
+        guard let last = profileLink.split(separator: "=").last else { return "" }
+        return String(last)
+    }
     
     var body: some View {
         ZStack {
@@ -606,13 +617,15 @@ struct LastDiverView: View
                             .font(.headline)
                     }
                     Spacer().frame(width: 55)
-                    NavigationLink {
-                        ProfileView(profileLink: lastInfo.1)
-                    } label: {
-                        MiniProfileImage(
-                            diverID: String(lastInfo.1.components(separatedBy: "=").last ?? "")
-                        )
-                        .scaledToFit()
+                    
+                    if let diver = newUser {
+                        NavigationLink {
+                            AdrenalineProfileView(newUser: diver)
+                        } label: {
+                            miniProfileImage
+                        }
+                    } else {
+                        miniProfileImage
                     }
                 }
                 .padding(.top, 20)
@@ -663,6 +676,24 @@ struct LastDiverView: View
                 .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .onAppear {
+            if newUser == nil {
+                Task {
+                    let pred = NewUser.keys.diveMeetsID == diveMeetsId
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        newUser = users[0]
+                    }
+                }
+            }
+        }
+    }
+    
+    var miniProfileImage: some View {
+        MiniProfileImage(
+            diverID: String(lastInfo.1.components(separatedBy: "=").last ?? "")
+        )
+        .scaledToFit()
     }
 }
 
@@ -670,6 +701,7 @@ struct NextDiverView: View
 {
     @Environment(\.colorScheme) var currentMode
     @State var tableData: [String: DiveData]?
+    @State private var newUser: NewUser? = nil
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     @Binding var nextInfo: NextDiverInfo
@@ -682,6 +714,15 @@ struct NextDiverView: View
         } else {
             return s
         }
+    }
+    
+    private var profileLink: String {
+        nextInfo.1
+    }
+    
+    private var diveMeetsId: String {
+        guard let last = profileLink.split(separator: "=").last else { return "" }
+        return String(last)
     }
     
     var body: some View {
@@ -709,13 +750,20 @@ struct NextDiverView: View
                             .fontWeight(.semibold)
                     }
                     Spacer().frame(width: 35)
-                    NavigationLink {
-                        ProfileView(profileLink: nextInfo.1)
-                    } label: {
-                        MiniProfileImage(
-                            diverID: String(nextInfo.1.components(separatedBy: "=").last ?? "")
-                        )
+                    
+                    let img = MiniProfileImage(
+                        diverID: String(nextInfo.1.components(separatedBy: "=").last ?? "")
+                    )
                         .scaledToFit()
+                    
+                    if let diver = newUser {
+                        NavigationLink {
+                            AdrenalineProfileView(newUser: diver)
+                        } label: {
+                            img
+                        }
+                    } else {
+                        img
                     }
                 }
                 .padding(.top, 20)
@@ -768,6 +816,16 @@ struct NextDiverView: View
         }
         .onAppear {
             tableData = getDiveTableData()
+            
+            if newUser == nil {
+                Task {
+                    let pred = NewUser.keys.diveMeetsID == diveMeetsId
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        newUser = users[0]
+                    }
+                }
+            }
         }
     }
 }
