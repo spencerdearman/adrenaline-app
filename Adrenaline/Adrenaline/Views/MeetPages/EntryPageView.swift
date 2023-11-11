@@ -76,6 +76,7 @@ struct EntryPageView: View {
                                                         })
                                                 } else {
                                                     name
+                                                        .foregroundColor(.primary)
                                                 }
                                                 
                                                 
@@ -94,6 +95,7 @@ struct EntryPageView: View {
                                                         })
                                                 } else {
                                                     synchroName
+                                                        .foregroundColor(.primary)
                                                 }
                                                 
                                             }
@@ -119,6 +121,7 @@ struct EntryPageView: View {
                                                     })
                                             } else {
                                                 name
+                                                    .foregroundColor(.primary)
                                             }
                                             
                                             Text(entry.team ?? "")
