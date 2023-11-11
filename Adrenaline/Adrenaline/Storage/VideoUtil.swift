@@ -134,3 +134,17 @@ func imageFromVideoBackground(url: URL, at time: TimeInterval) async throws -> I
     let thumbnailImage = try await assetImageGenerator.image(at: cmTime).image
     return Image(uiImage: UIImage(cgImage: thumbnailImage))
 }
+
+// https://medium.com/geekculture/find-image-dimensions-from-url-in-ios-swift-a186297e9922
+func isVerticalImage(url: String) -> Bool {
+    if let imageSource = CGImageSourceCreateWithURL(URL(string: url)! as CFURL, nil) {
+        if let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as
+            Dictionary? {
+            let pixelWidth = imageProperties[kCGImagePropertyPixelWidth] as! Int
+            let pixelHeight = imageProperties[kCGImagePropertyPixelHeight] as! Int
+            return pixelWidth < pixelHeight
+        }
+    }
+    
+    return false
+}
