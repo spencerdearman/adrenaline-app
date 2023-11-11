@@ -10,7 +10,7 @@ import SwiftSoup
 
 var entriesHtmlCache: [String: String] = [:]
 
-struct OldProfileView: View {
+struct ProfileView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -489,7 +489,7 @@ struct DiverBubbleView: View {
     
     var body: some View {
         NavigationLink {
-            OldProfileView(profileLink: element.link)
+            ProfileView(profileLink: element.link)
         } label: {
             ZStack {
                 Rectangle()
