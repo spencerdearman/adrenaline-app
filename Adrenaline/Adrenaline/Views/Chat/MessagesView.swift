@@ -12,12 +12,12 @@ import Combine
 
 struct Chat: View {
     // Bindings
-    @Binding var email: String
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
     
     // Main States
     @Environment(\.colorScheme) var currentMode
+    @AppStorage("authUserId") private var authUserId = ""
     @Namespace var namespace
     @State var feedModel: FeedModel = FeedModel()
     @State var users: [NewUser] = []
@@ -179,7 +179,7 @@ struct Chat: View {
         }
         .onAppear {
             Task {
-                let mainUsersPredicate = NewUser.keys.email == email
+                let mainUsersPredicate = NewUser.keys.id == authUserId
                 let mainUsers = await queryAWSUsers(where: mainUsersPredicate)
                 if mainUsers.count >= 1 {
                     currentUser = mainUsers[0]
