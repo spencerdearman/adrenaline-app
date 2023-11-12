@@ -126,6 +126,7 @@ struct LivePersonBubbleView: View {
                         if let diver = diverNewUser {
                             NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
                                 stack
+                                    .foregroundColor(.accentColor)
                             }
                         } else {
                             stack
@@ -143,6 +144,7 @@ struct LivePersonBubbleView: View {
                             if let diver = synchroNewUser {
                                 NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
                                     synchroStack
+                                        .foregroundColor(.accentColor)
                                 }
                             } else {
                                 synchroStack

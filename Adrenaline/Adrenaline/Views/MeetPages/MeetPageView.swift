@@ -679,7 +679,7 @@ struct DiverListView: View {
                         .font(.title3)
                         .bold()
                         .lineLimit(2)
-                        .foregroundColor(.primary)
+                        .foregroundColor(newUser == nil ? .primary : .accentColor)
                         .multilineTextAlignment(.leading)
                     
                     Text(elements[1]) // org
