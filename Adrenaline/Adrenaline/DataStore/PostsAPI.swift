@@ -193,6 +193,28 @@ private func removeImageFromS3(email: String, imageId: String) async throws {
     try await Amplify.Storage.remove(key: "images/\(email)/\(imageId).jpg")
 }
 
+// Creates an empty text file for every reported post, saving by date and formatting each filename
+// with reporting user, reported user, and reported post
+func reportPost(currentUserId: String, reportedUserId: String, postId: String) async -> Bool {
+    do {
+        let key = "\(currentUserId),\(reportedUserId),\(postId).txt"
+        
+        let df = DateFormatter()
+        df.dateFormat = "YYYY-MM-dd"
+        let date = df.string(from: .now)
+        
+        let uploadTask = Amplify.Storage.uploadData(key: "reported-posts/\(date)/\(key)",
+                                                    data: Data())
+        let _ = try await uploadTask.value
+        
+        return true
+    } catch {
+        print("Failed to report post")
+    }
+    
+    return false
+}
+
 extension Post {
     // Add another initializer to easily update usersSaving through API call, but not accessible
     // outside this file
