@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Amplify
 
 // Caches meet info and results data for each meet link to avoid reparsing
 //                  [meetLink: meetData]
@@ -504,7 +505,8 @@ struct MeetResultsPageView: View {
                 
                 if let events = events {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: eventsToRecords(events), bgColor: .clear, shadowRadius: 3) { (elems) in
+                        ScalingScrollView(records: eventsToRecords(events), bgColor: .clear, 
+                                          shadowRadius: 3) { (elems) in
                             EventResultsView(elements: elems)
                         }
                         .frame(height: 500)
@@ -521,7 +523,8 @@ struct MeetResultsPageView: View {
                 
                 if let divers = divers {
                     DisclosureGroup(content: {
-                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, rowSpacing: 10, shadowRadius: 3) { (elems) in
+                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, 
+                                          rowSpacing: 10, shadowRadius: 3) { (elems) in
                             DiverListView(elements: elems)
                         }
                         .frame(height: 500)
@@ -625,6 +628,7 @@ struct LiveResultsListView: View {
 
 struct DiverListView: View {
     @Environment(\.colorScheme) var currentMode
+    @State private var newUser: NewUser? = nil
     
     private var bubbleColor: Color {
         currentMode == .light ? .white : .black
@@ -632,39 +636,69 @@ struct DiverListView: View {
     //            [name, team, link, event1, event2, ...]
     var elements: [String]
     
+    private var profileLink: String {
+        elements[2]
+    }
+    
+    private var diveMeetsId: String {
+        guard let last = profileLink.split(separator: "=").last else { return "" }
+        return String(last)
+    }
+    
     var body: some View {
-        NavigationLink(destination: ProfileView(profileLink: elements[2])) {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.darkGray)
-                    .cornerRadius(40)
-                VStack(alignment: .leading) {
-                    HStack() {
-                        Text(elements[0]) // name
-                            .font(.title3)
-                            .bold()
-                            .lineLimit(2)
-                            .foregroundColor(.primary)
-                            .multilineTextAlignment(.leading)
-                        
-                        Text(elements[1]) // org
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                            .lineLimit(1)
-                        Spacer()
-                    }
-                    
-                    HStack {
-                        ForEach(elements[3...], id: \.self) { event in
-                            Text(event) // each event
-                                .font(.subheadline)
-                                .foregroundColor(.primary)
-                        }
-                        
+        ZStack {
+            if let diver = newUser {
+                NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+                    listBody
+                }
+            } else {
+                listBody
+            }
+        }
+        .onAppear {
+            if newUser == nil {
+                Task {
+                    let pred = NewUser.keys.diveMeetsID == diveMeetsId
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        newUser = users[0]
                     }
                 }
-                .padding()
             }
+        }
+    }
+    
+    var listBody: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(Custom.darkGray)
+                .cornerRadius(40)
+            VStack(alignment: .leading) {
+                HStack() {
+                    Text(elements[0]) // name
+                        .font(.title3)
+                        .bold()
+                        .lineLimit(2)
+                        .foregroundColor(newUser == nil ? .primary : .accentColor)
+                        .multilineTextAlignment(.leading)
+                    
+                    Text(elements[1]) // org
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                    Spacer()
+                }
+                
+                HStack {
+                    ForEach(elements[3...], id: \.self) { event in
+                        Text(event) // each event
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+                    }
+                    
+                }
+            }
+            .padding()
         }
     }
 }
