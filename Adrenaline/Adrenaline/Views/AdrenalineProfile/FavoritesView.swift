@@ -9,6 +9,8 @@ import SwiftUI
 
 
 struct FavoritesView: View {
+    // Real-time list of all non-spectator users in the DataStore
+    @Environment(\.newUsers) private var allUsers
     @State private var favoriteUsers: [NewUser] = []
     @State private var showSheet: Bool = false
     @State private var selectedUser: NewUser? = nil
@@ -70,10 +72,8 @@ struct FavoritesView: View {
             Task {
                 favoriteUsers = []
                 
-                let users = await queryAWSUsers()
-                
                 // Gets updated current user to compare favorites ids
-                let currentUsers = users.filter { $0.id == newUser.id }
+                let currentUsers = allUsers.filter { $0.id == newUser.id }
                 if currentUsers.count != 1 {
                     return
                 }
@@ -81,7 +81,7 @@ struct FavoritesView: View {
                 
                 // Filters out current user's favorites from all users
                 let ids = user.favoritesIds
-                let favorites = users.filter { ids.contains($0.id) }
+                let favorites = allUsers.filter { ids.contains($0.id) }
                 
                 favoriteUsers = favorites
             }

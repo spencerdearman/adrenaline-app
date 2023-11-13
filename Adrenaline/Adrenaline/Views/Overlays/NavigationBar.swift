@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Amplify
+import CachedAsyncImage
 
 struct NavigationBar: View {
     @EnvironmentObject var appLogic: AppLogic
@@ -86,8 +87,9 @@ struct NavigationBar: View {
                 } label: {
                     Group {
                         if diveMeetsID.wrappedValue != "" {
-                            AsyncImage(url: URL(string:
+                            CachedAsyncImage(url: URL(string:
                                                     "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID.wrappedValue).jpg?&x=511121484"),
+                                             urlCache: .imageCache,
                                        transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {
                                 case .empty:

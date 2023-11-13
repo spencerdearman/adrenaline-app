@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct ProfileImage: View {
     @Environment(\.colorScheme) var currentMode
@@ -15,7 +16,7 @@ struct ProfileImage: View {
         let imageUrlString =
         "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
         if let imageUrl = URL(string: imageUrlString) {
-            AsyncImage(url: imageUrl) { phase in
+            CachedAsyncImage(url: imageUrl, urlCache: .imageCache) { phase in
                 if let image = phase.image {
                     image
                         .resizable()
@@ -55,7 +56,7 @@ struct MiniProfileImage: View {
         let imageUrlString =
         "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
         let imageUrl = URL(string: imageUrlString)
-        AsyncImage(url: imageUrl!) { phase in
+        CachedAsyncImage(url: imageUrl!, urlCache: .imageCache) { phase in
             if let image = phase.image {
                 image
                     .resizable()
