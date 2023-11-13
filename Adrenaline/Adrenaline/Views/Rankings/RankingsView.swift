@@ -25,9 +25,21 @@ enum GenderInt: Int, CaseIterable {
     case female = 1
 }
 
-//                            [(NewAthlete, springboard, platform, total)]]
-typealias GenderRankingList = [(NewAthlete, Double, Double, Double)]
-typealias RankingListItem = (NewAthlete, Double)
+struct RankedUser {
+    var firstName: String
+    var lastName: String
+    var diveMeetsID: String
+    var gender: String
+    var finaAge: Int?
+    var hsGradYear: Int?
+    var springboardRating: Double
+    var platformRating: Double
+    var totalRating: Double
+}
+
+//                            [(User      , sb    , plat  , tot)]
+typealias GenderRankingList = [(RankedUser, Double, Double, Double)]
+typealias RankingListItem = (RankedUser, Double)
 typealias RankingList = [RankingListItem]
 typealias NumberedRankingList = [(Int, RankingListItem)]
 
@@ -73,9 +85,47 @@ struct RankingsView: View {
         return await queryAWSAthletes(where: pred)
     }
     
+    private func getMaleDiveMeetsDivers() async throws -> [(RankedUser, Double, Double, Double)] {
+        var result: [(RankedUser, Double, Double, Double)] = []
+        let pred = DiveMeetsDiver.keys.gender == "M"
+        let divers: [DiveMeetsDiver] = try await query(where: pred)
+        for diver in divers {
+            if let springboard = diver.springboardRating,
+               let platform = diver.platformRating,
+               let total = diver.totalRating {
+                result.append((RankedUser(firstName: diver.firstName, lastName: diver.lastName,
+                                          diveMeetsID: diver.id, gender: diver.gender,
+                                          finaAge: diver.finaAge, hsGradYear: diver.hsGradYear,
+                                          springboardRating: springboard, platformRating: platform,
+                                          totalRating: total), springboard, platform, total))
+            }
+        }
+        
+        return result
+    }
+    
     private func getFemaleAthletes() async -> [NewAthlete] {
         let pred = NewAthlete.keys.gender == "F"
         return await queryAWSAthletes(where: pred)
+    }
+    
+    private func getFemaleDiveMeetsDivers() async throws -> [(RankedUser, Double, Double, Double)] {
+        var result: [(RankedUser, Double, Double, Double)] = []
+        let pred = DiveMeetsDiver.keys.gender == "F"
+        let divers: [DiveMeetsDiver] = try await query(where: pred)
+        for diver in divers {
+            if let springboard = diver.springboardRating,
+               let platform = diver.platformRating,
+               let total = diver.totalRating {
+                result.append((RankedUser(firstName: diver.firstName, lastName: diver.lastName,
+                                          diveMeetsID: diver.id, gender: diver.gender,
+                                          finaAge: diver.finaAge, hsGradYear: diver.hsGradYear,
+                                          springboardRating: springboard, platformRating: platform,
+                                          totalRating: total), springboard, platform, total))
+            }
+        }
+        
+        return result
     }
     
     private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
@@ -109,30 +159,51 @@ struct RankingsView: View {
             do {
                 let content = try String(contentsOf: url)
                 let parsedCSV: [String] = content.components(separatedBy: "\n")
-                let p = ProfileParser()
+                let totalRows = parsedCSV.count
                 
-                for id in parsedCSV {
-                    print(id)
+                for (i, id) in parsedCSV.enumerated() {
+                    let p = ProfileParser()
                     let _ = await p.parseProfile(diveMeetsID: id)
-                    guard let info = p.profileData.info else { continue }
                     
-                    guard let stats = p.profileData.diveStatistics else { continue }
+                    // Info is required for all personal data
+                    guard let info = p.profileData.info else {
+                        print("Could not get info from \(id)")
+                        continue
+                    }
+                    
+                    // Gender is required for filtering
+                    guard let gender = info.gender else {
+                        print("Could not get gender from \(id)")
+                        continue
+                    }
+                    
+                    // Stats are required for calculating skill rating
+                    guard let stats = p.profileData.diveStatistics else {
+                        print("Could not get stats from \(id)")
+                        continue
+                    }
+                    
+                    // Compute skill rating with stats
                     let skillRating = SkillRating(diveStatistics: stats)
                     let (springboard, platform, total) = await skillRating.getSkillRating()
-                    //                            print(springboard, platform, total)
                     
                     let obj = DiveMeetsDiver(id: id, firstName: info.first,
-                                             lastName: info.last, finaAge: info.finaAge,
+                                             lastName: info.last, gender: gender, 
+                                             finaAge: info.finaAge,
                                              hsGradYear: info.hsGradYear,
                                              springboardRating: springboard,
                                              platformRating: platform, totalRating: total)
-//                    print(obj)
+                    
+                    // Save object to DataStore
                     let _ = try await saveToDataStore(object: obj)
-                    print("\(id) succeeded")
+                    
+                    if i % 100 == 0 { print("\(i + 1) of \(totalRows) finished") }
                 }
             } catch {
-                print("Failed to load rankedDiveMeetsIds")
+                print("Failed to parse content")
             }
+        } else {
+            print("Failed to load rankedDiveMeetsIds")
         }
     }
     
@@ -145,13 +216,31 @@ struct RankingsView: View {
                 for id in parsedCSV {
                     print(id)
                     //                    print(obj)
-                    let _ = try await Amplify.DataStore.delete(DiveMeetsDiver.self, where: DiveMeetsDiver.keys.id == id)
+                    let _ = try await Amplify.DataStore.delete(DiveMeetsDiver.self, 
+                                                               where: DiveMeetsDiver.keys.id == id)
                     print("\(id) succeeded")
                 }
             } catch {
                 print("Failed to load rankedDiveMeetsIds")
             }
         }
+    }
+    
+    // Keeps first seen of each diveMeetsID for each list in case there are
+    // duplicates between registered Adrenaline athletes and DiveMeetsDivers
+    private func removeDuplicates(_ ratings: [(RankedUser, Double, Double, Double)]) -> 
+    [(RankedUser, Double, Double, Double)] {
+        var seen = Set<String>()
+        var result: [(RankedUser, Double, Double, Double)] = []
+        
+        for elem in ratings {
+            if !seen.contains(elem.0.diveMeetsID) {
+                result.append(elem)
+                seen.insert(elem.0.diveMeetsID)
+            }
+        }
+        
+        return result
     }
     
     var body: some View {
@@ -170,39 +259,81 @@ struct RankingsView: View {
                     
                     boardSelector
                     
-                    RankingListView(tabBarState: $tabBarState, rankingType: $rankingType, 
-                                    gender: $gender, maleRatings: $maleRatings,
-                                    femaleRatings: $femaleRatings)
-                    
-                    Spacer()
+                    if (gender == .male && !maleRatings.isEmpty) ||
+                        (gender == .female && !femaleRatings.isEmpty) {
+                        RankingListView(tabBarState: $tabBarState, rankingType: $rankingType,
+                                        gender: $gender, maleRatings: $maleRatings,
+                                        femaleRatings: $femaleRatings)
+                     
+                        Spacer()
+                    } else {
+                        ProgressView()
+                    }
                 }
                 .onAppear {
                     Task {
-                        let males = await getMaleAthletes()
-                        maleRatings = []
-                        for male in males {
-                            if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "", 
-                                let springboard = male.springboardRating,
-                                let platform = male.platformRating,
-                                let total = male.totalRating {
-                                maleRatings.append((male, springboard, platform, total))
+                        if maleRatings.isEmpty {
+                            // Get all male Athlete profiles from the DataStore
+                            let males = await getMaleAthletes()
+                            maleRatings = []
+                            var pendingMaleRatings: GenderRankingList = []
+                            for male in males {
+                                if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "",
+                                    let springboard = male.springboardRating,
+                                   let platform = male.platformRating,
+                                   let total = male.totalRating {
+                                    let rankedUser = RankedUser(firstName: male.user.firstName, 
+                                                                lastName: male.user.lastName,
+                                                                diveMeetsID: diveMeetsID,
+                                                                gender: male.gender,
+                                                                finaAge: male.age,
+                                                                hsGradYear: male.graduationYear,
+                                                                springboardRating: springboard,
+                                                                platformRating: platform,
+                                                                totalRating: total)
+                                    pendingMaleRatings.append((rankedUser, springboard, platform, 
+                                                               total))
+                                }
                             }
+                            
+                            // Add in DiveMeetsDiver users
+                            pendingMaleRatings += try await getMaleDiveMeetsDivers()
+                            
+                            // Remove duplicate entries and normalize
+                            maleRatings = normalizeRatings(ratings: removeDuplicates(pendingMaleRatings))
                         }
                         
-                        maleRatings = normalizeRatings(ratings: maleRatings)
-                        
-                        let females = await getFemaleAthletes()
-                        femaleRatings = []
-                        for female in females {
-                            if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
-                               let springboard = female.springboardRating,
-                               let platform = female.platformRating,
-                               let total = female.totalRating {
-                                femaleRatings.append((female, springboard, platform, total))
+                        if femaleRatings.isEmpty {
+                            // Get all female Athlete profiles from the DataStore
+                            let females = await getFemaleAthletes()
+                            femaleRatings = []
+                            var pendingFemaleRatings: GenderRankingList = []
+                            for female in females {
+                                if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
+                                   let springboard = female.springboardRating,
+                                   let platform = female.platformRating,
+                                   let total = female.totalRating {
+                                    let rankedUser = RankedUser(firstName: female.user.firstName,
+                                                                lastName: female.user.lastName,
+                                                                diveMeetsID: diveMeetsID,
+                                                                gender: female.gender,
+                                                                finaAge: female.age,
+                                                                hsGradYear: female.graduationYear,
+                                                                springboardRating: springboard,
+                                                                platformRating: platform,
+                                                                totalRating: total)
+                                    pendingFemaleRatings.append((rankedUser, springboard, platform, 
+                                                                 total))
+                                }
                             }
+                            
+                            // Add in DiveMeetsDiver users
+                            pendingFemaleRatings += try await getFemaleDiveMeetsDivers()
+                            
+                            // Remove duplicate entries and normalize
+                            femaleRatings = normalizeRatings(
+                                ratings: removeDuplicates(pendingFemaleRatings))
                         }
-                        
-                        femaleRatings = normalizeRatings(ratings: femaleRatings)
                     }
                 }
             } else {
@@ -219,8 +350,8 @@ struct RankingsView: View {
         )
 //        .onAppear {
 //            Task {
-////                await updateDiveMeetsDivers()
-//                await deleteDiveMeetsDivers()
+//                await updateDiveMeetsDivers()
+////                await deleteDiveMeetsDivers()
 //            }
 //        }
     }
@@ -263,7 +394,8 @@ struct RankingsView: View {
                             .stroke(Color.primary.opacity(0.5), lineWidth: 1) 
                             .offset(x: rankingType == .springboard
                                     ? -typeBubbleWidth / 1
-                                    : (rankingType == .combined ? 0 : typeBubbleWidth))// Adjust the lineWidth as needed
+                                    : (rankingType == .combined ? 0 : typeBubbleWidth))
+                        // Adjust the lineWidth as needed
                             .animation(.spring(response: 0.2), value: rankingType)
                     )
                 HStack(spacing: 0) {
@@ -331,13 +463,14 @@ struct RankingListView: View {
     private func getSortedRankingList() -> RankingList {
         let list = gender == .male ? maleRatings : femaleRatings
         let keep = list.map {
+            // Values rounded to one decimal place
             switch rankingType {
             case .springboard:
-                return ($0.0, $0.1)
+                return ($0.0, round($0.1 * 10) / 10.0)
             case .combined:
-                return ($0.0, $0.3)
+                return ($0.0, round($0.3 * 10) / 10.0)
             case .platform:
-                return ($0.0, $0.2)
+                return ($0.0, round($0.2 * 10) / 10.0)
             }
         }
         
@@ -345,7 +478,7 @@ struct RankingListView: View {
             if $0.1 > $1.1 { return true }
             else if $0.1 == $1.1 {
                 // If they share matching values, sort by first name
-                return $0.0.user.firstName < $1.0.user.firstName
+                return $0.0.firstName < $1.0.firstName
             } else {
                 return false
             }
@@ -366,6 +499,7 @@ struct RankingListView: View {
                 
                 // Fails fast if unsorted list is passed in (ratings should be in descending order)
                 if rating > curRating {
+                    print(rating, item)
                     throw ParseError("Numbering ranking list failed")
                 }
                 
@@ -386,6 +520,7 @@ struct RankingListView: View {
                 everyIdx += 1
             }
         } catch {
+            print("\(error)")
             print("Failed to number list, items not sorted in descending order")
             return []
         }
@@ -421,10 +556,10 @@ struct RankingListView: View {
                 VStack {
                     ForEach(numberedList.indices, id: \.self) { index in
                         let number = numberedList[index].0
-                        let athlete = numberedList[index].1.0
+                        let rankedUser = numberedList[index].1.0
                         let rating = numberedList[index].1.1
                         
-                        RankingListDiverView(number: number, athlete: athlete, rating: rating)
+                        RankingListDiverView(number: number, rankedUser: rankedUser, rating: rating)
                     }
                 }
                 .padding()
@@ -436,7 +571,7 @@ struct RankingListView: View {
 struct RankingListDiverView: View {
     @Environment(\.colorScheme) private var currentMode
     var number: Int
-    var athlete: NewAthlete
+    var rankedUser: RankedUser
     var rating: Double
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -453,7 +588,7 @@ struct RankingListDiverView: View {
                     .padding(.leading)
                     .padding(.trailing, 40)
                 // TODO: link row to profile
-                Text((athlete.user.firstName) + " "  + (athlete.user.lastName))
+                Text((rankedUser.firstName) + " "  + (rankedUser.lastName))
                     .foregroundColor(.primary)
                 
                 Spacer()

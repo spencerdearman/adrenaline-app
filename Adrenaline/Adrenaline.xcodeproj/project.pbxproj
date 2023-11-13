@@ -15,6 +15,7 @@
 		000D28DD29E0EF9100B184E9 /* LiveResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DC29E0EF9100B184E9 /* LiveResults.swift */; };
 		000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DE29E1201200B184E9 /* LiveResultsWebView.swift */; };
 		000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28E029E122B700B184E9 /* LiveResultsView.swift */; };
+		000EEC142B021EBE0067A8A4 /* rankedDiveMeetsIds.csv in Resources */ = {isa = PBXBuildFile; fileRef = 000EEC132B021EBE0067A8A4 /* rankedDiveMeetsIds.csv */; };
 		00287E3B2AF4A52700470767 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3A2AF4A52700470767 /* PostsView.swift */; };
 		00287E3D2AF4A56200470767 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3C2AF4A56200470767 /* FavoritesView.swift */; };
 		00287E3F2AF4A57300470767 /* SavedPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3E2AF4A57300470767 /* SavedPostsView.swift */; };
@@ -197,6 +198,7 @@
 		000D28DC29E0EF9100B184E9 /* LiveResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResults.swift; sourceTree = "<group>"; };
 		000D28DE29E1201200B184E9 /* LiveResultsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResultsWebView.swift; sourceTree = "<group>"; };
 		000D28E029E122B700B184E9 /* LiveResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResultsView.swift; sourceTree = "<group>"; };
+		000EEC132B021EBE0067A8A4 /* rankedDiveMeetsIds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rankedDiveMeetsIds.csv; sourceTree = "<group>"; };
 		00287E3A2AF4A52700470767 /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		00287E3C2AF4A56200470767 /* FavoritesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FavoritesView.swift; path = Adrenaline/Views/AdrenalineProfile/FavoritesView.swift; sourceTree = SOURCE_ROOT; };
 		00287E3E2AF4A57300470767 /* SavedPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPostsView.swift; sourceTree = "<group>"; };
@@ -674,6 +676,7 @@
 		4D74FEB529AEB4CD00401178 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				000EEC132B021EBE0067A8A4 /* rankedDiveMeetsIds.csv */,
 				00BD0F9A2A7CAC830098E03A /* collegeLogos.json */,
 				4D50E78F2A29106E009BFBFA /* diveTable.json */,
 				4DD868EC29F0E69C00FF988D /* keychain-swift.swift */,
@@ -899,6 +902,7 @@
 			files = (
 				4D50E7902A29106E009BFBFA /* diveTable.json in Resources */,
 				00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */,
+				000EEC142B021EBE0067A8A4 /* rankedDiveMeetsIds.csv in Resources */,
 				4DF9F80A2A85E4E30049CCD3 /* awsconfiguration.json in Resources */,
 				4DF9F8092A85E4E30049CCD3 /* amplifyconfiguration.json in Resources */,
 				4D74FE9E29AE7B9800401178 /* Preview Assets.xcassets in Resources */,
