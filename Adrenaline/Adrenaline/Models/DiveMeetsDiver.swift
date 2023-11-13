@@ -6,6 +6,7 @@ public struct DiveMeetsDiver: Model {
   public let id: String
   public var firstName: String
   public var lastName: String
+  public var gender: String
   public var finaAge: Int?
   public var hsGradYear: Int?
   public var springboardRating: Double?
@@ -17,6 +18,7 @@ public struct DiveMeetsDiver: Model {
   public init(id: String = UUID().uuidString,
       firstName: String,
       lastName: String,
+      gender: String,
       finaAge: Int? = nil,
       hsGradYear: Int? = nil,
       springboardRating: Double? = nil,
@@ -25,6 +27,7 @@ public struct DiveMeetsDiver: Model {
     self.init(id: id,
       firstName: firstName,
       lastName: lastName,
+      gender: gender,
       finaAge: finaAge,
       hsGradYear: hsGradYear,
       springboardRating: springboardRating,
@@ -36,6 +39,7 @@ public struct DiveMeetsDiver: Model {
   internal init(id: String = UUID().uuidString,
       firstName: String,
       lastName: String,
+      gender: String,
       finaAge: Int? = nil,
       hsGradYear: Int? = nil,
       springboardRating: Double? = nil,
@@ -46,6 +50,7 @@ public struct DiveMeetsDiver: Model {
       self.id = id
       self.firstName = firstName
       self.lastName = lastName
+      self.gender = gender
       self.finaAge = finaAge
       self.hsGradYear = hsGradYear
       self.springboardRating = springboardRating

@@ -8,6 +8,7 @@ extension DiveMeetsDiver {
     case id
     case firstName
     case lastName
+    case gender
     case finaAge
     case hsGradYear
     case springboardRating
@@ -38,6 +39,7 @@ extension DiveMeetsDiver {
       .field(diveMeetsDiver.id, is: .required, ofType: .string),
       .field(diveMeetsDiver.firstName, is: .required, ofType: .string),
       .field(diveMeetsDiver.lastName, is: .required, ofType: .string),
+      .field(diveMeetsDiver.gender, is: .required, ofType: .string),
       .field(diveMeetsDiver.finaAge, is: .optional, ofType: .int),
       .field(diveMeetsDiver.hsGradYear, is: .optional, ofType: .int),
       .field(diveMeetsDiver.springboardRating, is: .optional, ofType: .double),

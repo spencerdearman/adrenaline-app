@@ -153,6 +153,7 @@ type DiveMeetsDiver @model @auth(rules: [{allow: private}]) {
   id: ID!
   firstName: String!
   lastName: String!
+  gender: String!
   finaAge: Int
   hsGradYear: Int
   springboardRating: Float

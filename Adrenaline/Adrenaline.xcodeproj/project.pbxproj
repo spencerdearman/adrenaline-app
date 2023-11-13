@@ -36,7 +36,6 @@
 		0050AE8B2AABA4A600697021 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8A2AABA4A600697021 /* Video.swift */; };
 		0050AE8D2AABA56600697021 /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8C2AABA56600697021 /* Video+Schema.swift */; };
 		006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */; };
-		006151DE2B01A8E300A5B83B /* rankedDiveMeetsIds.csv in Resources */ = {isa = PBXBuildFile; fileRef = 006151DD2B01A8E300A5B83B /* rankedDiveMeetsIds.csv */; };
 		006151E12B02036200A5B83B /* DiveMeetsDiver+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006151DF2B02036200A5B83B /* DiveMeetsDiver+Schema.swift */; };
 		006151E22B02036200A5B83B /* DiveMeetsDiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006151E02B02036200A5B83B /* DiveMeetsDiver.swift */; };
 		0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5A92A426D9E0040600E /* TileSwapView.swift */; };
@@ -218,7 +217,6 @@
 		0050AE8A2AABA4A600697021 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		0050AE8C2AABA56600697021 /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
 		006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
-		006151DD2B01A8E300A5B83B /* rankedDiveMeetsIds.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = rankedDiveMeetsIds.csv; sourceTree = "<group>"; };
 		006151DF2B02036200A5B83B /* DiveMeetsDiver+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiveMeetsDiver+Schema.swift"; sourceTree = "<group>"; };
 		006151E02B02036200A5B83B /* DiveMeetsDiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiveMeetsDiver.swift; sourceTree = "<group>"; };
 		0065C5A92A426D9E0040600E /* TileSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSwapView.swift; sourceTree = "<group>"; };
@@ -680,7 +678,6 @@
 				4D50E78F2A29106E009BFBFA /* diveTable.json */,
 				4DD868EC29F0E69C00FF988D /* keychain-swift.swift */,
 				4DC2DAF12A422193008CCE5A /* Colors.swift */,
-				006151DD2B01A8E300A5B83B /* rankedDiveMeetsIds.csv */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -902,7 +899,6 @@
 			files = (
 				4D50E7902A29106E009BFBFA /* diveTable.json in Resources */,
 				00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */,
-				006151DE2B01A8E300A5B83B /* rankedDiveMeetsIds.csv in Resources */,
 				4DF9F80A2A85E4E30049CCD3 /* awsconfiguration.json in Resources */,
 				4DF9F8092A85E4E30049CCD3 /* amplifyconfiguration.json in Resources */,
 				4D74FE9E29AE7B9800401178 /* Preview Assets.xcassets in Resources */,

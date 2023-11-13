@@ -4834,8 +4834,8 @@ public struct DeleteMessageInput: GraphQLMapConvertible {
 public struct CreateDiveMeetsDiverInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID? = nil, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, version: Int? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_version": version]
+  public init(id: GraphQLID? = nil, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, version: Int? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_version": version]
   }
 
   public var id: GraphQLID? {
@@ -4862,6 +4862,15 @@ public struct CreateDiveMeetsDiverInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "lastName")
+    }
+  }
+
+  public var gender: String {
+    get {
+      return graphQLMap["gender"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gender")
     }
   }
 
@@ -4923,8 +4932,8 @@ public struct CreateDiveMeetsDiverInput: GraphQLMapConvertible {
 public struct ModelDiveMeetsDiverConditionInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, and: [ModelDiveMeetsDiverConditionInput?]? = nil, or: [ModelDiveMeetsDiverConditionInput?]? = nil, not: ModelDiveMeetsDiverConditionInput? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "not": not, "_deleted": deleted]
+  public init(firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, gender: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, and: [ModelDiveMeetsDiverConditionInput?]? = nil, or: [ModelDiveMeetsDiverConditionInput?]? = nil, not: ModelDiveMeetsDiverConditionInput? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "not": not, "_deleted": deleted]
   }
 
   public var firstName: ModelStringInput? {
@@ -4942,6 +4951,15 @@ public struct ModelDiveMeetsDiverConditionInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "lastName")
+    }
+  }
+
+  public var gender: ModelStringInput? {
+    get {
+      return graphQLMap["gender"] as! ModelStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gender")
     }
   }
 
@@ -5030,8 +5048,8 @@ public struct ModelDiveMeetsDiverConditionInput: GraphQLMapConvertible {
 public struct UpdateDiveMeetsDiverInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID, firstName: String? = nil, lastName: String? = nil, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, version: Int? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_version": version]
+  public init(id: GraphQLID, firstName: String? = nil, lastName: String? = nil, gender: String? = nil, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, version: Int? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_version": version]
   }
 
   public var id: GraphQLID {
@@ -5058,6 +5076,15 @@ public struct UpdateDiveMeetsDiverInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "lastName")
+    }
+  }
+
+  public var gender: String? {
+    get {
+      return graphQLMap["gender"] as! String?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gender")
     }
   }
 
@@ -6630,8 +6657,8 @@ public struct ModelMessageFilterInput: GraphQLMapConvertible {
 public struct ModelDiveMeetsDiverFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelIDInput? = nil, firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, and: [ModelDiveMeetsDiverFilterInput?]? = nil, or: [ModelDiveMeetsDiverFilterInput?]? = nil, not: ModelDiveMeetsDiverFilterInput? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "not": not, "_deleted": deleted]
+  public init(id: ModelIDInput? = nil, firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, gender: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, and: [ModelDiveMeetsDiverFilterInput?]? = nil, or: [ModelDiveMeetsDiverFilterInput?]? = nil, not: ModelDiveMeetsDiverFilterInput? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "not": not, "_deleted": deleted]
   }
 
   public var id: ModelIDInput? {
@@ -6658,6 +6685,15 @@ public struct ModelDiveMeetsDiverFilterInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "lastName")
+    }
+  }
+
+  public var gender: ModelStringInput? {
+    get {
+      return graphQLMap["gender"] as! ModelStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gender")
     }
   }
 
@@ -8445,8 +8481,8 @@ public struct ModelSubscriptionMessageFilterInput: GraphQLMapConvertible {
 public struct ModelSubscriptionDiveMeetsDiverFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelSubscriptionIDInput? = nil, firstName: ModelSubscriptionStringInput? = nil, lastName: ModelSubscriptionStringInput? = nil, finaAge: ModelSubscriptionIntInput? = nil, hsGradYear: ModelSubscriptionIntInput? = nil, springboardRating: ModelSubscriptionFloatInput? = nil, platformRating: ModelSubscriptionFloatInput? = nil, totalRating: ModelSubscriptionFloatInput? = nil, and: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, or: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "_deleted": deleted]
+  public init(id: ModelSubscriptionIDInput? = nil, firstName: ModelSubscriptionStringInput? = nil, lastName: ModelSubscriptionStringInput? = nil, gender: ModelSubscriptionStringInput? = nil, finaAge: ModelSubscriptionIntInput? = nil, hsGradYear: ModelSubscriptionIntInput? = nil, springboardRating: ModelSubscriptionFloatInput? = nil, platformRating: ModelSubscriptionFloatInput? = nil, totalRating: ModelSubscriptionFloatInput? = nil, and: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, or: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "_deleted": deleted]
   }
 
   public var id: ModelSubscriptionIDInput? {
@@ -8473,6 +8509,15 @@ public struct ModelSubscriptionDiveMeetsDiverFilterInput: GraphQLMapConvertible 
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "lastName")
+    }
+  }
+
+  public var gender: ModelSubscriptionStringInput? {
+    get {
+      return graphQLMap["gender"] as! ModelSubscriptionStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gender")
     }
   }
 
@@ -24670,7 +24715,7 @@ public final class DeleteMessageMutation: GraphQLMutation {
 
 public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
   public static let operationString =
-    "mutation CreateDiveMeetsDiver($input: CreateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  createDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation CreateDiveMeetsDiver($input: CreateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  createDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: CreateDiveMeetsDiverInput
   public var condition: ModelDiveMeetsDiverConditionInput?
@@ -24718,6 +24763,7 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
         GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+        GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("finaAge", type: .scalar(Int.self)),
         GraphQLField("hsGradYear", type: .scalar(Int.self)),
         GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -24736,8 +24782,8 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -24773,6 +24819,15 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "lastName")
+        }
+      }
+
+      public var gender: String {
+        get {
+          return snapshot["gender"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gender")
         }
       }
 
@@ -24871,7 +24926,7 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
 
 public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdateDiveMeetsDiver($input: UpdateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  updateDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation UpdateDiveMeetsDiver($input: UpdateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  updateDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: UpdateDiveMeetsDiverInput
   public var condition: ModelDiveMeetsDiverConditionInput?
@@ -24919,6 +24974,7 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
         GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+        GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("finaAge", type: .scalar(Int.self)),
         GraphQLField("hsGradYear", type: .scalar(Int.self)),
         GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -24937,8 +24993,8 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -24974,6 +25030,15 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "lastName")
+        }
+      }
+
+      public var gender: String {
+        get {
+          return snapshot["gender"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gender")
         }
       }
 
@@ -25072,7 +25137,7 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
 
 public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeleteDiveMeetsDiver($input: DeleteDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  deleteDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation DeleteDiveMeetsDiver($input: DeleteDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  deleteDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: DeleteDiveMeetsDiverInput
   public var condition: ModelDiveMeetsDiverConditionInput?
@@ -25120,6 +25185,7 @@ public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
         GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+        GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("finaAge", type: .scalar(Int.self)),
         GraphQLField("hsGradYear", type: .scalar(Int.self)),
         GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -25138,8 +25204,8 @@ public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -25175,6 +25241,15 @@ public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "lastName")
+        }
+      }
+
+      public var gender: String {
+        get {
+          return snapshot["gender"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gender")
         }
       }
 
@@ -41058,7 +41133,7 @@ public final class SyncMessagesQuery: GraphQLQuery {
 
 public final class GetDiveMeetsDiverQuery: GraphQLQuery {
   public static let operationString =
-    "query GetDiveMeetsDiver($id: ID!) {\n  getDiveMeetsDiver(id: $id) {\n    __typename\n    id\n    firstName\n    lastName\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "query GetDiveMeetsDiver($id: ID!) {\n  getDiveMeetsDiver(id: $id) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var id: GraphQLID
 
@@ -41104,6 +41179,7 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
         GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+        GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("finaAge", type: .scalar(Int.self)),
         GraphQLField("hsGradYear", type: .scalar(Int.self)),
         GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -41122,8 +41198,8 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -41159,6 +41235,15 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
         }
         set {
           snapshot.updateValue(newValue, forKey: "lastName")
+        }
+      }
+
+      public var gender: String {
+        get {
+          return snapshot["gender"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gender")
         }
       }
 
@@ -41257,7 +41342,7 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
 
 public final class ListDiveMeetsDiversQuery: GraphQLQuery {
   public static let operationString =
-    "query ListDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String) {\n  listDiveMeetsDivers(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query ListDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String) {\n  listDiveMeetsDivers(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      gender\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelDiveMeetsDiverFilterInput?
   public var limit: Int?
@@ -41363,6 +41448,7 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
           GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("finaAge", type: .scalar(Int.self)),
           GraphQLField("hsGradYear", type: .scalar(Int.self)),
           GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -41381,8 +41467,8 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -41418,6 +41504,15 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "lastName")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
           }
         }
 
@@ -41517,7 +41612,7 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
 
 public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
   public static let operationString =
-    "query SyncDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncDiveMeetsDivers(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query SyncDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncDiveMeetsDivers(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      gender\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelDiveMeetsDiverFilterInput?
   public var limit: Int?
@@ -41625,6 +41720,7 @@ public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
           GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("finaAge", type: .scalar(Int.self)),
           GraphQLField("hsGradYear", type: .scalar(Int.self)),
           GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -41643,8 +41739,8 @@ public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -41680,6 +41776,15 @@ public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "lastName")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
           }
         }
 
@@ -57808,7 +57913,7 @@ public final class OnDeleteMessageSubscription: GraphQLSubscription {
 
 public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnCreateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onCreateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnCreateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onCreateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveMeetsDiverFilterInput?
 
@@ -57854,6 +57959,7 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
         GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+        GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("finaAge", type: .scalar(Int.self)),
         GraphQLField("hsGradYear", type: .scalar(Int.self)),
         GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -57872,8 +57978,8 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -57909,6 +58015,15 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "lastName")
+        }
+      }
+
+      public var gender: String {
+        get {
+          return snapshot["gender"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gender")
         }
       }
 
@@ -58007,7 +58122,7 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
 
 public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnUpdateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onUpdateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnUpdateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onUpdateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveMeetsDiverFilterInput?
 
@@ -58053,6 +58168,7 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
         GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+        GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("finaAge", type: .scalar(Int.self)),
         GraphQLField("hsGradYear", type: .scalar(Int.self)),
         GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -58071,8 +58187,8 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -58108,6 +58224,15 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "lastName")
+        }
+      }
+
+      public var gender: String {
+        get {
+          return snapshot["gender"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gender")
         }
       }
 
@@ -58206,7 +58331,7 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
 
 public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnDeleteDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onDeleteDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnDeleteDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onDeleteDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveMeetsDiverFilterInput?
 
@@ -58252,6 +58377,7 @@ public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("firstName", type: .nonNull(.scalar(String.self))),
         GraphQLField("lastName", type: .nonNull(.scalar(String.self))),
+        GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("finaAge", type: .scalar(Int.self)),
         GraphQLField("hsGradYear", type: .scalar(Int.self)),
         GraphQLField("springboardRating", type: .scalar(Double.self)),
@@ -58270,8 +58396,8 @@ public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -58307,6 +58433,15 @@ public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "lastName")
+        }
+      }
+
+      public var gender: String {
+        get {
+          return snapshot["gender"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gender")
         }
       }
 

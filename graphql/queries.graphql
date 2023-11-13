@@ -1825,6 +1825,7 @@ query GetDiveMeetsDiver($id: ID!) {
     id
     firstName
     lastName
+    gender
     finaAge
     hsGradYear
     springboardRating
@@ -1849,6 +1850,7 @@ query ListDiveMeetsDivers(
       id
       firstName
       lastName
+      gender
       finaAge
       hsGradYear
       springboardRating
@@ -1883,6 +1885,7 @@ query SyncDiveMeetsDivers(
       id
       firstName
       lastName
+      gender
       finaAge
       hsGradYear
       springboardRating

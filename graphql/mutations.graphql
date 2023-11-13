@@ -1655,6 +1655,7 @@ mutation CreateDiveMeetsDiver(
     id
     firstName
     lastName
+    gender
     finaAge
     hsGradYear
     springboardRating
@@ -1677,6 +1678,7 @@ mutation UpdateDiveMeetsDiver(
     id
     firstName
     lastName
+    gender
     finaAge
     hsGradYear
     springboardRating
@@ -1699,6 +1701,7 @@ mutation DeleteDiveMeetsDiver(
     id
     firstName
     lastName
+    gender
     finaAge
     hsGradYear
     springboardRating

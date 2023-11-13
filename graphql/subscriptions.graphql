@@ -1543,6 +1543,7 @@ subscription OnCreateDiveMeetsDiver(
     id
     firstName
     lastName
+    gender
     finaAge
     hsGradYear
     springboardRating
@@ -1564,6 +1565,7 @@ subscription OnUpdateDiveMeetsDiver(
     id
     firstName
     lastName
+    gender
     finaAge
     hsGradYear
     springboardRating
@@ -1585,6 +1587,7 @@ subscription OnDeleteDiveMeetsDiver(
     id
     firstName
     lastName
+    gender
     finaAge
     hsGradYear
     springboardRating
