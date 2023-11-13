@@ -136,6 +136,24 @@ struct RankingsView: View {
         }
     }
     
+    private func deleteDiveMeetsDivers() async {
+        if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
+            do {
+                let content = try String(contentsOf: url)
+                let parsedCSV: [String] = content.components(separatedBy: "\n")
+                
+                for id in parsedCSV {
+                    print(id)
+                    //                    print(obj)
+                    let _ = try await Amplify.DataStore.delete(DiveMeetsDiver.self, where: DiveMeetsDiver.keys.id == id)
+                    print("\(id) succeeded")
+                }
+            } catch {
+                print("Failed to load rankedDiveMeetsIds")
+            }
+        }
+    }
+    
     var body: some View {
         ZStack {
             (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
@@ -201,7 +219,8 @@ struct RankingsView: View {
         )
 //        .onAppear {
 //            Task {
-//                await updateDiveMeetsDivers()
+////                await updateDiveMeetsDivers()
+//                await deleteDiveMeetsDivers()
 //            }
 //        }
     }
