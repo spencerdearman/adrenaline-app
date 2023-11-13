@@ -25,6 +25,11 @@ enum GenderInt: Int, CaseIterable {
     case female = 1
 }
 
+enum AgeGroup: String, CaseIterable {
+    case fourteenFifteen = "14-15"
+    case sixteenEighteen = "16-18"
+}
+
 struct RankedUser {
     var firstName: String
     var lastName: String
@@ -48,6 +53,7 @@ struct RankingsView: View {
     @Environment(\.networkIsConnected) private var networkIsConnected
     @State private var rankingType: RankingType = .combined
     @State private var gender: Gender = .male
+    @State private var ageGroup: AgeGroup = .fourteenFifteen
     @State private var maleRatings: GenderRankingList = []
     @State private var femaleRatings: GenderRankingList = []
     @State private var contentHasScrolled: Bool = false
@@ -446,6 +452,15 @@ struct RankingsView: View {
                     .background(gender == .male ? Color.blue.opacity(0.3) : Color.pink.opacity(0.3))
                     .backgroundStyle(cornerRadius: 14, opacity: 0.4)
             }
+            
+            Menu {
+                Picker("", selection: $ageGroup) {
+                    ForEach(AgeGroup.allCases, id: \.self) { g in
+                        Text(g.rawValue)
+                            .tag(g)
+                    }
+                }
+            } label: { Text("Age") }
         }
     }
 }
