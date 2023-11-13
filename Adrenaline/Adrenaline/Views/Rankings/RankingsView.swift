@@ -104,6 +104,38 @@ struct RankingsView: View {
         return result
     }
     
+    private func updateDiveMeetsDivers() async {
+        if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
+            do {
+                let content = try String(contentsOf: url)
+                let parsedCSV: [String] = content.components(separatedBy: "\n")
+                let p = ProfileParser()
+                
+                for id in parsedCSV {
+                    print(id)
+                    let _ = await p.parseProfile(diveMeetsID: id)
+                    guard let info = p.profileData.info else { continue }
+                    
+                    guard let stats = p.profileData.diveStatistics else { continue }
+                    let skillRating = SkillRating(diveStatistics: stats)
+                    let (springboard, platform, total) = await skillRating.getSkillRating()
+                    //                            print(springboard, platform, total)
+                    
+                    let obj = DiveMeetsDiver(id: id, firstName: info.first,
+                                             lastName: info.last, finaAge: info.finaAge,
+                                             hsGradYear: info.hsGradYear,
+                                             springboardRating: springboard,
+                                             platformRating: platform, totalRating: total)
+//                    print(obj)
+                    let _ = try await saveToDataStore(object: obj)
+                    print("\(id) succeeded")
+                }
+            } catch {
+                print("Failed to load rankedDiveMeetsIds")
+            }
+        }
+    }
+    
     var body: some View {
         ZStack {
             (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
@@ -167,7 +199,11 @@ struct RankingsView: View {
                           feedModel: $feedModel)
             .frame(width: screenWidth)
         )
-        
+//        .onAppear {
+//            Task {
+//                await updateDiveMeetsDivers()
+//            }
+//        }
     }
     
     var scrollDetection: some View {
