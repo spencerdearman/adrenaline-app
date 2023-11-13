@@ -641,11 +641,16 @@ struct RankingListView: View {
 
 struct RankingListDiverView: View {
     @Environment(\.colorScheme) private var currentMode
+    @State private var newUser: NewUser? = nil
     var number: Int
     var rankedUser: RankedUser
     var rating: Double
     
     private let screenWidth = UIScreen.main.bounds.width
+    
+    private var userName: some View {
+        Text((rankedUser.firstName) + " "  + (rankedUser.lastName))
+    }
     
     var body: some View {
         ZStack {
@@ -658,15 +663,33 @@ struct RankingListDiverView: View {
                 Text(String(number))
                     .padding(.leading)
                     .padding(.trailing, 40)
-                // TODO: link row to profile
-                Text((rankedUser.firstName) + " "  + (rankedUser.lastName))
-                    .foregroundColor(.primary)
+                
+                if let diver = newUser {
+                    NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+                        userName
+                            .foregroundColor(.accentColor)
+                    }
+                } else {
+                    userName
+                        .foregroundColor(.primary)
+                }
                 
                 Spacer()
                 Text(String(format: "%.1f", rating))
                     .padding(.trailing)
             }
             .padding()
+        }
+        .onAppear {
+            Task {
+                if newUser == nil {
+                    let pred = NewUser.keys.diveMeetsID == rankedUser.diveMeetsID
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        newUser = users[0]
+                    }
+                }
+            }
         }
     }
 }
