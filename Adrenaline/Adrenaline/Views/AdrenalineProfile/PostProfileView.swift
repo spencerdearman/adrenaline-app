@@ -137,7 +137,10 @@ struct PostProfileExpandedView: View {
     @Environment(\.colorScheme) var currentMode
     // authUserId is the userId of the current user
     @AppStorage("authUserId") private var authUserId: String = ""
-    @State private var showingAlert: Bool = false
+    @State private var showingDeleteAlert: Bool = false
+    @State private var showingReportAlert: Bool = false
+    @State private var showingReportedAlert: Bool = false
+    @State private var reportedAlertText: String = ""
     @State private var isEditingPost: Bool = false
     @State private var savedPost: UserSavedPost? = nil
     @State private var currentUser: NewUser? = nil
@@ -168,6 +171,14 @@ struct PostProfileExpandedView: View {
         } else {
             print("No single post found, setting to nil")
             savedPost = nil
+        }
+    }
+    
+    private func setReportedAlertText(result: Bool) {
+        if result {
+            reportedAlertText = "Post has been reported and will be reviewed by our Support Team as soon as possible"
+        } else {
+            reportedAlertText = "Failed to report post. Please try again later"
         }
     }
     
@@ -294,7 +305,7 @@ struct PostProfileExpandedView: View {
                                     }
                                     
                                     Button(role: .destructive) {
-                                        showingAlert = true
+                                        showingDeleteAlert = true
                                     } label: {
                                         HStack {
                                             Image(systemName: "trash.fill")
@@ -302,39 +313,50 @@ struct PostProfileExpandedView: View {
                                         }
                                     }
                                     // If post owner is not current user and has already saved this post
-                                } else if let saved = savedPost {
-                                    Button {
-                                        if let currentUser = currentUser {
-                                            Task {
-                                                try await userUnsavePost(user: currentUser, post: post,
-                                                                         savedPost: saved)
-                                                savedPost = nil
-                                                postShowing = post.id
-                                            }
-                                        }
-                                    } label: {
-                                        HStack {
-                                            Image(systemName: "square.and.arrow.down.fill")
-                                            Text("Saved")
-                                        }
-                                        .foregroundColor(.primary)
-                                    }
-                                    // If post owner is not current user and has not saved this post
                                 } else {
-                                    Button {
-                                        if let currentUser = currentUser {
-                                            Task {
-                                                savedPost = try await userSavePost(user: currentUser,
-                                                                                   post: post)
-                                                postShowing = post.id
+                                    if let saved = savedPost {
+                                        Button {
+                                            if let currentUser = currentUser {
+                                                Task {
+                                                    try await userUnsavePost(user: currentUser, post: post,
+                                                                             savedPost: saved)
+                                                    savedPost = nil
+                                                    postShowing = post.id
+                                                }
                                             }
+                                        } label: {
+                                            HStack {
+                                                Image(systemName: "square.and.arrow.down.fill")
+                                                Text("Saved")
+                                            }
+                                            .foregroundColor(.primary)
                                         }
+                                        // If post owner is not current user and has not saved this post
+                                    } else {
+                                        Button {
+                                            if let currentUser = currentUser {
+                                                Task {
+                                                    savedPost = try await userSavePost(user: currentUser,
+                                                                                       post: post)
+                                                    postShowing = post.id
+                                                }
+                                            }
+                                        } label: {
+                                            HStack {
+                                                Image(systemName: "square.and.arrow.down")
+                                                Text("Save")
+                                            }
+                                            .foregroundColor(.primary)
+                                        }
+                                    }
+                                    
+                                    Button(role: .destructive) {
+                                        showingReportAlert = true
                                     } label: {
                                         HStack {
-                                            Image(systemName: "square.and.arrow.down")
-                                            Text("Save")
+                                            Image(systemName: "flag.fill")
+                                            Text("Report")
                                         }
-                                        .foregroundColor(.primary)
                                     }
                                 }
                             } label: {
@@ -355,10 +377,10 @@ struct PostProfileExpandedView: View {
             CloseButtonWithPostShowing(postShowing: $postShowing)
         }
         .zIndex(10)
-        .alert("Are you sure you want to delete this post?", isPresented: $showingAlert) {
+        .alert("Are you sure you want to delete this post?", isPresented: $showingDeleteAlert) {
             Button("Cancel", role: .cancel) {
                 print("Cancel delete")
-                showingAlert = false
+                showingDeleteAlert = false
             }
             Button("Delete", role: .destructive) {
                 Task {
@@ -366,12 +388,35 @@ struct PostProfileExpandedView: View {
                     
                     let _ = try await deletePost(user: user, post: post)
                     
-                    showingAlert = false
+                    showingDeleteAlert = false
                     shouldRefreshPosts = true
                     // Note: We reset postShowing in PostsView after it detects the change in
                     //       shouldRefreshPosts so we leave the user sitting on the expanded view
                     //       until the posts grid can be updated with the post removed
                 }
+            }
+        }
+        .alert("Are you sure you want to report this post?", isPresented: $showingReportAlert) {
+            Button("Cancel", role: .cancel) {
+                print("Cancel report")
+                showingReportAlert = false
+            }
+            Button("Report", role: .destructive) {
+                Task {
+                    print("Initiating report...")
+                    
+                    setReportedAlertText(result: await reportPost(currentUserId: authUserId,
+                                                                  reportedUserId: user.id,
+                                                                  postId: post.id))
+                    
+                    showingReportAlert = false
+                    showingReportedAlert = true
+                }
+            }
+        }
+        .alert(reportedAlertText, isPresented: $showingReportedAlert) {
+            Button("OK", role: .cancel) {
+                showingReportedAlert = false
             }
         }
         .onAppear {
