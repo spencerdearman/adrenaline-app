@@ -80,8 +80,7 @@ struct NewPostView: View {
                 // Store Data and URL where data is saved in case it
                 // needs deleted
                 videoData[id] = data
-                return try await PostMediaItem(id: id, data: PostMedia.image(imageFromVideo(url: url,
-                                                                                            at: .zero)))
+                return PostMediaItem(id: id, data: PostMedia.localVideo(AVPlayer(url: url)))
                 
             } else if let data = selectedFileData,
                       type.conforms(to: UTType.image) {
@@ -162,6 +161,12 @@ struct NewPostView: View {
                                         content
                                             .opacity(phase.isIdentity ? 1.0 : 0.8)
                                             .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
+                                    }
+                                    .onAppear {
+                                        if case let .localVideo(v) = item.data {
+                                            v.seek(to: .zero)
+                                            v.play()
+                                        }
                                     }
                             }
                         }
