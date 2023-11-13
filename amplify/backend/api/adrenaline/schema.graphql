@@ -148,4 +148,14 @@ type Message @model @auth(rules: [{allow: private}]) {
   creationDate: AWSDateTime!
   MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byMessage", fields: ["id"])
 }
- 
+
+type DiveMeetsDiver @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  finaAge: Int
+  hsGradYear: Int
+  springboardRating: Float
+  platformRating: Float
+  totalRating: Float
+}

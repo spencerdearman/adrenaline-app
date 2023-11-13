@@ -36,6 +36,9 @@
 		0050AE8B2AABA4A600697021 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8A2AABA4A600697021 /* Video.swift */; };
 		0050AE8D2AABA56600697021 /* Video+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0050AE8C2AABA56600697021 /* Video+Schema.swift */; };
 		006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */; };
+		006151DE2B01A8E300A5B83B /* rankedDiveMeetsIds.csv in Resources */ = {isa = PBXBuildFile; fileRef = 006151DD2B01A8E300A5B83B /* rankedDiveMeetsIds.csv */; };
+		006151E12B02036200A5B83B /* DiveMeetsDiver+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006151DF2B02036200A5B83B /* DiveMeetsDiver+Schema.swift */; };
+		006151E22B02036200A5B83B /* DiveMeetsDiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006151E02B02036200A5B83B /* DiveMeetsDiver.swift */; };
 		0065C5AA2A426D9E0040600E /* TileSwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5A92A426D9E0040600E /* TileSwapView.swift */; };
 		0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0065C5AB2A4377920040600E /* SwipeModifier.swift */; };
 		006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006651322A7C466300A373F6 /* CollegeLogoParser.swift */; };
@@ -215,6 +218,9 @@
 		0050AE8A2AABA4A600697021 /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		0050AE8C2AABA56600697021 /* Video+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Video+Schema.swift"; sourceTree = "<group>"; };
 		006042AC2A6AFD8A001368B3 /* KeychainAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainAccess.swift; sourceTree = "<group>"; };
+		006151DD2B01A8E300A5B83B /* rankedDiveMeetsIds.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = rankedDiveMeetsIds.csv; sourceTree = "<group>"; };
+		006151DF2B02036200A5B83B /* DiveMeetsDiver+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DiveMeetsDiver+Schema.swift"; sourceTree = "<group>"; };
+		006151E02B02036200A5B83B /* DiveMeetsDiver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiveMeetsDiver.swift; sourceTree = "<group>"; };
 		0065C5A92A426D9E0040600E /* TileSwapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileSwapView.swift; sourceTree = "<group>"; };
 		0065C5AB2A4377920040600E /* SwipeModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeModifier.swift; sourceTree = "<group>"; };
 		006651322A7C466300A373F6 /* CollegeLogoParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CollegeLogoParser.swift; path = Adrenaline/Model/CollegeLogoParser.swift; sourceTree = SOURCE_ROOT; };
@@ -674,6 +680,7 @@
 				4D50E78F2A29106E009BFBFA /* diveTable.json */,
 				4DD868EC29F0E69C00FF988D /* keychain-swift.swift */,
 				4DC2DAF12A422193008CCE5A /* Colors.swift */,
+				006151DD2B01A8E300A5B83B /* rankedDiveMeetsIds.csv */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -747,6 +754,8 @@
 				4DA482DA2AA98BE8003DFA3B /* College+Schema.swift */,
 				4DA482C12AA98BE8003DFA3B /* Dive.swift */,
 				4DA482CC2AA98BE8003DFA3B /* Dive+Schema.swift */,
+				006151E02B02036200A5B83B /* DiveMeetsDiver.swift */,
+				006151DF2B02036200A5B83B /* DiveMeetsDiver+Schema.swift */,
 				4DA482CD2AA98BE8003DFA3B /* JudgeScore.swift */,
 				4DA482C22AA98BE8003DFA3B /* JudgeScore+Schema.swift */,
 				4DA482CB2AA98BE8003DFA3B /* Message.swift */,
@@ -893,6 +902,7 @@
 			files = (
 				4D50E7902A29106E009BFBFA /* diveTable.json in Resources */,
 				00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */,
+				006151DE2B01A8E300A5B83B /* rankedDiveMeetsIds.csv in Resources */,
 				4DF9F80A2A85E4E30049CCD3 /* awsconfiguration.json in Resources */,
 				4DF9F8092A85E4E30049CCD3 /* amplifyconfiguration.json in Resources */,
 				4D74FE9E29AE7B9800401178 /* Preview Assets.xcassets in Resources */,
@@ -911,6 +921,7 @@
 				4DA482E62AA98BE8003DFA3B /* College.swift in Sources */,
 				005057502ABFB038000B082D /* Post+Schema.swift in Sources */,
 				4DF9F80D2A85E7BA0049CCD3 /* AppLogic.swift in Sources */,
+				006151E12B02036200A5B83B /* DiveMeetsDiver+Schema.swift in Sources */,
 				4D13F3C12A99B6700081823D /* ProfileBar.swift in Sources */,
 				4DA482E12AA98BE8003DFA3B /* AmplifyModels.swift in Sources */,
 				0040A6B72A550C8E004C84BF /* NoStickPicker.swift in Sources */,
@@ -970,6 +981,7 @@
 				4D1A31B32A96AFA300128F81 /* FeedBase.swift in Sources */,
 				4D74FE9929AE7B9800401178 /* ProfileView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,
+				006151E22B02036200A5B83B /* DiveMeetsDiver.swift in Sources */,
 				4DB1DC7A2A6711D80016EE14 /* AdrenalineProfileView.swift in Sources */,
 				002A1B8029DB94A400A26FED /* MeetDBTestView.swift in Sources */,
 				4D254F1629C0411C0033838D /* HTMLParser.swift in Sources */,

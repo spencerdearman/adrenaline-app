@@ -1819,3 +1819,84 @@ query SyncMessages(
     __typename
   }
 }
+
+query GetDiveMeetsDiver($id: ID!) {
+  getDiveMeetsDiver(id: $id) {
+    id
+    firstName
+    lastName
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+query ListDiveMeetsDivers(
+  $filter: ModelDiveMeetsDiverFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDiveMeetsDivers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      firstName
+      lastName
+      finaAge
+      hsGradYear
+      springboardRating
+      platformRating
+      totalRating
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncDiveMeetsDivers(
+  $filter: ModelDiveMeetsDiverFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncDiveMeetsDivers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      firstName
+      lastName
+      finaAge
+      hsGradYear
+      springboardRating
+      platformRating
+      totalRating
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}

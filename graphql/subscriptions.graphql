@@ -1535,3 +1535,66 @@ subscription OnDeleteMessage($filter: ModelSubscriptionMessageFilterInput) {
     __typename
   }
 }
+
+subscription OnCreateDiveMeetsDiver(
+  $filter: ModelSubscriptionDiveMeetsDiverFilterInput
+) {
+  onCreateDiveMeetsDiver(filter: $filter) {
+    id
+    firstName
+    lastName
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnUpdateDiveMeetsDiver(
+  $filter: ModelSubscriptionDiveMeetsDiverFilterInput
+) {
+  onUpdateDiveMeetsDiver(filter: $filter) {
+    id
+    firstName
+    lastName
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnDeleteDiveMeetsDiver(
+  $filter: ModelSubscriptionDiveMeetsDiverFilterInput
+) {
+  onDeleteDiveMeetsDiver(filter: $filter) {
+    id
+    firstName
+    lastName
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}

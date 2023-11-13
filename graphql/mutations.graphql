@@ -1646,3 +1646,69 @@ mutation DeleteMessage(
     __typename
   }
 }
+
+mutation CreateDiveMeetsDiver(
+  $input: CreateDiveMeetsDiverInput!
+  $condition: ModelDiveMeetsDiverConditionInput
+) {
+  createDiveMeetsDiver(input: $input, condition: $condition) {
+    id
+    firstName
+    lastName
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation UpdateDiveMeetsDiver(
+  $input: UpdateDiveMeetsDiverInput!
+  $condition: ModelDiveMeetsDiverConditionInput
+) {
+  updateDiveMeetsDiver(input: $input, condition: $condition) {
+    id
+    firstName
+    lastName
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+
+mutation DeleteDiveMeetsDiver(
+  $input: DeleteDiveMeetsDiverInput!
+  $condition: ModelDiveMeetsDiverConditionInput
+) {
+  deleteDiveMeetsDiver(input: $input, condition: $condition) {
+    id
+    firstName
+    lastName
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
