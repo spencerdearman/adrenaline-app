@@ -84,8 +84,6 @@ struct RankingsView: View {
         currentMode == .light ? Color.white : Color.black
     }
     
-    private let skill = SkillRating()
-    
     private func getMaleAthletes() async -> [NewAthlete] {
         let pred = NewAthlete.keys.gender == "M"
         return await queryAWSAthletes(where: pred)
@@ -134,32 +132,6 @@ struct RankingsView: View {
         return result
     }
     
-    private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
-        var result: GenderRankingList = []
-        var springboard: [Double] = []
-        var platform: [Double] = []
-        var total: [Double] = []
-        
-        for (_, spring, plat, tot) in ratings {
-            springboard.append(spring)
-            platform.append(plat)
-            total.append(tot)
-        }
-        
-        springboard = skill.normalizeRatings(ratings: springboard)
-        platform = skill.normalizeRatings(ratings: platform)
-        total = skill.normalizeRatings(ratings: total)
-        
-        // Don't include only one user, since ratings don't make sense
-        if ratings.count > 1 {
-            for i in 0..<ratings.count {
-                result.append((ratings[i].0, springboard[i], platform[i], total[i]))
-            }
-        }
-        
-        return result
-    }
-    
     private func updateDiveMeetsDivers() async {
         if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
             do {
@@ -194,7 +166,7 @@ struct RankingsView: View {
                     let (springboard, platform, total) = await skillRating.getSkillRating()
                     
                     let obj = DiveMeetsDiver(id: id, firstName: info.first,
-                                             lastName: info.last, gender: gender, 
+                                             lastName: info.last, gender: gender,
                                              finaAge: info.finaAge,
                                              hsGradYear: info.hsGradYear,
                                              springboardRating: springboard,
@@ -222,7 +194,7 @@ struct RankingsView: View {
                 for id in parsedCSV {
                     print(id)
                     //                    print(obj)
-                    let _ = try await Amplify.DataStore.delete(DiveMeetsDiver.self, 
+                    let _ = try await Amplify.DataStore.delete(DiveMeetsDiver.self,
                                                                where: DiveMeetsDiver.keys.id == id)
                     print("\(id) succeeded")
                 }
@@ -234,7 +206,7 @@ struct RankingsView: View {
     
     // Keeps first seen of each diveMeetsID for each list in case there are
     // duplicates between registered Adrenaline athletes and DiveMeetsDivers
-    private func removeDuplicates(_ ratings: [(RankedUser, Double, Double, Double)]) -> 
+    private func removeDuplicates(_ ratings: GenderRankingList) ->
     [(RankedUser, Double, Double, Double)] {
         var seen = Set<String>()
         var result: [(RankedUser, Double, Double, Double)] = []
@@ -247,6 +219,68 @@ struct RankingsView: View {
         }
         
         return result
+    }
+    
+    private func getMaleRatings() async throws {
+        // Get all male Athlete profiles from the DataStore
+        let males = await getMaleAthletes()
+        maleRatings = []
+        var pendingMaleRatings: GenderRankingList = []
+        for male in males {
+            if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "",
+               let springboard = male.springboardRating,
+               let platform = male.platformRating,
+               let total = male.totalRating {
+                let rankedUser = RankedUser(firstName: male.user.firstName,
+                                            lastName: male.user.lastName,
+                                            diveMeetsID: diveMeetsID,
+                                            gender: male.gender,
+                                            finaAge: male.age,
+                                            hsGradYear: male.graduationYear,
+                                            springboardRating: springboard,
+                                            platformRating: platform,
+                                            totalRating: total)
+                pendingMaleRatings.append((rankedUser, springboard, platform,
+                                           total))
+            }
+        }
+        
+        // Add in DiveMeetsDiver users
+        pendingMaleRatings += try await getMaleDiveMeetsDivers()
+        
+        // Remove duplicate entries and normalize
+        maleRatings = removeDuplicates(pendingMaleRatings)
+    }
+    
+    private func getFemaleRatings() async throws {
+        // Get all female Athlete profiles from the DataStore
+        let females = await getFemaleAthletes()
+        femaleRatings = []
+        var pendingFemaleRatings: GenderRankingList = []
+        for female in females {
+            if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
+               let springboard = female.springboardRating,
+               let platform = female.platformRating,
+               let total = female.totalRating {
+                let rankedUser = RankedUser(firstName: female.user.firstName,
+                                            lastName: female.user.lastName,
+                                            diveMeetsID: diveMeetsID,
+                                            gender: female.gender,
+                                            finaAge: female.age,
+                                            hsGradYear: female.graduationYear,
+                                            springboardRating: springboard,
+                                            platformRating: platform,
+                                            totalRating: total)
+                pendingFemaleRatings.append((rankedUser, springboard, platform,
+                                             total))
+            }
+        }
+        
+        // Add in DiveMeetsDiver users
+        pendingFemaleRatings += try await getFemaleDiveMeetsDivers()
+        
+        // Remove duplicate entries and normalize
+        femaleRatings = removeDuplicates(pendingFemaleRatings)
     }
     
     var body: some View {
@@ -268,9 +302,9 @@ struct RankingsView: View {
                     if (gender == .male && !maleRatings.isEmpty) ||
                         (gender == .female && !femaleRatings.isEmpty) {
                         RankingListView(tabBarState: $tabBarState, rankingType: $rankingType,
-                                        gender: $gender, maleRatings: $maleRatings,
+                                        gender: $gender, ageGroup: $ageGroup, maleRatings: $maleRatings,
                                         femaleRatings: $femaleRatings)
-                     
+                        
                         Spacer()
                     } else {
                         ProgressView()
@@ -278,68 +312,8 @@ struct RankingsView: View {
                 }
                 .onAppear {
                     Task {
-                        if maleRatings.isEmpty {
-                            // Get all male Athlete profiles from the DataStore
-                            let males = await getMaleAthletes()
-                            maleRatings = []
-                            var pendingMaleRatings: GenderRankingList = []
-                            for male in males {
-                                if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "",
-                                    let springboard = male.springboardRating,
-                                   let platform = male.platformRating,
-                                   let total = male.totalRating {
-                                    let rankedUser = RankedUser(firstName: male.user.firstName, 
-                                                                lastName: male.user.lastName,
-                                                                diveMeetsID: diveMeetsID,
-                                                                gender: male.gender,
-                                                                finaAge: male.age,
-                                                                hsGradYear: male.graduationYear,
-                                                                springboardRating: springboard,
-                                                                platformRating: platform,
-                                                                totalRating: total)
-                                    pendingMaleRatings.append((rankedUser, springboard, platform, 
-                                                               total))
-                                }
-                            }
-                            
-                            // Add in DiveMeetsDiver users
-                            pendingMaleRatings += try await getMaleDiveMeetsDivers()
-                            
-                            // Remove duplicate entries and normalize
-                            maleRatings = normalizeRatings(ratings: removeDuplicates(pendingMaleRatings))
-                        }
-                        
-                        if femaleRatings.isEmpty {
-                            // Get all female Athlete profiles from the DataStore
-                            let females = await getFemaleAthletes()
-                            femaleRatings = []
-                            var pendingFemaleRatings: GenderRankingList = []
-                            for female in females {
-                                if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
-                                   let springboard = female.springboardRating,
-                                   let platform = female.platformRating,
-                                   let total = female.totalRating {
-                                    let rankedUser = RankedUser(firstName: female.user.firstName,
-                                                                lastName: female.user.lastName,
-                                                                diveMeetsID: diveMeetsID,
-                                                                gender: female.gender,
-                                                                finaAge: female.age,
-                                                                hsGradYear: female.graduationYear,
-                                                                springboardRating: springboard,
-                                                                platformRating: platform,
-                                                                totalRating: total)
-                                    pendingFemaleRatings.append((rankedUser, springboard, platform, 
-                                                                 total))
-                                }
-                            }
-                            
-                            // Add in DiveMeetsDiver users
-                            pendingFemaleRatings += try await getFemaleDiveMeetsDivers()
-                            
-                            // Remove duplicate entries and normalize
-                            femaleRatings = normalizeRatings(
-                                ratings: removeDuplicates(pendingFemaleRatings))
-                        }
+                        try await getMaleRatings()
+                        try await getFemaleRatings()
                     }
                 }
             } else {
@@ -354,12 +328,12 @@ struct RankingsView: View {
                           feedModel: $feedModel)
             .frame(width: screenWidth)
         )
-//        .onAppear {
-//            Task {
-//                await updateDiveMeetsDivers()
-////                await deleteDiveMeetsDivers()
-//            }
-//        }
+        //        .onAppear {
+        //            Task {
+        //                await updateDiveMeetsDivers()
+        ////                await deleteDiveMeetsDivers()
+        //            }
+        //        }
     }
     
     var scrollDetection: some View {
@@ -397,7 +371,7 @@ struct RankingsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 30))
                     .overlay(
                         RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.primary.opacity(0.5), lineWidth: 1) 
+                            .stroke(Color.primary.opacity(0.5), lineWidth: 1)
                             .offset(x: rankingType == .springboard
                                     ? -typeBubbleWidth / 1
                                     : (rankingType == .combined ? 0 : typeBubbleWidth))
@@ -470,22 +444,104 @@ struct RankingListView: View {
     @Binding var tabBarState: Visibility
     @Binding var rankingType: RankingType
     @Binding var gender: Gender
+    @Binding var ageGroup: AgeGroup
     @Binding var maleRatings: GenderRankingList
     @Binding var femaleRatings: GenderRankingList
     
+    private let skill = SkillRating()
     private let screenWidth = UIScreen.main.bounds.width
+    
+    private func isInAgeRange(age: Int) -> Bool {
+        switch ageGroup {
+            case .fourteenFifteen:
+                return 14 <= age && age <= 15
+            case .sixteenEighteen:
+                return 16 <= age && age <= 18
+        }
+    }
+    
+    private func filterByAgeGroup(_ ratings: GenderRankingList) -> GenderRankingList {
+        var result: GenderRankingList = []
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        let currentDate: Date = .now
+        let boundaryYear: Int
+        
+        // If in or after June, set boundary at the following year
+        // e.g. if Nov 2023, set year to 2024
+        if Calendar.current.component(.month, from: currentDate) >= 6 {
+            boundaryYear = Calendar.current.component(.year, from: currentDate) + 1
+        } else {
+            boundaryYear = Calendar.current.component(.year, from: currentDate)
+        }
+        
+        var lowerBoundYear = boundaryYear
+        if ageGroup == .fourteenFifteen {
+            lowerBoundYear += 3
+        }
+        
+        // Sets gradYear range for age group
+        // e.g. 14-15 age group -> 2027-2028, 16-18 age group -> 2024-2026
+        let upperBoundYear = ageGroup == .fourteenFifteen ? lowerBoundYear + 1 : lowerBoundYear + 2
+        
+        for rating in ratings {
+            let user = rating.0
+            
+            // If age exists and in age range, append and continue
+            if let age = user.finaAge, isInAgeRange(age: age) {
+                result.append(rating)
+                continue
+            }
+            
+            // If age doesn't exist or it is not in range, but gradYear is, append
+            if let gradYear = user.hsGradYear,
+               gradYear >= lowerBoundYear, gradYear <= upperBoundYear {
+                result.append(rating)
+            }
+        }
+        
+        return result
+    }
+    
+    private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
+        var result: GenderRankingList = []
+        var springboard: [Double] = []
+        var platform: [Double] = []
+        var total: [Double] = []
+        
+        for (_, spring, plat, tot) in ratings {
+            springboard.append(spring)
+            platform.append(plat)
+            total.append(tot)
+        }
+        
+        springboard = skill.normalizeRatings(ratings: springboard)
+        platform = skill.normalizeRatings(ratings: platform)
+        total = skill.normalizeRatings(ratings: total)
+        
+        // Don't include only one user, since ratings don't make sense
+        if ratings.count > 1 {
+            for i in 0..<ratings.count {
+                result.append((ratings[i].0, springboard[i], platform[i], total[i]))
+            }
+        }
+        
+        return result
+    }
     
     private func getSortedRankingList() -> RankingList {
         let list = gender == .male ? maleRatings : femaleRatings
-        let keep = list.map {
+        let filtered = filterByAgeGroup(list)
+        let normalized = normalizeRatings(ratings: filtered)
+        let keep = normalized.map {
             // Values rounded to one decimal place
             switch rankingType {
-            case .springboard:
-                return ($0.0, round($0.1 * 10) / 10.0)
-            case .combined:
-                return ($0.0, round($0.3 * 10) / 10.0)
-            case .platform:
-                return ($0.0, round($0.2 * 10) / 10.0)
+                case .springboard:
+                    return ($0.0, round($0.1 * 10) / 10.0)
+                case .combined:
+                    return ($0.0, round($0.3 * 10) / 10.0)
+                case .platform:
+                    return ($0.0, round($0.2 * 10) / 10.0)
             }
         }
         
