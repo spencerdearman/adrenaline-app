@@ -304,7 +304,7 @@ struct RankingsView: View {
                             .frame(height: screenHeight * 0.08)
                         
                         HStack {
-                            Text("Only show Adrenaline Profiles")
+                            Text("Only show Adrenaline profiles")
                                 .foregroundColor(.secondary)
                                 .font(.subheadline)
                             
