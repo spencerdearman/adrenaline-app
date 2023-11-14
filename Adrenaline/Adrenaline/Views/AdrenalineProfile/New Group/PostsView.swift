@@ -65,17 +65,32 @@ struct PostsView: View {
                 }
             }
             
-            ScrollView(showsIndicators: false) {
-                LazyVGrid(columns: [
-                    GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
-                        ForEach($posts, id: \.id) { post in
-                            ZStack {
-                                AnyView(post.collapsedView.wrappedValue)
-                                    .frame(width: size, height: size)
+            // If posts is populated, show grid
+            if !posts.isEmpty {
+                ScrollView(showsIndicators: false) {
+                    LazyVGrid(columns: [
+                        GridItem(.fixed(size)), GridItem(.fixed(size)), GridItem(.fixed(size))]) {
+                            ForEach($posts, id: \.id) { post in
+                                ZStack {
+                                    AnyView(post.collapsedView.wrappedValue)
+                                        .frame(width: size, height: size)
+                                }
                             }
                         }
-                    }
-                    .padding(.top)
+                        .padding(.top)
+                }
+                // If posts is empty but refreshing, show ProgressView
+            } else if shouldRefreshPosts {
+                ProgressView()
+                // If posts is empty but it is the current user's profile, show message directed to
+                // themself
+            } else if newUser.id == authUserId {
+                Text("You have not added any posts yet")
+                    .foregroundColor(.secondary)
+                // Else, posts view is someone else's empty grid, show message to user
+            } else {
+                Text("This user has not added any posts yet")
+                    .foregroundColor(.secondary)
             }
         }
         .onChange(of: shouldRefreshPosts) {
