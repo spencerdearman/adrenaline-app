@@ -30,7 +30,12 @@ struct PostMediaItem: Identifiable {
             
             return BufferVideoPlayerView(videoPlayerVM: v)
         } else if case let .localVideo(v) = self.data {
+            let url = (v.currentItem?.asset as? AVURLAsset)?.url
+            let isVertical = isVerticalLocalVideo(url: url?.absoluteString ?? "")
             return VideoPlayer(player: v)
+                .aspectRatio(isVertical
+                              ? CGSize(width: 9, height: 16)
+                              : CGSize(width: 16, height: 9), contentMode: .fit)
         } else if case let .image(i) = self.data {
             return i
                 .resizable()
