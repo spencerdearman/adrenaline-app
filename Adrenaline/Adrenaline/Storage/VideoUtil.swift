@@ -148,3 +148,18 @@ func isVerticalImage(url: String) -> Bool {
     
     return false
 }
+
+// https://stackoverflow.com/a/64701285/22068672
+func getVideoResolution(url: String) -> CGSize? {
+    guard let track = AVURLAsset(url: URL(string: url)!).tracks(withMediaType: AVMediaType.video).first else { return nil }
+    let size = track.naturalSize.applying(track.preferredTransform)
+    return size
+}
+
+func isVerticalLocalVideo(url: String) -> Bool {
+    if let size = getVideoResolution(url: url) {
+        return size.width < size.height
+    }
+    
+    return false
+}
