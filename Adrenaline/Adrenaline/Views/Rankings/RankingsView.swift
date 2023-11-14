@@ -63,6 +63,7 @@ struct RankingsView: View {
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
     @State private var selection: BoardSelection = .springboard
+    @State private var isAdrenalineProfilesOnlyChecked: Bool = false
     @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
@@ -288,40 +289,74 @@ struct RankingsView: View {
     }
     
     var body: some View {
-        ZStack {
-            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
-            Image(currentMode == .light ? "RankingsBackground-Light" : "RankingsBackground-Dark")
-                .frame(height: screenHeight * 0.8)
-                .offset(x: -screenWidth * 0.1, y: screenHeight * 0.05)
-            if networkIsConnected {
-                ScrollView {
-                    scrollDetection
-                    
-                    Rectangle()
-                        .fill(.clear)
-                        .frame(height: screenHeight * 0.08)
-                    
-                    boardSelector
-                    
-                    if (gender == .male && !maleRatings.isEmpty) ||
-                        (gender == .female && !femaleRatings.isEmpty) {
-                        RankingListView(tabBarState: $tabBarState, rankingType: $rankingType,
-                                        gender: $gender, ageGroup: $ageGroup, maleRatings: $maleRatings,
-                                        femaleRatings: $femaleRatings)
+        NavigationView {
+            ZStack {
+                (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+                Image(currentMode == .light ? "RankingsBackground-Light" : "RankingsBackground-Dark")
+                    .frame(height: screenHeight * 0.8)
+                    .offset(x: -screenWidth * 0.1, y: screenHeight * 0.05)
+                if networkIsConnected {
+                    ScrollView {
+                        scrollDetection
                         
-                        Spacer()
-                    } else {
-                        ProgressView()
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: screenHeight * 0.08)
+                        
+                        HStack {
+                            Text("Only show Adrenaline Profiles")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                            
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    isAdrenalineProfilesOnlyChecked.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "checkmark.shield")
+                                    .opacity(isAdrenalineProfilesOnlyChecked ? 1.0 : 0.0)
+                                    .frame(width: 36, height: 36)
+                                    .foregroundColor(.secondary)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .stroke(Custom.medBlue, lineWidth: 1.5)
+                                    )
+                                    .background(isAdrenalineProfilesOnlyChecked 
+                                                ? Color.blue.opacity(0.3)
+                                                : Color.clear)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .scaleEffect(0.8)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.leading)
+                        
+                        boardSelector
+                        
+                        if (gender == .male && !maleRatings.isEmpty) ||
+                            (gender == .female && !femaleRatings.isEmpty) {
+                            RankingListView(tabBarState: $tabBarState,
+                                            adrenalineProfilesOnly: $isAdrenalineProfilesOnlyChecked,
+                                            rankingType: $rankingType,
+                                            gender: $gender, ageGroup: $ageGroup,
+                                            maleRatings: $maleRatings,
+                                            femaleRatings: $femaleRatings)
+                            
+                            Spacer()
+                        } else {
+                            ProgressView()
+                        }
                     }
-                }
-                .onAppear {
-                    Task {
-                        try await getMaleRatings()
-                        try await getFemaleRatings()
+                    .onAppear {
+                        Task {
+                            try await getMaleRatings()
+                            try await getFemaleRatings()
+                        }
                     }
+                } else {
+                    NotConnectedView()
                 }
-            } else {
-                NotConnectedView()
             }
         }
         .overlay (
@@ -446,6 +481,7 @@ struct RankingsView: View {
 struct RankingListView: View {
     @Environment(\.colorScheme) private var currentMode
     @Binding var tabBarState: Visibility
+    @Binding var adrenalineProfilesOnly: Bool
     @Binding var rankingType: RankingType
     @Binding var gender: Gender
     @Binding var ageGroup: AgeGroup
@@ -533,7 +569,7 @@ struct RankingListView: View {
         return result
     }
     
-    private func ratingListInCache(gender: Gender, ageGroup: AgeGroup, 
+    private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
                                    board: RankingType) -> NumberedRankingList? {
         if let genderDict = cachedRatings[gender.rawValue],
            let ageGroupDict = genderDict[ageGroup.rawValue],
@@ -670,11 +706,13 @@ struct RankingListView: View {
                         let rankedUser = numberedList[index].1.0
                         let rating = numberedList[index].1.1
                         
-                        RankingListDiverView(number: number, rankedUser: rankedUser, rating: rating)
+                        RankingListDiverView(number: number, rankedUser: rankedUser, rating: rating,
+                                             adrenalineProfilesOnly: $adrenalineProfilesOnly)
                     }
                     
                     Text("Ratings below 1.0 are not displayed")
                         .foregroundColor(.secondary)
+                        .padding(.top)
                 }
                 .padding()
             }
@@ -688,6 +726,7 @@ struct RankingListDiverView: View {
     var number: Int
     var rankedUser: RankedUser
     var rating: Double
+    @Binding var adrenalineProfilesOnly: Bool
     
     private let screenWidth = UIScreen.main.bounds.width
     
@@ -697,31 +736,33 @@ struct RankingListDiverView: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .frame(width: screenWidth * 0.9)
-                .foregroundColor(Custom.darkGray)
-                .mask(RoundedRectangle(cornerRadius: 40))
-                .shadow(radius: 5)
-            HStack {
-                Text(String(number))
-                    .padding(.leading)
-                    .padding(.trailing, 40)
-                
-                if let diver = newUser {
-                    NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+            if !adrenalineProfilesOnly || newUser != nil {
+                Rectangle()
+                    .frame(width: screenWidth * 0.9)
+                    .foregroundColor(Custom.darkGray)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 5)
+                HStack {
+                    Text(String(number))
+                        .padding(.leading)
+                        .padding(.trailing, 40)
+                    
+                    if let diver = newUser {
+                        NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+                            userName
+                                .foregroundColor(.accentColor)
+                        }
+                    } else {
                         userName
-                            .foregroundColor(.accentColor)
+                            .foregroundColor(.primary)
                     }
-                } else {
-                    userName
-                        .foregroundColor(.primary)
+                    
+                    Spacer()
+                    Text(String(format: "%.1f", rating))
+                        .padding(.trailing)
                 }
-                
-                Spacer()
-                Text(String(format: "%.1f", rating))
-                    .padding(.trailing)
+                .padding()
             }
-            .padding()
         }
         .onAppear {
             Task {
