@@ -8,6 +8,10 @@
 import SwiftUI
 import Amplify
 
+// Cache RankingList to avoid slow sorting
+//                 [Gender: [AgeGrp: [Board : NumberedRankingList]]]
+var cachedRatings: [String: [String: [String: NumberedRankingList]]] = [:]
+
 enum BoardSelection: String, CaseIterable {
     case springboard = "Springboard"
     case combined = "Combined"
@@ -529,6 +533,30 @@ struct RankingListView: View {
         return result
     }
     
+    private func ratingListInCache(gender: Gender, ageGroup: AgeGroup, 
+                                   board: RankingType) -> NumberedRankingList? {
+        if let genderDict = cachedRatings[gender.rawValue],
+           let ageGroupDict = genderDict[ageGroup.rawValue],
+           let boardList = ageGroupDict[board.rawValue] {
+            return boardList
+        }
+        
+        return nil
+    }
+    
+    private func cacheRatingList(gender: Gender, ageGroup: AgeGroup, board: RankingType,
+                                 ratings: NumberedRankingList) {
+        if !cachedRatings.keys.contains(gender.rawValue) {
+            cachedRatings[gender.rawValue] = [:]
+        }
+        
+        if !cachedRatings[gender.rawValue]!.keys.contains(ageGroup.rawValue) {
+            cachedRatings[gender.rawValue]![ageGroup.rawValue] = [:]
+        }
+        
+        cachedRatings[gender.rawValue]![ageGroup.rawValue]![board.rawValue] = ratings
+    }
+    
     private func getSortedRankingList() -> RankingList {
         let list = gender == .male ? maleRatings : femaleRatings
         let filtered = filterByAgeGroup(list)
@@ -545,6 +573,7 @@ struct RankingListView: View {
             }
         }
         
+        // Sorts by decreasing rating and filters out ratings below 1.0
         return keep.sorted(by: {
             if $0.1 > $1.1 { return true }
             else if $0.1 == $1.1 {
@@ -553,7 +582,7 @@ struct RankingListView: View {
             } else {
                 return false
             }
-        })
+        }).filter { $0.1 >= 1.0 }
     }
     
     // This should be called after sorting to get a number for that result in the ranking list view
@@ -596,11 +625,22 @@ struct RankingListView: View {
             return []
         }
         
+        // Caches rating list for future viewing since it won't change
+        cacheRatingList(gender: gender, ageGroup: ageGroup, board: rankingType, ratings: result)
+        
         return result
     }
     
+    private func getFinalRankingList() -> NumberedRankingList {
+        if let result = ratingListInCache(gender: gender, ageGroup: ageGroup, board: rankingType) {
+            return result
+        }
+        
+        return numberSortedRankingList(getSortedRankingList())
+    }
+    
     var body: some View {
-        let numberedList = numberSortedRankingList(getSortedRankingList())
+        let numberedList = getFinalRankingList()
         VStack {
             // Column headers
             ZStack {
@@ -632,6 +672,9 @@ struct RankingListView: View {
                         
                         RankingListDiverView(number: number, rankedUser: rankedUser, rating: rating)
                     }
+                    
+                    Text("Ratings below 1.0 are not displayed")
+                        .foregroundColor(.secondary)
                 }
                 .padding()
             }
