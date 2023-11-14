@@ -350,8 +350,13 @@ struct RankingsView: View {
                     }
                     .onAppear {
                         Task {
-                            try await getMaleRatings()
-                            try await getFemaleRatings()
+                            if maleRatings.isEmpty {
+                                try await getMaleRatings()
+                            }
+                            
+                            if femaleRatings.isEmpty {
+                                try await getFemaleRatings()
+                            }
                         }
                     }
                 } else {
