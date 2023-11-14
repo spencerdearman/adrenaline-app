@@ -664,7 +664,7 @@ struct RankingListView: View {
             }
             
             HideTabBarScrollView(tabBarState: $tabBarState) {
-                VStack {
+                LazyVStack {
                     ForEach(numberedList.indices, id: \.self) { index in
                         let number = numberedList[index].0
                         let rankedUser = numberedList[index].1.0
