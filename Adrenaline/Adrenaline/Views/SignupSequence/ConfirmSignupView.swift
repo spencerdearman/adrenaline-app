@@ -57,6 +57,8 @@ struct ConfirmSignUp: View {
             
             Button {
                 Task {
+                    focusedField = nil
+                    
                     try? await state.confirmSignUp()
                 }
             } label: {

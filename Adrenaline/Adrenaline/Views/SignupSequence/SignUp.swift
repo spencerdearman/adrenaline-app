@@ -54,6 +54,8 @@ struct SignUp: View {
                 SignUpField(email: $email, field, focusedField: $focusedField)
             }
             Button {
+                focusedField = nil
+                
                 // Passwords match
                 if !state.fields[0].value.isEmpty,
                     state.fields[1].value == state.fields[2].value {

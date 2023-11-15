@@ -69,6 +69,7 @@ struct ConfirmPasswordReset: View {
 
             Button {
                 Task {
+                    focusedField = nil
                     try await state.confirmResetPassword()
                     signupCompleted = true
                 }

@@ -55,6 +55,8 @@ struct ForgotPassword: View {
             
             Button {
                 Task {
+                    focusedField = nil
+                    
                     try? await state.resetPassword()
                 }
             } label: {

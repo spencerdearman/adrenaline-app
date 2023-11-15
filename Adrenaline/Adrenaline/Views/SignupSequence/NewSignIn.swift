@@ -68,6 +68,7 @@ struct NewSignIn: View {
                 .focused($focusedField, equals: .password)
             
             Button {
+                focusedField = nil
                 state.username = email
                 Task {
                     try? await state.signIn()
