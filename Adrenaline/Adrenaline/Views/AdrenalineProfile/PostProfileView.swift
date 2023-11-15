@@ -146,6 +146,7 @@ struct PostProfileExpandedView: View {
     @State private var currentUser: NewUser? = nil
     @State private var caption: String = ""
     @State private var isCoachesOnly: Bool = false
+    @FocusState private var captionFocused: Bool
     @Binding var postShowing: String?
     @Binding var shouldRefreshPosts: Bool
     let id: String
@@ -188,6 +189,10 @@ struct PostProfileExpandedView: View {
                 .fill(.ultraThinMaterial)
                 .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
                         radius: 15, x: 0, y: 30)
+                // Taps on background behind ScrollView or other elements
+                .onTapGesture {
+                    captionFocused = false
+                }
             
             VStack {
                 ScrollView(.horizontal) {
@@ -202,11 +207,17 @@ struct PostProfileExpandedView: View {
                                         .opacity(phase.isIdentity ? 1.0 : 0.8)
                                         .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
                                 }
+                                
                         }
                     }
                     .frame(height: 450)
+                    
                 }
                 .scrollTargetBehavior(.paging)
+                // Taps on ScrollView and empty space around media
+                .onTapGesture {
+                    captionFocused = false
+                }
                 
                 HStack(alignment: .top) {
                     ZStack(alignment: .topLeading) {
@@ -218,6 +229,7 @@ struct PostProfileExpandedView: View {
                                 .backgroundStyle(cornerRadius: 14, opacity: 0.15)
                                 .shadow(color: .gray.opacity(0.3), radius: 5)
                                 .lineLimit(6, reservesSpace: true)
+                                .focused($captionFocused)
                         } else {
                             RoundedRectangle(cornerRadius: 14)
                                 .fill(.ultraThinMaterial)
