@@ -324,6 +324,16 @@ final class SkillRating {
         return await getSkillRating(stats: stats, metric: computeMetric1)
     }
     
+    // Convenience function to avoid rerunning profile parsing when it is already set in init
+    func getSkillRating() async -> (Double?, Double?, Double?) {
+        if self.diveStatistics == [] {
+            print("This method should not be called without diveStatistics being set first")
+            return (nil, nil, nil)
+        }
+        
+        return await getSkillRating(stats: self.diveStatistics, metric: computeMetric1)
+    }
+    
     private func getSkillRating(stats: ProfileDiveStatisticsData,
                         metric: ([DiveStatistic]) -> Double) async -> (Double, Double, Double) {
         let skill = SkillRating(diveStatistics: stats)

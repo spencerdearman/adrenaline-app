@@ -8,6 +8,10 @@
 import SwiftUI
 import Amplify
 
+// Cache RankingList to avoid slow sorting
+//                 [Gender: [AgeGrp: [Board : NumberedRankingList]]]
+var cachedRatings: [String: [String: [String: NumberedRankingList]]] = [:]
+
 enum BoardSelection: String, CaseIterable {
     case springboard = "Springboard"
     case combined = "Combined"
@@ -25,9 +29,26 @@ enum GenderInt: Int, CaseIterable {
     case female = 1
 }
 
-//                            [(NewAthlete, springboard, platform, total)]]
-typealias GenderRankingList = [(NewAthlete, Double, Double, Double)]
-typealias RankingListItem = (NewAthlete, Double)
+enum AgeGroup: String, CaseIterable {
+    case fourteenFifteen = "14-15"
+    case sixteenEighteen = "16-18"
+}
+
+struct RankedUser {
+    var firstName: String
+    var lastName: String
+    var diveMeetsID: String
+    var gender: String
+    var finaAge: Int?
+    var hsGradYear: Int?
+    var springboardRating: Double
+    var platformRating: Double
+    var totalRating: Double
+}
+
+//                            [(User      , sb    , plat  , tot)]
+typealias GenderRankingList = [(RankedUser, Double, Double, Double)]
+typealias RankingListItem = (RankedUser, Double)
 typealias RankingList = [RankingListItem]
 typealias NumberedRankingList = [(Int, RankingListItem)]
 
@@ -36,11 +57,13 @@ struct RankingsView: View {
     @Environment(\.networkIsConnected) private var networkIsConnected
     @State private var rankingType: RankingType = .combined
     @State private var gender: Gender = .male
+    @State private var ageGroup: AgeGroup = .fourteenFifteen
     @State private var maleRatings: GenderRankingList = []
     @State private var femaleRatings: GenderRankingList = []
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
     @State private var selection: BoardSelection = .springboard
+    @State private var isAdrenalineProfilesOnlyChecked: Bool = false
     @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
@@ -66,11 +89,28 @@ struct RankingsView: View {
         currentMode == .light ? Color.white : Color.black
     }
     
-    private let skill = SkillRating()
-    
     private func getMaleAthletes() async -> [NewAthlete] {
         let pred = NewAthlete.keys.gender == "M"
         return await queryAWSAthletes(where: pred)
+    }
+    
+    private func getMaleDiveMeetsDivers() async throws -> [(RankedUser, Double, Double, Double)] {
+        var result: [(RankedUser, Double, Double, Double)] = []
+        let pred = DiveMeetsDiver.keys.gender == "M"
+        let divers: [DiveMeetsDiver] = try await query(where: pred)
+        for diver in divers {
+            if let springboard = diver.springboardRating,
+               let platform = diver.platformRating,
+               let total = diver.totalRating {
+                result.append((RankedUser(firstName: diver.firstName, lastName: diver.lastName,
+                                          diveMeetsID: diver.id, gender: diver.gender,
+                                          finaAge: diver.finaAge, hsGradYear: diver.hsGradYear,
+                                          springboardRating: springboard, platformRating: platform,
+                                          totalRating: total), springboard, platform, total))
+            }
+        }
+        
+        return result
     }
     
     private func getFemaleAthletes() async -> [NewAthlete] {
@@ -78,85 +118,250 @@ struct RankingsView: View {
         return await queryAWSAthletes(where: pred)
     }
     
-    private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
-        var result: GenderRankingList = []
-        var springboard: [Double] = []
-        var platform: [Double] = []
-        var total: [Double] = []
-        
-        for (_, spring, plat, tot) in ratings {
-            springboard.append(spring)
-            platform.append(plat)
-            total.append(tot)
-        }
-        
-        springboard = skill.normalizeRatings(ratings: springboard)
-        platform = skill.normalizeRatings(ratings: platform)
-        total = skill.normalizeRatings(ratings: total)
-        
-        // Don't include only one user, since ratings don't make sense
-        if ratings.count > 1 {
-            for i in 0..<ratings.count {
-                result.append((ratings[i].0, springboard[i], platform[i], total[i]))
+    private func getFemaleDiveMeetsDivers() async throws -> [(RankedUser, Double, Double, Double)] {
+        var result: [(RankedUser, Double, Double, Double)] = []
+        let pred = DiveMeetsDiver.keys.gender == "F"
+        let divers: [DiveMeetsDiver] = try await query(where: pred)
+        for diver in divers {
+            if let springboard = diver.springboardRating,
+               let platform = diver.platformRating,
+               let total = diver.totalRating {
+                result.append((RankedUser(firstName: diver.firstName, lastName: diver.lastName,
+                                          diveMeetsID: diver.id, gender: diver.gender,
+                                          finaAge: diver.finaAge, hsGradYear: diver.hsGradYear,
+                                          springboardRating: springboard, platformRating: platform,
+                                          totalRating: total), springboard, platform, total))
             }
         }
         
         return result
     }
     
-    var body: some View {
-        ZStack {
-            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
-            Image(currentMode == .light ? "RankingsBackground-Light" : "RankingsBackground-Dark")
-                .frame(height: screenHeight * 0.8)
-                .offset(x: -screenWidth * 0.1, y: screenHeight * 0.05)
-            if networkIsConnected {
-                ScrollView {
-                    scrollDetection
+    private func updateDiveMeetsDivers() async {
+        if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
+            do {
+                let content = try String(contentsOf: url)
+                let parsedCSV: [String] = content.components(separatedBy: "\n")
+                let totalRows = parsedCSV.count
+                
+                for (i, id) in parsedCSV.enumerated() {
+                    let p = ProfileParser()
+                    let _ = await p.parseProfile(diveMeetsID: id)
                     
-                    Rectangle()
-                        .fill(.clear)
-                        .frame(height: screenHeight * 0.08)
-                    
-                    boardSelector
-                    
-                    RankingListView(tabBarState: $tabBarState, rankingType: $rankingType, 
-                                    gender: $gender, maleRatings: $maleRatings,
-                                    femaleRatings: $femaleRatings)
-                    
-                    Spacer()
-                }
-                .onAppear {
-                    Task {
-                        let males = await getMaleAthletes()
-                        maleRatings = []
-                        for male in males {
-                            if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "", 
-                                let springboard = male.springboardRating,
-                                let platform = male.platformRating,
-                                let total = male.totalRating {
-                                maleRatings.append((male, springboard, platform, total))
-                            }
-                        }
-                        
-                        maleRatings = normalizeRatings(ratings: maleRatings)
-                        
-                        let females = await getFemaleAthletes()
-                        femaleRatings = []
-                        for female in females {
-                            if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
-                               let springboard = female.springboardRating,
-                               let platform = female.platformRating,
-                               let total = female.totalRating {
-                                femaleRatings.append((female, springboard, platform, total))
-                            }
-                        }
-                        
-                        femaleRatings = normalizeRatings(ratings: femaleRatings)
+                    // Info is required for all personal data
+                    guard let info = p.profileData.info else {
+                        print("Could not get info from \(id)")
+                        continue
                     }
+                    
+                    // Gender is required for filtering
+                    guard let gender = info.gender else {
+                        print("Could not get gender from \(id)")
+                        continue
+                    }
+                    
+                    // Stats are required for calculating skill rating
+                    guard let stats = p.profileData.diveStatistics else {
+                        print("Could not get stats from \(id)")
+                        continue
+                    }
+                    
+                    // Compute skill rating with stats
+                    let skillRating = SkillRating(diveStatistics: stats)
+                    let (springboard, platform, total) = await skillRating.getSkillRating()
+                    
+                    let obj = DiveMeetsDiver(id: id, firstName: info.first,
+                                             lastName: info.last, gender: gender,
+                                             finaAge: info.finaAge,
+                                             hsGradYear: info.hsGradYear,
+                                             springboardRating: springboard,
+                                             platformRating: platform, totalRating: total)
+                    
+                    // Save object to DataStore
+                    let _ = try await saveToDataStore(object: obj)
+                    
+                    if i % 100 == 0 { print("\(i + 1) of \(totalRows) finished") }
                 }
-            } else {
-                NotConnectedView()
+            } catch {
+                print("Failed to parse content")
+            }
+        } else {
+            print("Failed to load rankedDiveMeetsIds")
+        }
+    }
+    
+    private func deleteDiveMeetsDivers() async {
+        if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
+            do {
+                let content = try String(contentsOf: url)
+                let parsedCSV: [String] = content.components(separatedBy: "\n")
+                
+                for id in parsedCSV {
+                    print(id)
+                    //                    print(obj)
+                    let _ = try await Amplify.DataStore.delete(DiveMeetsDiver.self,
+                                                               where: DiveMeetsDiver.keys.id == id)
+                    print("\(id) succeeded")
+                }
+            } catch {
+                print("Failed to load rankedDiveMeetsIds")
+            }
+        }
+    }
+    
+    // Keeps first seen of each diveMeetsID for each list in case there are
+    // duplicates between registered Adrenaline athletes and DiveMeetsDivers
+    private func removeDuplicates(_ ratings: GenderRankingList) ->
+    [(RankedUser, Double, Double, Double)] {
+        var seen = Set<String>()
+        var result: [(RankedUser, Double, Double, Double)] = []
+        
+        for elem in ratings {
+            if !seen.contains(elem.0.diveMeetsID) {
+                result.append(elem)
+                seen.insert(elem.0.diveMeetsID)
+            }
+        }
+        
+        return result
+    }
+    
+    private func getMaleRatings() async throws {
+        // Get all male Athlete profiles from the DataStore
+        let males = await getMaleAthletes()
+        maleRatings = []
+        var pendingMaleRatings: GenderRankingList = []
+        for male in males {
+            if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "",
+               let springboard = male.springboardRating,
+               let platform = male.platformRating,
+               let total = male.totalRating {
+                let rankedUser = RankedUser(firstName: male.user.firstName,
+                                            lastName: male.user.lastName,
+                                            diveMeetsID: diveMeetsID,
+                                            gender: male.gender,
+                                            finaAge: male.age,
+                                            hsGradYear: male.graduationYear,
+                                            springboardRating: springboard,
+                                            platformRating: platform,
+                                            totalRating: total)
+                pendingMaleRatings.append((rankedUser, springboard, platform,
+                                           total))
+            }
+        }
+        
+        // Add in DiveMeetsDiver users
+        pendingMaleRatings += try await getMaleDiveMeetsDivers()
+        
+        // Remove duplicate entries and normalize
+        maleRatings = removeDuplicates(pendingMaleRatings)
+    }
+    
+    private func getFemaleRatings() async throws {
+        // Get all female Athlete profiles from the DataStore
+        let females = await getFemaleAthletes()
+        femaleRatings = []
+        var pendingFemaleRatings: GenderRankingList = []
+        for female in females {
+            if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
+               let springboard = female.springboardRating,
+               let platform = female.platformRating,
+               let total = female.totalRating {
+                let rankedUser = RankedUser(firstName: female.user.firstName,
+                                            lastName: female.user.lastName,
+                                            diveMeetsID: diveMeetsID,
+                                            gender: female.gender,
+                                            finaAge: female.age,
+                                            hsGradYear: female.graduationYear,
+                                            springboardRating: springboard,
+                                            platformRating: platform,
+                                            totalRating: total)
+                pendingFemaleRatings.append((rankedUser, springboard, platform,
+                                             total))
+            }
+        }
+        
+        // Add in DiveMeetsDiver users
+        pendingFemaleRatings += try await getFemaleDiveMeetsDivers()
+        
+        // Remove duplicate entries and normalize
+        femaleRatings = removeDuplicates(pendingFemaleRatings)
+    }
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+                Image(currentMode == .light ? "RankingsBackground-Light" : "RankingsBackground-Dark")
+                    .frame(height: screenHeight * 0.8)
+                    .offset(x: -screenWidth * 0.1, y: screenHeight * 0.05)
+                if networkIsConnected {
+                    ScrollView {
+                        scrollDetection
+                        
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: screenHeight * 0.08)
+                        
+                        HStack {
+                            Text("Only show Adrenaline profiles")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                            
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    isAdrenalineProfilesOnlyChecked.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "checkmark.shield")
+                                    .opacity(isAdrenalineProfilesOnlyChecked ? 1.0 : 0.0)
+                                    .frame(width: 36, height: 36)
+                                    .foregroundColor(.secondary)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .stroke(Custom.medBlue, lineWidth: 1.5)
+                                    )
+                                    .background(isAdrenalineProfilesOnlyChecked 
+                                                ? Color.blue.opacity(0.3)
+                                                : Color.clear)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .scaleEffect(0.8)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.leading)
+                        
+                        boardSelector
+                        
+                        if (gender == .male && !maleRatings.isEmpty) ||
+                            (gender == .female && !femaleRatings.isEmpty) {
+                            RankingListView(tabBarState: $tabBarState,
+                                            adrenalineProfilesOnly: $isAdrenalineProfilesOnlyChecked,
+                                            rankingType: $rankingType,
+                                            gender: $gender, ageGroup: $ageGroup,
+                                            maleRatings: $maleRatings,
+                                            femaleRatings: $femaleRatings)
+                            
+                            Spacer()
+                        } else {
+                            ProgressView()
+                        }
+                    }
+                    .onAppear {
+                        Task {
+                            if maleRatings.isEmpty {
+                                try await getMaleRatings()
+                            }
+                            
+                            if femaleRatings.isEmpty {
+                                try await getFemaleRatings()
+                            }
+                        }
+                    }
+                } else {
+                    NotConnectedView()
+                }
             }
         }
         .overlay (
@@ -167,7 +372,12 @@ struct RankingsView: View {
                           feedModel: $feedModel)
             .frame(width: screenWidth)
         )
-        
+        //        .onAppear {
+        //            Task {
+        //                await updateDiveMeetsDivers()
+        ////                await deleteDiveMeetsDivers()
+        //            }
+        //        }
     }
     
     var scrollDetection: some View {
@@ -205,10 +415,11 @@ struct RankingsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 30))
                     .overlay(
                         RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.primary.opacity(0.5), lineWidth: 1) 
+                            .stroke(Color.primary.opacity(0.5), lineWidth: 1)
                             .offset(x: rankingType == .springboard
                                     ? -typeBubbleWidth / 1
-                                    : (rankingType == .combined ? 0 : typeBubbleWidth))// Adjust the lineWidth as needed
+                                    : (rankingType == .combined ? 0 : typeBubbleWidth))
+                        // Adjust the lineWidth as needed
                             .animation(.spring(response: 0.2), value: rankingType)
                     )
                 HStack(spacing: 0) {
@@ -259,6 +470,15 @@ struct RankingsView: View {
                     .background(gender == .male ? Color.blue.opacity(0.3) : Color.pink.opacity(0.3))
                     .backgroundStyle(cornerRadius: 14, opacity: 0.4)
             }
+            
+            Menu {
+                Picker("", selection: $ageGroup) {
+                    ForEach(AgeGroup.allCases, id: \.self) { g in
+                        Text(g.rawValue)
+                            .tag(g)
+                    }
+                }
+            } label: { Text("Age") }
         }
     }
 }
@@ -266,35 +486,144 @@ struct RankingsView: View {
 struct RankingListView: View {
     @Environment(\.colorScheme) private var currentMode
     @Binding var tabBarState: Visibility
+    @Binding var adrenalineProfilesOnly: Bool
     @Binding var rankingType: RankingType
     @Binding var gender: Gender
+    @Binding var ageGroup: AgeGroup
     @Binding var maleRatings: GenderRankingList
     @Binding var femaleRatings: GenderRankingList
     
+    private let skill = SkillRating()
     private let screenWidth = UIScreen.main.bounds.width
     
-    private func getSortedRankingList() -> RankingList {
-        let list = gender == .male ? maleRatings : femaleRatings
-        let keep = list.map {
-            switch rankingType {
-            case .springboard:
-                return ($0.0, $0.1)
-            case .combined:
-                return ($0.0, $0.3)
-            case .platform:
-                return ($0.0, $0.2)
+    private func isInAgeRange(age: Int) -> Bool {
+        switch ageGroup {
+            case .fourteenFifteen:
+                return 14 <= age && age <= 15
+            case .sixteenEighteen:
+                return 16 <= age && age <= 18
+        }
+    }
+    
+    private func filterByAgeGroup(_ ratings: GenderRankingList) -> GenderRankingList {
+        var result: GenderRankingList = []
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        let currentDate: Date = .now
+        let boundaryYear: Int
+        
+        // If in or after June, set boundary at the following year
+        // e.g. if Nov 2023, set year to 2024
+        if Calendar.current.component(.month, from: currentDate) >= 6 {
+            boundaryYear = Calendar.current.component(.year, from: currentDate) + 1
+        } else {
+            boundaryYear = Calendar.current.component(.year, from: currentDate)
+        }
+        
+        var lowerBoundYear = boundaryYear
+        if ageGroup == .fourteenFifteen {
+            lowerBoundYear += 3
+        }
+        
+        // Sets gradYear range for age group
+        // e.g. 14-15 age group -> 2027-2028, 16-18 age group -> 2024-2026
+        let upperBoundYear = ageGroup == .fourteenFifteen ? lowerBoundYear + 1 : lowerBoundYear + 2
+        
+        for rating in ratings {
+            let user = rating.0
+            
+            // If age exists and in age range, append and continue
+            if let age = user.finaAge, isInAgeRange(age: age) {
+                result.append(rating)
+                continue
+            }
+            
+            // If age doesn't exist or it is not in range, but gradYear is, append
+            if let gradYear = user.hsGradYear,
+               gradYear >= lowerBoundYear, gradYear <= upperBoundYear {
+                result.append(rating)
             }
         }
         
+        return result
+    }
+    
+    private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
+        var result: GenderRankingList = []
+        var springboard: [Double] = []
+        var platform: [Double] = []
+        var total: [Double] = []
+        
+        for (_, spring, plat, tot) in ratings {
+            springboard.append(spring)
+            platform.append(plat)
+            total.append(tot)
+        }
+        
+        springboard = skill.normalizeRatings(ratings: springboard)
+        platform = skill.normalizeRatings(ratings: platform)
+        total = skill.normalizeRatings(ratings: total)
+        
+        // Don't include only one user, since ratings don't make sense
+        if ratings.count > 1 {
+            for i in 0..<ratings.count {
+                result.append((ratings[i].0, springboard[i], platform[i], total[i]))
+            }
+        }
+        
+        return result
+    }
+    
+    private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
+                                   board: RankingType) -> NumberedRankingList? {
+        if let genderDict = cachedRatings[gender.rawValue],
+           let ageGroupDict = genderDict[ageGroup.rawValue],
+           let boardList = ageGroupDict[board.rawValue] {
+            return boardList
+        }
+        
+        return nil
+    }
+    
+    private func cacheRatingList(gender: Gender, ageGroup: AgeGroup, board: RankingType,
+                                 ratings: NumberedRankingList) {
+        if !cachedRatings.keys.contains(gender.rawValue) {
+            cachedRatings[gender.rawValue] = [:]
+        }
+        
+        if !cachedRatings[gender.rawValue]!.keys.contains(ageGroup.rawValue) {
+            cachedRatings[gender.rawValue]![ageGroup.rawValue] = [:]
+        }
+        
+        cachedRatings[gender.rawValue]![ageGroup.rawValue]![board.rawValue] = ratings
+    }
+    
+    private func getSortedRankingList() -> RankingList {
+        let list = gender == .male ? maleRatings : femaleRatings
+        let filtered = filterByAgeGroup(list)
+        let normalized = normalizeRatings(ratings: filtered)
+        let keep = normalized.map {
+            // Values rounded to one decimal place
+            switch rankingType {
+                case .springboard:
+                    return ($0.0, round($0.1 * 10) / 10.0)
+                case .combined:
+                    return ($0.0, round($0.3 * 10) / 10.0)
+                case .platform:
+                    return ($0.0, round($0.2 * 10) / 10.0)
+            }
+        }
+        
+        // Sorts by decreasing rating and filters out ratings below 1.0
         return keep.sorted(by: {
             if $0.1 > $1.1 { return true }
             else if $0.1 == $1.1 {
                 // If they share matching values, sort by first name
-                return $0.0.user.firstName < $1.0.user.firstName
+                return $0.0.firstName < $1.0.firstName
             } else {
                 return false
             }
-        })
+        }).filter { $0.1 >= 1.0 }
     }
     
     // This should be called after sorting to get a number for that result in the ranking list view
@@ -311,6 +640,7 @@ struct RankingListView: View {
                 
                 // Fails fast if unsorted list is passed in (ratings should be in descending order)
                 if rating > curRating {
+                    print(rating, item)
                     throw ParseError("Numbering ranking list failed")
                 }
                 
@@ -331,15 +661,27 @@ struct RankingListView: View {
                 everyIdx += 1
             }
         } catch {
+            print("\(error)")
             print("Failed to number list, items not sorted in descending order")
             return []
         }
         
+        // Caches rating list for future viewing since it won't change
+        cacheRatingList(gender: gender, ageGroup: ageGroup, board: rankingType, ratings: result)
+        
         return result
     }
     
+    private func getFinalRankingList() -> NumberedRankingList {
+        if let result = ratingListInCache(gender: gender, ageGroup: ageGroup, board: rankingType) {
+            return result
+        }
+        
+        return numberSortedRankingList(getSortedRankingList())
+    }
+    
     var body: some View {
-        let numberedList = numberSortedRankingList(getSortedRankingList())
+        let numberedList = getFinalRankingList()
         VStack {
             // Column headers
             ZStack {
@@ -363,14 +705,19 @@ struct RankingListView: View {
             }
             
             HideTabBarScrollView(tabBarState: $tabBarState) {
-                VStack {
+                LazyVStack {
                     ForEach(numberedList.indices, id: \.self) { index in
                         let number = numberedList[index].0
-                        let athlete = numberedList[index].1.0
+                        let rankedUser = numberedList[index].1.0
                         let rating = numberedList[index].1.1
                         
-                        RankingListDiverView(number: number, athlete: athlete, rating: rating)
+                        RankingListDiverView(number: number, rankedUser: rankedUser, rating: rating,
+                                             adrenalineProfilesOnly: $adrenalineProfilesOnly)
                     }
+                    
+                    Text("Ratings below 1.0 are not displayed")
+                        .foregroundColor(.secondary)
+                        .padding(.top)
                 }
                 .padding()
             }
@@ -380,32 +727,58 @@ struct RankingListView: View {
 
 struct RankingListDiverView: View {
     @Environment(\.colorScheme) private var currentMode
+    @State private var newUser: NewUser? = nil
     var number: Int
-    var athlete: NewAthlete
+    var rankedUser: RankedUser
     var rating: Double
+    @Binding var adrenalineProfilesOnly: Bool
     
     private let screenWidth = UIScreen.main.bounds.width
     
+    private var userName: some View {
+        Text((rankedUser.firstName) + " "  + (rankedUser.lastName))
+    }
+    
     var body: some View {
         ZStack {
-            Rectangle()
-                .frame(width: screenWidth * 0.9)
-                .foregroundColor(Custom.darkGray)
-                .mask(RoundedRectangle(cornerRadius: 40))
-                .shadow(radius: 5)
-            HStack {
-                Text(String(number))
-                    .padding(.leading)
-                    .padding(.trailing, 40)
-                // TODO: link row to profile
-                Text((athlete.user.firstName) + " "  + (athlete.user.lastName))
-                    .foregroundColor(.primary)
-                
-                Spacer()
-                Text(String(format: "%.1f", rating))
-                    .padding(.trailing)
+            if !adrenalineProfilesOnly || newUser != nil {
+                Rectangle()
+                    .frame(width: screenWidth * 0.9)
+                    .foregroundColor(Custom.darkGray)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 5)
+                HStack {
+                    Text(String(number))
+                        .padding(.leading)
+                        .padding(.trailing, 40)
+                    
+                    if let diver = newUser {
+                        NavigationLink(destination: AdrenalineProfileView(newUser: diver)) {
+                            userName
+                                .foregroundColor(.accentColor)
+                        }
+                    } else {
+                        userName
+                            .foregroundColor(.primary)
+                    }
+                    
+                    Spacer()
+                    Text(String(format: "%.1f", rating))
+                        .padding(.trailing)
+                }
+                .padding()
             }
-            .padding()
+        }
+        .onAppear {
+            Task {
+                if newUser == nil {
+                    let pred = NewUser.keys.diveMeetsID == rankedUser.diveMeetsID
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        newUser = users[0]
+                    }
+                }
+            }
         }
     }
 }
