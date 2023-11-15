@@ -23,6 +23,7 @@ struct NewPostView: View {
     @State private var postErrorMsg: String? = nil
     @State private var isLoadingMediaItems: Bool = false
     @State private var isCoachesOnlyChecked: Bool = false
+    @FocusState private var captionFocused: Bool
     @AppStorage("email") private var email: String = ""
     
     private let screenHeight = UIScreen.main.bounds.height
@@ -125,171 +126,181 @@ struct NewPostView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                if mediaItems.isEmpty, !isLoadingMediaItems {
-                    PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
-                        VStack {
-                            Image(systemName: "photo.on.rectangle")
-                                .font(.system(size: 48, weight: .bold))
-                            
-                            Text("Add media to start creating a post")
-                                .padding(.top)
-                        }
-                        .padding()
-                        .foregroundColor(.secondary)
-                        .background(.ultraThinMaterial)
-                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+            ZStack {
+                // Use systemBackground to match background color of sheet
+                // Need tappable view to break focus from caption
+                Color(UIColor.systemBackground)
+                    .onTapGesture {
+                        captionFocused = false
                     }
-                } else if isLoadingMediaItems {
-                    ProgressView()
-                        .padding(.vertical)
-                } else {
-                    // https://www.appcoda.com/scrollview-paging/
-                    ScrollView(.horizontal) {
-                        LazyHStack(spacing: 0) {
-                            ForEach(mediaItems) { item in
-                                AnyView(item.view)
-                                    .clipShape(RoundedRectangle(cornerRadius: 25))
-                                    .padding(.horizontal, 10)
-                                    .containerRelativeFrame(.horizontal)
-                                    .scrollTransition(.animated, axis: .horizontal) {
-                                        content, phase in
-                                        content
-                                            .opacity(phase.isIdentity ? 1.0 : 0.8)
-                                            .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
-                                    }
-                                    .onAppear {
-                                        if case let .localVideo(v) = item.data {
-                                            v.seek(to: .zero)
-                                            v.play()
-                                        }
-                                    }
-                            }
-                        }
-                    }
-                    .scrollTargetBehavior(.paging)
-                }
                 
                 VStack {
-                    Rectangle()
-                        .fill(.clear)
-                        .frame(height: screenHeight * 0.005)
-                    HStack {
-                        Spacer()
-                        Text("Only visible to coaches")
-                            .foregroundColor(.secondary)
-                            .font(.subheadline)
-                        
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.1)) {
-                                isCoachesOnlyChecked.toggle()
+                    if mediaItems.isEmpty, !isLoadingMediaItems {
+                        PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
+                            VStack {
+                                Image(systemName: "photo.on.rectangle")
+                                    .font(.system(size: 48, weight: .bold))
+                                
+                                Text("Add media to start creating a post")
+                                    .padding(.top)
                             }
-                        } label: {
-                            Image(systemName: "checkmark.shield")
-                                .opacity(isCoachesOnlyChecked ? 1.0 : 0.0)
-                                .frame(width: 36, height: 36)
-                                .foregroundColor(.secondary)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 14)
-                                        .stroke(Custom.medBlue, lineWidth: 1.5)
-                                )
-                                .background(isCoachesOnlyChecked ? Color.blue.opacity(0.3) : Color.clear)
-                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                                .scaleEffect(0.8)
-                        }
-                        aggressiveSpacing
-                    }
-                    
-                    Divider()
-                    
-                    TextField("Caption", text: $caption, axis: .vertical)
-                        .lineLimit(6, reservesSpace: true)
-                        .frame(width: screenWidth * 0.85)
-                }
-                .frame(maxWidth: .infinity)
-                .background (
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(.ultraThinMaterial)
-                        .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
-                                radius: 15, x: 0, y: 30)
-                )
-                
-                Spacer()
-                
-                HStack {
-                    PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
-                        Image(systemName: "photo.on.rectangle")
-                            .font(.system(size: 22, weight: .bold))
-                            .frame(width: 48, height: 48)
+                            .padding()
                             .foregroundColor(.secondary)
                             .background(.ultraThinMaterial)
                             .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                        }
+                    } else if isLoadingMediaItems {
+                        ProgressView()
+                            .padding(.vertical)
+                    } else {
+                        // https://www.appcoda.com/scrollview-paging/
+                        ScrollView(.horizontal) {
+                            LazyHStack(spacing: 0) {
+                                ForEach(mediaItems) { item in
+                                    AnyView(item.view)
+                                        .clipShape(RoundedRectangle(cornerRadius: 25))
+                                        .padding(.horizontal, 10)
+                                        .containerRelativeFrame(.horizontal)
+                                        .scrollTransition(.animated, axis: .horizontal) {
+                                            content, phase in
+                                            content
+                                                .opacity(phase.isIdentity ? 1.0 : 0.8)
+                                                .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
+                                        }
+                                        .onAppear {
+                                            if case let .localVideo(v) = item.data {
+                                                v.seek(to: .zero)
+                                                v.play()
+                                            }
+                                        }
+                                }
+                            }
+                        }
+                        .scrollTargetBehavior(.paging)
                     }
+                    
+                    VStack {
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: screenHeight * 0.005)
+                        HStack {
+                            Spacer()
+                            Text("Only visible to coaches")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                            
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    isCoachesOnlyChecked.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "checkmark.shield")
+                                    .opacity(isCoachesOnlyChecked ? 1.0 : 0.0)
+                                    .frame(width: 36, height: 36)
+                                    .foregroundColor(.secondary)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .stroke(Custom.medBlue, lineWidth: 1.5)
+                                    )
+                                    .background(isCoachesOnlyChecked ? Color.blue.opacity(0.3) : Color.clear)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .scaleEffect(0.8)
+                            }
+                            aggressiveSpacing
+                        }
+                        
+                        Divider()
+                        
+                        TextField("Caption", text: $caption, axis: .vertical)
+                            .lineLimit(6, reservesSpace: true)
+                            .frame(width: screenWidth * 0.85)
+                            .focused($captionFocused)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .background (
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.ultraThinMaterial)
+                            .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
+                                    radius: 15, x: 0, y: 30)
+                    )
                     
                     Spacer()
                     
-                    if buttonPressed {
-                        ProgressView()
-                            .padding(.trailing)
-                    } else if let msg = postErrorMsg {
-                        Text(msg)
-                            .foregroundStyle(.red)
-                    }
-                    
-                    Button {
-                        Task {
-                            do {
-                                buttonPressed = true
-                                
-                                // Break early if attempting to post without media
-                                if !containsMedia {
-                                    postErrorMsg = "Post must have media"
-                                    buttonPressed = false
-                                    return
-                                } else {
-                                    // Clears post error if press Post with media attached
-                                    postErrorMsg = nil
-                                }
-                                
-                                if let user = try await getUserByEmail(email: email) {
-                                    let post = try await createPost(user: user,
-                                                                    caption: caption,
-                                                                    videosData: videoData,
-                                                                    imagesData: imageData,
-                                                                    idOrder: idOrder,
-                                                                    isCoachesOnly: isCoachesOnlyChecked)
-                                    print("Created Post")
-                                    
-                                    let (_, _) = try await savePost(user: user, post: post)
-                                    print("Saved Post")
-                                } else {
-                                    print("Could not get user with email \(email)")
-                                }
-                                
-                                didDismiss()
-                            } catch {
-                                print("\(error)")
-                                postErrorMsg = "Failed to create post, please try again"
-                                
-                            }
-                            
-                            buttonPressed = false
+                    HStack {
+                        PhotosPicker(selection: $selectedItems, selectionBehavior: .ordered) {
+                            Image(systemName: "photo.on.rectangle")
+                                .font(.system(size: 22, weight: .bold))
+                                .frame(width: 48, height: 48)
+                                .foregroundColor(.secondary)
+                                .background(.ultraThinMaterial)
+                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                         }
-                    } label: {
-                        Text("Post")
-                            .padding()
-                            .font(.system(size: 22, weight: .bold))
-                            .frame(height: 48)
-                            .foregroundColor(currentMode == .light ? .white : .secondary)
-                            .background(Rectangle()
-                                .foregroundStyle(containsMedia ? Custom.medBlue : Color.gray))
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                        
+                        Spacer()
+                        
+                        if buttonPressed {
+                            ProgressView()
+                                .padding(.trailing)
+                        } else if let msg = postErrorMsg {
+                            Text(msg)
+                                .foregroundStyle(.red)
+                        }
+                        
+                        Button {
+                            Task {
+                                do {
+                                    buttonPressed = true
+                                    
+                                    // Break early if attempting to post without media
+                                    if !containsMedia {
+                                        postErrorMsg = "Post must have media"
+                                        buttonPressed = false
+                                        return
+                                    } else {
+                                        // Clears post error if press Post with media attached
+                                        postErrorMsg = nil
+                                    }
+                                    
+                                    if let user = try await getUserByEmail(email: email) {
+                                        let post = try await createPost(user: user,
+                                                                        caption: caption,
+                                                                        videosData: videoData,
+                                                                        imagesData: imageData,
+                                                                        idOrder: idOrder,
+                                                                        isCoachesOnly: isCoachesOnlyChecked)
+                                        print("Created Post")
+                                        
+                                        let (_, _) = try await savePost(user: user, post: post)
+                                        print("Saved Post")
+                                    } else {
+                                        print("Could not get user with email \(email)")
+                                    }
+                                    
+                                    didDismiss()
+                                } catch {
+                                    print("\(error)")
+                                    postErrorMsg = "Failed to create post, please try again"
+                                    
+                                }
+                                
+                                buttonPressed = false
+                            }
+                        } label: {
+                            Text("Post")
+                                .padding()
+                                .font(.system(size: 22, weight: .bold))
+                                .frame(height: 48)
+                                .foregroundColor(currentMode == .light ? .white : .secondary)
+                                .background(Rectangle()
+                                    .foregroundStyle(containsMedia ? Custom.medBlue : Color.gray))
+                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                        }
+                        .disabled(buttonPressed)
                     }
-                    .disabled(buttonPressed)
                 }
+                .padding()
+                .navigationTitle("New Post")
             }
-            .padding()
-            .navigationTitle("New Post")
         }
         .onChange(of: selectedItems) {
             clearMediaItems()
