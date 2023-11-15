@@ -12,6 +12,7 @@ struct ForgotPassword: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: ResetPasswordState
     @State var appear = [false, false, false]
+    @FocusState private var focusedField: SignupInfoField?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -19,6 +20,9 @@ struct ForgotPassword: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
+                .onTapGesture {
+                    focusedField = nil
+                }
             
             VStack(alignment: .leading, spacing: 20) {
                 Text("Forgot Password")
@@ -47,6 +51,7 @@ struct ForgotPassword: View {
                 .customField(icon: "envelope.open.fill")
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
+                .focused($focusedField, equals: .email)
             
             Button {
                 Task {

@@ -12,6 +12,7 @@ struct ConfirmSignUp: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: ConfirmSignUpState
     @State var appear = [false, false, false]
+    @FocusState private var focusedField: SignupInfoField?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -19,6 +20,9 @@ struct ConfirmSignUp: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
+                .onTapGesture {
+                    focusedField = nil
+                }
             
             VStack(alignment: .leading, spacing: 20) {
                 Text("Sign Up")
@@ -49,6 +53,7 @@ struct ConfirmSignUp: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .textContentType(.oneTimeCode)
+                .focused($focusedField, equals: .confirmationCode)
             
             Button {
                 Task {

@@ -16,8 +16,7 @@ struct NewSignIn: View {
     @Binding var email: String
     @Binding var authUserId: String
     @Binding var signupCompleted: Bool
-    @FocusState var isEmailFocused: Bool
-    @FocusState var isPasswordFocused: Bool
+    @FocusState private var focusedField: SignupInfoField?
     @State private var appear = [false, false, false]
     private let screenWidth = UIScreen.main.bounds.width
     
@@ -25,6 +24,9 @@ struct NewSignIn: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
+                .onTapGesture {
+                    focusedField = nil
+                }
             
             VStack(alignment: .leading, spacing: 20) {
                 Text("Sign In")
@@ -54,7 +56,7 @@ struct NewSignIn: View {
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .focused($isEmailFocused)
+                .focused($focusedField, equals: .email)
                 .customField(icon: "envelope.open.fill")
                 .onChange(of: username) {
                     email = username
@@ -63,7 +65,7 @@ struct NewSignIn: View {
             SecureField("Password", text: $state.password)
                 .textContentType(.password)
                 .customField(icon: "key.fill")
-                .focused($isPasswordFocused)
+                .focused($focusedField, equals: .password)
             
             Button {
                 state.username = email
