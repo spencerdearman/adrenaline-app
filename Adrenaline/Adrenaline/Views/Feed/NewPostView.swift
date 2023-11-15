@@ -56,43 +56,39 @@ struct NewPostView: View {
     }
     
     private func getPostMediaItem(item: PhotosPickerItem) async -> PostMediaItem? {
-        do {
-            var selectedFileData: Data? = nil
-            
-            if let data = try? await item.loadTransferable(type: Data.self) {
-                selectedFileData = data
-            }
-            
-            guard let type = item.supportedContentTypes.first else {
+        var selectedFileData: Data? = nil
+        
+        if let data = try? await item.loadTransferable(type: Data.self) {
+            selectedFileData = data
+        }
+        
+        guard let type = item.supportedContentTypes.first else {
+            return nil
+        }
+        
+        if let data = selectedFileData,
+           type.conforms(to: UTType.movie) {
+            // Bypass saving to the cloud and locally store
+            // Note: will need to save to cloud and cache when
+            //       post is confirmed
+            let id = UUID().uuidString
+            guard let url = await saveVideo(data: data, email: email, name: id) else {
                 return nil
             }
             
-            if let data = selectedFileData,
-               type.conforms(to: UTType.movie) {
-                // Bypass saving to the cloud and locally store
-                // Note: will need to save to cloud and cache when
-                //       post is confirmed
-                let id = UUID().uuidString
-                guard let url = await saveVideo(data: data, email: email, name: id) else {
-                    return nil
-                }
-                
-                // Store Data and URL where data is saved in case it
-                // needs deleted
-                videoData[id] = data
-                return PostMediaItem(id: id, data: PostMedia.localVideo(AVPlayer(url: url)))
-                
-            } else if let data = selectedFileData,
-                      type.conforms(to: UTType.image) {
-                guard let uiImage = UIImage(data: data) else { return nil }
-                let image = Image(uiImage: uiImage).resizable()
-                
-                let name = UUID().uuidString
-                imageData[name] = data
-                return PostMediaItem(id: name, data: PostMedia.image(image))
-            }
-        } catch {
-            print("Failed to get PostMediaItem")
+            // Store Data and URL where data is saved in case it
+            // needs deleted
+            videoData[id] = data
+            return PostMediaItem(id: id, data: PostMedia.localVideo(AVPlayer(url: url)))
+            
+        } else if let data = selectedFileData,
+                  type.conforms(to: UTType.image) {
+            guard let uiImage = UIImage(data: data) else { return nil }
+            let image = Image(uiImage: uiImage).resizable()
+            
+            let name = UUID().uuidString
+            imageData[name] = data
+            return PostMediaItem(id: name, data: PostMedia.image(image))
         }
         
         return nil
@@ -174,49 +170,49 @@ struct NewPostView: View {
                     .scrollTargetBehavior(.paging)
                 }
                 
-                    VStack {
-                        Rectangle()
-                            .fill(.clear)
-                            .frame(height: screenHeight * 0.005)
-                        HStack {
-                            Spacer()
-                            Text("Only visible to coaches")
-                                .foregroundColor(.secondary)
-                                .font(.subheadline)
-                            
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.1)) {
-                                    isCoachesOnlyChecked.toggle()
-                                }
-                            } label: {
-                                Image(systemName: "checkmark.shield")
-                                    .opacity(isCoachesOnlyChecked ? 1.0 : 0.0)
-                                    .frame(width: 36, height: 36)
-                                    .foregroundColor(.secondary)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 14)
-                                            .stroke(Custom.medBlue, lineWidth: 1.5)
-                                    )
-                                    .background(isCoachesOnlyChecked ? Color.blue.opacity(0.3) : Color.clear)
-                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                                    .scaleEffect(0.8)
+                VStack {
+                    Rectangle()
+                        .fill(.clear)
+                        .frame(height: screenHeight * 0.005)
+                    HStack {
+                        Spacer()
+                        Text("Only visible to coaches")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                        
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.1)) {
+                                isCoachesOnlyChecked.toggle()
                             }
-                            aggressiveSpacing
+                        } label: {
+                            Image(systemName: "checkmark.shield")
+                                .opacity(isCoachesOnlyChecked ? 1.0 : 0.0)
+                                .frame(width: 36, height: 36)
+                                .foregroundColor(.secondary)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 14)
+                                        .stroke(Custom.medBlue, lineWidth: 1.5)
+                                )
+                                .background(isCoachesOnlyChecked ? Color.blue.opacity(0.3) : Color.clear)
+                                .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                .scaleEffect(0.8)
                         }
-                            
-                        Divider()
-                            
-                        TextField("Caption", text: $caption, axis: .vertical)
-                            .lineLimit(6, reservesSpace: true)
-                            .frame(width: screenWidth * 0.85)
+                        aggressiveSpacing
                     }
-                    .frame(maxWidth: .infinity)
-                    .background (
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.ultraThinMaterial)
-                            .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
-                                    radius: 15, x: 0, y: 30)
-                    )
+                    
+                    Divider()
+                    
+                    TextField("Caption", text: $caption, axis: .vertical)
+                        .lineLimit(6, reservesSpace: true)
+                        .frame(width: screenWidth * 0.85)
+                }
+                .frame(maxWidth: .infinity)
+                .background (
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(.ultraThinMaterial)
+                        .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
+                                radius: 15, x: 0, y: 30)
+                )
                 
                 Spacer()
                 
