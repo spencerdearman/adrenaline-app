@@ -39,6 +39,7 @@ struct BufferVideoPlayerView: View {
                 .aspectRatio(videoPlayerVM.isVertical
                              ? CGSize(width: 9, height: 16)
                              : CGSize(width: 16, height: 9), contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 25))
                 .onAppear {
                     if playOnAppear {
                         videoPlayerVM.player.play()
