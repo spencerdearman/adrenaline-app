@@ -43,137 +43,140 @@ struct Chat: View {
     @State var recipient: NewUser?
     
     var body: some View {
-        ZStack {
-            (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
-            if feedModel.showTab {
-                Image(currentMode == .light ? "MessageBackground-Light" : "MessageBackground-Dark")
-                    .frame(width: screenWidth, height: screenHeight * 0.8)
-                    .rotationEffect(Angle(degrees: 90))
-                    .scaleEffect(0.9)
-                    .offset(x: screenWidth * 0.15)
-            }
-            Group {
-                switch selection {
-                    case 0:
-                        ScrollView {
-                            scrollDetection
-                            VStack {
-                                LazyVGrid(columns: columns, spacing: 20) {
-                                    ForEach(users.indices, id: \.self) { index in
-                                        let user = users[index]
-                                        if index != 0 { Divider() }
-                                        ProfileRow(user: user, newMessages: $newMessages)
-                                            .onTapGesture {
-                                                withAnimation {
-                                                    newMessages.remove(user.id)
-                                                    selection = 1
-                                                    feedModel.showTab = false
-                                                }
-                                                Task {
-                                                    let recipientPredicate = NewUser.keys.id == user.id
-                                                    let recipientUsers = await
-                                                    queryAWSUsers(where: recipientPredicate)
-                                                    if recipientUsers.count >= 1 {
-                                                        recipient = recipientUsers[0]
+        NavigationView {
+            ZStack {
+                (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+                if feedModel.showTab {
+                    Image(currentMode == .light ? "MessageBackground-Light" : "MessageBackground-Dark")
+                        .frame(width: screenWidth, height: screenHeight * 0.8)
+                        .rotationEffect(Angle(degrees: 90))
+                        .scaleEffect(0.9)
+                        .offset(x: screenWidth * 0.15)
+                }
+                Group {
+                    switch selection {
+                        case 0:
+                            ScrollView {
+                                scrollDetection
+                                VStack {
+                                    LazyVGrid(columns: columns, spacing: 20) {
+                                        ForEach(users.indices, id: \.self) { index in
+                                            let user = users[index]
+                                            if index != 0 { Divider() }
+                                            ProfileRow(user: user, newMessages: $newMessages)
+                                                .onTapGesture {
+                                                    withAnimation {
+                                                        newMessages.remove(user.id)
+                                                        selection = 1
+                                                        feedModel.showTab = false
+                                                    }
+                                                    Task {
+                                                        let recipientPredicate = NewUser.keys.id == user.id
+                                                        let recipientUsers = await
+                                                        queryAWSUsers(where: recipientPredicate)
+                                                        if recipientUsers.count >= 1 {
+                                                            recipient = recipientUsers[0]
+                                                        }
                                                     }
                                                 }
+                                        }
+                                        .padding(.horizontal, 20)
+                                    }
+                                }
+                                .padding(20)
+                                .background(.ultraThinMaterial)
+                                .modifier(OutlineOverlay(cornerRadius: 30))
+                                .backgroundStyle(cornerRadius: 30)
+                                .padding(20)
+                                .padding(.vertical, 80)
+                            }
+                            .matchedGeometryEffect(id: "form", in: namespace)
+                            
+                        case 1:
+                            VStack {
+                                ScrollView (showsIndicators: false) {
+                                    Rectangle()
+                                        .fill(.clear)
+                                        .frame(height: 100)
+                                    LazyVStack {
+                                        if let recipient = recipient,
+                                           let messages = currentUserConversations[recipient.id] {
+                                            ForEach(messages, id:\.0.id) { message, currentUserIsSender in
+                                                MessageRow(message: message,
+                                                           currentUserIsSender: currentUserIsSender)
+                                                .frame(maxWidth: .infinity,
+                                                       alignment:
+                                                        currentUserIsSender
+                                                       ? .trailing
+                                                       : .leading)
                                             }
-                                    }
-                                    .padding(.horizontal, 20)
-                                }
-                            }
-                            .padding(20)
-                            .background(.ultraThinMaterial)
-                            .modifier(OutlineOverlay(cornerRadius: 30))
-                            .backgroundStyle(cornerRadius: 30)
-                            .padding(20)
-                            .padding(.vertical, 80)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                        
-                    case 1:
-                        VStack {
-                            ScrollView (showsIndicators: false) {
-                                Rectangle()
-                                    .fill(.clear)
-                                    .frame(height: 100)
-                                LazyVStack {
-                                    if let recipient = recipient,
-                                        let messages = currentUserConversations[recipient.id] {
-                                        ForEach(messages, id:\.0.id) { message, currentUserIsSender in
-                                            MessageRow(message: message,
-                                                       currentUserIsSender: currentUserIsSender)
-                                            .frame(maxWidth: .infinity,
-                                                   alignment:
-                                                    currentUserIsSender
-                                                   ? .trailing
-                                                   : .leading)
                                         }
                                     }
                                 }
-                            }
-                            .defaultScrollAnchor(.bottom)
-                            HStack {
-                                TextField("Enter message", text: $text)
-                                    .onChange(of: text, initial: true) { _, newText in
-                                        if text != "" {
-                                            messageNotEmpty = true
-                                        } else {
-                                            messageNotEmpty = false
-                                        }
-                                    }
-                                Button {
-                                    if messageNotEmpty {
-                                        Task {
-                                            //Actual Sending Procedure
-                                            if let currentUser = currentUser, let recipient = recipient {
-                                                didTapSend(message: text, sender: currentUser,
-                                                           recipient: recipient)
-                                                
-                                                text.removeAll()
+                                .defaultScrollAnchor(.bottom)
+                                HStack {
+                                    TextField("Enter message", text: $text)
+                                        .onChange(of: text, initial: true) { _, newText in
+                                            if text != "" {
+                                                messageNotEmpty = true
                                             } else {
-                                                print("Errors retrieving users")
+                                                messageNotEmpty = false
                                             }
                                         }
+                                    Button {
+                                        if messageNotEmpty {
+                                            Task {
+                                                //Actual Sending Procedure
+                                                if let currentUser = currentUser, 
+                                                    let recipient = recipient {
+                                                    didTapSend(message: text, sender: currentUser,
+                                                               recipient: recipient)
+                                                    
+                                                    text.removeAll()
+                                                } else {
+                                                    print("Errors retrieving users")
+                                                }
+                                            }
+                                        }
+                                    } label: {
+                                        Image(systemName: "arrow.up.circle.fill")
+                                            .foregroundColor(messageNotEmpty ? .blue.opacity(0.7) :
+                                                    .blue.opacity(0.4))
+                                            .frame(width: 40, height: 40)
+                                            .scaleEffect(1.6)
                                     }
-                                } label: {
-                                    Image(systemName: "arrow.up.circle.fill")
-                                        .foregroundColor(messageNotEmpty ? .blue.opacity(0.7) :
-                                                .blue.opacity(0.4))
-                                        .frame(width: 40, height: 40)
-                                        .scaleEffect(1.6)
                                 }
+                                .padding(.leading, 10)
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(30)
+                                .modifier(OutlineOverlay(cornerRadius: 30))
                             }
-                            .padding(.leading, 10)
-                            .background(.ultraThinMaterial)
-                            .cornerRadius(30)
-                            .modifier(OutlineOverlay(cornerRadius: 30))
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                    default:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("DEFAULT")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .matchedGeometryEffect(id: "form", in: namespace)
+                        default:
+                            VStack(alignment: .leading, spacing: 20) {
+                                Text("DEFAULT")
+                                    .font(.largeTitle).bold()
+                                    .foregroundColor(.primary)
+                                    .slideFadeIn(show: appear[0], offset: 30)
+                            }
+                            .matchedGeometryEffect(id: "form", in: namespace)
+                    }
                 }
             }
-        }
-        .overlay{
-            if feedModel.showTab {
-                NavigationBar(title: "Messaging",
-                              diveMeetsID: $diveMeetsID,
-                              showAccount: $showAccount,
-                              contentHasScrolled: $contentHasScrolled,
-                              feedModel: $feedModel)
-                .frame(width: screenWidth)
-            } else {
-                if let recipient = recipient {
-                    ChatBar(selection: $selection, feedModel: $feedModel, user: recipient)
+            .overlay{
+                if feedModel.showTab {
+                    NavigationBar(title: "Messaging",
+                                  diveMeetsID: $diveMeetsID,
+                                  showAccount: $showAccount,
+                                  contentHasScrolled: $contentHasScrolled,
+                                  feedModel: $feedModel)
+                    .frame(width: screenWidth)
+                } else {
+                    if let recipient = recipient {
+                        ChatBar(selection: $selection, feedModel: $feedModel, user: recipient)
+                    }
                 }
             }
         }
@@ -323,7 +326,7 @@ struct Chat: View {
                     withAnimation {
                         users = reorderedUsers
                     }
-
+                    
                     // Assignment needs to follow user sorting in order for message ring to
                     // appear with the correct MessageRow
                     newMessages = updatedConversations
