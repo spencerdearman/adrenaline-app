@@ -220,7 +220,7 @@ struct ChildrenView: View {
     
     var body: some View {
         VStack(spacing: 10) {
-            ForEach(children ?? [], id: \.id) { event in
+            ForEach(children?.sorted(by: { $0.name < $1.name }) ?? [], id: \.id) { event in
                 let shape = RoundedRectangle(cornerRadius: 30)
                 ZStack {
                     shape.fill(Custom.grayThinMaterial)
