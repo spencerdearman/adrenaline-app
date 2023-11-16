@@ -76,12 +76,12 @@ struct NewSearchView: View {
     @Environment(\.newMeets) private var newMeets
     @Environment(\.newTeams) private var newTeams
     @Environment(\.colleges) private var colleges
-    @State var text = ""
-    @State var showResult: Bool = false
-    @State var selectedItem: SearchItem? = nil
-    @State var searchItems: [SearchItem] = []
-    @State var searchScope: SearchScope = .all
-    @State var recentSearches: [SearchItem] = []
+    @State private var text = ""
+    @State private var showResult: Bool = false
+    @State private var selectedItem: SearchItem? = nil
+    @State private var searchItems: [SearchItem] = []
+    @State private var searchScope: SearchScope = .all
+    @Binding var recentSearches: [SearchItem]
     @Namespace var namespace
     
     private func updateRecentSearches(item: SearchItem) {

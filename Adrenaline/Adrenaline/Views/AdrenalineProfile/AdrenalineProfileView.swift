@@ -18,6 +18,7 @@ func getCollegeImageFilename(name: String) -> String {
 struct AdrenalineProfileWrapperView: View {
     @ObservedObject private var state: SignedInState
     @Binding var showAccount: Bool
+    @Binding var recentSearches: [SearchItem]
     
     var user: NewUser?
     var authUserId: String
@@ -25,18 +26,20 @@ struct AdrenalineProfileWrapperView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>) {
+    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>) {
         self.state = state
         self.authUserId = authUserId
         self.user = nil
         self._showAccount = showAccount
+        self._recentSearches = recentSearches
     }
     
-    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>) {
+    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>) {
         self.state = state
         self.authUserId = newUser.id
         self.user = newUser
         self._showAccount = showAccount
+        self._recentSearches = recentSearches
     }
     
     var body: some View {
@@ -48,7 +51,7 @@ struct AdrenalineProfileWrapperView: View {
             }
         }
         .overlay{
-            ProfileBar(state: state, showAccount: $showAccount, user: user)
+            ProfileBar(state: state, showAccount: $showAccount, recentSearches: $recentSearches, user: user)
                 .frame(width: screenWidth)
         }
     }

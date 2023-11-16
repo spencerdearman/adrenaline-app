@@ -28,6 +28,7 @@ struct ContentView: View {
     @State var showAccount: Bool = false
     @State var diveMeetsID: String = ""
     @State var newUser: NewUser? = nil
+    @State var recentSearches: [SearchItem] = []
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -116,22 +117,25 @@ struct ContentView: View {
                             }
                     } else {
                         TabView {
-                            FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount)
-                                .tabItem {
-                                    Label("Home", systemImage: "house")
-                                }
-                            
-                            if let user = newUser, user.accountType != "Spectator" {
-                                Chat(diveMeetsID: $diveMeetsID, showAccount: $showAccount)
-                                    .tabItem {
-                                        Label("Chat", systemImage: "message")
-                                    }
+                            FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                     recentSearches: $recentSearches)
+                            .tabItem {
+                                Label("Home", systemImage: "house")
                             }
                             
-                            RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState, showAccount: $showAccount)
+                            if let user = newUser, user.accountType != "Spectator" {
+                                Chat(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                     recentSearches: $recentSearches)
                                 .tabItem {
-                                    Label("Rankings", systemImage: "trophy")
+                                    Label("Chat", systemImage: "message")
                                 }
+                            }
+                            
+                            RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
+                                         showAccount: $showAccount, recentSearches: $recentSearches)
+                            .tabItem {
+                                Label("Rankings", systemImage: "trophy")
+                            }
                             
                             Home()
                                 .tabItem {
@@ -144,7 +148,8 @@ struct ContentView: View {
                                 // and showAccount for popover profile
                                 if let user = newUser, user.accountType != "Spectator" {
                                     AdrenalineProfileWrapperView(state: state, newUser: user,
-                                                                 showAccount: $showAccount)
+                                                                 showAccount: $showAccount,
+                                                                 recentSearches: $recentSearches)
                                 } else if let _ = newUser {
                                     SettingsView(state: state, newUser: newUser,
                                                  showAccount: $showAccount)
@@ -153,7 +158,8 @@ struct ContentView: View {
                                     // default view
                                     AdrenalineProfileWrapperView(state: state,
                                                                  authUserId: authUserId,
-                                                                 showAccount: $showAccount)
+                                                                 showAccount: $showAccount,
+                                                                 recentSearches: $recentSearches)
                                 }
                             }
                         })
