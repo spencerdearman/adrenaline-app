@@ -1,5 +1,5 @@
 //
-//  MessagesView.swift
+//  ChatView.swift
 //  Adrenaline
 //
 //  Created by Spencer Dearman on 9/2/23.
@@ -10,7 +10,7 @@ import Foundation
 import Amplify
 import Combine
 
-struct Chat: View {
+struct ChatView: View {
     // Bindings
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
