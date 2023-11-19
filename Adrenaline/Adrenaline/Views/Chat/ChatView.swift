@@ -1,5 +1,5 @@
 //
-//  MessagesView.swift
+//  ChatView.swift
 //  Adrenaline
 //
 //  Created by Spencer Dearman on 9/2/23.
@@ -10,37 +10,38 @@ import Foundation
 import Amplify
 import Combine
 
-struct Chat: View {
+struct ChatView: View {
     // Bindings
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
+    @Binding var recentSearches: [SearchItem]
     
     // Main States
     @Environment(\.colorScheme) var currentMode
     @AppStorage("authUserId") private var authUserId = ""
     @Namespace var namespace
-    @State var feedModel: FeedModel = FeedModel()
-    @State var users: [NewUser] = []
+    @State private var feedModel: FeedModel = FeedModel()
+    @State private var users: [NewUser] = []
     @State private var lastUserOrder: [NewUser]? = nil
-    @State var currentUser: NewUser?
+    @State private var currentUser: NewUser?
     @State private var selection: Int = 0
-    @State var appear = [false, false, false]
-    @State var viewState: CGSize = .zero
-    @State var messageNotEmpty: Bool = false
-    @State var newMessages: Set<String> = Set()
-    @State var observedMessageIDs: Set<String> = Set()
-    @State var recipientMessageSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<MessageNewUser>>?
+    @State private var appear = [false, false, false]
+    @State private var viewState: CGSize = .zero
+    @State private var messageNotEmpty: Bool = false
+    @State private var newMessages: Set<String> = Set()
+    @State private var observedMessageIDs: Set<String> = Set()
+    @State private var recipientMessageSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<MessageNewUser>>?
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     // Message Selection States
-    @State var contentHasScrolled = false
+    @State private var contentHasScrolled = false
     
     // Personal Chat States
-    @State var text: String = ""
-    @State var currentUserConversations: [String : [(Message, Bool)]] = [:]
-    @State var recipient: NewUser?
+    @State private var text: String = ""
+    @State private var currentUserConversations: [String : [(Message, Bool)]] = [:]
+    @State private var recipient: NewUser?
     
     var body: some View {
         ZStack {
@@ -99,7 +100,7 @@ struct Chat: View {
                                     .frame(height: 100)
                                 LazyVStack {
                                     if let recipient = recipient,
-                                        let messages = currentUserConversations[recipient.id] {
+                                       let messages = currentUserConversations[recipient.id] {
                                         ForEach(messages, id:\.0.id) { message, currentUserIsSender in
                                             MessageRow(message: message,
                                                        currentUserIsSender: currentUserIsSender)
@@ -169,7 +170,8 @@ struct Chat: View {
                               diveMeetsID: $diveMeetsID,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
-                              feedModel: $feedModel)
+                              feedModel: $feedModel,
+                              recentSearches: $recentSearches)
                 .frame(width: screenWidth)
             } else {
                 if let recipient = recipient {
@@ -323,7 +325,7 @@ struct Chat: View {
                     withAnimation {
                         users = reorderedUsers
                     }
-
+                    
                     // Assignment needs to follow user sorting in order for message ring to
                     // appear with the correct MessageRow
                     newMessages = updatedConversations

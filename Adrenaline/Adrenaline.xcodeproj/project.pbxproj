@@ -129,7 +129,7 @@
 		4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816E2AA266FF003DFA3B /* SignUp.swift */; };
 		4DA481712AA27B4A003DFA3B /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */; };
 		4DA481732AA27C73003DFA3B /* ConfirmPasswordReset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481722AA27C73003DFA3B /* ConfirmPasswordReset.swift */; };
-		4DA481CD2AA789E4003DFA3B /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481CC2AA789E4003DFA3B /* MessagesView.swift */; };
+		4DA481CD2AA789E4003DFA3B /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481CC2AA789E4003DFA3B /* ChatView.swift */; };
 		4DA481CF2AA78A01003DFA3B /* MessageRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481CE2AA78A01003DFA3B /* MessageRow.swift */; };
 		4DA482DC2AA98BE8003DFA3B /* NewEvent+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */; };
 		4DA482DE2AA98BE8003DFA3B /* Dive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA482C12AA98BE8003DFA3B /* Dive.swift */; };
@@ -311,7 +311,7 @@
 		4DA4816E2AA266FF003DFA3B /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
 		4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassword.swift; sourceTree = "<group>"; };
 		4DA481722AA27C73003DFA3B /* ConfirmPasswordReset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmPasswordReset.swift; sourceTree = "<group>"; };
-		4DA481CC2AA789E4003DFA3B /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		4DA481CC2AA789E4003DFA3B /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		4DA481CE2AA78A01003DFA3B /* MessageRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageRow.swift; sourceTree = "<group>"; };
 		4DA482BF2AA98BE8003DFA3B /* NewEvent+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NewEvent+Schema.swift"; sourceTree = "<group>"; };
 		4DA482C12AA98BE8003DFA3B /* Dive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dive.swift; sourceTree = "<group>"; };
@@ -738,7 +738,7 @@
 			children = (
 				4D541C0B2AAA540500EC47D8 /* ChatAPI.swift */,
 				4DA481CE2AA78A01003DFA3B /* MessageRow.swift */,
-				4DA481CC2AA789E4003DFA3B /* MessagesView.swift */,
+				4DA481CC2AA789E4003DFA3B /* ChatView.swift */,
 				4D541C0D2AAAC62A00EC47D8 /* ProfileRow.swift */,
 			);
 			path = Chat;
@@ -991,7 +991,7 @@
 				4D26F43C2A4FEC3200DA0E98 /* SwiftUIWheelPicker.swift in Sources */,
 				0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */,
 				0040A6B92A58E024004C84BF /* SwipeActions.swift in Sources */,
-				4DA481CD2AA789E4003DFA3B /* MessagesView.swift in Sources */,
+				4DA481CD2AA789E4003DFA3B /* ChatView.swift in Sources */,
 				0006B39B2AE35A89009863D7 /* BufferVideoPlayerView.swift in Sources */,
 				4DA481712AA27B4A003DFA3B /* ForgotPassword.swift in Sources */,
 				00287E3D2AF4A56200470767 /* FavoritesView.swift in Sources */,
