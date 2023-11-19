@@ -16,6 +16,7 @@ struct FeedBase: View {
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
+    @Binding var uploadingPost: Post?
     @State private var feedModel: FeedModel = FeedModel()
     @State private var showDetail: Bool = false
     @State private var showTab: Bool = true
@@ -124,7 +125,7 @@ struct FeedBase: View {
             if feedModel.showTab {
                 NavigationBar(title: "Adrenaline", diveMeetsID: $diveMeetsID, 
                               showAccount: $showAccount, contentHasScrolled: $contentHasScrolled,
-                              feedModel: $feedModel, recentSearches: $recentSearches)
+                              feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                     .frame(width: screenWidth)
             }
         }

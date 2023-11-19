@@ -29,22 +29,34 @@ struct ContentView: View {
     @State var diveMeetsID: String = ""
     @State var newUser: NewUser? = nil
     @State var recentSearches: [SearchItem] = []
+    @State private var uploadingPost: Post? = nil
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
     
+    // Find the key window from connected scenes
+    var keyWindow: UIWindow? {
+        return UIApplication
+            .shared
+            .connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .last
+    }
+    
     var hasHomeButton: Bool {
         if #available(iOS 13.0, *) {
-            let scenes = UIApplication.shared.connectedScenes
-            let windowScene = scenes.first as? UIWindowScene
-            guard let window = windowScene?.windows.first else { return false }
-            
+            guard let window = keyWindow else { return false }
             return !(window.safeAreaInsets.top > 20)
         }
     }
     
     var menuBarOffset: CGFloat {
         hasHomeButton ? 0 : 20
+    }
+    
+    var uploadingPostOffset: CGFloat {
+        guard let window = keyWindow else { return 34.0 + menuBarOffset - 5.0 }
+        return window.safeAreaInsets.bottom + menuBarOffset - 5.0
     }
     
     private func getCurrentUser() async -> NewUser? {
@@ -116,31 +128,40 @@ struct ContentView: View {
                                 }
                             }
                     } else {
-                        TabView {
-                            FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
-                                     recentSearches: $recentSearches)
-                            .tabItem {
-                                Label("Home", systemImage: "house")
-                            }
-                            
-                            if let user = newUser, user.accountType != "Spectator" {
-                                ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
-                                     recentSearches: $recentSearches)
+                        ZStack(alignment: .bottom) {
+                            TabView {
+                                FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                         recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                                 .tabItem {
-                                    Label("Chat", systemImage: "message")
+                                    Label("Home", systemImage: "house")
                                 }
-                            }
-                            
-                            RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
-                                         showAccount: $showAccount, recentSearches: $recentSearches)
-                            .tabItem {
-                                Label("Rankings", systemImage: "trophy")
-                            }
-                            
-                            Home()
+                                
+                                if let user = newUser, user.accountType != "Spectator" {
+                                    ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                             recentSearches: $recentSearches,
+                                             uploadingPost: $uploadingPost)
+                                    .tabItem {
+                                        Label("Chat", systemImage: "message")
+                                    }
+                                }
+                                
+                                RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
+                                             showAccount: $showAccount, recentSearches: $recentSearches,
+                                             uploadingPost: $uploadingPost)
                                 .tabItem {
-                                    Label("Meets", systemImage: "figure.pool.swim")
+                                    Label("Rankings", systemImage: "trophy")
                                 }
+                                
+                                Home()
+                                    .tabItem {
+                                        Label("Meets", systemImage: "figure.pool.swim")
+                                    }
+                            }
+                            
+                            if uploadingPost == nil {
+                                UploadingPostView(uploadingPost: $uploadingPost)
+                                    .offset(y: -uploadingPostOffset)
+                            }
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
                             NavigationView {
