@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Amplify
 
 struct EventResultPage: View {
     @Environment(\.dismiss) private var dismiss
@@ -30,11 +31,11 @@ struct EventResultPage: View {
                         .padding()
                         .multilineTextAlignment(.center)
                     Divider()
-//                    ScalingScrollView(records: resultData, bgColor: .clear, rowSpacing: 10,
-//                                      shadowRadius: 8) { (elem) in
-//                        PersonBubbleView(elements: elem, eventTitle: eventTitle)
-//                    }
-                    .padding(.bottom, maxHeightOffset)
+                    ScalingScrollView(records: resultData, bgColor: .clear, rowSpacing: 10,
+                                      shadowRadius: 8) { (elem) in
+                        PersonBubbleView(elements: elem, eventTitle: eventTitle)
+                    }
+                                      .padding(.bottom, maxHeightOffset)
                 } else if !timedOut {
                     BackgroundBubble() {
                         VStack {
@@ -78,6 +79,139 @@ struct EventResultPage: View {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: { dismiss() }) {
                     NavigationViewBackButton()
+                }
+            }
+        }
+    }
+}
+
+struct PersonBubbleView: View {
+    @Environment(\.colorScheme) var currentMode
+    @State var navStatus: Bool = false
+    @State private var diverNewUser: NewUser? = nil
+    @State private var synchroNewUser: NewUser? = nil
+    
+    //  (Place, Name, NameLink, Team, TeamLink, Score, ScoreLink, Score Diff., MeetName, SynchroName,
+    //   SynchroLink, SynchroTeam, SynchroTeamLink)
+    private var elements: [String]
+    private var eventTitle: String
+    
+    init(elements: [String], eventTitle: String) {
+        self.elements = elements
+        self.eventTitle = eventTitle
+    }
+    
+    private var bubbleColor: Color {
+        currentMode == .light ? .white : .black
+    }
+    
+    private var isSynchro: Bool {
+        elements.count == 13
+    }
+    
+    private var diverName: some View {
+        Text(elements[1])
+    }
+    
+    private var synchroName: some View {
+        if elements.count > 9 {
+            Text(elements[9])
+        } else {
+            Text("")
+        }
+    }
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(Custom.darkGray)
+                .cornerRadius(35)
+            VStack {
+                VStack {
+                    HStack(alignment: .lastTextBaseline) {
+                        HStack(spacing: 0) {
+                            if let diver = diverNewUser {
+                                NavigationLink {
+                                    AdrenalineProfileView(newUser: diver)
+                                } label: {
+                                    diverName
+                                        .foregroundColor(.accentColor)
+                                }
+                            } else {
+                                diverName
+                                    .foregroundColor(.primary)
+                            }
+                            
+                            if isSynchro {
+                                HStack(spacing: 0) {
+                                    Text(" / ")
+                                    
+                                    if let synchro = synchroNewUser {
+                                        NavigationLink {
+                                            AdrenalineProfileView(newUser: synchro)
+                                        } label: {
+                                            synchroName
+                                                .foregroundColor(.accentColor)
+                                        }
+                                    } else {
+                                        synchroName
+                                            .foregroundColor(.primary)
+                                    }
+                                }
+                            }
+                        }
+                        .font(.title3)
+                        .bold()
+                        .scaledToFit()
+                        .minimumScaleFactor(0.5)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .lineLimit(1)
+                        
+                        (isSynchro
+                         ? Text(elements[3] + " / " + elements[11])
+                         : Text(elements[3]))
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    Spacer()
+                    HStack{
+                        Text("Place: " + elements[0])
+                        Spacer()
+                        Text("Score: ")
+                        NavigationLink {
+                            Event(isFirstNav: navStatus,
+                                  meet: MeetEvent(name: eventTitle, link: elements[6],
+                                                  firstNavigation: false))
+                        } label: {
+                            Text(elements[5])
+                        }
+                        Spacer()
+                        Text("Difference: " + elements[7])
+                    }
+                    .font(.subheadline)
+                    .scaledToFit()
+                    .minimumScaleFactor(0.5)
+                }
+            }
+            .padding()
+        }
+        .onAppear {
+            Task {
+                guard let diveMeetsId = elements[2].split(separator: "=").last else { return }
+                let pred = NewUser.keys.diveMeetsID == String(diveMeetsId)
+                let users = await queryAWSUsers(where: pred)
+                if users.count == 1 {
+                    diverNewUser = users[0]
+                }
+                
+                if isSynchro {
+                    guard let diveMeetsId = elements[10].split(separator: "=").last else { return }
+                    let pred = NewUser.keys.diveMeetsID == String(diveMeetsId)
+                    let users = await queryAWSUsers(where: pred)
+                    if users.count == 1 {
+                        synchroNewUser = users[0]
+                    }
                 }
             }
         }
