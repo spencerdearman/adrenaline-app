@@ -184,12 +184,12 @@ func userUnsavePost(user: NewUser, post: Post, savedPost: UserSavedPost) async t
 }
 
 // Convenience function to abstract file path
-private func removeVideoFromS3(email: String, videoId: String) async throws {
+func removeVideoFromS3(email: String, videoId: String) async throws {
     try await Amplify.Storage.remove(key: "videos/\(email)/\(videoId).mp4")
 }
 
 // Convenience function to abstract file path
-private func removeImageFromS3(email: String, imageId: String) async throws {
+func removeImageFromS3(email: String, imageId: String) async throws {
     try await Amplify.Storage.remove(key: "images/\(email)/\(imageId).jpg")
 }
 
@@ -216,17 +216,17 @@ func reportPost(currentUserId: String, reportedUserId: String, postId: String) a
 }
 
 // Tracks upload progress for up to 30s before failing
-func trackUploadProgress(email: String, post: Post, numAttempts: Int = 0,
+func trackUploadProgress(email: String, videos: [Video], completedUploads: Int = 0,
+                         totalUploads: Int,
+                         uploadingProgress: Binding<Double>,
+                         numAttempts: Int = 0,
                          successfulUploads: Set<String> = []) async throws -> Bool {
     // Give up on retrying after 10 attempts
     if numAttempts == 15 { print("Failed after \(numAttempts) attempts"); return false }
-    guard let videos = post.videos else { return false }
     var successes: Set<String> = Set()
     
-    try await videos.fetch()
-    
     // Only run with videos that haven't succeeded yet
-    for video in videos.elements.filter({ !successfulUploads.contains($0.id) }) {
+    for video in videos.filter({ !successfulUploads.contains($0.id) }) {
         print("Testing \(video.id)...")
         // Checks that thumbnail can be loaded
         if let url = URL(string: getVideoThumbnailURL(email: email, videoId: video.id)),
@@ -239,16 +239,30 @@ func trackUploadProgress(email: String, post: Post, numAttempts: Int = 0,
         }
     }
     
+    // Update completed runs to update progress bar
+    let completedRunUploads = successes.count
+    let totalCompletedUploads = completedUploads + completedRunUploads
+    
+    withAnimation(.spring) {
+        uploadingProgress.wrappedValue = Double(totalCompletedUploads) / Double(totalUploads)
+    }
+    
     // Combines past successes and successes from this run
     successes = successes.union(successfulUploads)
     
     // If all video elements are in set of all successful uploads, then uploads are complete
-    if Set(videos.elements.map { $0.id }).subtracting(successes).isEmpty { print("Completed"); return true }
+    if Set(videos.map { $0.id }).subtracting(successes).isEmpty { print("Completed"); return true }
     print("Waiting...")
     try await Task.sleep(seconds: 2.0)
     print("Retrying...")
     // Else, retry with videos that still need to succeed
-    return try await trackUploadProgress(email: email, post: post, numAttempts: numAttempts + 1, 
+    // Note: numAttempts resets if there is at least one completion in the attempt. In other words,
+    // this function fails after 15 straight attempts (30s) without a completion
+    return try await trackUploadProgress(email: email, videos: videos,
+                                         completedUploads: totalCompletedUploads,
+                                         totalUploads: totalUploads,
+                                         uploadingProgress: uploadingProgress,
+                                         numAttempts: completedRunUploads == 0 ? numAttempts + 1 : 0,
                                          successfulUploads: successes)
 }
 
