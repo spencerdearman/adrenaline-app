@@ -33,11 +33,6 @@ func getVideoHLSUrlKey(email: String, videoId: String) -> String {
     return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/HLS/\(videoId)"
 }
 
-// Returns the full URL minus the "_{RESOLUTION}.m3u8" suffix
-func getVideoThumbnailUrl(email: String, videoId: String) -> String {
-    return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/Thumbnails/\(videoId).0000000.jpg"
-}
-
 // Returns the full URL for the thumbnail of a video
 func getVideoThumbnailURL(email: String, videoId: String) -> String {
     return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/Thumbnails/\(videoId).0000000.jpg"
@@ -208,4 +203,10 @@ func sendRequest(url: URL) -> Bool {
     sem.wait()
     
     return result
+}
+
+func getStreamURL(email: String, videoId: String, resolution: Resolution) -> URL? {
+    let videoUrlHead = getVideoHLSUrlKey(email: email, videoId: videoId)
+    
+    return URL(string: "\(videoUrlHead)_\(resolution.displayValue.dropLast(1)).m3u8")
 }

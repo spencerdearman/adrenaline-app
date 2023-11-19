@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-public struct Post: Model {
+public struct Post: Model, Equatable {
   public let id: String
   public var caption: String?
   public var creationDate: Temporal.DateTime
@@ -13,6 +13,10 @@ public struct Post: Model {
   public var isCoachesOnly: Bool
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
+    
+  public static func == (lhs: Post, rhs: Post) -> Bool {
+      lhs.id == rhs.id
+  }
   
   public init(id: String = UUID().uuidString,
       caption: String? = nil,
