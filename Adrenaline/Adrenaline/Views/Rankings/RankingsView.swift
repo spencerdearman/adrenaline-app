@@ -67,6 +67,7 @@ struct RankingsView: View {
     @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
+    @Binding var recentSearches: [SearchItem]
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -321,7 +322,7 @@ struct RankingsView: View {
                                         RoundedRectangle(cornerRadius: 14)
                                             .stroke(Custom.medBlue, lineWidth: 1.5)
                                     )
-                                    .background(isAdrenalineProfilesOnlyChecked 
+                                    .background(isAdrenalineProfilesOnlyChecked
                                                 ? Color.blue.opacity(0.3)
                                                 : Color.clear)
                                     .backgroundStyle(cornerRadius: 14, opacity: 0.4)
@@ -369,7 +370,7 @@ struct RankingsView: View {
                           diveMeetsID: $diveMeetsID,
                           showAccount: $showAccount,
                           contentHasScrolled: $contentHasScrolled,
-                          feedModel: $feedModel)
+                          feedModel: $feedModel, recentSearches: $recentSearches)
             .frame(width: screenWidth)
         )
         //        .onAppear {

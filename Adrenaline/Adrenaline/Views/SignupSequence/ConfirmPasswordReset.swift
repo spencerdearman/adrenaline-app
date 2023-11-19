@@ -12,6 +12,7 @@ struct ConfirmPasswordReset: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: ConfirmResetPasswordState
     @State var appear = [false, false, false]
+    @FocusState private var focusedField: SignupInfoField?
     @Binding var signupCompleted: Bool
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -20,6 +21,9 @@ struct ConfirmPasswordReset: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
+                .onTapGesture {
+                    focusedField = nil
+                }
             
             VStack(alignment: .leading, spacing: 20) {
                 Text("Reset Password")
@@ -47,21 +51,25 @@ struct ConfirmPasswordReset: View {
             TextField("Verification Code", text: $state.confirmationCode)
                 .customField(icon: "envelope.open.fill")
                 .autocapitalization(.none)
+                .focused($focusedField, equals: .confirmationCode)
             
-            TextField("New Password", text: $state.newPassword)
+            SecureField("New Password", text: $state.newPassword)
                 .textContentType(.password)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
+                .focused($focusedField, equals: .password)
 
-            TextField("Confirm Password", text: $state.confirmPassword)
+            SecureField("Confirm Password", text: $state.confirmPassword)
                 .textContentType(.password)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
+                .focused($focusedField, equals: .confirmPassword)
 
             Button {
                 Task {
+                    focusedField = nil
                     try await state.confirmResetPassword()
                     signupCompleted = true
                 }

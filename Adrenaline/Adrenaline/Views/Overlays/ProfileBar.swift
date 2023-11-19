@@ -10,15 +10,17 @@ import Authenticator
 
 struct ProfileBar: View {
     @ObservedObject var state: SignedInState
+    @State private var newAthlete: NewAthlete? = nil
+    @State private var showSheet = false
+    @State private var isLogged = true
     @Binding var showAccount: Bool
-    @State var newAthlete: NewAthlete? = nil
-    private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
+    @Binding var recentSearches: [SearchItem]
     
     var user: NewUser?
     var title = ""
-    @State var showSheet = false
-    @State var isLogged = true
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
         ZStack {
@@ -49,19 +51,19 @@ struct ProfileBar: View {
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 .sheet(isPresented: $showSheet) {
-                    NewSearchView()
+                    NewSearchView(recentSearches: $recentSearches)
                 }
                 
                 NavigationLink {
                     SettingsView(state: state, newUser: user)
                 } label: {
                     Image(systemName: "gear")
-                    .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
-                    .cornerRadius(10)
-                    .padding(8)
-                    .background(.ultraThinMaterial)
-                    .backgroundStyle(cornerRadius: 18, opacity: 0.4)
-                    .transition(.scale.combined(with: .slide))
+                        .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
+                        .cornerRadius(10)
+                        .padding(8)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 18, opacity: 0.4)
+                        .transition(.scale.combined(with: .slide))
                 }
                 .accessibilityElement()
                 .accessibilityLabel("Account")

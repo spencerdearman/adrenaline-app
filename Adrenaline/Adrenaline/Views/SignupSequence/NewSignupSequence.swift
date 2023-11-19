@@ -76,9 +76,7 @@ struct NewSignupSequence: View {
     @State var accountType: String = ""
     
     // Variables for BasicInfo
-    @FocusState var isFirstFocused: Bool
-    @FocusState var isLastFocused: Bool
-    @FocusState var isPhoneFocused: Bool
+    @FocusState private var focusedField: SignupInfoField?
     @State var firstName: String = ""
     @State var lastName: String = ""
     @State var phone: String = ""
@@ -167,6 +165,9 @@ struct NewSignupSequence: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
+                .onTapGesture {
+                    focusedField = nil
+                }
             
             Group {
                 switch pageIndex {
@@ -390,7 +391,7 @@ struct NewSignupSequence: View {
                                             iconColor: buttonPressed && firstName.isEmpty
                                             ? Custom.error
                                             : nil))
-                .focused($isFirstFocused)
+                .focused($focusedField, equals: .firstName)
                 .textContentType(.givenName)
             
             TextField("Last Name", text: $lastName)
@@ -399,7 +400,7 @@ struct NewSignupSequence: View {
                                             iconColor: buttonPressed && lastName.isEmpty
                                             ? Custom.error
                                             : nil))
-                .focused($isLastFocused)
+                .focused($focusedField, equals: .lastName)
                 .textContentType(.familyName)
             
             TextField("Phone Number", text: $phone)
@@ -408,7 +409,7 @@ struct NewSignupSequence: View {
                                             iconColor: buttonPressed && phone.isEmpty
                                             ? Custom.error
                                             : nil))
-                .focused($isPhoneFocused)
+                .focused($focusedField, equals: .phone)
                 .textContentType(.telephoneNumber)
                 .onChange(of: phone) {
                     phone = formatPhoneString(string: phone)
@@ -617,7 +618,7 @@ struct NewSignupSequence: View {
                                                 iconColor: buttonPressed && heightFeet == 0
                                                 ? Custom.error
                                                 : nil))
-                    .focused($isFirstFocused)
+                    .focused($focusedField, equals: .heightFeet)
                     .onChange(of: heightFeet) {
                         heightFeet = heightFeet
                     }
@@ -629,7 +630,7 @@ struct NewSignupSequence: View {
                                                 iconColor: buttonPressed && heightInches == 0
                                                 ? Custom.error
                                                 : nil))
-                    .focused($isFirstFocused)
+                    .focused($focusedField, equals: .heightInches)
                     .onChange(of: heightInches) {
                         heightInches = heightInches
                     }
@@ -643,7 +644,7 @@ struct NewSignupSequence: View {
                                                 iconColor: buttonPressed && weight == 0
                                                 ? Custom.error
                                                 : nil))
-                    .focused($isLastFocused)
+                    .focused($focusedField, equals: .weight)
                 
                 BubbleSelectView(selection: $weightUnit)
                     .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
@@ -662,7 +663,7 @@ struct NewSignupSequence: View {
                                                 iconColor: buttonPressed && age == 0
                                                 ? Custom.error
                                                 : nil))
-                    .focused($isPhoneFocused)
+                    .focused($focusedField, equals: .age)
                     .onChange(of: age) {
                         age = age
                     }
@@ -684,7 +685,7 @@ struct NewSignupSequence: View {
                                             iconColor: buttonPressed && gradYear == 0
                                             ? Custom.error
                                             : nil))
-                .focused($isFirstFocused)
+                .focused($focusedField, equals: .gradYear)
                 .onChange(of: gradYear) {
                     gradYear = gradYear
                 }
@@ -694,7 +695,7 @@ struct NewSignupSequence: View {
                                             iconColor: buttonPressed && highSchool.isEmpty
                                             ? Custom.error
                                             : nil))
-                .focused($isFirstFocused)
+                .focused($focusedField, equals: .highSchool)
                 .onChange(of: highSchool) {
                     highSchool = highSchool
                 }
@@ -704,7 +705,7 @@ struct NewSignupSequence: View {
                                             iconColor: buttonPressed && hometown.isEmpty
                                             ? Custom.error
                                             : nil))
-                .focused($isFirstFocused)
+                .focused($focusedField, equals: .hometown)
                 .onChange(of: hometown) {
                     hometown = hometown
                 }
@@ -771,7 +772,6 @@ struct NewSignupSequence: View {
                     
                     (springboard, platform, total) =
                     await skillRating.getSkillRating(diveMeetsID: diveMeetsId)
-                    print("Ratings:", springboard, platform, total)
                 }
             }
             

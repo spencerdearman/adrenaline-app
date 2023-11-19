@@ -15,14 +15,15 @@ struct FeedBase: View {
     @Namespace var namespace
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
-    @State var feedModel: FeedModel = FeedModel()
-    @State var showDetail: Bool = false
-    @State var showTab: Bool = true
-    @State var showNav: Bool = true
-    @State var show = false
-    @State var showStatusBar = true
-    @State var showCourse = false
-    @State var contentHasScrolled = false
+    @Binding var recentSearches: [SearchItem]
+    @State private var feedModel: FeedModel = FeedModel()
+    @State private var showDetail: Bool = false
+    @State private var showTab: Bool = true
+    @State private var showNav: Bool = true
+    @State private var show = false
+    @State private var showStatusBar = true
+    @State private var showCourse = false
+    @State private var contentHasScrolled = false
     @State private var feedItems: [FeedItem] = []
     @State private var tabBarState: Visibility = .visible
     private let screenWidth = UIScreen.main.bounds.width
@@ -80,7 +81,7 @@ struct FeedBase: View {
                 } else {
                     LazyVGrid(columns: columns, spacing: 15) {
                         ForEach($feedItems) { item in
-                                AnyView(item.collapsedView.wrappedValue)
+                            AnyView(item.collapsedView.wrappedValue)
                         }
                     }
                     .padding(.horizontal, 20)
@@ -121,7 +122,9 @@ struct FeedBase: View {
         }
         .overlay{
             if feedModel.showTab {
-                NavigationBar(title: "Adrenaline", diveMeetsID: $diveMeetsID, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel)
+                NavigationBar(title: "Adrenaline", diveMeetsID: $diveMeetsID, 
+                              showAccount: $showAccount, contentHasScrolled: $contentHasScrolled,
+                              feedModel: $feedModel, recentSearches: $recentSearches)
                     .frame(width: screenWidth)
             }
         }
@@ -132,7 +135,7 @@ struct FeedBase: View {
 struct CloseButtonWithFeedModel: View {
     @Environment(\.presentationMode) var presentationMode
     @Binding var feedModel: FeedModel
-
+    
     var body: some View {
         Button {
             feedModel.isAnimated ?
@@ -156,10 +159,3 @@ struct ScrollPreferenceKey: PreferenceKey {
         value = nextValue()
     }
 }
-
-
-//struct FeedBase_Previews: PreviewProvider {
-//    static var previews: some View {
-//        FeedBase()
-//    }
-//}
