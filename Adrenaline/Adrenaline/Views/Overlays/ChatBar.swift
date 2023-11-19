@@ -45,7 +45,7 @@ struct ChatBar: View {
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 NavigationLink {
-
+                    AdrenalineProfileView(newUser: user)
                 } label: {
                     Image(systemName: "person")
                     .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
@@ -54,6 +54,7 @@ struct ChatBar: View {
                     .background(.ultraThinMaterial)
                     .backgroundStyle(cornerRadius: 18, opacity: 0.4)
                     .transition(.scale.combined(with: .slide))
+                    .foregroundColor(.secondary)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: screenHeight, alignment: .topTrailing)
