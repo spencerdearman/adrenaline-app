@@ -68,6 +68,7 @@ struct RankingsView: View {
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
+    @Binding var uploadingPost: Post?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -370,7 +371,8 @@ struct RankingsView: View {
                           diveMeetsID: $diveMeetsID,
                           showAccount: $showAccount,
                           contentHasScrolled: $contentHasScrolled,
-                          feedModel: $feedModel, recentSearches: $recentSearches)
+                          feedModel: $feedModel, recentSearches: $recentSearches, 
+                          uploadingPost: $uploadingPost)
             .frame(width: screenWidth)
         )
         //        .onAppear {

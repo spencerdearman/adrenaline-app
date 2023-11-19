@@ -15,6 +15,7 @@ struct ChatView: View {
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
+    @Binding var uploadingPost: Post?
     
     // Main States
     @Environment(\.colorScheme) var currentMode
@@ -173,7 +174,7 @@ struct ChatView: View {
                                   showAccount: $showAccount,
                                   contentHasScrolled: $contentHasScrolled,
                                   feedModel: $feedModel,
-                                  recentSearches: $recentSearches)
+                                  recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                     .frame(width: screenWidth)
                 } else {
                     if let recipient = recipient {

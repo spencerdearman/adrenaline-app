@@ -21,6 +21,7 @@ struct NavigationBar: View {
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
     @Binding var recentSearches: [SearchItem]
+    @Binding var uploadingPost: Post?
     
     // Using this function to swap sheet bools safely
     private func showSheet(showingPost: Bool) {
@@ -64,7 +65,7 @@ struct NavigationBar: View {
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 .sheet(isPresented: $showPostSheet) {
-                    NewPostView()
+                    NewPostView(uploadingPost: $uploadingPost)
                 }
                 
                 Button {

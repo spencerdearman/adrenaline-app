@@ -25,6 +25,7 @@ struct NewPostView: View {
     @State private var isCoachesOnlyChecked: Bool = false
     @FocusState private var captionFocused: Bool
     @AppStorage("email") private var email: String = ""
+    @Binding var uploadingPost: Post?
     
     private let screenHeight = UIScreen.main.bounds.height
     private let screenWidth = UIScreen.main.bounds.width
@@ -270,7 +271,10 @@ struct NewPostView: View {
                                                                         isCoachesOnly: isCoachesOnlyChecked)
                                         print("Created Post")
                                         
-                                        let (_, _) = try await savePost(user: user, post: post)
+                                        let (_, savedPost) = try await savePost(user: user, post: post)
+
+                                        // Saves to binding so it can be tracked while uploading
+                                        uploadingPost = savedPost
                                         print("Saved Post")
                                     } else {
                                         print("Could not get user with email \(email)")
