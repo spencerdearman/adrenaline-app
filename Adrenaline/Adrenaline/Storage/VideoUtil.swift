@@ -163,3 +163,49 @@ func isVerticalLocalVideo(url: String) -> Bool {
     
     return false
 }
+
+func isVideoStreamAvailable(stream: Stream) -> Bool {
+    let session = URLSession.shared
+    let sem = DispatchSemaphore.init(value: 0)
+    
+    return sendRequest(url: stream.streamURL)
+}
+
+// Returns true if the stream is available at the CloudFront link
+func sendRequest(url: URL) -> Bool {
+    let session = URLSession.shared
+    var result: Bool = false
+    let sem = DispatchSemaphore.init(value: 0)
+    
+    let request = URLRequest(url: url)
+    
+    let task = session.dataTask(with: request) { data, response, error in
+        defer { sem.signal() }
+        
+        if let error = error {
+            // Handle HTTP request error
+            print("Error: \(error)")
+        } else if let data = data {
+            // Handle HTTP request response
+            //            print("Data: \(data)")
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                print("Status code not 200")
+                return
+            }
+            
+            result = true
+        } else {
+            // Handle unexpected error
+            print("Unexpected error occurred")
+        }
+    }
+    
+    task.resume()
+    
+    // This line will wait until the semaphore has been signaled
+    // which will be once the data task has completed
+    sem.wait()
+    
+    return result
+}
