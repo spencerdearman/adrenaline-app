@@ -23,13 +23,21 @@ enum Gender: String, CaseIterable {
     case female = "F"
 }
 
-enum BasicInfoField: Int, Hashable, CaseIterable {
-    case first
-    case last
+enum SignupInfoField: Int, Hashable, CaseIterable {
     case email
-    case phone
     case password
-    case repeatPassword
+    case confirmPassword
+    case confirmationCode
+    case firstName
+    case lastName
+    case phone
+    case heightFeet
+    case heightInches
+    case weight
+    case age
+    case gradYear
+    case highSchool
+    case hometown
 }
 
 struct UserViewData: Equatable {

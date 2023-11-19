@@ -15,6 +15,7 @@ struct SignUp: View {
     @Binding var email: String
     @Binding var signupCompleted: Bool
     @State var appear = [false, false, false]
+    @FocusState private var focusedField: SignupInfoField?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -22,6 +23,9 @@ struct SignUp: View {
         ZStack {
             Image(currentMode == .light ? "LoginBackground" : "LoginBackground-Dark")
                 .scaleEffect(0.7)
+                .onTapGesture {
+                    focusedField = nil
+                }
             
             VStack(alignment: .leading, spacing: 20) {
                 Text("Sign Up")
@@ -47,9 +51,11 @@ struct SignUp: View {
     var form: some View {
         Group {
             ForEach(state.fields, id: \.self) { field in
-                SignUpField(email: $email, field)
+                SignUpField(email: $email, field, focusedField: $focusedField)
             }
             Button {
+                focusedField = nil
+                
                 // Passwords match
                 if !state.fields[0].value.isEmpty,
                     state.fields[1].value == state.fields[2].value {
@@ -96,11 +102,13 @@ struct SignUpField: View {
     @ObservedObject private var signUpField: SignUpState.Field
     @Binding var email: String
     @State private var fieldValue: String = ""
+    var focusedField: FocusState<SignupInfoField?>.Binding
     
-    init(email: Binding<String>, _ signUpField: SignUpState.Field) {
+    init(email: Binding<String>, _ signUpField: SignUpState.Field, focusedField: FocusState<SignupInfoField?>.Binding) {
         self._email = email
         self.signUpField = signUpField
         _fieldValue = State(initialValue: signUpField.value)
+        self.focusedField = focusedField
     }
     
     var body: some View {
@@ -112,6 +120,7 @@ struct SignUpField: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "envelope.open.fill")
+                .focused(focusedField, equals: .email)
                 .onChange(of: fieldValue) {
                     signUpField.value = fieldValue
                     email = fieldValue
@@ -122,12 +131,14 @@ struct SignUpField: View {
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
+                .focused(focusedField, equals: .password)
         case .passwordConfirmation:
             SecureField("Confirm password", text: $signUpField.value)
                 .textContentType(.password)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
+                .focused(focusedField, equals: .confirmPassword)
         default:
             Text("Wrong Case")
         }
