@@ -30,6 +30,8 @@ struct ContentView: View {
     @State var newUser: NewUser? = nil
     @State var recentSearches: [SearchItem] = []
     @State private var uploadingPost: Post? = nil
+    @State private var uploadingProgress: CGFloat = 0.0
+    @State private var uploadFailed: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -158,7 +160,7 @@ struct ContentView: View {
                                     }
                             }
                             
-                            if uploadingPost == nil {
+                            if uploadingPost != nil {
                                 UploadingPostView(uploadingPost: $uploadingPost)
                                     .offset(y: -uploadingPostOffset)
                             }
@@ -184,6 +186,23 @@ struct ContentView: View {
                                 }
                             }
                         })
+                        .onChange(of: uploadingPost) {
+                            if let user = newUser, let post = uploadingPost {
+                                Task {
+                                    uploadFailed = false
+                                    
+                                    if try await trackUploadProgress(email: email, post: post) {
+                                        print("Upload completed, saving post...")
+                                        let (savedUser, _) = try await savePost(user: user, post: post)
+                                        newUser = savedUser
+                                    } else {
+                                        uploadFailed = true
+                                    }
+                                    
+                                    uploadingPost = nil
+                                }
+                            }
+                        }
                         .onAppear {
                             Task {
                                 await getDataStoreData()

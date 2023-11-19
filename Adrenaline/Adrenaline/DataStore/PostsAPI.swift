@@ -215,6 +215,43 @@ func reportPost(currentUserId: String, reportedUserId: String, postId: String) a
     return false
 }
 
+// Tracks upload progress for up to 30s before failing
+func trackUploadProgress(email: String, post: Post, numAttempts: Int = 0,
+                         successfulUploads: Set<String> = []) async throws -> Bool {
+    // Give up on retrying after 10 attempts
+    if numAttempts == 15 { print("Failed after \(numAttempts) attempts"); return false }
+    guard let videos = post.videos else { return false }
+    var successes: Set<String> = Set()
+    
+    try await videos.fetch()
+    
+    // Only run with videos that haven't succeeded yet
+    for video in videos.elements.filter({ !successfulUploads.contains($0.id) }) {
+        print("Testing \(video.id)...")
+        // Checks that thumbnail can be loaded
+        if let url = URL(string: getVideoThumbnailURL(email: email, videoId: video.id)),
+           sendRequest(url: url),
+           // Checks that one resolution can be streamed
+           let streamURL = getStreamURL(email: email, videoId: video.id, resolution: .p360),
+           isVideoStreamAvailable(stream: Stream(resolution: .p360, streamURL: streamURL)) {
+            print("\(video.id) succeeded")
+            successes.insert(video.id)
+        }
+    }
+    
+    // Combines past successes and successes from this run
+    successes = successes.union(successfulUploads)
+    
+    // If all video elements are in set of all successful uploads, then uploads are complete
+    if Set(videos.elements.map { $0.id }).subtracting(successes).isEmpty { print("Completed"); return true }
+    print("Waiting...")
+    try await Task.sleep(seconds: 2.0)
+    print("Retrying...")
+    // Else, retry with videos that still need to succeed
+    return try await trackUploadProgress(email: email, post: post, numAttempts: numAttempts + 1, 
+                                         successfulUploads: successes)
+}
+
 extension Post {
     // Add another initializer to easily update usersSaving through API call, but not accessible
     // outside this file
