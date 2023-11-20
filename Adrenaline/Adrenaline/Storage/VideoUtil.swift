@@ -180,14 +180,10 @@ func sendRequest(url: URL) -> Bool {
         if let error = error {
             // Handle HTTP request error
             print("Error: \(error)")
-        } else if let data = data {
+        } else if let _ = data {
             // Handle HTTP request response
-            //            print("Data: \(data)")
             guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                print("Status code not 200")
-                return
-            }
+                  (200...299).contains(httpResponse.statusCode) else { return }
             
             result = true
         } else {
