@@ -589,9 +589,9 @@ struct NewSignupSequence: View {
                             } catch {
                                 print("Could not save user to DataStore: \(error)")
                             }
-                        }
-                        withAnimation(.openCard) {
-                            pageIndex = 3
+                            withAnimation(.openCard) {
+                                pageIndex = 3
+                            }
                         }
                     }
             }
