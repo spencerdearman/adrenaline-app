@@ -160,9 +160,6 @@ func isVerticalLocalVideo(url: String) -> Bool {
 }
 
 func isVideoStreamAvailable(stream: Stream) -> Bool {
-    let session = URLSession.shared
-    let sem = DispatchSemaphore.init(value: 0)
-    
     return sendRequest(url: stream.streamURL)
 }
 
