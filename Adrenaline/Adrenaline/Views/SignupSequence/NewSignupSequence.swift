@@ -53,7 +53,9 @@ struct ButtonInfo: Identifiable {
 }
 
 struct NewSignupSequence: View {
-    @Environment(\.colorScheme) var currentMode
+    @EnvironmentObject private var appLogic: AppLogic
+    @Environment(\.colorScheme) private var currentMode
+    @Environment(\.newUsers) private var newUsers
     @AppStorage("authUserId") private var authUserId: String = ""
     @Namespace var namespace
     @ScaledMetric var pickerFontSize: CGFloat = 18
@@ -91,6 +93,8 @@ struct NewSignupSequence: View {
     @State private var linksParsed: Bool = false
     @State private var personTimedOut: Bool = false
     @State var sortedRecords: [(String, String)] = []
+    @State var showNoDiveMeetsIdError: Bool = false
+    @State private var waitingForSync: Bool = true
     
     // Variables for Recruiting
     @State var heightFeet: Int = 0
@@ -453,152 +457,200 @@ struct NewSignupSequence: View {
                 ColorfulButton(title: "Continue")
             }
         }
+        .onAppear {
+            Task {
+                // Manually initiate sync so newUsers is updated for diveMeetsLink stage
+                try await Amplify.DataStore.start()
+            }
+        }
     }
     
     var diveMeetsInfoForm: some View {
         Group {
-            if sortedRecords.count == 1 {
-                Text("Is this you?")
-                    .font(.largeTitle).bold()
-                    .foregroundColor(.primary)
-                    .slideFadeIn(show: appear[0], offset: 30)
-            } else if sortedRecords.count > 1 {
-                Text("Are you one of these profiles?")
-                    .font(.largeTitle).bold()
-                    .foregroundColor(.primary)
-                    .slideFadeIn(show: appear[0], offset: 30)
+            if waitingForSync {
+                VStack {
+                    Text("Searching...")
+                    ProgressView()
+                }
+                .foregroundColor(.primary)
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity, alignment: .center)
             } else {
-                Text("No DiveMeets Profile Found")
-                    .font(.largeTitle).bold()
-                    .foregroundColor(.primary)
-                    .slideFadeIn(show: appear[0], offset: 30)
-            }
-            if sortedRecords.count >= 1 {
-                ScrollView {
-                    ForEach(sortedRecords, id: \.1) { record in
-                        let (key, value) = record
-                        Button {
-                            selectedDict[value] = true
-                            diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
-                        } label: {
-                            ZStack {
-                                Rectangle()
-                                    .fill(.ultraThinMaterial)
-                                    .cornerRadius(30)
-                                    .onAppear {
-                                        selectedDict[value] = false
+                Group {
+                    if sortedRecords.count == 1 {
+                        Text("Is this you?")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                    } else if sortedRecords.count > 1 {
+                        Text("Are you one of these profiles?")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                    } else {
+                        Text("No DiveMeets Profile Found")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                    }
+                    if sortedRecords.count >= 1 {
+                        ScrollView {
+                            ForEach(sortedRecords, id: \.1) { record in
+                                let (key, value) = record
+                                Button {
+                                    selectedDict[value] = true
+                                    diveMeetsID = String(value.components(separatedBy: "=").last ?? "")
+                                } label: {
+                                    ZStack {
+                                        Rectangle()
+                                            .fill(.ultraThinMaterial)
+                                            .cornerRadius(30)
+                                            .onAppear {
+                                                selectedDict[value] = false
+                                            }
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 30)
+                                                    .stroke(selectedDict[value] == true
+                                                            ? Color.secondary
+                                                            : .clear,
+                                                            lineWidth: 2)
+                                            )
+                                            .padding(5)
+                                        
+                                        HStack {
+                                            Spacer()
+                                            ProfileImage(
+                                                diverID: String(value
+                                                    .components(separatedBy: "=").last ?? ""))
+                                            .scaleEffect(0.4)
+                                            .frame(width: 100, height: 100)
+                                            Spacer()
+                                            Text(key)
+                                                .foregroundColor(.primary)
+                                                .font(.title2).fontWeight(.semibold)
+                                                .padding()
+                                            Spacer()
+                                        }
                                     }
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 30)
-                                            .stroke(selectedDict[value] == true
-                                                    ? Color.secondary
-                                                    : .clear,
-                                                    lineWidth: 2)
-                                    )
-                                    .padding(5)
-                                
-                                HStack {
-                                    Spacer()
-                                    ProfileImage(
-                                        diverID: String(value
-                                            .components(separatedBy: "=").last ?? ""))
-                                    .scaleEffect(0.4)
-                                    .frame(width: 100, height: 100)
-                                    Spacer()
-                                    Text(key)
-                                        .foregroundColor(.primary)
-                                        .font(.title2).fontWeight(.semibold)
-                                        .padding()
-                                    Spacer()
                                 }
                             }
                         }
                     }
-                }
-            }
-            
-            Divider()
-            
-            Button {
-                showBasicError = false
-                Task {
-                    do {
-                        let user = createNewUser()
-                        savedUser = try await saveToDataStore(object: user)
-                        userCreationSuccessful = true
-                        print("Saved New User")
-                        
-                        if accountType == "Coach" {
-                            let coach = CoachUser(user: savedUser)
-                            let savedCoach = try await Amplify.DataStore.save(coach)
-                            print("Saved Coach Profile \(savedCoach)")
-                        }
-                    } catch {
-                        showBasicError = true
-                        print("Could not save user to DataStore: \(error)")
-                    }
-                    if userCreationSuccessful {
-                        withAnimation {
-                            print("Selected Next")
-                            if accountType == "Athlete" {
-                                pageIndex = 3
-                            } else {
-                                pageIndex = 4
-                            }
-                        }
-                    }
-                }
-            } label: {
-                ColorfulButton(title: "Continue")
-            }
-            
-            if showBasicError {
-                Text("Error creating user profile, please check information")
-                    .foregroundColor(.primary).fontWeight(.semibold)
-            }
-            
-            HStack {
-                Text("**Previous**")
-                    .font(.footnote)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .foregroundColor(.primary.opacity(0.7))
-                    .accentColor(.primary.opacity(0.7))
-                    .onTapGesture {
-                        withAnimation(.openCard) {
-                            pageIndex = 1
-                        }
-                    }
-                
-                Spacer()
-                
-                Text("**Skip**")
-                    .font(.footnote)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .foregroundColor(.primary.opacity(0.7))
-                    .accentColor(.primary.opacity(0.7))
-                    .onTapGesture {
+                    
+                    Divider()
+                    
+                    Button {
+                        showBasicError = false
                         Task {
-                            withAnimation {
-                                print("Selected Next")
-                                pageIndex = 2
-                            }
                             do {
                                 let user = createNewUser()
                                 savedUser = try await saveToDataStore(object: user)
+                                userCreationSuccessful = true
                                 print("Saved New User")
+                                
+                                if accountType == "Coach" {
+                                    let coach = CoachUser(user: savedUser)
+                                    let savedCoach = try await Amplify.DataStore.save(coach)
+                                    print("Saved Coach Profile \(savedCoach)")
+                                }
                             } catch {
+                                showBasicError = true
                                 print("Could not save user to DataStore: \(error)")
                             }
+                            if userCreationSuccessful {
+                                withAnimation {
+                                    print("Selected Next")
+                                    if accountType == "Athlete" {
+                                        pageIndex = 3
+                                    } else {
+                                        pageIndex = 4
+                                    }
+                                }
+                            }
                         }
-                        withAnimation(.openCard) {
-                            pageIndex = 3
+                    } label: {
+                        ColorfulButton(title: "Continue")
+                    }
+                    
+                    if showBasicError {
+                        Text("Error creating user profile, please check information")
+                            .foregroundColor(.primary).fontWeight(.semibold)
+                    } else if showNoDiveMeetsIdError {
+                        Text("Your DiveMeets account could not be found because either your name is spelled incorrectly, or it is already in use by another account")
+                            .foregroundColor(.primary).fontWeight(.semibold)
+                    }
+                    
+                    HStack {
+                        Text("**Previous**")
+                            .font(.footnote)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundColor(.primary.opacity(0.7))
+                            .accentColor(.primary.opacity(0.7))
+                            .onTapGesture {
+                                withAnimation(.openCard) {
+                                    pageIndex = 1
+                                }
+                            }
+                        
+                        // Hide the skip button when failed to find DiveMeets ID since "Continue"
+                        // button will do the same thing
+                        if !showNoDiveMeetsIdError {
+                            Spacer()
+                            
+                            Text("**Skip**")
+                                .font(.footnote)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .foregroundColor(.primary.opacity(0.7))
+                                .accentColor(.primary.opacity(0.7))
+                                .onTapGesture {
+                                    Task {
+                                        withAnimation {
+                                            print("Selected Next")
+                                            pageIndex = 2
+                                        }
+                                        do {
+                                            let user = createNewUser()
+                                            savedUser = try await saveToDataStore(object: user)
+                                            print("Saved New User")
+                                        } catch {
+                                            print("Could not save user to DataStore: \(error)")
+                                        }
+                                        withAnimation(.openCard) {
+                                            pageIndex = 3
+                                        }
+                                    }
+                                }
                         }
                     }
+                }
             }
-            
         }
         .onAppear {
-            sortedRecords = getSortedRecords(parsedLinks)
+            Task {
+                showNoDiveMeetsIdError = false
+                
+                // Wait for DataStore to be ready before trying to query diveMeetsIds
+                while !appLogic.dataStoreReady {
+                    waitingForSync = true
+                    try await Task.sleep(seconds: 1.0)
+                }
+                
+                waitingForSync = false
+                
+                // Get all currently used DiveMeets IDs and don't show them to the user as available
+                // options for their name
+                // Note: presentDiveMeetsIds is based on newUsers, which pulls from DataStore and
+                // the sleep above is waiting on the sync to complete
+                sortedRecords = getSortedRecords(parsedLinks).filter {
+                    guard let id = $1.split(separator: "=").last else { return false }
+                    return !presentDiveMeetsIds.contains(String(id))
+                }
+                
+                if sortedRecords.count == 0 {
+                    showNoDiveMeetsIdError = true
+                }
+            }
         }
     }
     
@@ -748,6 +800,14 @@ struct NewSignupSequence: View {
                 }
             } label: {
                 ColorfulButton(title: "Take me to my profile")
+            }
+        }
+    }
+    
+    var presentDiveMeetsIds: Set<String> {
+        newUsers.reduce(into: Set<String>()) { (result, user) in
+            if let id = user.diveMeetsID {
+                result.insert(id)
             }
         }
     }

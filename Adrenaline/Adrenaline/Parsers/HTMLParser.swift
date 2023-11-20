@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftSoup
 
+//                              [Search: [Profile Link]]
 typealias DiverProfileRecords = [String: [String]]
 
 final class HTMLParser: ObservableObject {
