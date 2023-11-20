@@ -125,7 +125,7 @@ struct CoachProfileContent: View {
                     PostsView(newUser: newUser)
                 case 1:
                     if let judging = judgingData {
-                        JudgedList(data: judging)
+//                        JudgedList(data: judging)
                     } else if diveMeetsID == "" {
                         BackgroundBubble() {
                             Text("Cannot get judging data, account is not linked to DiveMeets")
@@ -144,8 +144,8 @@ struct CoachProfileContent: View {
                     }
                 case 2:
                     if let divers = coachDiversData {
-                        DiversList(divers: divers)
-                            .offset(y: -20)
+//                        DiversList(divers: divers)
+//                            .offset(y: -20)
                     } else if diveMeetsID == "" {
                         BackgroundBubble() {
                             Text("Cannot get diver data, account is not linked to DiveMeets")
@@ -174,7 +174,7 @@ struct CoachProfileContent: View {
                     FavoritesView(newUser: newUser)
                 default:
                     if let judging = judgingData {
-                        JudgedList(data: judging)
+//                        JudgedList(data: judging)
                     }
             }
         }
