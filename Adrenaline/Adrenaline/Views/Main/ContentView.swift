@@ -25,26 +25,40 @@ struct ContentView: View {
     @AppStorage("signupCompleted") var signupCompleted: Bool = false
     @AppStorage("email") var email: String = ""
     @AppStorage("authUserId") var authUserId: String = ""
-    @State var showAccount: Bool = false
-    @State var diveMeetsID: String = ""
-    @State var newUser: NewUser? = nil
-    @State var recentSearches: [SearchItem] = []
+    @State private var showAccount: Bool = false
+    @State private var diveMeetsID: String = ""
+    @State private var newUser: NewUser? = nil
+    @State private var recentSearches: [SearchItem] = []
+    @State private var uploadingPost: Post? = nil
+    @State private var uploadingProgress: Double = 0.0
+    @State private var uploadFailed: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
     
+    // Find the key window from connected scenes
+    var keyWindow: UIWindow? {
+        return UIApplication
+            .shared
+            .connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .last
+    }
+    
     var hasHomeButton: Bool {
         if #available(iOS 13.0, *) {
-            let scenes = UIApplication.shared.connectedScenes
-            let windowScene = scenes.first as? UIWindowScene
-            guard let window = windowScene?.windows.first else { return false }
-            
+            guard let window = keyWindow else { return false }
             return !(window.safeAreaInsets.top > 20)
         }
     }
     
     var menuBarOffset: CGFloat {
         hasHomeButton ? 0 : 20
+    }
+    
+    var uploadingPostOffset: CGFloat {
+        guard let window = keyWindow else { return 34.0 + menuBarOffset - 5.0 }
+        return window.safeAreaInsets.bottom + menuBarOffset - 5.0
     }
     
     private func getCurrentUser() async -> NewUser? {
@@ -116,31 +130,42 @@ struct ContentView: View {
                                 }
                             }
                     } else {
-                        TabView {
-                            FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
-                                     recentSearches: $recentSearches)
-                            .tabItem {
-                                Label("Home", systemImage: "house")
-                            }
-                            
-                            if let user = newUser, user.accountType != "Spectator" {
-                                ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
-                                     recentSearches: $recentSearches)
+                        ZStack(alignment: .bottom) {
+                            TabView {
+                                FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                         recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                                 .tabItem {
-                                    Label("Chat", systemImage: "message")
+                                    Label("Home", systemImage: "house")
                                 }
-                            }
-                            
-                            RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
-                                         showAccount: $showAccount, recentSearches: $recentSearches)
-                            .tabItem {
-                                Label("Rankings", systemImage: "trophy")
-                            }
-                            
-                            Home()
+                                
+                                if let user = newUser, user.accountType != "Spectator" {
+                                    ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                             recentSearches: $recentSearches,
+                                             uploadingPost: $uploadingPost)
+                                    .tabItem {
+                                        Label("Chat", systemImage: "message")
+                                    }
+                                }
+                                
+                                RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
+                                             showAccount: $showAccount, recentSearches: $recentSearches,
+                                             uploadingPost: $uploadingPost)
                                 .tabItem {
-                                    Label("Meets", systemImage: "figure.pool.swim")
+                                    Label("Rankings", systemImage: "trophy")
                                 }
+                                
+                                Home()
+                                    .tabItem {
+                                        Label("Meets", systemImage: "figure.pool.swim")
+                                    }
+                            }
+                            
+                            if uploadingPost != nil {
+                                UploadingPostView(uploadingPost: $uploadingPost, 
+                                                  uploadingProgress: $uploadingProgress, 
+                                                  uploadFailed: $uploadFailed)
+                                    .offset(y: -uploadingPostOffset)
+                            }
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
                             NavigationView {
@@ -163,6 +188,64 @@ struct ContentView: View {
                                 }
                             }
                         })
+                        .onChange(of: uploadingPost) {
+                            if let user = newUser, let post = uploadingPost {
+                                Task {
+                                    uploadFailed = false
+                                    uploadingProgress = 0.0
+                                    guard let postVideos = post.videos else { return }
+                                    try await postVideos.fetch()
+                                    try await post.images?.fetch()
+                                    
+                                    let videos = postVideos.elements
+                                    let images = post.images?.elements ?? []
+                                    
+                                    // Be aware of data races with uploadingProgress
+                                    if try await trackUploadProgress(email: email,
+                                                                     videos: videos,
+                                                                     completedUploads: images.count,
+                                                                     totalUploads: videos.count + images.count,
+                                                                     uploadingProgress: $uploadingProgress) {
+                                        
+                                        let (savedUser, _) = try await savePost(user: user, post: post)
+                                        newUser = savedUser
+                                    } else {
+                                        // Display upload failure view
+                                        uploadFailed = true
+                                        
+                                        // Remove successful videos from S3
+                                        for video in videos {
+                                            // This removal will trigger a lambda function that 
+                                            // removes the streams from the streams bucket
+                                            do {
+                                                try await removeVideoFromS3(email: user.email, 
+                                                                            videoId: video.id)
+                                            } catch {
+                                                print("Failed to remove \(video.id) from S3")
+                                            }
+                                            
+                                        }
+                                        
+                                        // Remove uploaded images from S3
+                                        for image in images {
+                                            do {
+                                                try await removeImageFromS3(email: user.email, 
+                                                                            imageId: image.id)
+                                            } catch {
+                                                print("Failed to remove \(image.id) from S3")
+                                            }
+                                        }
+                                        
+                                    }
+                                    
+                                    // Sleep to show completed overlay before hiding
+                                    try await Task.sleep(seconds: 2.0)
+                                    withAnimation(.easeOut) {
+                                        uploadingPost = nil
+                                    }
+                                }
+                            }
+                        }
                         .onAppear {
                             Task {
                                 await getDataStoreData()

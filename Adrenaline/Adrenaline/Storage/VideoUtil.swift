@@ -33,11 +33,6 @@ func getVideoHLSUrlKey(email: String, videoId: String) -> String {
     return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/HLS/\(videoId)"
 }
 
-// Returns the full URL minus the "_{RESOLUTION}.m3u8" suffix
-func getVideoThumbnailUrl(email: String, videoId: String) -> String {
-    return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/Thumbnails/\(videoId).0000000.jpg"
-}
-
 // Returns the full URL for the thumbnail of a video
 func getVideoThumbnailURL(email: String, videoId: String) -> String {
     return CLOUDFRONT_STREAM_BASE_URL + "\(email.replacingOccurrences(of: "@", with: "%40"))/\(videoId)/output/Thumbnails/\(videoId).0000000.jpg"
@@ -162,4 +157,49 @@ func isVerticalLocalVideo(url: String) -> Bool {
     }
     
     return false
+}
+
+func isVideoStreamAvailable(stream: Stream) -> Bool {
+    return sendRequest(url: stream.streamURL)
+}
+
+// Returns true if the stream is available at the CloudFront link
+func sendRequest(url: URL) -> Bool {
+    let session = URLSession.shared
+    var result: Bool = false
+    let sem = DispatchSemaphore.init(value: 0)
+    
+    let request = URLRequest(url: url)
+    
+    let task = session.dataTask(with: request) { data, response, error in
+        defer { sem.signal() }
+        
+        if let error = error {
+            // Handle HTTP request error
+            print("Error: \(error)")
+        } else if let _ = data {
+            // Handle HTTP request response
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else { return }
+            
+            result = true
+        } else {
+            // Handle unexpected error
+            print("Unexpected error occurred")
+        }
+    }
+    
+    task.resume()
+    
+    // This line will wait until the semaphore has been signaled
+    // which will be once the data task has completed
+    sem.wait()
+    
+    return result
+}
+
+func getStreamURL(email: String, videoId: String, resolution: Resolution) -> URL? {
+    let videoUrlHead = getVideoHLSUrlKey(email: email, videoId: videoId)
+    
+    return URL(string: "\(videoUrlHead)_\(resolution.displayValue.dropLast(1)).m3u8")
 }
