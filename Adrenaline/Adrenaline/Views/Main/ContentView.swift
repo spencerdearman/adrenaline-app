@@ -206,7 +206,7 @@ struct ContentView: View {
                                                                      completedUploads: images.count,
                                                                      totalUploads: videos.count + images.count,
                                                                      uploadingProgress: $uploadingProgress) {
-                                        print("Upload completed, saving post...")
+                                        
                                         let (savedUser, _) = try await savePost(user: user, post: post)
                                         newUser = savedUser
                                     } else {
@@ -221,7 +221,7 @@ struct ContentView: View {
                                                 try await removeVideoFromS3(email: user.email, 
                                                                             videoId: video.id)
                                             } catch {
-                                                print("Failed to remove \(video.id)")
+                                                print("Failed to remove \(video.id) from S3")
                                             }
                                             
                                         }
@@ -232,7 +232,7 @@ struct ContentView: View {
                                                 try await removeImageFromS3(email: user.email, 
                                                                             imageId: image.id)
                                             } catch {
-                                                print("Failed to remove \(image.id)")
+                                                print("Failed to remove \(image.id) from S3")
                                             }
                                         }
                                         

@@ -227,14 +227,12 @@ func trackUploadProgress(email: String, videos: [Video], completedUploads: Int =
     
     // Only run with videos that haven't succeeded yet
     for video in videos.filter({ !successfulUploads.contains($0.id) }) {
-        print("Testing \(video.id)...")
         // Checks that thumbnail can be loaded
         if let url = URL(string: getVideoThumbnailURL(email: email, videoId: video.id)),
            sendRequest(url: url),
            // Checks that one resolution can be streamed
            let streamURL = getStreamURL(email: email, videoId: video.id, resolution: .p360),
            isVideoStreamAvailable(stream: Stream(resolution: .p360, streamURL: streamURL)) {
-            print("\(video.id) succeeded")
             successes.insert(video.id)
         }
     }
@@ -251,10 +249,10 @@ func trackUploadProgress(email: String, videos: [Video], completedUploads: Int =
     successes = successes.union(successfulUploads)
     
     // If all video elements are in set of all successful uploads, then uploads are complete
-    if Set(videos.map { $0.id }).subtracting(successes).isEmpty { print("Completed"); return true }
-    print("Waiting...")
+    if Set(videos.map { $0.id }).subtracting(successes).isEmpty { return true }
+    
     try await Task.sleep(seconds: 2.0)
-    print("Retrying...")
+    
     // Else, retry with videos that still need to succeed
     // Note: numAttempts resets if there is at least one completion in the attempt. In other words,
     // this function fails after 15 straight attempts (30s) without a completion
