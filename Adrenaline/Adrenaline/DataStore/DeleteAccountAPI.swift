@@ -34,7 +34,7 @@ private func deleteDataStoreDives(dives: [Dive]) async throws {
         
         // Get event where the current dive was performed
         if var event = try await Amplify.DataStore.query(NewEvent.self, byId: dive.neweventID),
-            let dives = event.dives {
+           let dives = event.dives {
             // Get current event dives and filter out current dive
             try await dives.fetch()
             event.dives = List<Dive>.init(elements: dives.elements.filter { $0.id != dive.id })
@@ -173,23 +173,36 @@ private func deleteDataStoreFavorites(user: NewUser) async throws {
     }
 }
 
+// Removes all data in DataStore and S3 associated with a NewUser given authUserId
 private func deleteAccountDataStoreData(authUserId: String) async throws {
+    // Get user object from authUserId
     let pred = NewUser.keys.id == authUserId
     let users = await queryAWSUsers(where: pred)
     if users.count != 1 { throw NSError() }
-    
     let user = users[0]
+    
+    // Delete associated DataStore and S3 data for the user
     try await deleteDataStoreCoachOrAthlete(user: user)
     try await deleteDataStorePosts(user: user)
     try await deleteDataStoreMessages(user: user)
     try await deleteDataStoreFavorites(user: user)
+    
+    // Delete user object itself
+    try await deleteFromDataStore(object: user)
 }
 
 func deleteAccount(authUserId: String) async {
     do {
+        // Delete associated DataStore and S3 data for user
         try await deleteAccountDataStoreData(authUserId: authUserId)
         print("Successfully deleted user DataStore data")
         
+        // Clear UserDefaults before forcefully deleting user and signing out
+        // https://stackoverflow.com/a/43402172/22068672
+        let defaults = UserDefaults.standard
+        defaults.dictionaryRepresentation().keys.forEach(defaults.removeObject(forKey:))
+        
+        // Delete user Auth account
         try await Amplify.Auth.deleteUser()
         print("Successfully deleted user")
     } catch let error as AuthError {
