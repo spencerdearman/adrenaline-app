@@ -8,8 +8,47 @@
 import Foundation
 import Amplify
 
-private func deleteDataStoreCoachOrAthlete(user: NewUser) async throws {
+// Remove all data nested with CoachUser object associated with the user
+private func deleteDataStoreCoach(user: NewUser) async throws {
     
+}
+
+// Remove all data nested with NewAthlete object associated with the user
+private func deleteDataStoreAthlete(user: NewUser) async throws {
+    
+}
+
+// Remove all data nested within NewAthlete or CoachUser object associated with the user
+private func deleteDataStoreCoachOrAthlete(user: NewUser) async throws {
+    if user.coach != nil {
+        return try await deleteDataStoreCoach(user: user)
+    } else if user.athlete != nil {
+        return try await deleteDataStoreAthlete(user: user)
+    }
+}
+
+private func deleteUsersSaving(user: NewUser, post: Post) async throws {
+    guard let usersSaving = post.usersSaving else { return }
+    try await usersSaving.fetch()
+    
+    // Iterates over every user that saved this post and removes it from their savedPosts list
+    for saving in usersSaving {
+        let result = try await Amplify.DataStore.query(NewUser.self, byId: saving.newuserID)
+        guard var user = result else { continue }
+        guard let savedPosts = user.savedPosts else { continue }
+        try await savedPosts.fetch()
+        
+        // Removes post from savedPosts of user
+        user.savedPosts = List<UserSavedPost>.init(elements: savedPosts.elements.filter {
+            $0.postID != post.id
+        })
+        
+        // Update user with post removed from their savedPosts list
+        let _ = try await saveToDataStore(object: user)
+        
+        // Remove UserSavedPost from DataStore
+        try await deleteFromDataStore(object: saving)
+    }
 }
 
 // Remove all Post data from DataStore and S3 associated with the given user
@@ -41,6 +80,9 @@ private func deleteDataStorePosts(user: NewUser) async throws {
             }
         }
         
+        // Remove all saved post association from other users to this post
+        try await deleteUsersSaving(user: user, post: post)
+        
         // Delete Post object from DataStore
         try await deleteFromDataStore(object: post)
     }
@@ -66,6 +108,11 @@ private func deleteDataStoreMessages(user: NewUser) async throws {
     }
 }
 
+// Remove user id String from all users that favorite them
+private func deleteDataStoreFavorites(user: NewUser) async throws {
+    
+}
+
 private func deleteAccountDataStoreData(authUserId: String) async throws {
     let pred = NewUser.keys.id == authUserId
     let users = await queryAWSUsers(where: pred)
@@ -75,6 +122,7 @@ private func deleteAccountDataStoreData(authUserId: String) async throws {
     try await deleteDataStoreCoachOrAthlete(user: user)
     try await deleteDataStorePosts(user: user)
     try await deleteDataStoreMessages(user: user)
+    try await deleteDataStoreFavorites(user: user)
 }
 
 func deleteAccount(authUserId: String) async {
