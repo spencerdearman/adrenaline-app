@@ -46,6 +46,7 @@ private func deleteDataStorePosts(user: NewUser) async throws {
     }
 }
 
+// Remove all Message and MessageNewUser data associated with the user
 private func deleteDataStoreMessages(user: NewUser) async throws {
     // Get linker table entries with the user in them
     let pred = MessageNewUser.keys.newuserID == user.id
