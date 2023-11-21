@@ -10,7 +10,7 @@ import Amplify
 
 // Remove all data nested with CoachUser object associated with the user
 private func deleteDataStoreCoach(coach: CoachUser) async throws {
-    if var team = coach.team {
+    if let team = coach.team {
         // Remove coach from team association and update team in DataStore
         team.coach = nil
         let _ = try await saveToDataStore(object: team)
@@ -48,7 +48,7 @@ private func deleteDataStoreDives(dives: [Dive]) async throws {
 // Remove all data nested with NewAthlete object associated with the user
 private func deleteDataStoreAthlete(athlete: NewAthlete) async throws {
     // Update team to remove association of this athlete
-    if var team = athlete.team, let athletes = team.athletes {
+    if let team = athlete.team, let athletes = team.athletes {
         team.athletes = List<NewAthlete>.init(elements: athletes.elements.filter { $0.id != athlete.id })
         let _ = try await saveToDataStore(object: team)
     }
@@ -85,7 +85,7 @@ private func deleteUsersSaving(user: NewUser, post: Post) async throws {
     // Iterates over every user that saved this post and removes it from their savedPosts list
     for saving in usersSaving {
         let result = try await Amplify.DataStore.query(NewUser.self, byId: saving.newuserID)
-        guard var user = result else { continue }
+        guard let user = result else { continue }
         guard let savedPosts = user.savedPosts else { continue }
         try await savedPosts.fetch()
         
@@ -143,17 +143,25 @@ private func deleteDataStorePosts(user: NewUser) async throws {
 private func deleteDataStoreMessages(user: NewUser) async throws {
     // Get linker table entries with the user in them
     let pred = MessageNewUser.keys.newuserID == user.id
-    let messageNewUsers: [MessageNewUser] = try await query(where: pred)
+    let userMessageNewUsers: [MessageNewUser] = try await query(where: pred)
     
     // Gets a set of unique message ids that are associated with the user
-    let messageIds = Set(messageNewUsers.map { $0.messageID })
+    let messageIds = Set(userMessageNewUsers.map { $0.messageID })
     
-    // Deletes all linker table entries with the user in them
-    for msgNewUser in messageNewUsers {
-        try await deleteFromDataStore(object: msgNewUser)
+    // Deletes all linker table entries with message ids associated with the user.
+    // This deletes messages exchanged with the user (both sent and received, where the user's id
+    // would not be associated with the MessageNewUser entry)
+    for msg in messageIds {
+        let pred = MessageNewUser.keys.messageID == msg
+        let msgNewUsers: [MessageNewUser] = try await query(where: pred)
+        
+        for msgNewUser in msgNewUsers {
+            try await deleteFromDataStore(object: msgNewUser)
+        }
     }
     
-    // Deletes all Message entries if their id was in the linker table
+    // Deletes all Message entries if their id was in the linker table and somehow associated with
+    // the user
     for msgId in messageIds {
         try await Amplify.DataStore.delete(Message.self, withId: msgId)
     }
