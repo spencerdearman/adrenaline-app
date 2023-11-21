@@ -110,7 +110,16 @@ private func deleteDataStoreMessages(user: NewUser) async throws {
 
 // Remove user id String from all users that favorite them
 private func deleteDataStoreFavorites(user: NewUser) async throws {
+    // Get all users that have favorited the given user
+    let result = try await Amplify.DataStore.query(NewUser.self,
+                                                   where: NewUser.keys.favoritesIds.contains(user.id))
     
+    // For each user, remove the given user from their favorites and update their favoritesIds list
+    // in the DataStore
+    for user in result {
+        user.favoritesIds = user.favoritesIds.filter { $0 != user.id }
+        let _ = try await saveToDataStore(object: user)
+    }
 }
 
 private func deleteAccountDataStoreData(authUserId: String) async throws {
