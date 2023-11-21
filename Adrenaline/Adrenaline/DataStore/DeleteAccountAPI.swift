@@ -12,8 +12,38 @@ private func deleteDataStoreCoachOrAthlete(user: NewUser) async throws {
     
 }
 
+// Remove all Post data from DataStore and S3 associated with the given user
 private func deleteDataStorePosts(user: NewUser) async throws {
+    guard let posts = user.posts else { return }
+    try await posts.fetch()
     
+    // Iterate over videos and images of each post before deleting Post object itself
+    for post in posts.elements {
+        // Get videos from post
+        if let videos = post.videos {
+            try await videos.fetch()
+            
+            // Delete each video from S3 and from DataStore
+            for video in videos.elements {
+                try await removeVideoFromS3(email: user.email, videoId: video.id)
+                try await deleteFromDataStore(object: video)
+            }
+        }
+        
+        // Get images from post
+        if let images = post.images {
+            try await images.fetch()
+            
+            // Delete each image from S3 and from DataStore
+            for image in images.elements {
+                try await removeImageFromS3(email: user.email, imageId: image.id)
+                try await deleteFromDataStore(object: image)
+            }
+        }
+        
+        // Delete Post object from DataStore
+        try await deleteFromDataStore(object: post)
+    }
 }
 
 private func deleteDataStoreMessages(user: NewUser) async throws {
