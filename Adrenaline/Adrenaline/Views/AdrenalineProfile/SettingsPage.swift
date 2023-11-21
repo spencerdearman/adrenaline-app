@@ -15,6 +15,7 @@ struct SettingsView: View {
     @State private var isPinned = false
     @State private var isDeleted = false
     @State private var showDeleteAccountAlert: Bool = false
+    @State private var isDeletingAccount: Bool = false
     @AppStorage("authUserId") private var authUserId: String = ""
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
@@ -76,7 +77,7 @@ struct SettingsView: View {
                 }
                 
                 NavigationLink {
-                    ZStack {
+                    VStack {
                         Button {
                             showDeleteAccountAlert = true
                         } label: {
@@ -84,6 +85,11 @@ struct SettingsView: View {
                                 .frame(maxWidth: .infinity)
                         }
                         .tint(.red)
+                        .disabled(isDeletingAccount)
+                        
+                        if isDeletingAccount {
+                            ProgressView()
+                        }
                     }
                     .alert("Are you sure you want to permanently delete your account? This action cannot be undone.", 
                            isPresented: $showDeleteAccountAlert) {
@@ -94,6 +100,7 @@ struct SettingsView: View {
                         Button("Delete", role: .destructive) {
                             Task {
                                 print("Initiating account deletion...")
+                                isDeletingAccount = true
                                 await deleteAccount(authUserId: authUserId)
                                 
                                 showDeleteAccountAlert = false
