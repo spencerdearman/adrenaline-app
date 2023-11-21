@@ -97,7 +97,6 @@ struct ContentView: View {
             guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
             if !user.tokens.contains(token) {
                 user.tokens.append(token)
-                print("Tokens:", user.tokens)
                 newUser = try await saveToDataStore(object: user)
             }
         } catch {
