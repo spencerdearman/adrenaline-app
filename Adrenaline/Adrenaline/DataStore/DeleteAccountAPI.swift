@@ -9,21 +9,28 @@ import Foundation
 import Amplify
 
 // Remove all data nested with CoachUser object associated with the user
-private func deleteDataStoreCoach(user: NewUser) async throws {
+private func deleteDataStoreCoach(coach: CoachUser) async throws {
+    if var team = coach.team {
+        // Remove coach from team association and update team in DataStore
+        team.coach = nil
+        let _ = try await saveToDataStore(object: team)
+    }
     
+    // Remove coach from DataStore
+    try await deleteFromDataStore(object: coach)
 }
 
 // Remove all data nested with NewAthlete object associated with the user
-private func deleteDataStoreAthlete(user: NewUser) async throws {
+private func deleteDataStoreAthlete(athlete: NewAthlete) async throws {
     
 }
 
 // Remove all data nested within NewAthlete or CoachUser object associated with the user
 private func deleteDataStoreCoachOrAthlete(user: NewUser) async throws {
-    if user.coach != nil {
-        return try await deleteDataStoreCoach(user: user)
-    } else if user.athlete != nil {
-        return try await deleteDataStoreAthlete(user: user)
+    if let coach = user.coach {
+        return try await deleteDataStoreCoach(coach: coach)
+    } else if let athlete = user.athlete {
+        return try await deleteDataStoreAthlete(athlete: athlete)
     }
 }
 
