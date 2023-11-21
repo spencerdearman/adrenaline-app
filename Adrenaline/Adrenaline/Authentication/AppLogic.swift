@@ -120,6 +120,12 @@ class AppLogic: ObservableObject {
                             await self.updateUI(forSignInStatus: false)
                         }
                         
+                    case HubPayload.EventName.Auth.userDeleted:
+                        Task {
+                            print("==HUB== User account deleted, update UI")
+                            await self.updateUI(forSignInStatus: false)
+                        }
+                        
                     default:
                         //                    print("==HUB== \(payload)")
                         break
