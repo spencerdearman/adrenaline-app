@@ -135,12 +135,7 @@ struct SettingsView: View {
                 }
             }
             
-            Button {} label: {
-                Text("Sign out")
-                    .frame(maxWidth: .infinity)
-            }
-            .tint(.red)
-            .onTapGesture {
+            Button {
                 Task {
                     UserDefaults.standard.removeObject(forKey: "authUserId")
                     
@@ -162,7 +157,11 @@ struct SettingsView: View {
                     
                     presentationMode.wrappedValue.dismiss()
                 }
+            } label: {
+                Text("Sign out")
+                    .frame(maxWidth: .infinity)
             }
+            .tint(.red)
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Account")
