@@ -197,6 +197,9 @@ func deleteAccount(authUserId: String) async {
         try await deleteAccountDataStoreData(authUserId: authUserId)
         print("Successfully deleted user DataStore data")
         
+        // Sleep to give DataStore time to sync to the cloud
+        try await Task.sleep(seconds: 5.0)
+        
         // Clear UserDefaults before forcefully deleting user and signing out
         // https://stackoverflow.com/a/43402172/22068672
         let defaults = UserDefaults.standard
