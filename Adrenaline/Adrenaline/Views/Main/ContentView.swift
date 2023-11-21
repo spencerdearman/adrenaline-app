@@ -129,6 +129,16 @@ struct ContentView: View {
                                     try await Amplify.DataStore.clear()
                                 }
                             }
+                        // This view appears between the time the user is deleted and the sign out
+                        // happens in state
+                        // Note: email will be empty string here since account deletion clears it
+                        //       from UserDefaults
+                    } else if email == "" {
+                        VStack {
+                            Text("Signing out...")
+                                .font(.largeTitle)
+                            ProgressView()
+                        }
                     } else {
                         ZStack(alignment: .bottom) {
                             TabView {
