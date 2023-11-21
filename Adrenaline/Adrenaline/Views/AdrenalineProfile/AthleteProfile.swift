@@ -24,32 +24,8 @@ struct DiverView: View {
     
     var body: some View {
         VStack {
-            // Showing DiveMeets Linking Screen
-            if (newUser.diveMeetsID == nil || newUser.diveMeetsID == "") {
-                Spacer()
-                NavigationLink(destination: {
-                    DiveMeetsLink(newUser: newUser)
-                }, label: {
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(Custom.darkGray)
-                            .cornerRadius(50)
-                            .shadow(radius: 10)
-                        Text("Link DiveMeets Account")
-                            .foregroundColor(.primary)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .padding()
-                    }
-                    .frame(width: linkButtonWidth, height: screenHeight * 0.05)
-                })
-                Spacer()
-                Spacer()
-                Spacer()
-            } else {
-                ProfileContent(newUser: newUser)
-                    .padding(.top, screenHeight * 0.05)
-            }
+            ProfileContent(newUser: newUser)
+                .padding(.top, screenHeight * 0.05)
             Spacer()
         }
     }
@@ -89,7 +65,7 @@ struct ProfileContent: View {
                 case 0:
                     AnyView(PostsView(newUser: newUser))
                 case 1:
-                    AnyView(MeetListView(diveMeetsID: newUser.diveMeetsID, nameShowing: false))
+                    AnyView(MeetListView(newUser: newUser, nameShowing: false))
                 case 2:
                     AnyView(RecruitingView(newUser: newUser))
                 case 3:
@@ -97,7 +73,7 @@ struct ProfileContent: View {
                 case 4:
                     AnyView(FavoritesView(newUser: newUser))
                 default:
-                    AnyView(MeetListView(diveMeetsID: newUser.diveMeetsID, nameShowing: false))
+                    AnyView(MeetListView(newUser: newUser, nameShowing: false))
             }
         }
         .offset(y: -screenHeight * 0.05)
@@ -105,25 +81,23 @@ struct ProfileContent: View {
 }
 
 struct MeetListView: View {
-    var diveMeetsID: String?
+    var newUser: NewUser
     var nameShowing: Bool = true
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
-        if let diveMeetsID = diveMeetsID {
+        if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
             MeetList(
                 profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
                 diveMeetsID, nameShowing: nameShowing)
         } else {
-            BackgroundBubble() {
-                Text("Cannot get meet list data, account is not linked to DiveMeets")
-                    .font(.title2)
-                    .multilineTextAlignment(.center)
-                    .padding()
-            }
-            .frame(width: screenWidth * 0.9)
+            Text("No DiveMeets Account Linked")
+                .foregroundColor(.secondary)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .padding()
         }
     }
 }
@@ -339,26 +313,36 @@ struct RecruitingView: View {
     @State var newAthlete: NewAthlete?
     @State var loaded: Bool = false
     
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
     var body: some View {
         ScrollView {
-            // Gives view time to query AWS before showing anything (avoids glitching when top
-            // portion appears after lower portion)
-            if loaded {
-                VStack {
-                    if let athlete = newAthlete {
-                        RecruitingDataView(newUser: newUser, newAthlete: athlete)
+            if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
+                // Gives view time to query AWS before showing anything (avoids glitching when top
+                // portion appears after lower portion)
+                if loaded {
+                    VStack {
+                        if let athlete = newAthlete {
+                            RecruitingDataView(newUser: newUser, newAthlete: athlete)
+                            
+                            Divider()
+                        }
+                        
+                        MetricsView(diveMeetsID: diveMeetsID)
                         
                         Divider()
+                        
+                        StatisticsView(diveMeetsID: diveMeetsID)
                     }
-                    
-                    MetricsView(diveMeetsID: newUser.diveMeetsID)
-                    
-                    Divider()
-                    
-                    StatisticsView(diveMeetsID: newUser.diveMeetsID)
+                    .padding()
                 }
-                .padding()
-                
+            } else {
+                Text("No DiveMeets Account Linked")
+                    .foregroundColor(.secondary)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding()
             }
         }
         .onAppear {

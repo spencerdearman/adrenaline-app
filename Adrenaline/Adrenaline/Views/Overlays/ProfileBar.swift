@@ -15,6 +15,7 @@ struct ProfileBar: View {
     @State private var isLogged = true
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
+    @Binding var updateDataStoreData: Bool
     
     var user: NewUser?
     var title = ""
@@ -24,7 +25,6 @@ struct ProfileBar: View {
     
     var body: some View {
         ZStack {
-            
             HStack(spacing: 16) {
                 Button {
                     withAnimation(.closeCard) {
@@ -55,7 +55,8 @@ struct ProfileBar: View {
                 }
                 
                 NavigationLink {
-                    SettingsView(state: state, newUser: user)
+                    SettingsView(state: state, newUser: user, showAccount: $showAccount,
+                                 updateDataStoreData: $updateDataStoreData)
                 } label: {
                     Image(systemName: "gear")
                         .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)

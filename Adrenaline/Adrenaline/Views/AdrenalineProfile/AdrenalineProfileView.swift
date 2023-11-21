@@ -19,6 +19,7 @@ struct AdrenalineProfileWrapperView: View {
     @ObservedObject private var state: SignedInState
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
+    @Binding var updateDataStoreData: Bool
     
     var user: NewUser?
     var authUserId: String
@@ -26,20 +27,22 @@ struct AdrenalineProfileWrapperView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>) {
+    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
         self.state = state
         self.authUserId = authUserId
         self.user = nil
         self._showAccount = showAccount
         self._recentSearches = recentSearches
+        self._updateDataStoreData = updateDataStoreData
     }
     
-    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>) {
+    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
         self.state = state
         self.authUserId = newUser.id
         self.user = newUser
         self._showAccount = showAccount
         self._recentSearches = recentSearches
+        self._updateDataStoreData = updateDataStoreData
     }
     
     var body: some View {
@@ -50,9 +53,10 @@ struct AdrenalineProfileWrapperView: View {
                 AdrenalineProfileView(authUserId: authUserId)
             }
         }
-        .overlay{
-            ProfileBar(state: state, showAccount: $showAccount, recentSearches: $recentSearches, user: user)
-                .frame(width: screenWidth)
+        .overlay {
+            ProfileBar(state: state, showAccount: $showAccount, recentSearches: $recentSearches, 
+                       updateDataStoreData: $updateDataStoreData, user: user)
+            .frame(width: screenWidth)
         }
     }
 }
@@ -513,10 +517,34 @@ struct PersonalInfoView: View {
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.presentationMode) var presentationMode
+    @State private var diveMeetsID: String = ""
     var newUser: NewUser
+    
+    @Binding var showAccount: Bool
+    @Binding var updateDataStoreData: Bool
+    
     var body: some View {
         VStack {
-            Text("ReMake the DiveMeets Link")
+            Text("Remake this view")
+            
+            TextField("DiveMeets ID", text: $diveMeetsID)
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 200)
+                .multilineTextAlignment(.center)
+            
+            Button {
+                Task {
+                    newUser.diveMeetsID = diveMeetsID
+                    let _ = try await saveToDataStore(object: newUser)
+                    
+                    updateDataStoreData = true
+                    
+                    // Dismiss profile entirely so it can be redrawn with updated data
+                    showAccount = false
+                }
+            } label: {
+                Text("Link")
+            }
         }
     }
 }
