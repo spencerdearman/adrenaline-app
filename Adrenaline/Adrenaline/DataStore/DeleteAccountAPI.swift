@@ -20,9 +20,53 @@ private func deleteDataStoreCoach(coach: CoachUser) async throws {
     try await deleteFromDataStore(object: coach)
 }
 
+// Remove all data nested within Dive objects or where Dive appears in NewEvent objects
+private func deleteDataStoreDives(dives: [Dive]) async throws {
+    // Iterate through all dives and remove their associations
+    for dive in dives {
+        // Remove all judge scores associated with that dive
+        if let scores = dive.scores {
+            try await scores.fetch()
+            for score in scores.elements {
+                try await deleteFromDataStore(object: score)
+            }
+        }
+        
+        // Get event where the current dive was performed
+        if var event = try await Amplify.DataStore.query(NewEvent.self, byId: dive.neweventID),
+            let dives = event.dives {
+            // Get current event dives and filter out current dive
+            try await dives.fetch()
+            event.dives = List<Dive>.init(elements: dives.elements.filter { $0.id != dive.id })
+            
+            // Update event in DataStore with current dive removed
+            let _ = try await saveToDataStore(object: event)
+        }
+    }
+}
+
 // Remove all data nested with NewAthlete object associated with the user
 private func deleteDataStoreAthlete(athlete: NewAthlete) async throws {
+    // Update team to remove association of this athlete
+    if var team = athlete.team, let athletes = team.athletes {
+        team.athletes = List<NewAthlete>.init(elements: athletes.elements.filter { $0.id != athlete.id })
+        let _ = try await saveToDataStore(object: team)
+    }
     
+    // Update college to remove association of this athlete
+    if var college = athlete.college, let athletes = college.athletes {
+        college.athletes = List<NewAthlete>.init(elements: athletes.elements.filter { $0.id != athlete.id })
+        let _ = try await saveToDataStore(object: college)
+    }
+    
+    // Remove dives with associated judge scores and events in meets
+    if let dives = athlete.dives {
+        try await dives.fetch()
+        try await deleteDataStoreDives(dives: dives.elements)
+    }
+    
+    // Remove athlete from DataStore
+    try await deleteFromDataStore(object: athlete)
 }
 
 // Remove all data nested within NewAthlete or CoachUser object associated with the user
