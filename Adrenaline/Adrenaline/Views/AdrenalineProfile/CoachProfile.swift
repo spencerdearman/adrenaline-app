@@ -28,31 +28,8 @@ struct CoachView: View {
     var body: some View {
         VStack {
             Spacer()
-            // Showing DiveMeets Linking Screen
-            if (newUser.diveMeetsID == nil || newUser.diveMeetsID == "") {
-                NavigationLink(destination: {
-                    DiveMeetsLink(newUser: newUser)
-                }, label: {
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(Custom.darkGray)
-                            .cornerRadius(50)
-                            .shadow(radius: 10)
-                        Text("Link DiveMeets Account")
-                            .foregroundColor(.primary)
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .padding()
-                    }
-                    .frame(width: linkButtonWidth, height: screenHeight * 0.05)
-                })
-                Spacer()
-                Spacer()
-                Spacer()
-            } else {
-                CoachProfileContent(newUser: newUser)
-                    .padding(.top, screenHeight * 0.05)
-            }
+            CoachProfileContent(newUser: newUser)
+                .padding(.top, screenHeight * 0.05)
             Spacer()
             Spacer()
             Spacer()

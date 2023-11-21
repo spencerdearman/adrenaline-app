@@ -32,6 +32,7 @@ struct ContentView: View {
     @State private var uploadingPost: Post? = nil
     @State private var uploadingProgress: Double = 0.0
     @State private var uploadFailed: Bool = false
+    @State private var updateDataStoreData: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -174,17 +175,19 @@ struct ContentView: View {
                                 if let user = newUser, user.accountType != "Spectator" {
                                     AdrenalineProfileWrapperView(state: state, newUser: user,
                                                                  showAccount: $showAccount,
-                                                                 recentSearches: $recentSearches)
+                                                                 recentSearches: $recentSearches,
+                                                                 updateDataStoreData: $updateDataStoreData)
                                 } else if let _ = newUser {
                                     SettingsView(state: state, newUser: newUser,
-                                                 showAccount: $showAccount)
+                                                 showAccount: $showAccount, updateDataStoreData: $updateDataStoreData)
                                 } else {
                                     // In the event that a NewUser can't be queried, this is the
                                     // default view
                                     AdrenalineProfileWrapperView(state: state,
                                                                  authUserId: authUserId,
                                                                  showAccount: $showAccount,
-                                                                 recentSearches: $recentSearches)
+                                                                 recentSearches: $recentSearches,
+                                                                 updateDataStoreData: $updateDataStoreData)
                                 }
                             }
                         })
@@ -243,6 +246,12 @@ struct ContentView: View {
                                     withAnimation(.easeOut) {
                                         uploadingPost = nil
                                     }
+                        .onChange(of: updateDataStoreData) {
+                            if updateDataStoreData {
+                                Task {
+                                    print("updating data")
+                                    await getDataStoreData()
+                                    updateDataStoreData = false
                                 }
                             }
                         }
