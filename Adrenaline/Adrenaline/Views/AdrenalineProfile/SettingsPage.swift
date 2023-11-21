@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Authenticator
-import Amplify
 
 struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
