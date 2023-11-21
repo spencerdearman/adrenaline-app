@@ -11,9 +11,11 @@ import Authenticator
 struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var state: SignedInState
-    @State var isPinned = false
-    @State var isDeleted = false
+    @ObservedObject private var state: SignedInState
+    @State private var isPinned = false
+    @State private var isDeleted = false
+    @State private var showDeleteAccountAlert: Bool = false
+    @AppStorage("authUserId") private var authUserId: String = ""
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
     @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
@@ -73,7 +75,32 @@ struct SettingsView: View {
                     Label("Profile", systemImage: "person")
                 }
                 
-                NavigationLink {} label: {
+                NavigationLink {
+                    ZStack {
+                        Button {
+                            showDeleteAccountAlert = true
+                        } label: {
+                            Text("Delete Account")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .tint(.red)
+                    }
+                    .alert("Are you sure you want to permanently delete your account? This action cannot be undone.", 
+                           isPresented: $showDeleteAccountAlert) {
+                        Button("Cancel", role: .cancel) {
+                            print("Cancel delete account")
+                            showDeleteAccountAlert = false
+                        }
+                        Button("Delete", role: .destructive) {
+                            Task {
+                                print("Initiating account deletion...")
+                                await deleteAccount(authUserId: authUserId)
+                                
+                                showDeleteAccountAlert = false
+                            }
+                        }
+                    }
+                } label: {
                     Label("Settings", systemImage: "gear")
                 }
                 
