@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Authenticator
+import Amplify
 
 struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
@@ -101,7 +102,12 @@ struct SettingsView: View {
                             Task {
                                 print("Initiating account deletion...")
                                 isDeletingAccount = true
+                                
+                                // Deletes all account data and login
                                 await deleteAccount(authUserId: authUserId)
+                                
+                                // Explicitly sign out of state since it is being observed
+                                await state.signOut()
                                 
                                 showDeleteAccountAlert = false
                             }
