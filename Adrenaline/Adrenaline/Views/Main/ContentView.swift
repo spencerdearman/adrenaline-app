@@ -196,12 +196,23 @@ struct ContentView: View {
                                 Task {
                                     uploadFailed = false
                                     uploadingProgress = 0.0
-                                    guard let postVideos = post.videos else { return }
-                                    try await postVideos.fetch()
+                                    
+                                    try await post.videos?.fetch()
                                     try await post.images?.fetch()
                                     
-                                    let videos = postVideos.elements
-                                    let images = post.images?.elements ?? []
+                                    let videos: [Video]
+                                    if let vids = post.videos {
+                                        videos = vids.elements
+                                    } else {
+                                        videos = []
+                                    }
+                                    
+                                    let images: [NewImage]
+                                    if let imgs = post.images {
+                                        images = imgs.elements
+                                    } else {
+                                        images = []
+                                    }
                                     
                                     // Be aware of data races with uploadingProgress
                                     if try await trackUploadProgress(email: email,
