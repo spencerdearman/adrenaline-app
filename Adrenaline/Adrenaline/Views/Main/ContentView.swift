@@ -171,10 +171,10 @@ struct ContentView: View {
                             }
                             
                             if uploadingPost != nil {
-                                UploadingPostView(uploadingPost: $uploadingPost, 
-                                                  uploadingProgress: $uploadingProgress, 
+                                UploadingPostView(uploadingPost: $uploadingPost,
+                                                  uploadingProgress: $uploadingProgress,
                                                   uploadFailed: $uploadFailed)
-                                    .offset(y: -uploadingPostOffset)
+                                .offset(y: -uploadingPostOffset)
                             }
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
