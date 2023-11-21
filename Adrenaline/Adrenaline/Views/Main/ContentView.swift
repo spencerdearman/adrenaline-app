@@ -29,9 +29,12 @@ struct ContentView: View {
     @State private var diveMeetsID: String = ""
     @State private var newUser: NewUser? = nil
     @State private var recentSearches: [SearchItem] = []
+<<<<<<< HEAD
     @State private var uploadingPost: Post? = nil
     @State private var uploadingProgress: Double = 0.0
     @State private var uploadFailed: Bool = false
+=======
+>>>>>>> c4524ef9bb2e4ea9de490f7b42eaa673f61afc47
     @State private var updateDataStoreData: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -191,6 +194,7 @@ struct ContentView: View {
                                 }
                             }
                         })
+<<<<<<< HEAD
                         .onChange(of: uploadingPost) {
                             if let user = newUser, let post = uploadingPost {
                                 Task {
@@ -246,6 +250,8 @@ struct ContentView: View {
                                     withAnimation(.easeOut) {
                                         uploadingPost = nil
                                     }
+=======
+>>>>>>> c4524ef9bb2e4ea9de490f7b42eaa673f61afc47
                         .onChange(of: updateDataStoreData) {
                             if updateDataStoreData {
                                 Task {
