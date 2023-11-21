@@ -93,8 +93,10 @@ struct NewSignupSequence: View {
     @State private var linksParsed: Bool = false
     @State private var personTimedOut: Bool = false
     @State var sortedRecords: [(String, String)] = []
+    //                                         [profileLink: hometown]
+    @State private var sortedRecordsHometowns: [String: String] = [:]
     @State var showNoDiveMeetsIdError: Bool = false
-    @State private var waitingForSync: Bool = true
+    @State private var waitingForLoad: Bool = true
     
     // Variables for Recruiting
     @State var heightFeet: Int = 0
@@ -467,7 +469,7 @@ struct NewSignupSequence: View {
     
     var diveMeetsInfoForm: some View {
         Group {
-            if waitingForSync {
+            if waitingForLoad {
                 VStack {
                     Text("Searching...")
                     ProgressView()
@@ -526,10 +528,20 @@ struct NewSignupSequence: View {
                                             .scaleEffect(0.4)
                                             .frame(width: 100, height: 100)
                                             Spacer()
-                                            Text(key)
-                                                .foregroundColor(.primary)
-                                                .font(.title2).fontWeight(.semibold)
-                                                .padding()
+                                            VStack(alignment: .leading) {
+                                                Text(key)
+                                                    .foregroundColor(.primary)
+                                                    .font(.title2)
+                                                    .fontWeight(.semibold)
+                                                
+                                                if sortedRecords.count > 1, 
+                                                    let hometown = sortedRecordsHometowns[value] {
+                                                    Text(hometown)
+                                                        .foregroundColor(.secondary)
+                                                        .font(.headline)
+                                                }
+                                            }
+                                            
                                             Spacer()
                                         }
                                     }
@@ -632,11 +644,9 @@ struct NewSignupSequence: View {
                 
                 // Wait for DataStore to be ready before trying to query diveMeetsIds
                 while !appLogic.dataStoreReady {
-                    waitingForSync = true
-                    try await Task.sleep(seconds: 1.0)
+                    waitingForLoad = true
+                    try await Task.sleep(seconds: 0.5)
                 }
-                
-                waitingForSync = false
                 
                 // Get all currently used DiveMeets IDs and don't show them to the user as available
                 // options for their name
@@ -649,7 +659,11 @@ struct NewSignupSequence: View {
                 
                 if sortedRecords.count == 0 {
                     showNoDiveMeetsIdError = true
+                } else if sortedRecords.count > 1 {
+                    sortedRecordsHometowns = await getRecordHometowns(records: sortedRecords)
                 }
+                
+                waitingForLoad = false
             }
         }
     }
@@ -810,6 +824,23 @@ struct NewSignupSequence: View {
                 result.insert(id)
             }
         }
+    }
+    
+    // Get hometowns from profiles in sortedRecords to provide more info when there are multiple
+    // accounts with the same name
+    private func getRecordHometowns(records: [(String, String)]) async -> [String: String] {
+        var result: [String: String] = [:]
+        
+        for (_, link) in records {
+            let p = ProfileParser()
+            if await !p.parseProfile(link: link) { continue }
+            guard let hometown = p.profileData.info?.cityState else { continue }
+            
+            // Use link as key since records share the same name
+            result[link] = hometown
+        }
+        
+        return result
     }
     
     func saveNewAthlete() async {
