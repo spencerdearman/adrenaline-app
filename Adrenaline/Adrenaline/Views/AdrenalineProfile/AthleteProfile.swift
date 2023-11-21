@@ -87,30 +87,17 @@ struct MeetListView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
-    
-    private var linkButtonWidth: CGFloat {
-        min(linkButtonWidthScaled, screenWidth * 0.8)
-    }
-    
     var body: some View {
         if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
             MeetList(
                 profileLink: "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" +
                 diveMeetsID, nameShowing: nameShowing)
         } else {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.darkGray)
-                    .cornerRadius(50)
-                    .shadow(radius: 10)
-                Text("No DiveMeets Account Linked")
-                    .foregroundColor(.primary)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .padding()
-            }
-            .frame(width: linkButtonWidth, height: screenHeight * 0.05)
+            Text("No DiveMeets Account Linked")
+                .foregroundColor(.secondary)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .padding()
         }
     }
 }
@@ -326,20 +313,14 @@ struct RecruitingView: View {
     @State var newAthlete: NewAthlete?
     @State var loaded: Bool = false
     
-    @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
-    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    
-    private var linkButtonWidth: CGFloat {
-        min(linkButtonWidthScaled, screenWidth * 0.8)
-    }
     
     var body: some View {
         ScrollView {
             if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
-            // Gives view time to query AWS before showing anything (avoids glitching when top
-            // portion appears after lower portion)
+                // Gives view time to query AWS before showing anything (avoids glitching when top
+                // portion appears after lower portion)
                 if loaded {
                     VStack {
                         if let athlete = newAthlete {
@@ -357,18 +338,11 @@ struct RecruitingView: View {
                     .padding()
                 }
             } else {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(Custom.darkGray)
-                        .cornerRadius(50)
-                        .shadow(radius: 10)
-                    Text("No DiveMeets Account Linked")
-                        .foregroundColor(.primary)
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .padding()
-                }
-                .frame(width: linkButtonWidth, height: screenHeight * 0.05)
+                Text("No DiveMeets Account Linked")
+                    .foregroundColor(.secondary)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding()
             }
         }
         .onAppear {

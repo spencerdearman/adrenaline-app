@@ -56,7 +56,7 @@ struct AdrenalineProfileWrapperView: View {
         .overlay {
             ProfileBar(state: state, showAccount: $showAccount, recentSearches: $recentSearches, 
                        updateDataStoreData: $updateDataStoreData, user: user)
-                .frame(width: screenWidth)
+            .frame(width: screenWidth)
         }
     }
 }
@@ -535,11 +535,12 @@ struct DiveMeetsLink: View {
             Button {
                 Task {
                     newUser.diveMeetsID = diveMeetsID
-                    let result = try await saveToDataStore(object: newUser)
-                    print(result.diveMeetsID)
+                    let _ = try await saveToDataStore(object: newUser)
                     
-                    showAccount = false
                     updateDataStoreData = true
+                    
+                    // Dismiss profile entirely so it can be redrawn with updated data
+                    showAccount = false
                 }
             } label: {
                 Text("Link")
