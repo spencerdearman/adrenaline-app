@@ -102,7 +102,10 @@ struct PostProfileCollapsedView: View {
                 CachedAsyncImage(url: imageURL, urlCache: .imageCache) { image in
                     image
                         .resizable()
+                        .opacity(postShowing != nil ? 0 : 1)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                         .aspectRatio(1, contentMode: .fill)
+                        .matchedGeometryEffect(id: "body" + id, in: namespace)
                         .onTapGesture {
                             withAnimation(.openCard) {
                                 postShowing = post.id
@@ -186,10 +189,7 @@ struct PostProfileExpandedView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 30)
-                .fill(.ultraThinMaterial)
-                .shadow(color: Color(red: 0.27, green: 0.17, blue: 0.49).opacity(0.15),
-                        radius: 15, x: 0, y: 30)
-                // Taps on background behind ScrollView or other elements
+                .fill(.clear)
                 .onTapGesture {
                     captionFocused = false
                 }
@@ -200,6 +200,7 @@ struct PostProfileExpandedView: View {
                         ForEach(mediaItems) { item in
                             AnyView(item.view)
                                 .clipShape(RoundedRectangle(cornerRadius: 25))
+                                .matchedGeometryEffect(id: "body" + id, in: namespace)
                                 .containerRelativeFrame(.horizontal)
                                 .scrollTransition(.animated, axis: .horizontal) {
                                     content, phase in
