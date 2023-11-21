@@ -29,12 +29,9 @@ struct ContentView: View {
     @State private var diveMeetsID: String = ""
     @State private var newUser: NewUser? = nil
     @State private var recentSearches: [SearchItem] = []
-<<<<<<< HEAD
     @State private var uploadingPost: Post? = nil
     @State private var uploadingProgress: Double = 0.0
     @State private var uploadFailed: Bool = false
-=======
->>>>>>> c4524ef9bb2e4ea9de490f7b42eaa673f61afc47
     @State private var updateDataStoreData: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
@@ -194,7 +191,6 @@ struct ContentView: View {
                                 }
                             }
                         })
-<<<<<<< HEAD
                         .onChange(of: uploadingPost) {
                             if let user = newUser, let post = uploadingPost {
                                 Task {
@@ -222,10 +218,10 @@ struct ContentView: View {
                                         
                                         // Remove successful videos from S3
                                         for video in videos {
-                                            // This removal will trigger a lambda function that 
+                                            // This removal will trigger a lambda function that
                                             // removes the streams from the streams bucket
                                             do {
-                                                try await removeVideoFromS3(email: user.email, 
+                                                try await removeVideoFromS3(email: user.email,
                                                                             videoId: video.id)
                                             } catch {
                                                 print("Failed to remove \(video.id) from S3")
@@ -236,7 +232,7 @@ struct ContentView: View {
                                         // Remove uploaded images from S3
                                         for image in images {
                                             do {
-                                                try await removeImageFromS3(email: user.email, 
+                                                try await removeImageFromS3(email: user.email,
                                                                             imageId: image.id)
                                             } catch {
                                                 print("Failed to remove \(image.id) from S3")
@@ -250,12 +246,12 @@ struct ContentView: View {
                                     withAnimation(.easeOut) {
                                         uploadingPost = nil
                                     }
-=======
->>>>>>> c4524ef9bb2e4ea9de490f7b42eaa673f61afc47
+                                }
+                            }
+                        }
                         .onChange(of: updateDataStoreData) {
                             if updateDataStoreData {
                                 Task {
-                                    print("updating data")
                                     await getDataStoreData()
                                     updateDataStoreData = false
                                 }
