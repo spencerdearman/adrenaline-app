@@ -269,6 +269,7 @@ struct ContentView: View {
                         }
                         .onAppear {
                             Task {
+                                recentSearches = []
                                 await getDataStoreData()
                             }
                         }
