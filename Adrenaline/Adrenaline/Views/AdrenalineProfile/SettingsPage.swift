@@ -10,17 +10,29 @@ import Authenticator
 
 struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var state: SignedInState
     @State var isPinned = false
     @State var isDeleted = false
     @Binding var showAccount: Bool
+    @Binding var updateDataStoreData: Bool
+    @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    
+    private var linkButtonWidth: CGFloat {
+        min(linkButtonWidthScaled, screenWidth * 0.8)
+    }
     
     var newUser: NewUser?
     
-    init(state: SignedInState, newUser: NewUser?, showAccount: Binding<Bool> = .constant(false)) {
+    init(state: SignedInState, newUser: NewUser?, showAccount: Binding<Bool> = .constant(false),
+         updateDataStoreData: Binding<Bool>) {
         self.state = state
         self.newUser = newUser
         self._showAccount = showAccount
+        self._updateDataStoreData = updateDataStoreData
     }
     
     var body: some View {
@@ -76,7 +88,44 @@ struct SettingsView: View {
                 .listRowSeparator(.automatic)
                 
                 Section {
-                    NavigationLink {} label: {
+                    NavigationLink {
+                        if let user = newUser {
+                            if newUser?.diveMeetsID != nil {
+                                Button {
+                                    Task {
+                                        if newUser == nil { return }
+                                        
+                                        newUser?.diveMeetsID = nil
+                                        let result = try await saveToDataStore(object: newUser!)
+                                        print("Updated user:", result)
+                                        
+                                        showAccount = false
+                                        updateDataStoreData = true
+                                    }
+                                } label: {
+                                    Text("Unlink DiveMeets Account")
+                                }
+                            } else {
+                                NavigationLink(destination: {
+                                    DiveMeetsLink(newUser: user, showAccount: $showAccount,
+                                                  updateDataStoreData: $updateDataStoreData)
+                                }, label: {
+                                    ZStack {
+                                        Rectangle()
+                                            .foregroundColor(Custom.darkGray)
+                                            .cornerRadius(50)
+                                            .shadow(radius: 10)
+                                        Text("Link DiveMeets Account")
+                                            .foregroundColor(.primary)
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                            .padding()
+                                    }
+                                    .frame(width: linkButtonWidth, height: screenHeight * 0.05)
+                                })
+                            }
+                        }
+                    } label: {
                         Label("DiveMeets", systemImage: "person")
                     }
                     NavigationLink {} label: {

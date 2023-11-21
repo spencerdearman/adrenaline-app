@@ -25,10 +25,11 @@ struct ContentView: View {
     @AppStorage("signupCompleted") var signupCompleted: Bool = false
     @AppStorage("email") var email: String = ""
     @AppStorage("authUserId") var authUserId: String = ""
-    @State var showAccount: Bool = false
-    @State var diveMeetsID: String = ""
-    @State var newUser: NewUser? = nil
-    @State var recentSearches: [SearchItem] = []
+    @State private var showAccount: Bool = false
+    @State private var diveMeetsID: String = ""
+    @State private var newUser: NewUser? = nil
+    @State private var recentSearches: [SearchItem] = []
+    @State private var updateDataStoreData: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -149,20 +150,31 @@ struct ContentView: View {
                                 if let user = newUser, user.accountType != "Spectator" {
                                     AdrenalineProfileWrapperView(state: state, newUser: user,
                                                                  showAccount: $showAccount,
-                                                                 recentSearches: $recentSearches)
+                                                                 recentSearches: $recentSearches,
+                                                                 updateDataStoreData: $updateDataStoreData)
                                 } else if let _ = newUser {
                                     SettingsView(state: state, newUser: newUser,
-                                                 showAccount: $showAccount)
+                                                 showAccount: $showAccount, updateDataStoreData: $updateDataStoreData)
                                 } else {
                                     // In the event that a NewUser can't be queried, this is the
                                     // default view
                                     AdrenalineProfileWrapperView(state: state,
                                                                  authUserId: authUserId,
                                                                  showAccount: $showAccount,
-                                                                 recentSearches: $recentSearches)
+                                                                 recentSearches: $recentSearches,
+                                                                 updateDataStoreData: $updateDataStoreData)
                                 }
                             }
                         })
+                        .onChange(of: updateDataStoreData) {
+                            if updateDataStoreData {
+                                Task {
+                                    print("updating data")
+                                    await getDataStoreData()
+                                    updateDataStoreData = false
+                                }
+                            }
+                        }
                         .onAppear {
                             Task {
                                 await getDataStoreData()
