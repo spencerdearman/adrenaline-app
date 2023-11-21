@@ -120,6 +120,10 @@ struct NewSignupSequence: View {
         screenWidth * 0.5
     }
     
+    private var noDiverSelected: Bool {
+        !selectedDict.values.contains(true)
+    }
+    
     // Formatting
     private func removePhoneFormatting(string: String) -> String {
         return string.filter { $0.isNumber }
@@ -165,6 +169,28 @@ struct NewSignupSequence: View {
                        diveMeetsID: diveMeetsID,
                        accountType: accountType,
                        tokens: tokensList)
+    }
+    
+    // Saves new user with stored State data, and handles CoachUser creation if needed
+    private func saveNewUser() async -> Bool {
+        do {
+            let user = createNewUser()
+            savedUser = try await saveToDataStore(object: user)
+            print("Saved New User")
+            
+            if accountType == "Coach" {
+                let coach = CoachUser(user: savedUser)
+                let savedCoach = try await Amplify.DataStore.save(coach)
+                print("Saved Coach Profile \(savedCoach)")
+            }
+            
+            return true
+        } catch {
+            showBasicError = true
+            print("Could not save user to DataStore: \(error)")
+        }
+        
+        return false
     }
     
     var body: some View {
@@ -433,15 +459,7 @@ struct NewSignupSequence: View {
                         }
                     } else {
                         Task {
-                            do {
-                                let user = createNewUser()
-                                savedUser = try await saveToDataStore(object: user)
-                                userCreationSuccessful = true
-                                print("Saved New User")
-                            } catch {
-                                showBasicError = true
-                                print("Could not save user to DataStore: \(error)")
-                            }
+                            userCreationSuccessful = await saveNewUser()
                             
                             if userCreationSuccessful {
                                 withAnimation(.openCard) {
@@ -534,7 +552,7 @@ struct NewSignupSequence: View {
                                                     .font(.title2)
                                                     .fontWeight(.semibold)
                                                 
-                                                if sortedRecords.count > 1, 
+                                                if sortedRecords.count > 1,
                                                     let hometown = sortedRecordsHometowns[value] {
                                                     Text(hometown)
                                                         .foregroundColor(.secondary)
@@ -555,21 +573,10 @@ struct NewSignupSequence: View {
                     Button {
                         showBasicError = false
                         Task {
-                            do {
-                                let user = createNewUser()
-                                savedUser = try await saveToDataStore(object: user)
-                                userCreationSuccessful = true
-                                print("Saved New User")
-                                
-                                if accountType == "Coach" {
-                                    let coach = CoachUser(user: savedUser)
-                                    let savedCoach = try await Amplify.DataStore.save(coach)
-                                    print("Saved Coach Profile \(savedCoach)")
-                                }
-                            } catch {
-                                showBasicError = true
-                                print("Could not save user to DataStore: \(error)")
-                            }
+                            // Save user and CoachUser if needed
+                            userCreationSuccessful = await saveNewUser()
+                            
+                            // Advance to next stage
                             if userCreationSuccessful {
                                 withAnimation {
                                     print("Selected Next")
@@ -584,6 +591,7 @@ struct NewSignupSequence: View {
                     } label: {
                         ColorfulButton(title: "Continue")
                     }
+                    .disabled(noDiverSelected)
                     
                     if showBasicError {
                         Text("Error creating user profile, please check information")
@@ -617,19 +625,25 @@ struct NewSignupSequence: View {
                                 .accentColor(.primary.opacity(0.7))
                                 .onTapGesture {
                                     Task {
-                                        withAnimation {
-                                            print("Selected Next")
-                                            pageIndex = 2
+                                        // Change all account selections to false and reset
+                                        // diveMeetsID before advancing
+                                        selectedDict.keys.forEach {
+                                            selectedDict[$0] = false
                                         }
-                                        do {
-                                            let user = createNewUser()
-                                            savedUser = try await saveToDataStore(object: user)
-                                            print("Saved New User")
-                                        } catch {
-                                            print("Could not save user to DataStore: \(error)")
-                                        }
-                                        withAnimation(.openCard) {
-                                            pageIndex = 3
+                                        diveMeetsID = nil
+                                        
+                                        // Save user and CoachUser if needed
+                                        userCreationSuccessful = await saveNewUser()
+                                        
+                                        // Advance to next stage
+                                        if userCreationSuccessful {
+                                            withAnimation(.openCard) {
+                                                if accountType == "Athlete" {
+                                                    pageIndex = 3
+                                                } else {
+                                                    pageIndex = 4
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -859,7 +873,7 @@ struct NewSignupSequence: View {
                 }
                 
                 if let stats = parser.profileData.diveStatistics {
-                    let skillRating = SkillRating()
+                    let skillRating = SkillRating(diveStatistics: stats)
                     
                     (springboard, platform, total) =
                     await skillRating.getSkillRating(diveMeetsID: diveMeetsId)
