@@ -365,16 +365,16 @@ struct RankingsView: View {
                     NotConnectedView()
                 }
             }
+            .overlay (
+                NavigationBar(title: "Rankings",
+                              diveMeetsID: $diveMeetsID,
+                              showAccount: $showAccount,
+                              contentHasScrolled: $contentHasScrolled,
+                              feedModel: $feedModel, recentSearches: $recentSearches,
+                              uploadingPost: $uploadingPost)
+                .frame(width: screenWidth)
+            )
         }
-        .overlay (
-            NavigationBar(title: "Rankings",
-                          diveMeetsID: $diveMeetsID,
-                          showAccount: $showAccount,
-                          contentHasScrolled: $contentHasScrolled,
-                          feedModel: $feedModel, recentSearches: $recentSearches, 
-                          uploadingPost: $uploadingPost)
-            .frame(width: screenWidth)
-        )
         //        .onAppear {
         //            Task {
         //                await updateDiveMeetsDivers()
