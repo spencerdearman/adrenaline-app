@@ -271,11 +271,8 @@ struct NewPostView: View {
                                                                         isCoachesOnly: isCoachesOnlyChecked)
                                         print("Created Post")
                                         
-//                                        let (_, savedPost) = try await savePost(user: user, post: post)
-
                                         // Saves to binding so it can be tracked while uploading
                                         uploadingPost = post
-//                                        print("Saved Post")
                                     } else {
                                         print("Could not get user with email \(email)")
                                     }
