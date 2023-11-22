@@ -93,8 +93,10 @@ struct NewSignupSequence: View {
     @State private var linksParsed: Bool = false
     @State private var personTimedOut: Bool = false
     @State var sortedRecords: [(String, String)] = []
+    //                                         [profileLink: hometown]
+    @State private var sortedRecordsHometowns: [String: String] = [:]
     @State var showNoDiveMeetsIdError: Bool = false
-    @State private var waitingForSync: Bool = true
+    @State private var waitingForLoad: Bool = true
     
     // Variables for Recruiting
     @State var heightFeet: Int = 0
@@ -116,6 +118,10 @@ struct NewSignupSequence: View {
     private let screenHeight = UIScreen.main.bounds.height
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
+    }
+    
+    private var noDiverSelected: Bool {
+        !selectedDict.values.contains(true)
     }
     
     // Formatting
@@ -163,6 +169,28 @@ struct NewSignupSequence: View {
                        diveMeetsID: diveMeetsID,
                        accountType: accountType,
                        tokens: tokensList)
+    }
+    
+    // Saves new user with stored State data, and handles CoachUser creation if needed
+    private func saveNewUser() async -> Bool {
+        do {
+            let user = createNewUser()
+            savedUser = try await saveToDataStore(object: user)
+            print("Saved New User")
+            
+            if accountType == "Coach" {
+                let coach = CoachUser(user: savedUser)
+                let savedCoach = try await Amplify.DataStore.save(coach)
+                print("Saved Coach Profile \(savedCoach)")
+            }
+            
+            return true
+        } catch {
+            showBasicError = true
+            print("Could not save user to DataStore: \(error)")
+        }
+        
+        return false
     }
     
     var body: some View {
@@ -431,15 +459,7 @@ struct NewSignupSequence: View {
                         }
                     } else {
                         Task {
-                            do {
-                                let user = createNewUser()
-                                savedUser = try await saveToDataStore(object: user)
-                                userCreationSuccessful = true
-                                print("Saved New User")
-                            } catch {
-                                showBasicError = true
-                                print("Could not save user to DataStore: \(error)")
-                            }
+                            userCreationSuccessful = await saveNewUser()
                             
                             if userCreationSuccessful {
                                 withAnimation(.openCard) {
@@ -467,7 +487,7 @@ struct NewSignupSequence: View {
     
     var diveMeetsInfoForm: some View {
         Group {
-            if waitingForSync {
+            if waitingForLoad {
                 VStack {
                     Text("Searching...")
                     ProgressView()
@@ -526,10 +546,20 @@ struct NewSignupSequence: View {
                                             .scaleEffect(0.4)
                                             .frame(width: 100, height: 100)
                                             Spacer()
-                                            Text(key)
-                                                .foregroundColor(.primary)
-                                                .font(.title2).fontWeight(.semibold)
-                                                .padding()
+                                            VStack(alignment: .leading) {
+                                                Text(key)
+                                                    .foregroundColor(.primary)
+                                                    .font(.title2)
+                                                    .fontWeight(.semibold)
+                                                
+                                                if sortedRecords.count > 1,
+                                                    let hometown = sortedRecordsHometowns[value] {
+                                                    Text(hometown)
+                                                        .foregroundColor(.secondary)
+                                                        .font(.headline)
+                                                }
+                                            }
+                                            
                                             Spacer()
                                         }
                                     }
@@ -543,21 +573,10 @@ struct NewSignupSequence: View {
                     Button {
                         showBasicError = false
                         Task {
-                            do {
-                                let user = createNewUser()
-                                savedUser = try await saveToDataStore(object: user)
-                                userCreationSuccessful = true
-                                print("Saved New User")
-                                
-                                if accountType == "Coach" {
-                                    let coach = CoachUser(user: savedUser)
-                                    let savedCoach = try await Amplify.DataStore.save(coach)
-                                    print("Saved Coach Profile \(savedCoach)")
-                                }
-                            } catch {
-                                showBasicError = true
-                                print("Could not save user to DataStore: \(error)")
-                            }
+                            // Save user and CoachUser if needed
+                            userCreationSuccessful = await saveNewUser()
+                            
+                            // Advance to next stage
                             if userCreationSuccessful {
                                 withAnimation {
                                     print("Selected Next")
@@ -572,6 +591,7 @@ struct NewSignupSequence: View {
                     } label: {
                         ColorfulButton(title: "Continue")
                     }
+                    .disabled(noDiverSelected)
                     
                     if showBasicError {
                         Text("Error creating user profile, please check information")
@@ -605,19 +625,25 @@ struct NewSignupSequence: View {
                                 .accentColor(.primary.opacity(0.7))
                                 .onTapGesture {
                                     Task {
-                                        withAnimation {
-                                            print("Selected Next")
-                                            pageIndex = 2
+                                        // Change all account selections to false and reset
+                                        // diveMeetsID before advancing
+                                        selectedDict.keys.forEach {
+                                            selectedDict[$0] = false
                                         }
-                                        do {
-                                            let user = createNewUser()
-                                            savedUser = try await saveToDataStore(object: user)
-                                            print("Saved New User")
-                                        } catch {
-                                            print("Could not save user to DataStore: \(error)")
-                                        }
-                                        withAnimation(.openCard) {
-                                            pageIndex = 3
+                                        diveMeetsID = nil
+                                        
+                                        // Save user and CoachUser if needed
+                                        userCreationSuccessful = await saveNewUser()
+                                        
+                                        // Advance to next stage
+                                        if userCreationSuccessful {
+                                            withAnimation(.openCard) {
+                                                if accountType == "Athlete" {
+                                                    pageIndex = 3
+                                                } else {
+                                                    pageIndex = 4
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -632,11 +658,9 @@ struct NewSignupSequence: View {
                 
                 // Wait for DataStore to be ready before trying to query diveMeetsIds
                 while !appLogic.dataStoreReady {
-                    waitingForSync = true
-                    try await Task.sleep(seconds: 1.0)
+                    waitingForLoad = true
+                    try await Task.sleep(seconds: 0.5)
                 }
-                
-                waitingForSync = false
                 
                 // Get all currently used DiveMeets IDs and don't show them to the user as available
                 // options for their name
@@ -649,7 +673,11 @@ struct NewSignupSequence: View {
                 
                 if sortedRecords.count == 0 {
                     showNoDiveMeetsIdError = true
+                } else if sortedRecords.count > 1 {
+                    sortedRecordsHometowns = await getRecordHometowns(records: sortedRecords)
                 }
+                
+                waitingForLoad = false
             }
         }
     }
@@ -812,6 +840,23 @@ struct NewSignupSequence: View {
         }
     }
     
+    // Get hometowns from profiles in sortedRecords to provide more info when there are multiple
+    // accounts with the same name
+    private func getRecordHometowns(records: [(String, String)]) async -> [String: String] {
+        var result: [String: String] = [:]
+        
+        for (_, link) in records {
+            let p = ProfileParser()
+            if await !p.parseProfile(link: link) { continue }
+            guard let hometown = p.profileData.info?.cityState else { continue }
+            
+            // Use link as key since records share the same name
+            result[link] = hometown
+        }
+        
+        return result
+    }
+    
     func saveNewAthlete() async {
         do {
             guard let user = savedUser else { return }
@@ -828,7 +873,7 @@ struct NewSignupSequence: View {
                 }
                 
                 if let stats = parser.profileData.diveStatistics {
-                    let skillRating = SkillRating()
+                    let skillRating = SkillRating(diveStatistics: stats)
                     
                     (springboard, platform, total) =
                     await skillRating.getSkillRating(diveMeetsID: diveMeetsId)
