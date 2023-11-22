@@ -11,9 +11,12 @@ import Authenticator
 struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var state: SignedInState
-    @State var isPinned = false
-    @State var isDeleted = false
+    @ObservedObject private var state: SignedInState
+    @State private var isPinned = false
+    @State private var isDeleted = false
+    @State private var showDeleteAccountAlert: Bool = false
+    @State private var isDeletingAccount: Bool = false
+    @AppStorage("authUserId") private var authUserId: String = ""
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
     @ScaledMetric private var linkButtonWidthScaled: CGFloat = 300
@@ -73,7 +76,43 @@ struct SettingsView: View {
                     Label("Profile", systemImage: "person")
                 }
                 
-                NavigationLink {} label: {
+                NavigationLink {
+                    VStack {
+                        Button {
+                            showDeleteAccountAlert = true
+                        } label: {
+                            Text("Delete Account")
+                                .frame(maxWidth: .infinity)
+                        }
+                        .tint(.red)
+                        .disabled(isDeletingAccount)
+                        
+                        if isDeletingAccount {
+                            ProgressView()
+                        }
+                    }
+                    .alert("Are you sure you want to permanently delete your account? This action cannot be undone.", 
+                           isPresented: $showDeleteAccountAlert) {
+                        Button("Cancel", role: .cancel) {
+                            print("Cancel delete account")
+                            showDeleteAccountAlert = false
+                        }
+                        Button("Delete", role: .destructive) {
+                            Task {
+                                print("Initiating account deletion...")
+                                isDeletingAccount = true
+                                
+                                // Deletes all account data and login
+                                await deleteAccount(authUserId: authUserId)
+                                
+                                // Explicitly sign out of state since it is being observed
+                                await state.signOut()
+                                
+                                showDeleteAccountAlert = false
+                            }
+                        }
+                    }
+                } label: {
                     Label("Settings", systemImage: "gear")
                 }
                 
@@ -135,12 +174,7 @@ struct SettingsView: View {
                 }
             }
             
-            Button {} label: {
-                Text("Sign out")
-                    .frame(maxWidth: .infinity)
-            }
-            .tint(.red)
-            .onTapGesture {
+            Button {
                 Task {
                     UserDefaults.standard.removeObject(forKey: "authUserId")
                     
@@ -162,7 +196,11 @@ struct SettingsView: View {
                     
                     presentationMode.wrappedValue.dismiss()
                 }
+            } label: {
+                Text("Sign out")
+                    .frame(maxWidth: .infinity)
             }
+            .tint(.red)
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Account")

@@ -16,6 +16,7 @@
 		000D28DF29E1201200B184E9 /* LiveResultsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28DE29E1201200B184E9 /* LiveResultsWebView.swift */; };
 		000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000D28E029E122B700B184E9 /* LiveResultsView.swift */; };
 		000EEC142B021EBE0067A8A4 /* rankedDiveMeetsIds.csv in Resources */ = {isa = PBXBuildFile; fileRef = 000EEC132B021EBE0067A8A4 /* rankedDiveMeetsIds.csv */; };
+		0019D9872B0C826A004F751C /* DeleteAccountAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0019D9862B0C826A004F751C /* DeleteAccountAPI.swift */; };
 		00287E3B2AF4A52700470767 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3A2AF4A52700470767 /* PostsView.swift */; };
 		00287E3D2AF4A56200470767 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3C2AF4A56200470767 /* FavoritesView.swift */; };
 		00287E3F2AF4A57300470767 /* SavedPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3E2AF4A57300470767 /* SavedPostsView.swift */; };
@@ -199,6 +200,7 @@
 		000D28DE29E1201200B184E9 /* LiveResultsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResultsWebView.swift; sourceTree = "<group>"; };
 		000D28E029E122B700B184E9 /* LiveResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveResultsView.swift; sourceTree = "<group>"; };
 		000EEC132B021EBE0067A8A4 /* rankedDiveMeetsIds.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = rankedDiveMeetsIds.csv; sourceTree = "<group>"; };
+		0019D9862B0C826A004F751C /* DeleteAccountAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountAPI.swift; sourceTree = "<group>"; };
 		00287E3A2AF4A52700470767 /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		00287E3C2AF4A56200470767 /* FavoritesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FavoritesView.swift; path = Adrenaline/Views/AdrenalineProfile/FavoritesView.swift; sourceTree = SOURCE_ROOT; };
 		00287E3E2AF4A57300470767 /* SavedPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPostsView.swift; sourceTree = "<group>"; };
@@ -435,6 +437,7 @@
 			isa = PBXGroup;
 			children = (
 				00ADF5092A93304800C85C7F /* DataStoreAPI.swift */,
+				0019D9862B0C826A004F751C /* DeleteAccountAPI.swift */,
 				00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */,
 				00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */,
 				00CEDFD32ABFC71500F079CE /* PostsAPI.swift */,
@@ -1004,6 +1007,7 @@
 				4D1A31CB2A971E4500128F81 /* VideoButton.swift in Sources */,
 				0097478F2A24549A004E7C73 /* MeetPageParser.swift in Sources */,
 				4D13F3CA2A9D95260081823D /* NewSignupSequence.swift in Sources */,
+				0019D9872B0C826A004F751C /* DeleteAccountAPI.swift in Sources */,
 				009F41BD2A6AD9E400348C68 /* Model.xcdatamodeld in Sources */,
 				4D1A31BD2A96DC6400128F81 /* AnimatableFont.swift in Sources */,
 				006042AD2A6AFD8A001368B3 /* KeychainAccess.swift in Sources */,

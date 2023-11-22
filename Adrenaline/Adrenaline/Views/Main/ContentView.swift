@@ -97,7 +97,6 @@ struct ContentView: View {
             guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
             if !user.tokens.contains(token) {
                 user.tokens.append(token)
-                print("Tokens:", user.tokens)
                 newUser = try await saveToDataStore(object: user)
             }
         } catch {
@@ -130,6 +129,16 @@ struct ContentView: View {
                                     try await Amplify.DataStore.clear()
                                 }
                             }
+                        // This view appears between the time the user is deleted and the sign out
+                        // happens in state
+                        // Note: email will be empty string here since account deletion clears it
+                        //       from UserDefaults
+                    } else if email == "" {
+                        VStack {
+                            Text("Signing out...")
+                                .font(.largeTitle)
+                            ProgressView()
+                        }
                     } else {
                         ZStack(alignment: .bottom) {
                             TabView {
@@ -162,10 +171,10 @@ struct ContentView: View {
                             }
                             
                             if uploadingPost != nil {
-                                UploadingPostView(uploadingPost: $uploadingPost, 
-                                                  uploadingProgress: $uploadingProgress, 
+                                UploadingPostView(uploadingPost: $uploadingPost,
+                                                  uploadingProgress: $uploadingProgress,
                                                   uploadFailed: $uploadFailed)
-                                    .offset(y: -uploadingPostOffset)
+                                .offset(y: -uploadingPostOffset)
                             }
                         }
                         .fullScreenCover(isPresented: $showAccount, content: {
@@ -270,6 +279,7 @@ struct ContentView: View {
                         }
                         .onAppear {
                             Task {
+                                recentSearches = []
                                 await getDataStoreData()
                             }
                         }

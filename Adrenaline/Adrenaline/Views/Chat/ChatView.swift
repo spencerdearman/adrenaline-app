@@ -314,7 +314,6 @@ struct ChatView: View {
                     // Gets all user ids in sorted order
                     let userIds = sorted.map { $0.0 }
                     
-                    print(users.map { $0.id })
                     // Uses userIds to determine the appropriate indices for each of the users to
                     // be placed in based on this ordering
                     // https://stackoverflow.com/a/51683055/22068672
@@ -325,7 +324,6 @@ struct ChatView: View {
                         return first < second
                     }
                     
-                    print("Reordered: \(reorderedUsers.map { $0.id })")
                     withAnimation {
                         users = reorderedUsers
                     }
