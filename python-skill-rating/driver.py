@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import bs4
 import requests
 from profile_parser import ProfileParser
+from skill_rating import SkillRating
 
 # def updateDiveMeetsDivers(bucket_name):
 #     s3_client = boto3.client('s3')
@@ -65,8 +66,12 @@ from profile_parser import ProfileParser
 
 if __name__ == "__main__":
     p = ProfileParser()
-    if not p.parseProfileFromDiveMeetsID("56961"):
-        print("Failed")
+    if not p.parseProfileFromDiveMeetsID("60480"):
+        print("Profile parse failed")
+        exit(1)
     else:
-        print("Succeeded")
-        print(p.profileData)
+        print("Profile parse succeeded")
+
+    s = SkillRating(p.profileData.diveStatistics)
+    springboard, platform, total = s.getSkillRating()
+    print(springboard, platform, total)
