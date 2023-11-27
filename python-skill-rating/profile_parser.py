@@ -282,7 +282,6 @@ class ProfileParser:
                 if "DiveMeets #" in body.text:
                     self.profileData.info = self.__parseInfo(body)
                 elif "Dive Statistics" in body.text:
-                    print("in stats")
                     self.profileData.diveStatistics = self.__parseDiveStatistics(body)
 
             return True
