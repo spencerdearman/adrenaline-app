@@ -103,7 +103,7 @@ def run(event, isLocal=False):
 
     session = FuturesSession()
     futures = []
-    for i in range(25000, 150000):
+    for i in range(int(event["start_index"]), int(event["end_index"]) + 1):
         future = session.get(baseLink + str(i))
         future.i = i
         futures.append(future)

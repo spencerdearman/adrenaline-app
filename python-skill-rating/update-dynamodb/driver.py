@@ -1,0 +1,24 @@
+import os
+from parallel_lambda import process_csv
+import boto3
+import uuid
+from cloudwatch import init_cloudwatch
+
+
+# Used for manual runs or EC2 instances to run on a local file
+def run(filename, isLocal=False):
+    region = "us-east-1"
+    cloudwatch_client = boto3.client("logs", region_name=region)
+    log_group_name = "/aws/ec2/update-divemeets-diver-table"
+    log_stream_name = f"python-dynamodb-script-logs-{uuid.uuid4()}"
+
+    init_cloudwatch(cloudwatch_client, log_group_name, log_stream_name)
+
+    os.environ["bucket_name"] = "adrenalinexxxxx153503-main"
+    with open(filename, "r") as f:
+        csv = f.read().splitlines()
+        process_csv(csv, cloudwatch_client, log_group_name, log_stream_name, isLocal)
+
+
+if __name__ == "__main__":
+    run("../ids.csv", True)

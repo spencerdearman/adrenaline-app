@@ -5,6 +5,7 @@ from decimal import Decimal
 import json
 from boto3.dynamodb.types import TypeSerializer
 import os
+import time
 
 
 class DiveMeetsDiver:
@@ -31,26 +32,13 @@ class DiveMeetsDiver:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 
-def lambda_handler(event, context):
-    s3_client = boto3.client("s3")
-    bucket = os.environ["bucket_name"]
-    response = s3_client.list_objects_v2(Bucket=bucket)
-    assert "Contents" in response
-    assert len(response["Contents"]) > 0
-
-    # Get most recently updated CSV from DiveMeetsDiver python script
-    objects = response["Contents"]
-    latest_key = sorted(objects, key=lambda x: x["LastModified"], reverse=True)[0]
-
-    response = s3_client.get_object(Bucket=bucket, Key=latest_key["Key"])
-    assert "Body" in response
-    body = response["Body"]
-    parsedCSV = body.read().decode("utf-8").split()
-
+def process_csv(ids):
     try:
-        totalRows = len(parsedCSV)
+        totalRows = len(ids)
 
-        for i, id in enumerate(parsedCSV):
+        time1 = time.time()
+        time2 = time.time()
+        for i, id in enumerate(ids):
             p = ProfileParser()
             p.parseProfileFromDiveMeetsID(id)
 
@@ -94,18 +82,42 @@ def lambda_handler(event, context):
             # https://stackoverflow.com/a/46738251/22068672
             serializer = TypeSerializer()
             low_level_copy = {k: serializer.serialize(v) for k, v in item.items()}
-            print("Boto3 dict:", low_level_copy)
+            # print("Boto3 dict:", low_level_copy)
 
             # Save object to DataStore
             # let _ = try await saveToDataStore(object: obj)
             dynamodb_client = boto3.client("dynamodb", "us-east-1")
-            response = dynamodb_client.put_item(
-                TableName="DiveMeetsDiver-mwfmh6eukfhdhngcz756xxhxsa-main",
-                Item=low_level_copy,
-            )
-            print("Response:", response)
+            # response = dynamodb_client.put_item(
+            #     TableName="DiveMeetsDiver-mwfmh6eukfhdhngcz756xxhxsa-main",
+            #     Item=low_level_copy,
+            # )
+            # print("Response:", response)
 
-            if i % 100 == 0:
-                print(f"{i + 1} of {totalRows} finished")
+            if i % 10 == 0:
+                time3 = time.time()
+                print(
+                    f"[{i}/{totalRows}] Last 10: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s"
+                )
+                time2 = time3
     except Exception as exc:
-        print(f"updateDiveMeetsDivers: {exc}")
+        print(f"process_csv: {exc}")
+
+
+# Used by lambda to get latest list of ids and process them
+def lambda_handler(event, context):
+    s3_client = boto3.client("s3")
+    bucket = os.environ["bucket_name"]
+    response = s3_client.list_objects_v2(Bucket=bucket)
+    assert "Contents" in response
+    assert len(response["Contents"]) > 0
+
+    # Get most recently updated CSV from DiveMeetsDiver python script
+    objects = response["Contents"]
+    latest_key = sorted(objects, key=lambda x: x["LastModified"], reverse=True)[0]
+
+    response = s3_client.get_object(Bucket=bucket, Key=latest_key["Key"])
+    assert "Body" in response
+    body = response["Body"]
+    parsedCSV = body.read().decode("utf-8").split()
+
+    process_csv(parsedCSV)
