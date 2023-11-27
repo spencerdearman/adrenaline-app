@@ -1,12 +1,10 @@
 import boto3
-from bs4 import BeautifulSoup
-import bs4
-import requests
 from profile_parser import ProfileParser
 from skill_rating import SkillRating
 from decimal import Decimal
 import json
 from boto3.dynamodb.types import TypeSerializer
+import os
 
 
 class DiveMeetsDiver:
@@ -44,9 +42,10 @@ class DiveMeetsDiver:
     #             "totalRating": self.stringDict(self.id),}
 
 
-def updateDiveMeetsDivers(bucket_name):
+def lambda_handler(event, context):
     s3_client = boto3.client("s3")
-    response = s3_client.list_objects_v2(Bucket=bucket_name)
+    bucket = os.environ["bucket_name"]
+    response = s3_client.list_objects_v2(Bucket=bucket)
     assert "Contents" in response
     assert len(response["Contents"]) > 0
 
@@ -54,7 +53,7 @@ def updateDiveMeetsDivers(bucket_name):
     objects = response["Contents"]
     latest_key = sorted(objects, key=lambda x: x["LastModified"], reverse=True)[0]
 
-    response = s3_client.get_object(Bucket=bucket_name, Key=latest_key)
+    response = s3_client.get_object(Bucket=bucket, Key=latest_key)
     assert "Body" in response
     body = response["Body"]
     parsedCSV = body.read().decode("utf-8").split()
@@ -121,17 +120,3 @@ def updateDiveMeetsDivers(bucket_name):
                 print(f"{i + 1} of {totalRows} finished")
     except Exception as exc:
         print(f"updateDiveMeetsDivers: {exc}")
-
-
-if __name__ == "__main__":
-    # p = ProfileParser()
-    # if not p.parseProfileFromDiveMeetsID("60480"):
-    #     print("Profile parse failed")
-    #     exit(1)
-    # else:
-    #     print("Profile parse succeeded")
-
-    # s = SkillRating(p.profileData.diveStatistics)
-    # springboard, platform, total = s.getSkillRating()
-    # print(springboard, platform, total)
-    updateDiveMeetsDivers("adrenalinexxxxx153503-main")
