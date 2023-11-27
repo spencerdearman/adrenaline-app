@@ -30,17 +30,6 @@ class DiveMeetsDiver:
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
-    # def dict(self):
-    #     return {"id": self.stringDict(self.id),
-    #             "firstName": self.stringDict(self.firstName),
-    #             "lastName": self.stringDict(self.lastName),
-    #             "gender": self.stringDict(self.gender),
-    #             "finaAge": self.stringDict(self.id),
-    #             "hsGradYear": self.stringDict(self.id),
-    #             "springboardRating": self.stringDict(self.id),
-    #             "platformRating": self.stringDict(self.id),
-    #             "totalRating": self.stringDict(self.id),}
-
 
 def lambda_handler(event, context):
     s3_client = boto3.client("s3")
@@ -61,7 +50,6 @@ def lambda_handler(event, context):
     try:
         totalRows = len(parsedCSV)
 
-        # for i, id in enumerate(parsedCSV):
         for i, id in enumerate(parsedCSV):
             p = ProfileParser()
             p.parseProfileFromDiveMeetsID(id)
