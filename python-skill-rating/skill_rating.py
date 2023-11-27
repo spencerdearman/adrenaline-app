@@ -88,156 +88,154 @@ class SkillRating:
         secondArmstand: Optional[DiveStatistic] = None
 
         for dive in dives:
-            match dive.number[0]:
-                case "1":
-                    if front is None:
-                        front = dive
-                        continue
-
-                    f = front
-                    diveValue = self.__computeSkillValue(dive)
-                    curValue = self.__computeSkillValue(f)
-
-                    # Incoming dive is best front seen so far
-                    if diveValue > curValue or (
-                        diveValue == curValue and dive.numberOfTimes > f.numberOfTimes
-                    ):
-                        # Only shifts down best into second best if they don't match dive nums,
-                        # otherwise leaves second best empty
-                        if not self.__isSameDiveNumber(dive, front):
-                            secondFront = front
-
-                        front = dive
-                        # Incoming dive is not better than best, but could be better than second
-                        # best
-                    else:
-                        # Only replaces second best if the dive nums are different
-                        if not self.__isSameDiveNumber(
-                            dive, front
-                        ) and not self.__isSameDiveNumber(dive, secondFront):
-                            secondFront = self.__getBestDive(dive, secondFront)
-                case "2":
-                    if back is None:
-                        back = dive
-                        continue
-
-                    b = back
-                    diveValue = self.__computeSkillValue(dive)
-                    curValue = self.__computeSkillValue(b)
-
-                    if diveValue > curValue or (
-                        diveValue == curValue and dive.numberOfTimes > b.numberOfTimes
-                    ):
-                        # Only shifts down best into second best if they don't match dive nums,
-                        # otherwise leaves second best empty
-                        if not self.__isSameDiveNumber(dive, back):
-                            secondBack = back
-
-                        back = dive
-                    else:
-                        # Only replaces second best if the dive nums are different
-                        if not self.__isSameDiveNumber(
-                            dive, back
-                        ) and not self.__isSameDiveNumber(dive, secondBack):
-                            secondBack = self.__getBestDive(dive, secondBack)
-                case "3":
-                    if reverse is None:
-                        reverse = dive
-                        continue
-
-                    r = reverse
-                    diveValue = self.__computeSkillValue(dive)
-                    curValue = self.__computeSkillValue(r)
-
-                    if diveValue > curValue or (
-                        diveValue == curValue and dive.numberOfTimes > r.numberOfTimes
-                    ):
-                        # Only shifts down best into second best if they don't match dive nums,
-                        # otherwise leaves second best empty
-                        if not self.__isSameDiveNumber(dive, reverse):
-                            secondReverse = reverse
-
-                        reverse = dive
-                    else:
-                        # Only replaces second best if the dive nums are different
-                        if not self.__isSameDiveNumber(
-                            dive, reverse
-                        ) and not self.__isSameDiveNumber(dive, secondReverse):
-                            secondReverse = self.__getBestDive(dive, secondReverse)
-                case "4":
-                    if inward is None:
-                        inward = dive
-                        continue
-
-                    i = inward
-                    diveValue = self.__computeSkillValue(dive)
-                    curValue = self.__computeSkillValue(i)
-
-                    if diveValue > curValue or (
-                        diveValue == curValue and dive.numberOfTimes > i.numberOfTimes
-                    ):
-                        # Only shifts down best into second best if they don't match dive nums,
-                        # otherwise leaves second best empty
-                        if not self.__isSameDiveNumber(dive, inward):
-                            secondInward = inward
-
-                        inward = dive
-                    else:
-                        # Only replaces second best if the dive nums are different
-                        if not self.__isSameDiveNumber(
-                            dive, inward
-                        ) and not self.__isSameDiveNumber(dive, secondInward):
-                            secondInward = self.__getBestDive(dive, secondInward)
-                case "5":
-                    if twist is None:
-                        twist = dive
-                        continue
-
-                    t = twist
-                    diveValue = self.__computeSkillValue(dive)
-                    curValue = self.__computeSkillValue(t)
-
-                    if diveValue > curValue or (
-                        diveValue == curValue and dive.numberOfTimes > t.numberOfTimes
-                    ):
-                        # Only shifts down best into second best if they don't match dive nums,
-                        # otherwise leaves second best empty
-                        if not self.__isSameDiveNumber(dive, twist):
-                            secondTwist = twist
-
-                        twist = dive
-                    else:
-                        # Only replaces second best if the dive nums are different
-                        if not self.__isSameDiveNumber(
-                            dive, twist
-                        ) and not self.__isSameDiveNumber(dive, secondTwist):
-                            secondTwist = self.__getBestDive(dive, secondTwist)
-                case "6":
-                    if armstand is None:
-                        armstand = dive
-                        continue
-
-                    a = armstand
-                    diveValue = self.__computeSkillValue(dive)
-                    curValue = self.__computeSkillValue(a)
-
-                    if diveValue > curValue or (
-                        diveValue == curValue and dive.numberOfTimes > a.numberOfTimes
-                    ):
-                        # Only shifts down best into second best if they don't match dive nums,
-                        # otherwise leaves second best empty
-                        if not self.__isSameDiveNumber(dive, armstand):
-                            secondArmstand = armstand
-
-                        armstand = dive
-                    else:
-                        # Only replaces second best if the dive nums are different
-                        if not self.__isSameDiveNumber(
-                            dive, armstand
-                        ) and not self.__isSameDiveNumber(dive, secondArmstand):
-                            secondArmstand = self.__getBestDive(dive, secondArmstand)
-                case _:
+            firstNum = dive.number[0]
+            if firstNum == "1":
+                if front is None:
+                    front = dive
                     continue
+
+                f = front
+                diveValue = self.__computeSkillValue(dive)
+                curValue = self.__computeSkillValue(f)
+
+                # Incoming dive is best front seen so far
+                if diveValue > curValue or (
+                    diveValue == curValue and dive.numberOfTimes > f.numberOfTimes
+                ):
+                    # Only shifts down best into second best if they don't match dive nums,
+                    # otherwise leaves second best empty
+                    if not self.__isSameDiveNumber(dive, front):
+                        secondFront = front
+
+                    front = dive
+                    # Incoming dive is not better than best, but could be better than second
+                    # best
+                else:
+                    # Only replaces second best if the dive nums are different
+                    if not self.__isSameDiveNumber(
+                        dive, front
+                    ) and not self.__isSameDiveNumber(dive, secondFront):
+                        secondFront = self.__getBestDive(dive, secondFront)
+            elif firstNum == "2":
+                if back is None:
+                    back = dive
+                    continue
+
+                b = back
+                diveValue = self.__computeSkillValue(dive)
+                curValue = self.__computeSkillValue(b)
+
+                if diveValue > curValue or (
+                    diveValue == curValue and dive.numberOfTimes > b.numberOfTimes
+                ):
+                    # Only shifts down best into second best if they don't match dive nums,
+                    # otherwise leaves second best empty
+                    if not self.__isSameDiveNumber(dive, back):
+                        secondBack = back
+
+                    back = dive
+                else:
+                    # Only replaces second best if the dive nums are different
+                    if not self.__isSameDiveNumber(
+                        dive, back
+                    ) and not self.__isSameDiveNumber(dive, secondBack):
+                        secondBack = self.__getBestDive(dive, secondBack)
+            elif firstNum == "3":
+                if reverse is None:
+                    reverse = dive
+                    continue
+
+                r = reverse
+                diveValue = self.__computeSkillValue(dive)
+                curValue = self.__computeSkillValue(r)
+
+                if diveValue > curValue or (
+                    diveValue == curValue and dive.numberOfTimes > r.numberOfTimes
+                ):
+                    # Only shifts down best into second best if they don't match dive nums,
+                    # otherwise leaves second best empty
+                    if not self.__isSameDiveNumber(dive, reverse):
+                        secondReverse = reverse
+
+                    reverse = dive
+                else:
+                    # Only replaces second best if the dive nums are different
+                    if not self.__isSameDiveNumber(
+                        dive, reverse
+                    ) and not self.__isSameDiveNumber(dive, secondReverse):
+                        secondReverse = self.__getBestDive(dive, secondReverse)
+            elif firstNum == "4":
+                if inward is None:
+                    inward = dive
+                    continue
+
+                i = inward
+                diveValue = self.__computeSkillValue(dive)
+                curValue = self.__computeSkillValue(i)
+
+                if diveValue > curValue or (
+                    diveValue == curValue and dive.numberOfTimes > i.numberOfTimes
+                ):
+                    # Only shifts down best into second best if they don't match dive nums,
+                    # otherwise leaves second best empty
+                    if not self.__isSameDiveNumber(dive, inward):
+                        secondInward = inward
+
+                    inward = dive
+                else:
+                    # Only replaces second best if the dive nums are different
+                    if not self.__isSameDiveNumber(
+                        dive, inward
+                    ) and not self.__isSameDiveNumber(dive, secondInward):
+                        secondInward = self.__getBestDive(dive, secondInward)
+            elif firstNum == "5":
+                if twist is None:
+                    twist = dive
+                    continue
+
+                t = twist
+                diveValue = self.__computeSkillValue(dive)
+                curValue = self.__computeSkillValue(t)
+
+                if diveValue > curValue or (
+                    diveValue == curValue and dive.numberOfTimes > t.numberOfTimes
+                ):
+                    # Only shifts down best into second best if they don't match dive nums,
+                    # otherwise leaves second best empty
+                    if not self.__isSameDiveNumber(dive, twist):
+                        secondTwist = twist
+
+                    twist = dive
+                else:
+                    # Only replaces second best if the dive nums are different
+                    if not self.__isSameDiveNumber(
+                        dive, twist
+                    ) and not self.__isSameDiveNumber(dive, secondTwist):
+                        secondTwist = self.__getBestDive(dive, secondTwist)
+            elif firstNum == "6":
+                if armstand is None:
+                    armstand = dive
+                    continue
+
+                a = armstand
+                diveValue = self.__computeSkillValue(dive)
+                curValue = self.__computeSkillValue(a)
+
+                if diveValue > curValue or (
+                    diveValue == curValue and dive.numberOfTimes > a.numberOfTimes
+                ):
+                    # Only shifts down best into second best if they don't match dive nums,
+                    # otherwise leaves second best empty
+                    if not self.__isSameDiveNumber(dive, armstand):
+                        secondArmstand = armstand
+
+                    armstand = dive
+                else:
+                    # Only replaces second best if the dive nums are different
+                    if not self.__isSameDiveNumber(
+                        dive, armstand
+                    ) and not self.__isSameDiveNumber(dive, secondArmstand):
+                        secondArmstand = self.__getBestDive(dive, secondArmstand)
 
         for dive in [
             secondFront,

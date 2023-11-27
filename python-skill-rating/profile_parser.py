@@ -122,35 +122,24 @@ class ProfileParser:
         result = ProfileInfoData()
         # print("Keys:", dict)
         for key, value in dict.items():
-            match key:
-                case "Name:":
-                    nameComps = value.split(" ")
-                    result.first = " ".join(nameComps[:-1])
-                    result.last = nameComps[-1]
-                    continue
-                case "City/State:" | "State:":
-                    result.cityState = value
-                    continue
-                case "Country:":
-                    result.country = value
-                    continue
-                case "Gender:":
-                    result.gender = value.strip()
-                    continue
-                case "Age:":
-                    result.age = int(value)
-                    continue
-                case "FINA Age:":
-                    result.finaAge = int(value)
-                    continue
-                case "High School Graduation:":
-                    result.hsGradYear = int(value)
-                    continue
-                case "DiveMeets #:":
-                    result.diverId = value
-                    continue
-                case _:
-                    continue
+            if "Name:" in key:
+                nameComps = value.split(" ")
+                result.first = " ".join(nameComps[:-1])
+                result.last = nameComps[-1]
+            elif "City/State:" in key or "State:" in key:
+                result.cityState = value
+            elif "Country:" in key:
+                result.country = value
+            elif "Gender:" in key:
+                result.gender = value.strip()
+            elif "Age:" in key:
+                result.age = int(value)
+            elif "FINA Age:" in key:
+                result.finaAge = int(value)
+            elif "High School Graduation:" in key:
+                result.hsGradYear = int(value)
+            elif "DiveMeets #:" in key:
+                result.diverId = value
 
         return result
 
