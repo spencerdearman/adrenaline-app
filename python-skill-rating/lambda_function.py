@@ -42,7 +42,7 @@ def lambda_handler(event, context):
     objects = response["Contents"]
     latest_key = sorted(objects, key=lambda x: x["LastModified"], reverse=True)[0]
 
-    response = s3_client.get_object(Bucket=bucket, Key=latest_key)
+    response = s3_client.get_object(Bucket=bucket, Key=latest_key["Key"])
     assert "Body" in response
     body = response["Body"]
     parsedCSV = body.read().decode("utf-8").split()
@@ -94,15 +94,16 @@ def lambda_handler(event, context):
             # https://stackoverflow.com/a/46738251/22068672
             serializer = TypeSerializer()
             low_level_copy = {k: serializer.serialize(v) for k, v in item.items()}
-            print(low_level_copy)
+            print("Boto3 dict:", low_level_copy)
 
             # Save object to DataStore
             # let _ = try await saveToDataStore(object: obj)
             dynamodb_client = boto3.client("dynamodb", "us-east-1")
             response = dynamodb_client.put_item(
-                TableName="DiveMeetsDiver", Item=low_level_copy
+                TableName="DiveMeetsDiver-mwfmh6eukfhdhngcz756xxhxsa-main",
+                Item=low_level_copy,
             )
-            print(response)
+            print("Response:", response)
 
             if i % 100 == 0:
                 print(f"{i + 1} of {totalRows} finished")
