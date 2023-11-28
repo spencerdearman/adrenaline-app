@@ -65,31 +65,3 @@ public struct DiveMeetsDiver: Model {
       self.updatedAt = updatedAt
   }
 }
-
-// Convenience init to add two-week expiration to DiveMeetsDiver object
-extension DiveMeetsDiver {
-    public init(id: String = UUID().uuidString,
-                firstName: String,
-                lastName: String,
-                gender: String,
-                finaAge: Int? = nil,
-                hsGradYear: Int? = nil,
-                springboardRating: Double? = nil,
-                platformRating: Double? = nil,
-                totalRating: Double? = nil) {
-        let twoWeeksAhead = Calendar.current.date(byAdding: .weekOfYear, value: 2, to: Date()) ?? Date()
-        let unixTimestamp = Int(twoWeeksAhead.timeIntervalSince1970)
-        self.init(id: id,
-                  firstName: firstName,
-                  lastName: lastName,
-                  gender: gender,
-                  finaAge: finaAge,
-                  hsGradYear: hsGradYear,
-                  springboardRating: springboardRating,
-                  platformRating: platformRating,
-                  totalRating: totalRating,
-                  _ttl: unixTimestamp,
-                  createdAt: nil,
-                  updatedAt: nil)
-    }
-}
