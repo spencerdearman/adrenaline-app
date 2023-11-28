@@ -159,4 +159,5 @@ type DiveMeetsDiver @model @auth(rules: [{allow: private}]) {
   springboardRating: Float
   platformRating: Float
   totalRating: Float
+  _ttl: AWSTimestamp!
 }

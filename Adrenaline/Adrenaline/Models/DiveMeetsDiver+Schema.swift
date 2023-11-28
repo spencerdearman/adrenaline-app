@@ -14,6 +14,7 @@ extension DiveMeetsDiver {
     case springboardRating
     case platformRating
     case totalRating
+    case _ttl
     case createdAt
     case updatedAt
   }
@@ -45,6 +46,7 @@ extension DiveMeetsDiver {
       .field(diveMeetsDiver.springboardRating, is: .optional, ofType: .double),
       .field(diveMeetsDiver.platformRating, is: .optional, ofType: .double),
       .field(diveMeetsDiver.totalRating, is: .optional, ofType: .double),
+      .field(diveMeetsDiver._ttl, is: .required, ofType: .int),
       .field(diveMeetsDiver.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(diveMeetsDiver.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )

@@ -1831,6 +1831,7 @@ query GetDiveMeetsDiver($id: ID!) {
     springboardRating
     platformRating
     totalRating
+    _ttl
     createdAt
     updatedAt
     _version
@@ -1856,6 +1857,7 @@ query ListDiveMeetsDivers(
       springboardRating
       platformRating
       totalRating
+      _ttl
       createdAt
       updatedAt
       _version
@@ -1891,6 +1893,7 @@ query SyncDiveMeetsDivers(
       springboardRating
       platformRating
       totalRating
+      _ttl
       createdAt
       updatedAt
       _version

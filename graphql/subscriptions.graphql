@@ -1549,6 +1549,7 @@ subscription OnCreateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
+    _ttl
     createdAt
     updatedAt
     _version
@@ -1571,6 +1572,7 @@ subscription OnUpdateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
+    _ttl
     createdAt
     updatedAt
     _version
@@ -1593,6 +1595,7 @@ subscription OnDeleteDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
+    _ttl
     createdAt
     updatedAt
     _version
