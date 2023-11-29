@@ -9,7 +9,8 @@ export type AmplifyDependentResourcesAttributes = {
   "api": {
     "adrenaline": {
       "GraphQLAPIEndpointOutput": "string",
-      "GraphQLAPIIdOutput": "string"
+      "GraphQLAPIIdOutput": "string",
+      "GraphQLAPIKeyOutput": "string"
     }
   },
   "auth": {

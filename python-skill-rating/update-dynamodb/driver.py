@@ -12,7 +12,8 @@ def run(filename, isLocal=False):
     log_group_name = "/aws/ec2/update-divemeets-diver-table"
     log_stream_name = f"python-dynamodb-script-logs-{uuid.uuid4()}"
 
-    init_cloudwatch(cloudwatch_client, log_group_name, log_stream_name)
+    if not isLocal:
+        init_cloudwatch(cloudwatch_client, log_group_name, log_stream_name)
 
     os.environ["bucket_name"] = "adrenalinexxxxx153503-main"
     with open(filename, "r") as f:

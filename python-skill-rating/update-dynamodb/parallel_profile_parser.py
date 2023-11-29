@@ -3,94 +3,7 @@ from typing import Optional
 from bs4 import BeautifulSoup
 import bs4
 import requests
-
-
-class ProfileData:
-    def __init__(self):
-        self.info: Optional[ProfileInfoData] = None
-        self.diveStatistics: Optional[list[DiveStatistic]] = None
-
-    def __str__(self):
-        if self.diveStatistics is not None:
-            stats = f"{[str(x) for x in self.diveStatistics]}"
-        else:
-            stats = "None"
-
-        return f"""ProfileData(
-  Info: {self.info}
-  Dive Statistics: {stats}      
-)"""
-
-
-class ProfileInfoData:
-    def __init__(
-        self,
-        first="",
-        last="",
-        cityState=None,
-        country=None,
-        gender=None,
-        age=None,
-        finaAge=None,
-        diverId=0,
-        hsGradYear=None,
-    ):
-        self.first: str = first
-        self.last: str = last
-        self.cityState: Optional[str] = cityState
-        self.country: Optional[str] = country
-        self.gender: Optional[str] = gender
-        self.age: Optional[int] = age
-        self.finaAge: Optional[int] = finaAge
-        self.diverId = diverId
-        self.hsGradYear: Optional[int] = hsGradYear
-
-    def __str__(self):
-        return f"""ProfileInfoData(
-  First: {self.first}
-  Last: {self.last}
-  CityState: {self.cityState}
-  Country: {self.country}
-  Gender: {self.gender}
-  Age: {self.age}
-  FINA Age: {self.finaAge}
-  Diver ID: {self.diverId}
-  HS Grad Year: {self.hsGradYear}
-)"""
-
-
-class DiveStatistic:
-    def __init__(
-        self,
-        number,
-        name,
-        height,
-        highScore,
-        highScoreLink,
-        avgScore,
-        avgScoreLink,
-        numberOfTimes,
-    ):
-        self.number: str = number
-        self.name: str = name
-        self.height: float = height
-        self.highScore: float = highScore
-        self.highScoreLink: str = highScoreLink
-        self.avgScore: float = avgScore
-        self.avgScoreLink: str = avgScoreLink
-        self.numberOfTimes: int = numberOfTimes
-
-    def __str__(self):
-        return f"""DiveStatistic(
-  Number: {self.number}
-  Name: {self.name}
-  Height: {self.height}
-  High Score: {self.highScore}
-  High Score Link: {self.highScoreLink}
-  Avg Score: {self.avgScore}
-  Avg Score Link: {self.avgScoreLink}
-  # of Times: {self.numberOfTimes}
-)"""
+from util import ProfileData, ProfileInfoData, DiveStatistic
 
 
 class ProfileParser:
@@ -115,8 +28,6 @@ class ProfileParser:
                 m = match.strip()[:-5]
                 if len(m) > 0:
                     result = result.replace(match, f"<div>{m}</div><br/>")
-            # subs = re.sub(pattern, f"<div>{text}</div>", text)
-            # print(f"{subs=}")
             # print(result)
             return result
         except:
@@ -151,13 +62,10 @@ class ProfileParser:
         return result
 
     def __parseInfo(self, data: bs4.element.Tag) -> Optional[ProfileInfoData]:
-        # try:
         result: [str, str] = dict()
-        # print(data)
+
         # Add extra break to help with wrapping loose text
         dataHtml = str(data) + "<br/>"
-        # guard let body = try SwiftSoup.parseBodyFragment(otherWrapLooseText(text: dataHtml)).body()
-        # else { return nil }
         soup = BeautifulSoup(dataHtml, "html5lib")
         body = soup.find("body")
         if body is None:
@@ -165,7 +73,6 @@ class ProfileParser:
             return None
 
         lastKey: str = ""
-        # let rows = body.children().filter { $0.hasText() && $0.tagName() != "span" }
         rows = list(
             filter(lambda x: x.text != "" and x.name != "span", body.findChildren())
         )

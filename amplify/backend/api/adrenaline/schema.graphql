@@ -149,7 +149,7 @@ type Message @model @auth(rules: [{allow: private}]) {
   MessageNewUsers: [MessageNewUser] @hasMany(indexName: "byMessage", fields: ["id"])
 }
 
-type DiveMeetsDiver @model @auth(rules: [{allow: private}]) {
+type DiveMeetsDiver @model @auth(rules: [{allow: public, provider: apiKey}, {allow: private}]) {
   id: ID!
   firstName: String!
   lastName: String!

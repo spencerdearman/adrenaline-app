@@ -139,58 +139,58 @@ struct RankingsView: View {
         return result
     }
     
-//    private func updateDiveMeetsDivers() async {
-//        if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
-//            do {
-//                let content = try String(contentsOf: url)
-//                let parsedCSV: [String] = content.components(separatedBy: "\n")
-//                let totalRows = parsedCSV.count
-//                
-//                for (i, id) in parsedCSV.enumerated() {
-//                    let p = ProfileParser()
-//                    let _ = await p.parseProfile(diveMeetsID: id)
-//                    
-//                    // Info is required for all personal data
-//                    guard let info = p.profileData.info else {
-//                        print("Could not get info from \(id)")
-//                        continue
-//                    }
-//                    
-//                    // Gender is required for filtering
-//                    guard let gender = info.gender else {
-//                        print("Could not get gender from \(id)")
-//                        continue
-//                    }
-//                    
-//                    // Stats are required for calculating skill rating
-//                    guard let stats = p.profileData.diveStatistics else {
-//                        print("Could not get stats from \(id)")
-//                        continue
-//                    }
-//                    
-//                    // Compute skill rating with stats
-//                    let skillRating = SkillRating(diveStatistics: stats)
-//                    let (springboard, platform, total) = await skillRating.getSkillRating()
-//                    
-//                    let obj = DiveMeetsDiver(id: id, firstName: info.first,
-//                                             lastName: info.last, gender: gender,
-//                                             finaAge: info.finaAge,
-//                                             hsGradYear: info.hsGradYear,
-//                                             springboardRating: springboard,
-//                                             platformRating: platform, totalRating: total)
-//                    
-//                    // Save object to DataStore
-//                    let _ = try await saveToDataStore(object: obj)
-//                    
-//                    if i % 100 == 0 { print("\(i + 1) of \(totalRows) finished") }
-//                }
-//            } catch {
-//                print("Failed to parse content")
-//            }
-//        } else {
-//            print("Failed to load rankedDiveMeetsIds")
-//        }
-//    }
+    private func updateDiveMeetsDivers() async {
+        if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
+            do {
+                let content = try String(contentsOf: url)
+                let parsedCSV: [String] = content.components(separatedBy: "\n")
+                let totalRows = parsedCSV.count
+                
+                for (i, id) in parsedCSV.enumerated() {
+                    let p = ProfileParser()
+                    let _ = await p.parseProfile(diveMeetsID: id)
+                    
+                    // Info is required for all personal data
+                    guard let info = p.profileData.info else {
+                        print("Could not get info from \(id)")
+                        continue
+                    }
+                    
+                    // Gender is required for filtering
+                    guard let gender = info.gender else {
+                        print("Could not get gender from \(id)")
+                        continue
+                    }
+                    
+                    // Stats are required for calculating skill rating
+                    guard let stats = p.profileData.diveStatistics else {
+                        print("Could not get stats from \(id)")
+                        continue
+                    }
+                    
+                    // Compute skill rating with stats
+                    let skillRating = SkillRating(diveStatistics: stats)
+                    let (springboard, platform, total) = await skillRating.getSkillRating()
+                    
+                    let obj = DiveMeetsDiver(id: id, firstName: info.first,
+                                             lastName: info.last, gender: gender,
+                                             finaAge: info.finaAge,
+                                             hsGradYear: info.hsGradYear,
+                                             springboardRating: springboard,
+                                             platformRating: platform, totalRating: total, _ttl: 1701187454)
+                    
+                    // Save object to DataStore
+                    let _ = try await saveToDataStore(object: obj)
+                    
+                    if i % 100 == 0 { print("\(i + 1) of \(totalRows) finished") }
+                }
+            } catch {
+                print("Failed to parse content")
+            }
+        } else {
+            print("Failed to load rankedDiveMeetsIds")
+        }
+    }
     
     private func deleteDiveMeetsDivers() async {
         if let url = Bundle.main.url(forResource: "rankedDiveMeetsIds", withExtension: "csv") {
@@ -213,6 +213,8 @@ struct RankingsView: View {
     
     // Keeps first seen of each diveMeetsID for each list in case there are
     // duplicates between registered Adrenaline athletes and DiveMeetsDivers
+    // Note: all DiveMeetsDiver objects are added after Adrenaline users, so this should keep the
+    //       desired user in the list (the Adrenaline user)
     private func removeDuplicates(_ ratings: GenderRankingList) ->
     [(RankedUser, Double, Double, Double)] {
         var seen = Set<String>()

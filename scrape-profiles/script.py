@@ -153,6 +153,15 @@ def run(event, isLocal=False):
                     time2 = time3
                     last_out_count = out_count
 
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"Took {time.time() - time1:.2f} s",
+        )
+
 
 if __name__ == "__main__":
     run({"start_index": "25000", "end_index": "150000"}, True)

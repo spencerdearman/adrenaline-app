@@ -1,4 +1,5 @@
-from profile_parser import DiveStatistic, ProfileParser
+from util import DiveStatistic
+from parallel_profile_parser import ProfileParser
 from typing import Optional, Callable
 import json
 

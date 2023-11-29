@@ -1,43 +1,31 @@
-import boto3
+# import boto3
 from parallel_profile_parser import ProfileParser
 from skill_rating import SkillRating
-from decimal import Decimal
-import json
-from boto3.dynamodb.types import TypeSerializer
-import os
+
+# from decimal import Decimal
+# import json
+# from boto3.dynamodb.types import TypeSerializer
 import time
 from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
-from cloudwatch import send_output, send_log_event, send_log_events
+from cloudwatch import send_output, send_log_event
+from util import DiveMeetsDiver, GraphqlClient
 
 
 baseLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
 
 
-class DiveMeetsDiver:
-    def __init__(
-        self, id, first, last, gender, finaAge, hsGradYear, springboard, platform, total
-    ):
-        self.id = id
-        self.firstName = first
-        self.lastName = last
-        self.gender = gender
-        self.finaAge = finaAge
-        self.hsGradYear = hsGradYear
-        self.springboardRating = springboard
-        self.platformRating = platform
-        self.total = total
-
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-
-
 def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
     try:
+        # dynamodb_client = boto3.client("dynamodb", "us-east-1")
+        gq_client = GraphqlClient(
+            endpoint="https://xp3iidmppneeldz7sgtdn3ffme.appsync-api.us-east-1.amazonaws.com/graphql",
+            headers={"x-api-key": "da2-ucgoxzk3hveplpbxkkl5woovq4"},
+        )
         totalRows = len(ids)
-
         session = FuturesSession()
         futures = []
+
         for i in ids:
             future = session.get(baseLink + str(i))
             future.i = i
@@ -107,12 +95,21 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     platform,
                     total,
                 )
-                item = json.loads(obj.toJSON(), parse_float=Decimal)
+
+                gq_client.update_dynamodb(
+                    obj, cloudwatch_client, log_group_name, log_stream_name, isLocal
+                )
+                # item = json.loads(obj.toJSON(), parse_float=Decimal)
 
                 # To go from python to low-level format
                 # https://stackoverflow.com/a/46738251/22068672
-                serializer = TypeSerializer()
-                low_level_copy = {k: serializer.serialize(v) for k, v in item.items()}
+                # serializer = TypeSerializer()
+                # low_level_copy = {k: serializer.serialize(v) for k, v in item.items()}
+
+                # Fix typename key since serializer adds extra to front of it
+                # when using __typename as variable name
+                # low_level_copy["__typename"] = low_level_copy.pop("typename")
+
                 # send_output(
                 #     isLocal,
                 #     send_log_event,
@@ -123,12 +120,18 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                 # )
 
                 # Save object to DataStore
-                dynamodb_client = boto3.client("dynamodb", "us-east-1")
-                response = dynamodb_client.put_item(
-                    TableName="DiveMeetsDiver-mwfmh6eukfhdhngcz756xxhxsa-main",
-                    Item=low_level_copy,
-                )
-                print("Response:", response)
+                # response = dynamodb_client.put_item(
+                #     TableName="DiveMeetsDiver-mwfmh6eukfhdhngcz756xxhxsa-main",
+                #     Item=low_level_copy,
+                # )
+                # send_output(
+                #     isLocal,
+                #     send_log_event,
+                #     cloudwatch_client,
+                #     log_group_name,
+                #     log_stream_name,
+                #     f"Response: {response}",
+                # )
 
             except Exception as exc:
                 send_output(
@@ -140,7 +143,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     f"future process_csv: {exc}",
                 )
             finally:
-                if i % 10 == 0:
+                if i % 100 == 0:
                     time3 = time.time()
                     send_output(
                         isLocal,
@@ -148,7 +151,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"[{i}/{totalRows}] Last 10: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s",
+                        f"[{i}/{totalRows}] Last 100: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s",
                     )
                     time2 = time3
     except Exception as exc:
@@ -169,23 +172,3 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
         log_stream_name,
         f"Took {time.time() - time1:.2f} s",
     )
-
-
-# Used by lambda to get latest list of ids and process them
-# def lambda_handler(event, context):
-#     s3_client = boto3.client("s3")
-#     bucket = os.environ["bucket_name"]
-#     response = s3_client.list_objects_v2(Bucket=bucket)
-#     assert "Contents" in response
-#     assert len(response["Contents"]) > 0
-
-#     # Get most recently updated CSV from DiveMeetsDiver python script
-#     objects = response["Contents"]
-#     latest_key = sorted(objects, key=lambda x: x["LastModified"], reverse=True)[0]
-
-#     response = s3_client.get_object(Bucket=bucket, Key=latest_key["Key"])
-#     assert "Body" in response
-#     body = response["Body"]
-#     parsedCSV = body.read().decode("utf-8").split()
-
-#     process_csv(parsedCSV)
