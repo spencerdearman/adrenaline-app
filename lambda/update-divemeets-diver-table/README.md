@@ -17,4 +17,5 @@ b. If neither field is present in the profile, it is ignored.
 9. After parsing the profile, the script verifies that the profile contained any personal information, specifically gender, as well as the statistics table. If any of these are not present, the ID is skipped.
 10. After verifying the presence of this data, the script calculates the diver's skill rating with the parsed statistics table.
 11. After getting the skill rating, an analogous DiveMeetsDiver Python object is created to package the relevant data for writing to DynamoDB.
-12. This object is then passed to a custom GraphQLClient
+12. This object is then passed to a custom GraphQLClient, which handles creating or updating the record using HTTP POST requests to a GraphQL endpoint provided by AppSync.
+13. Once these records are created/updated, Adrenaline is able to sync with this table through AppSync and DataStore so the records can be displayed to the user in the Rankings view.
