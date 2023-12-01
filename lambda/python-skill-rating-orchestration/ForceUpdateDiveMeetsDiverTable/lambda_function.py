@@ -1,4 +1,8 @@
-# StartEC2Instances: arn:aws:lambda:us-east-1:861465534182:function:StartEC2Instances
+# This updates the DiveMeetsDiver DynamoDB table with whatever DiveMeets id list
+# is provided as a yyyy-MM-dd in the event dictionary, e.g. { "input_date": "2023-11-30" }
+# ID list files are saved here: s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/divemeets-divers-lists/
+# This lambda runs an EC2 instance and logs to this CloudWatch log group: /aws/ec2/update-divemeets-diver-table
+
 import boto3
 import json
 import time
@@ -26,39 +30,33 @@ def lambda_handler(event, context):
         ]
     )
 
-    eventJson = json.dumps(event).replace('"', '\\"')
-    print(f"{event=}, JSON: {eventJson}")
+    print(f"{event=}")
+    assert "input_date" in event
+    input_date = event["input_date"]
 
     script = f"""
 #!/bin/bash
-python_script="from script import run; run({eventJson})"
 echo "Copying starter code..."
 cd /home/ec2-user
-aws s3 cp s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/script.py update-divemeets-diver-table/script.py
 aws s3 cp --recursive s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/update-dynamodb/ update-divemeets-diver-table/update-dynamodb/
 cd update-divemeets-diver-table
 echo "Creating virtual environment..."
 sudo python3 -m venv venv
 sudo chmod -R a+rwx venv
 source venv/bin/activate
+echo "Installing python dependencies..."
 pip install --upgrade pip
-pip install requests-futures boto3 bs4 html5lib
+pip install requests-futures boto3 bs4 html5lib simplejson
+echo "Copying from S3..."
+aws s3 cp "s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/divemeets-divers-lists/{input_date}.csv" ids.csv
+cd update-dynamodb 
+python_script="from driver import run; run(\\"../ids.csv\\")"
 echo "Adding python run script..."
 echo "$python_script" > start.py
-echo "Running script..."                                              
-python -u start.py
-echo "First script completed"
-echo "Copying to S3..."
-date=$(date -d "-5 hours" +%F)
-aws s3 cp ids.csv "s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/divemeets-divers-lists/$date.csv"
-cd update-dynamodb 
-second_script="from driver import run; run(\\"../ids.csv\\")"
-echo "Adding second python run script..."
-echo "$second_script" > start.py
-echo "Running second script..."                                              
+echo "Running python script..."                                              
 python -u start.py
 cd ..
-echo "Scripts completed, deactivating virtual environment..."
+echo "Script completed, deactivating virtual environment..."
 deactivate
 cd ..
 echo "Removing update-divemeets-diver-table folder..."
@@ -94,3 +92,4 @@ aws ec2 stop-instances --instance-ids {ec2_id}
     if response is not None:
         # See the command run on the target instance Ids
         print("Response:", response["Command"]["Parameters"]["commands"])
+
