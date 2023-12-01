@@ -66,19 +66,6 @@ class ProfileParser:
                 result.country = value
             elif "Gender:" in key:
                 result.gender = value.strip()
-            elif "Age:" in key:
-                try:
-                    result.age = int(value)
-                except ValueError as exc:
-                    send_output(
-                        self.isLocal,
-                        send_log_event,
-                        self.cloudwatch_client,
-                        self.log_group_name,
-                        self.log_stream_name,
-                        f"ValueError: Failed to cast {value} to int for age - {exc}",
-                    )
-                    foundErrors = True
             elif "FINA Age:" in key:
                 try:
                     result.finaAge = int(value)
@@ -90,6 +77,19 @@ class ProfileParser:
                         self.log_group_name,
                         self.log_stream_name,
                         f"ValueError: Failed to cast {value} to int for FINA age - {exc}",
+                    )
+                    foundErrors = True
+            elif "Age:" in key:
+                try:
+                    result.age = int(value)
+                except ValueError as exc:
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"ValueError: Failed to cast {value} to int for age - {exc}",
                     )
                     foundErrors = True
             elif "High School Graduation:" in key:
