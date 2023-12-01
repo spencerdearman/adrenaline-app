@@ -8,12 +8,13 @@ We obtain this information through the following process:
 
 0. EventBridge Schedule is set to run this process every Wednesday at 9AM ET (UTC-5) so we can capture any newly created DiveMeets accounts in the relevant age ranges, as well as update existing divers' skill ratings from any meets they competed in over the last week.
 1. The `UpdateDiveMeetsDiverTable` Lambda function starts up an existing EC2 instance to run the processing jobs.
-2. The Lambda then sends a bash script to this instance to kick off the processing.
+2. The Lambda then sends a bash script to this instance to kick off the processing. It passes the JSON input from the function, which should be an event dictionary that looks like this: {"start_index": "25000", "end_index": '150000"}, to the first Python function within the script.
+    1. Note that the start and end indices are passed as Strings, not Ints.
 3. The script copies a directory of  files (`s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/`), which contains several Python files to be executed.
 4. A virtual environment is set up on the instance, and the required depdencies are installed.
 5. An initial script is executed to parse all the DiveMeets profiles within the ID range 25,000-150,000, and the relevant IDs are recorded in `ids.csv`.
-a. This is done by determining if the profile's FINA age (if present) is between 14 and 18, and if it is not present, if their high school graduation year (if present) is between 2024 and 2028 (TODO: make years range dynamic)
-b. If neither field is present in the profile, it is ignored.
+    1. This is done by determining if the profile's FINA age (if present) is between 14 and 18, and if it is not present, if their high school graduation year (if present) is between 2024 and 2028 (TODO: make years range dynamic)
+    2. If neither field is present in the profile, it is ignored.
 6. After the first Python script finishes, the `ids.csv` file is copied to S3 to the `s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/divemeets-divers-lists/` prefix with `yyyy-MM-dd.csv` as the filename *(`e.g. s3://adrenalinexxxxx153503-main/public/update-divemeets-diver-table/divemeets-divers-lists/2023-11-30.csv`)*
 7. After the file is copied, it starts the second Python script, which reads the `ids.csv` file to handle the relevant DiveMeets IDs.
 8. The second script replicates the `ProfileParser` and `SkillRating` classes in Swift to parse the DiveMeets profile and collect the personal information at the top, as well as the Dive Statistics table.
