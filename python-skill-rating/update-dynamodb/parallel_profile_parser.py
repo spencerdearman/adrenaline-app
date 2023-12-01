@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import bs4
 import requests
 from util import ProfileData, ProfileInfoData, DiveStatistic
+from cloudwatch import send_output, send_log_event
 
 
 class ProfileParser:
@@ -12,32 +13,48 @@ class ProfileParser:
     def __init__(self):
         self.profileData = ProfileData()
         self.futureResult = None
+        self.isLocal = True
+        self.cloudwatch_client = None
+        self.log_group_name = None
+        self.log_stream_name = None
 
-    def __init__(self, response):
+    def __init__(
+        self, response, isLocal, cloudwatch_client, log_group_name, log_stream_name
+    ):
         self.profileData = ProfileData()
         self.futureResult = response
+        self.isLocal = isLocal
+        self.cloudwatch_client = cloudwatch_client
+        self.log_group_name = log_group_name
+        self.log_stream_name = log_stream_name
 
     def __wrapLooseText(self, text: str) -> str:
         try:
-            # print(text)
             result: str = text
             pattern = "[a-zA-z0-9\\s&;:]+<br/>"
             matches = re.findall(pattern, text)
-            # print(f"{matches=}")
+
             for match in matches:
                 m = match.strip()[:-5]
                 if len(m) > 0:
                     result = result.replace(match, f"<div>{m}</div><br/>")
-            # print(result)
+
             return result
-        except:
-            print("Failed to parse text input")
+        except Exception as exc:
+            send_output(
+                self.isLocal,
+                self.cloudwatch_client,
+                self.log_group_name,
+                self.log_stream_name,
+                f"Failed to parse text input due to the following error: {exc}",
+            )
 
         return ""
 
     def __assignInfoKeys(self, dict: dict[str, str]) -> Optional[ProfileInfoData]:
         result = ProfileInfoData()
-        # print("Keys:", dict)
+        foundErrors = False
+
         for key, value in dict.items():
             if "Name:" in key:
                 nameComps = value.split(" ")
@@ -49,15 +66,57 @@ class ProfileParser:
                 result.country = value
             elif "Gender:" in key:
                 result.gender = value.strip()
-            # This case has to come first since it is more specific with "Age"
-            elif "FINA Age:" in key:
-                result.finaAge = int(value)
             elif "Age:" in key:
-                result.age = int(value)
+                try:
+                    result.age = int(value)
+                except ValueError as exc:
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"ValueError: Failed to cast {value} to int for age - {exc}",
+                    )
+                    foundErrors = True
+            elif "FINA Age:" in key:
+                try:
+                    result.finaAge = int(value)
+                except ValueError as exc:
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"ValueError: Failed to cast {value} to int for FINA age - {exc}",
+                    )
+                    foundErrors = True
             elif "High School Graduation:" in key:
-                result.hsGradYear = int(value)
+                try:
+                    result.hsGradYear = int(value)
+                except ValueError as exc:
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"ValueError: Failed to cast {value} to int for HS grad year - {exc}",
+                    )
+                    foundErrors = True
             elif "DiveMeets #:" in key:
                 result.diverId = value
+
+                if foundErrors:
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"ValueErrors found for DiveMeets ID {value}",
+                    )
 
         return result
 
@@ -69,7 +128,13 @@ class ProfileParser:
         soup = BeautifulSoup(dataHtml, "html5lib")
         body = soup.find("body")
         if body is None:
-            print("body is None")
+            send_output(
+                self.isLocal,
+                self.cloudwatch_client,
+                self.log_group_name,
+                self.log_stream_name,
+                f"parseInfo: body not found",
+            )
             return None
 
         lastKey: str = ""
@@ -77,7 +142,6 @@ class ProfileParser:
             filter(lambda x: x.text != "" and x.name != "span", body.findChildren())
         )
         for row in rows:
-            # print(row)
             if row.name == "strong":
                 lastKey = row.text.strip()
                 continue
@@ -95,7 +159,15 @@ class ProfileParser:
 
             for row in rows:
                 subRow = row.find_all("td")
-                if len(subRow) != 6:
+                if len(subRow) < 6:
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"parseDiveStatistics: length of subrows is less than 6",
+                    )
                     return None
 
                 try:
@@ -110,7 +182,17 @@ class ProfileParser:
                     avgScoreLink = self.leadingLink + (
                         subRow[4].find_all("a")[0].get("href").strip()
                     )
-                    numberOfTimes = int(subRow[5].text.strip())
+
+                    try:
+                        numberOfTimes = int(subRow[5].text.strip())
+                    except ValueError as exc:
+                        send_output(
+                            self.isLocal,
+                            self.cloudwatch_client,
+                            self.log_group_name,
+                            self.log_stream_name,
+                            f"ValueError: Failed to cast {subRow[5].text.strip()} for number of times - {exc}",
+                        )
 
                     result.append(
                         DiveStatistic(
@@ -124,16 +206,36 @@ class ProfileParser:
                             numberOfTimes,
                         )
                     )
-                except ValueError:
-                    print("ValueError")
+                except ValueError as exc:
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"ValueError in parseDiveStatistics: {exc}",
+                    )
                     return None
                 except Exception as exc:
-                    print("parseDiveStatistics:", exc)
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"Found exception in parseDiveStatistics: {exc}",
+                    )
                     return None
 
             return result
         except:
-            print("Failed to parse dive statistics")
+            send_output(
+                self.isLocal,
+                self.cloudwatch_client,
+                self.log_group_name,
+                self.log_stream_name,
+                f"Failed to parse dive statistics",
+            )
 
         return None
 
@@ -159,11 +261,25 @@ class ProfileParser:
             else:
                 response = self.futureResult
             if response.status_code // 100 != 2:
+                send_output(
+                    self.isLocal,
+                    self.cloudwatch_client,
+                    self.log_group_name,
+                    self.log_stream_name,
+                    f"response for {link.split('=')[-1]} returned non-200 status code",
+                )
                 return False
 
             soup = BeautifulSoup(response.content, "html.parser")
             tables = soup.find_all("td")
             if len(tables) == 0:
+                send_output(
+                    self.isLocal,
+                    self.cloudwatch_client,
+                    self.log_group_name,
+                    self.log_stream_name,
+                    f"parseProfile: tables list is empty",
+                )
                 return False
 
             data = tables[0]
@@ -182,7 +298,14 @@ class ProfileParser:
                 body = soup.find("body")
 
                 if body is None:
-                    print("body None")
+                    send_output(
+                        self.isLocal,
+                        send_log_event,
+                        self.cloudwatch_client,
+                        self.log_group_name,
+                        self.log_stream_name,
+                        f"parseProfile: Info page body not found",
+                    )
                     return False
 
                 if "DiveMeets #" in body.text:
@@ -192,7 +315,13 @@ class ProfileParser:
 
             return True
         except Exception as exc:
-            print(exc)
+            send_output(
+                self.isLocal,
+                self.cloudwatch_client,
+                self.log_group_name,
+                self.log_stream_name,
+                f"Found exception in parseProfile: {exc}",
+            )
             return False
 
     def parseProfileFromDiveMeetsID(self, diveMeetsID: str) -> bool:

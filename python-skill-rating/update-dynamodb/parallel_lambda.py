@@ -1,10 +1,5 @@
-# import boto3
 from parallel_profile_parser import ProfileParser
 from skill_rating import SkillRating
-
-# from decimal import Decimal
-# import json
-# from boto3.dynamodb.types import TypeSerializer
 import time
 from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
@@ -17,7 +12,6 @@ baseLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
 
 def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
     try:
-        # dynamodb_client = boto3.client("dynamodb", "us-east-1")
         gq_client = GraphqlClient(
             endpoint="https://xp3iidmppneeldz7sgtdn3ffme.appsync-api.us-east-1.amazonaws.com/graphql",
             headers={"x-api-key": "da2-ucgoxzk3hveplpbxkkl5woovq4"},
@@ -37,7 +31,9 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             id = future.i
             try:
                 data = future.result()
-                p = ProfileParser(data)
+                p = ProfileParser(
+                    data, isLocal, cloudwatch_client, log_group_name, log_stream_name
+                )
                 p.parseProfileFromDiveMeetsID(id)
 
                 # Info is required for all personal data
@@ -48,7 +44,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"Could not get info from {id}",
+                        f"process_csv: Could not get info from {id}",
                     )
                     continue
                 info = p.profileData.info
@@ -61,7 +57,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"Could not get gender from {id}",
+                        f"process_csv: Could not get gender from {id}",
                     )
                     continue
                 gender = info.gender
@@ -74,7 +70,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"Could not get stats from {id}",
+                        f"process_csv: Could not get stats from {id}",
                     )
                     continue
 
@@ -99,39 +95,6 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                 gq_client.update_dynamodb(
                     obj, cloudwatch_client, log_group_name, log_stream_name, isLocal
                 )
-                # item = json.loads(obj.toJSON(), parse_float=Decimal)
-
-                # To go from python to low-level format
-                # https://stackoverflow.com/a/46738251/22068672
-                # serializer = TypeSerializer()
-                # low_level_copy = {k: serializer.serialize(v) for k, v in item.items()}
-
-                # Fix typename key since serializer adds extra to front of it
-                # when using __typename as variable name
-                # low_level_copy["__typename"] = low_level_copy.pop("typename")
-
-                # send_output(
-                #     isLocal,
-                #     send_log_event,
-                #     cloudwatch_client,
-                #     log_group_name,
-                #     log_stream_name,
-                #     f"Boto3 dict: {low_level_copy}",
-                # )
-
-                # Save object to DataStore
-                # response = dynamodb_client.put_item(
-                #     TableName="DiveMeetsDiver-mwfmh6eukfhdhngcz756xxhxsa-main",
-                #     Item=low_level_copy,
-                # )
-                # send_output(
-                #     isLocal,
-                #     send_log_event,
-                #     cloudwatch_client,
-                #     log_group_name,
-                #     log_stream_name,
-                #     f"Response: {response}",
-                # )
 
             except Exception as exc:
                 send_output(
@@ -140,7 +103,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     cloudwatch_client,
                     log_group_name,
                     log_stream_name,
-                    f"future process_csv: {exc}",
+                    f"process_csv: {exc}",
                 )
             finally:
                 if i % 100 == 0:

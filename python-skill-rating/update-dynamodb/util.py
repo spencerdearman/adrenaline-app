@@ -316,11 +316,6 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
         log_stream_name=None,
         isLocal=False,
     ):
-        # gq_client = GraphqlClient(
-        #     endpoint="https://xp3iidmppneeldz7sgtdn3ffme.appsync-api.us-east-1.amazonaws.com/graphql",
-        #     headers={"x-api-key": "da2-ucgoxzk3hveplpbxkkl5woovq4"},
-        # )
-
         get_result = self.getDiveMeetsDiverById(diver.id)
 
         if get_result is None:

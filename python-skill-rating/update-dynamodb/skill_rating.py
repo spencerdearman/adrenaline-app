@@ -21,10 +21,14 @@ def getDiveDD(data, key: str, height: float) -> Optional[float]:
 
     # If value ends in .0, then convert to Int before converting to String, else convert
     # directly to String
-    if float(int(height)) == height:
-        h = str(int(height))
-    else:
-        h = str(height)
+    try:
+        hInt = int(height)
+        if float(hInt) == height:
+            h = str(hInt)
+        else:
+            h = str(height)
+    except ValueError:
+        print(f"Failed to cast {height} for height in getDiveDD")
 
     # If height is in dd keys
     if h in diveData["dd"]:
