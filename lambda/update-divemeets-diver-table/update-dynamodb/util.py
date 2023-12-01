@@ -256,7 +256,7 @@ query getDiveMeetsDiver($id: ID!) {
 
         return result
 
-    def updateDiveMeetsDiver(self, diveMeetsDiver: DiveMeetsDiver):
+    def updateDiveMeetsDiver(self, diveMeetsDiver: DiveMeetsDiver, get_result):
         update = """
 mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverInput!,
                               $condition: ModelDiveMeetsDiverConditionInput) {
@@ -280,11 +280,17 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
   }
 }
 """
+        # Verify version is contained in get_result, else fail to update
+        if (
+            "data" not in get_result
+            or "getDiveMeetsDiver" not in get_result["data"]
+            or "_version" not in get_result["data"]["getDiveMeetsDiver"]
+        ):
+            return (
+                f"Failed to update {diveMeetsDiver.id}, version not found in get_result"
+            )
 
-        get_result = self.getDiveMeetsDiverById(diveMeetsDiver.id)
-        if get_result is None:
-            print("Unable to update, current version does not exist")
-            return
+        # Set the query version to allow conflict resolution in DynamoDB
         version = get_result["data"]["getDiveMeetsDiver"]["_version"]
 
         update_vars = {
@@ -337,7 +343,7 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
                 log_stream_name,
                 f"updating with {diver.id}",
             )
-            result = self.updateDiveMeetsDiver(diver)
+            result = self.updateDiveMeetsDiver(diver, get_result)
 
         send_output(
             isLocal,

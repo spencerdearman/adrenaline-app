@@ -6,10 +6,9 @@ from cloudwatch import init_cloudwatch
 
 
 # Used for manual runs or EC2 instances to run on a local file
-def run(filename, isLocal=False):
+def run(filename, log_group_name=None, isLocal=False):
     region = "us-east-1"
     cloudwatch_client = boto3.client("logs", region_name=region)
-    log_group_name = "/aws/ec2/update-divemeets-diver-table"
     log_stream_name = f"python-dynamodb-script-logs-{uuid.uuid4()}"
 
     if not isLocal:
@@ -22,4 +21,4 @@ def run(filename, isLocal=False):
 
 
 if __name__ == "__main__":
-    run("../ids.csv", True)
+    run("../ids.csv", "/aws/ec2/update-divemeets-diver-table", True)

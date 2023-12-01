@@ -75,13 +75,12 @@ def send_output(isLocal, func, *args):
         func(*args)
 
 
-def run(event, isLocal=False):
+def run(event, log_group_name=None, isLocal=False):
     result = []
     outfile = "./ids.csv"
     region = "us-east-1"
     baseLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
     cloudwatch_client = boto3.client("logs", region_name=region)
-    log_group_name = "/aws/ec2/update-divemeets-diver-table"
     log_stream_name = f"python-script-logs-{uuid.uuid4()}"
 
     if not isLocal:
@@ -164,4 +163,8 @@ def run(event, isLocal=False):
 
 
 if __name__ == "__main__":
-    run({"start_index": "25000", "end_index": "150000"}, True)
+    run(
+        {"start_index": "25000", "end_index": "150000"},
+        "/aws/ec2/update-divemeets-diver-table",
+        True,
+    )
