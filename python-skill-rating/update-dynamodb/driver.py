@@ -1,5 +1,5 @@
 import os
-from parallel_lambda import process_csv
+from process_ids import process_csv
 import boto3
 import uuid
 from cloudwatch import init_cloudwatch

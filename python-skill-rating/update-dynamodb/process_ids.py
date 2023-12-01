@@ -1,4 +1,4 @@
-from parallel_profile_parser import ProfileParser
+from profile_parser import ProfileParser
 from skill_rating import SkillRating
 import time
 from concurrent.futures import as_completed
