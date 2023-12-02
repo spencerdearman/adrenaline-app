@@ -1,5 +1,5 @@
 import os
-from process_ids import process_csv
+from process_ids import process_ids
 import boto3
 import uuid
 from cloudwatch import init_cloudwatch
@@ -17,7 +17,7 @@ def run(filename, log_group_name=None, isLocal=False):
     os.environ["bucket_name"] = "adrenalinexxxxx153503-main"
     with open(filename, "r") as f:
         csv = f.read().splitlines()
-        process_csv(csv, cloudwatch_client, log_group_name, log_stream_name, isLocal)
+        process_ids(csv, cloudwatch_client, log_group_name, log_stream_name, isLocal)
 
 
 if __name__ == "__main__":

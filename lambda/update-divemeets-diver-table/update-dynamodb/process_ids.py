@@ -10,7 +10,7 @@ from util import DiveMeetsDiver, GraphqlClient
 baseLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
 
 
-def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
+def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
     try:
         gq_client = GraphqlClient(
             endpoint="https://xp3iidmppneeldz7sgtdn3ffme.appsync-api.us-east-1.amazonaws.com/graphql",
@@ -44,7 +44,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"process_csv: Could not get info from {id}",
+                        f"process_ids: [{i+1}/{totalRows}] Could not get info from {id}",
                     )
                     continue
                 info = p.profileData.info
@@ -57,7 +57,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"process_csv: Could not get gender from {id}",
+                        f"process_ids: [{i+1}/{totalRows}] Could not get gender from {id}",
                     )
                     continue
                 gender = info.gender
@@ -70,7 +70,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"process_csv: Could not get stats from {id}",
+                        f"process_ids: [{i+1}/{totalRows}] Could not get stats from {id}",
                     )
                     continue
 
@@ -103,10 +103,10 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     cloudwatch_client,
                     log_group_name,
                     log_stream_name,
-                    f"process_csv: {exc}",
+                    f"process_ids: [{i+1}/{totalRows}] {exc}",
                 )
             finally:
-                if i % 100 == 0:
+                if i != 0 and i % 100 == 0:
                     time3 = time.time()
                     send_output(
                         isLocal,
@@ -114,7 +114,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         cloudwatch_client,
                         log_group_name,
                         log_stream_name,
-                        f"[{i}/{totalRows}] Last 100: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s",
+                        f"[{i+1}/{totalRows}] Last 100: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s",
                     )
                     time2 = time3
     except Exception as exc:
@@ -124,7 +124,7 @@ def process_csv(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             cloudwatch_client,
             log_group_name,
             log_stream_name,
-            f"process_csv: {exc}",
+            f"process_ids: Uncaught exception - {exc}",
         )
 
     send_output(
