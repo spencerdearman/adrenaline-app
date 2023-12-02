@@ -155,6 +155,8 @@ class GraphqlClient:
         if isinstance(o, datetime):
             return o.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
+    # This can throw an exception if the request fails, so calls to this need to
+    # handle exceptions gracefully
     def execute(self, query, operation_name, variables={}):
         data = simplejson.dumps(
             {"query": query, "variables": variables, "operationName": operation_name},
@@ -166,15 +168,15 @@ class GraphqlClient:
             url=self.endpoint,
             method="POST",
             headers=self.headers,
-            json={
-                "query": query,
-                "variables": variables,
-                "operationName": operation_name,
-            },
+            data=data,
         )
+
+        # If response is non-200 status code, throw exception
+        response.raise_for_status()
 
         return response.json()
 
+    # This can throw an exception if execute() fails, so this needs to be caught
     def createDiveMeetsDiver(self, diveMeetsDiver: DiveMeetsDiver):
         create = """
 mutation createDiveMeetsDiver($createDiveMeetsDiverInput: CreateDiveMeetsDiverInput!,
@@ -220,6 +222,7 @@ mutation createDiveMeetsDiver($createDiveMeetsDiverInput: CreateDiveMeetsDiverIn
             variables=create_vars,
         )
 
+    # This can throw an exception if execute() fails, so this needs to be caught
     def getDiveMeetsDiverById(self, id: int):
         getById = """
 query getDiveMeetsDiver($id: ID!) {
@@ -256,6 +259,7 @@ query getDiveMeetsDiver($id: ID!) {
 
         return result
 
+    # This can throw an exception if execute() fails, so this needs to be caught
     def updateDiveMeetsDiver(self, diveMeetsDiver: DiveMeetsDiver, get_result):
         update = """
 mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverInput!,
@@ -322,34 +326,75 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
         log_stream_name=None,
         isLocal=False,
     ):
-        get_result = self.getDiveMeetsDiverById(diver.id)
+        get_result = None
+        result = None
 
+        try:
+            get_result = self.getDiveMeetsDiverById(diver.id)
+        except Exception as exc:
+            send_output(
+                isLocal,
+                send_log_event,
+                cloudwatch_client,
+                log_group_name,
+                log_stream_name,
+                f"Exception caught while trying to get DiveMeetsDiver by ID {diver.id} - {exc}",
+            )
+            return
+
+        # Get request succeeded, but did not find an existing record
         if get_result is None:
-            send_output(
-                isLocal,
-                send_log_event,
-                cloudwatch_client,
-                log_group_name,
-                log_stream_name,
-                f"creating {diver.id}",
-            )
-            result = self.createDiveMeetsDiver(diver)
-        else:
-            send_output(
-                isLocal,
-                send_log_event,
-                cloudwatch_client,
-                log_group_name,
-                log_stream_name,
-                f"updating with {diver.id}",
-            )
-            result = self.updateDiveMeetsDiver(diver, get_result)
+            # send_output(
+            #     isLocal,
+            #     send_log_event,
+            #     cloudwatch_client,
+            #     log_group_name,
+            #     log_stream_name,
+            #     f"creating {diver.id}",
+            # )
 
-        send_output(
-            isLocal,
-            send_log_event,
-            cloudwatch_client,
-            log_group_name,
-            log_stream_name,
-            f"{result}",
-        )
+            # Attempt to create the record
+            try:
+                result = self.createDiveMeetsDiver(diver)
+            except Exception as exc:
+                send_output(
+                    isLocal,
+                    send_log_event,
+                    cloudwatch_client,
+                    log_group_name,
+                    log_stream_name,
+                    f"Exception caught while trying to create DiveMeetsDiver {diver.id} - {exc}",
+                )
+
+        # Get request succeeded and found an existing record
+        else:
+            # send_output(
+            #     isLocal,
+            #     send_log_event,
+            #     cloudwatch_client,
+            #     log_group_name,
+            #     log_stream_name,
+            #     f"updating with {diver.id}",
+            # )
+
+            # Attempt to update the existing record
+            try:
+                result = self.updateDiveMeetsDiver(diver, get_result)
+            except Exception as exc:
+                send_output(
+                    isLocal,
+                    send_log_event,
+                    cloudwatch_client,
+                    log_group_name,
+                    log_stream_name,
+                    f"Exception caught while trying to update DiveMeetsDiver {diver.id} - {exc}",
+                )
+
+        # send_output(
+        #     isLocal,
+        #     send_log_event,
+        #     cloudwatch_client,
+        #     log_group_name,
+        #     log_stream_name,
+        #     f"{result}",
+        # )
