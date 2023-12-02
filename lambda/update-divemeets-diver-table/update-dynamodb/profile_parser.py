@@ -22,13 +22,11 @@ class ProfileParser:
         # and isLocal is True, or all params are provided and isLocal is False
         assert (
             response is not None
-            and not isLocal
             and cloudwatch_client is not None
             and log_group_name is not None
             and log_stream_name is not None
         ) or (
             response is None
-            and isLocal
             and cloudwatch_client is None
             and log_group_name is None
             and log_stream_name is None
