@@ -103,7 +103,7 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     cloudwatch_client,
                     log_group_name,
                     log_stream_name,
-                    f"process_ids: [{i+1}/{totalRows}] {exc}",
+                    f"process_ids: [{i+1}/{totalRows}] - {repr(exc)}",
                 )
             finally:
                 if i != 0 and i % 100 == 0:
@@ -124,7 +124,7 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             cloudwatch_client,
             log_group_name,
             log_stream_name,
-            f"process_ids: Uncaught exception - {exc}",
+            f"process_ids: Uncaught exception - {repr(exc)}",
         )
 
     send_output(

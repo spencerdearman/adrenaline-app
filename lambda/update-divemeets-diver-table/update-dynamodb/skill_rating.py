@@ -10,7 +10,7 @@ def getDiveTableData():
         with open("diveTable.json", "r") as f:
             return json.load(f)
     except Exception as exc:
-        print(f"getDiveTableData: {exc}")
+        print(f"getDiveTableData: {repr(exc)}")
         return None
 
 

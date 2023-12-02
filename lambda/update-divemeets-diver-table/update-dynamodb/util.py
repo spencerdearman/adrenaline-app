@@ -338,7 +338,7 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
                 cloudwatch_client,
                 log_group_name,
                 log_stream_name,
-                f"Exception caught while trying to get DiveMeetsDiver by ID {diver.id} - {exc}",
+                f"Exception caught while trying to get DiveMeetsDiver by ID {diver.id} - {repr(exc)}",
             )
             return
 
@@ -363,7 +363,7 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
                     cloudwatch_client,
                     log_group_name,
                     log_stream_name,
-                    f"Exception caught while trying to create DiveMeetsDiver {diver.id} - {exc}",
+                    f"Exception caught while trying to create DiveMeetsDiver {diver.id} - {repr(exc)}",
                 )
 
         # Get request succeeded and found an existing record
@@ -387,7 +387,7 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
                     cloudwatch_client,
                     log_group_name,
                     log_stream_name,
-                    f"Exception caught while trying to update DiveMeetsDiver {diver.id} - {exc}",
+                    f"Exception caught while trying to update DiveMeetsDiver {diver.id} - {repr(exc)}",
                 )
 
         # send_output(

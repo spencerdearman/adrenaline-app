@@ -57,7 +57,7 @@ class ProfileParser:
                 self.cloudwatch_client,
                 self.log_group_name,
                 self.log_stream_name,
-                f"Failed to parse text input due to the following error: {exc}",
+                f"Failed to parse text input due to the following error: {repr(exc)}",
             )
 
         return ""
@@ -87,7 +87,7 @@ class ProfileParser:
                         self.cloudwatch_client,
                         self.log_group_name,
                         self.log_stream_name,
-                        f"ValueError: Failed to cast {value} to int for FINA age - {exc}",
+                        f"ValueError: Failed to cast {value} to int for FINA age - {repr(exc)}",
                     )
                     foundErrors = True
             elif "Age:" in key:
@@ -100,7 +100,7 @@ class ProfileParser:
                         self.cloudwatch_client,
                         self.log_group_name,
                         self.log_stream_name,
-                        f"ValueError: Failed to cast {value} to int for age - {exc}",
+                        f"ValueError: Failed to cast {value} to int for age - {repr(exc)}",
                     )
                     foundErrors = True
             elif "High School Graduation:" in key:
@@ -113,7 +113,7 @@ class ProfileParser:
                         self.cloudwatch_client,
                         self.log_group_name,
                         self.log_stream_name,
-                        f"ValueError: Failed to cast {value} to int for HS grad year - {exc}",
+                        f"ValueError: Failed to cast {value} to int for HS grad year - {repr(exc)}",
                     )
                     foundErrors = True
             elif "DiveMeets #:" in key:
@@ -201,7 +201,7 @@ class ProfileParser:
                             self.cloudwatch_client,
                             self.log_group_name,
                             self.log_stream_name,
-                            f"ValueError: Failed to cast {subRow[5].text.strip()} for number of times - {exc}",
+                            f"ValueError: Failed to cast {subRow[5].text.strip()} for number of times - {repr(exc)}",
                         )
 
                     result.append(
@@ -223,7 +223,7 @@ class ProfileParser:
                         self.cloudwatch_client,
                         self.log_group_name,
                         self.log_stream_name,
-                        f"ValueError in parseDiveStatistics: {exc}",
+                        f"ValueError in parseDiveStatistics: {repr(exc)}",
                     )
                     return None
                 except Exception as exc:
@@ -233,7 +233,7 @@ class ProfileParser:
                         self.cloudwatch_client,
                         self.log_group_name,
                         self.log_stream_name,
-                        f"Found exception in parseDiveStatistics: {exc}",
+                        f"Found exception in parseDiveStatistics: {repr(exc)}",
                     )
                     return None
 
@@ -330,7 +330,7 @@ class ProfileParser:
                 self.cloudwatch_client,
                 self.log_group_name,
                 self.log_stream_name,
-                f"Found exception in parseProfile: {exc}",
+                f"Found exception in parseProfile: {repr(exc)}",
             )
             return False
 
