@@ -10,17 +10,30 @@ from cloudwatch import send_output, send_log_event
 class ProfileParser:
     leadingLink = "https://secure.meetcontrol.com/divemeets/system/"
 
-    def __init__(self):
-        self.profileData = ProfileData()
-        self.futureResult = None
-        self.isLocal = True
-        self.cloudwatch_client = None
-        self.log_group_name = None
-        self.log_stream_name = None
-
     def __init__(
-        self, response, isLocal, cloudwatch_client, log_group_name, log_stream_name
+        self,
+        response=None,
+        isLocal=True,
+        cloudwatch_client=None,
+        log_group_name=None,
+        log_stream_name=None,
     ):
+        # ProfileParser needs to either be initialized with no initial params
+        # and isLocal is True, or all params are provided and isLocal is False
+        assert (
+            response is not None
+            and not isLocal
+            and cloudwatch_client is not None
+            and log_group_name is not None
+            and log_stream_name is not None
+        ) or (
+            response is None
+            and isLocal
+            and cloudwatch_client is None
+            and log_group_name is None
+            and log_stream_name is None
+        )
+
         self.profileData = ProfileData()
         self.futureResult = response
         self.isLocal = isLocal
@@ -31,7 +44,7 @@ class ProfileParser:
     def __wrapLooseText(self, text: str) -> str:
         try:
             result: str = text
-            pattern = "[a-zA-z0-9\\s&;:]+<br/>"
+            pattern = "[a-zA-z0-9\\s&;:-]+<br/>"
             matches = re.findall(pattern, text)
 
             for match in matches:
@@ -122,7 +135,6 @@ class ProfileParser:
 
     def __parseInfo(self, data: bs4.element.Tag) -> Optional[ProfileInfoData]:
         result: [str, str] = dict()
-
         # Add extra break to help with wrapping loose text
         dataHtml = str(data) + "<br/>"
         soup = BeautifulSoup(dataHtml, "html5lib")
