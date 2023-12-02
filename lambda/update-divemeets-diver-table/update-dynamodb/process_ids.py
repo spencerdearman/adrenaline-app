@@ -5,17 +5,69 @@ from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
 from cloudwatch import send_output, send_log_event
 from util import DiveMeetsDiver, GraphqlClient
+import boto3
 
 
 baseLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
 
 
+def filter_adrenaline_profiles(ids):
+    dynamodb_client = boto3.client("dynamodb", region_name="us-east-1")
+
+    # Generates expressions to only return items that have matching diveMeetsIDs
+    # in the input list
+    expAttrValues = {f":{i}": {"S": id} for i, id in enumerate(ids)}
+    filterExpression = " OR ".join(
+        [f"diveMeetsID = {key}" for key in expAttrValues.keys()]
+    )
+
+    response = dynamodb_client.scan(
+        TableName="NewUser-mwfmh6eukfhdhngcz756xxhxsa-main",
+        ExpressionAttributeNames={"#DMID": "diveMeetsID"},
+        ExpressionAttributeValues=expAttrValues,
+        FilterExpression=filterExpression,
+        ProjectionExpression="#DMID",
+    )
+
+    if "Items" not in response:
+        return []
+
+    # Set of all DiveMeets IDs that are registered under Adrenaline accounts
+    adrenalineIds = set(map(lambda x: x["diveMeetsID"]["S"], response["Items"]))
+
+    # Removes Adrenaline DiveMeets IDs from DiveMeetsDiver IDs to be updated
+    return list(set(ids).difference(adrenalineIds))
+
+
 def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
+    time1 = time.time()
     try:
         gq_client = GraphqlClient(
             endpoint="https://xp3iidmppneeldz7sgtdn3ffme.appsync-api.us-east-1.amazonaws.com/graphql",
             headers={"x-api-key": "da2-ucgoxzk3hveplpbxkkl5woovq4"},
         )
+
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"process_ids: Pre-filter ID count: {len(ids)}",
+        )
+
+        # Filtering loses ordering of list, but this is not relevant to updating
+        ids = filter_adrenaline_profiles(ids)
+
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"process_ids: Post-filter ID count: {len(ids)}",
+        )
+
         totalRows = len(ids)
         session = FuturesSession()
         futures = []
