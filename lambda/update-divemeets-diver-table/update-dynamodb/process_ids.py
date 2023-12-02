@@ -11,29 +11,42 @@ import boto3
 baseLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number="
 
 
+# Filters out Adrenaline DiveMeets IDs from DiveMeetsDiver updates
 def filter_adrenaline_profiles(ids):
     dynamodb_client = boto3.client("dynamodb", region_name="us-east-1")
+    adrenalineIds = set()
 
-    # Generates expressions to only return items that have matching diveMeetsIDs
-    # in the input list
-    expAttrValues = {f":{i}": {"S": id} for i, id in enumerate(ids)}
-    filterExpression = " OR ".join(
-        [f"diveMeetsID = {key}" for key in expAttrValues.keys()]
-    )
+    # Splits ids list into chunks of 150 elements since DDB scan requests are
+    # limited on size of the FilterExpression
+    chunks = []
+    for i in range(0, len(ids), 150):
+        if i + 150 < len(ids):
+            chunks.append(ids[i : i + 150])
+        else:
+            chunks.append(ids[i:])
 
-    response = dynamodb_client.scan(
-        TableName="NewUser-mwfmh6eukfhdhngcz756xxhxsa-main",
-        ExpressionAttributeNames={"#DMID": "diveMeetsID"},
-        ExpressionAttributeValues=expAttrValues,
-        FilterExpression=filterExpression,
-        ProjectionExpression="#DMID",
-    )
+    for chunk in chunks:
+        # Generates expressions to only return items that have matching diveMeetsIDs
+        # in the input list
+        expAttrValues = {f":{i}": {"S": id} for i, id in enumerate(chunk)}
+        filterExpression = " OR ".join(
+            [f"diveMeetsID = {key}" for key in expAttrValues.keys()]
+        )
 
-    if "Items" not in response:
-        return []
+        response = dynamodb_client.scan(
+            TableName="NewUser-mwfmh6eukfhdhngcz756xxhxsa-main",
+            ExpressionAttributeValues=expAttrValues,
+            ProjectionExpression="diveMeetsID",
+            FilterExpression=filterExpression,
+        )
 
-    # Set of all DiveMeets IDs that are registered under Adrenaline accounts
-    adrenalineIds = set(map(lambda x: x["diveMeetsID"]["S"], response["Items"]))
+        if "Items" not in response:
+            continue
+
+        # Set of all DiveMeets IDs that are registered under Adrenaline accounts
+        adrenalineIds = adrenalineIds.union(
+            set(map(lambda x: x["diveMeetsID"]["S"], response["Items"]))
+        )
 
     # Removes Adrenaline DiveMeets IDs from DiveMeetsDiver IDs to be updated
     return list(set(ids).difference(adrenalineIds))
@@ -55,9 +68,10 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             log_stream_name,
             f"process_ids: Pre-filter ID count: {len(ids)}",
         )
+        print(f"process_ids: Pre-filter ID count: {len(ids)}")
 
         # Filtering loses ordering of list, but this is not relevant to updating
-        ids = filter_adrenaline_profiles(ids)
+        ids = sorted(filter_adrenaline_profiles(ids), key=lambda x: int(x))
 
         send_output(
             isLocal,
@@ -67,6 +81,7 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             log_stream_name,
             f"process_ids: Post-filter ID count: {len(ids)}",
         )
+        print(f"process_ids: Post-filter ID count: {len(ids)}")
 
         totalRows = len(ids)
         session = FuturesSession()
@@ -98,6 +113,9 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_stream_name,
                         f"process_ids: [{i+1}/{totalRows}] Could not get info from {id}",
                     )
+                    print(
+                        f"process_ids: [{i+1}/{totalRows}] Could not get info from {id}"
+                    )
                     continue
                 info = p.profileData.info
 
@@ -111,6 +129,9 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_stream_name,
                         f"process_ids: [{i+1}/{totalRows}] Could not get gender from {id}",
                     )
+                    print(
+                        f"process_ids: [{i+1}/{totalRows}] Could not get gender from {id}"
+                    )
                     continue
                 gender = info.gender
 
@@ -123,6 +144,9 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_group_name,
                         log_stream_name,
                         f"process_ids: [{i+1}/{totalRows}] Could not get stats from {id}",
+                    )
+                    print(
+                        f"process_ids: [{i+1}/{totalRows}] Could not get stats from {id}"
                     )
                     continue
 
@@ -157,6 +181,7 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     log_stream_name,
                     f"process_ids: [{i+1}/{totalRows}] - {repr(exc)}",
                 )
+                print(f"process_ids: [{i+1}/{totalRows}] - {repr(exc)}")
             finally:
                 if i != 0 and i % 100 == 0:
                     time3 = time.time()
@@ -168,7 +193,11 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_stream_name,
                         f"[{i+1}/{totalRows}] Last 100: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s",
                     )
+                    print(
+                        f"[{i+1}/{totalRows}] Last 100: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s"
+                    )
                     time2 = time3
+                print(future.i)
     except Exception as exc:
         send_output(
             isLocal,
