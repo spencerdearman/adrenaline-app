@@ -1,7 +1,7 @@
 import time
 
 
-def init_cloudwatch(client, log_group_name, log_stream_name):
+def init_cloudwatch_logs(client, log_group_name, log_stream_name):
     try:
         client.create_log_group(
             logGroupName=log_group_name,
