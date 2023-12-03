@@ -68,7 +68,6 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             log_stream_name,
             f"process_ids: Pre-filter ID count: {len(ids)}",
         )
-        print(f"process_ids: Pre-filter ID count: {len(ids)}")
 
         # Filtering loses ordering of list, but this is not relevant to updating
         ids = sorted(filter_adrenaline_profiles(ids), key=lambda x: int(x))
@@ -81,7 +80,6 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             log_stream_name,
             f"process_ids: Post-filter ID count: {len(ids)}",
         )
-        print(f"process_ids: Post-filter ID count: {len(ids)}")
 
         totalRows = len(ids)
         session = FuturesSession()
@@ -113,9 +111,6 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_stream_name,
                         f"process_ids: [{i+1}/{totalRows}] Could not get info from {id}",
                     )
-                    print(
-                        f"process_ids: [{i+1}/{totalRows}] Could not get info from {id}"
-                    )
                     continue
                 info = p.profileData.info
 
@@ -129,9 +124,6 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_stream_name,
                         f"process_ids: [{i+1}/{totalRows}] Could not get gender from {id}",
                     )
-                    print(
-                        f"process_ids: [{i+1}/{totalRows}] Could not get gender from {id}"
-                    )
                     continue
                 gender = info.gender
 
@@ -144,9 +136,6 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_group_name,
                         log_stream_name,
                         f"process_ids: [{i+1}/{totalRows}] Could not get stats from {id}",
-                    )
-                    print(
-                        f"process_ids: [{i+1}/{totalRows}] Could not get stats from {id}"
                     )
                     continue
 
@@ -181,7 +170,6 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     log_stream_name,
                     f"process_ids: [{i+1}/{totalRows}] - {repr(exc)}",
                 )
-                print(f"process_ids: [{i+1}/{totalRows}] - {repr(exc)}")
             finally:
                 if i != 0 and i % 100 == 0:
                     time3 = time.time()
@@ -193,11 +181,7 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                         log_stream_name,
                         f"[{i+1}/{totalRows}] Last 100: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s",
                     )
-                    print(
-                        f"[{i+1}/{totalRows}] Last 100: {time3-time2:.2f} s, Elapsed: {time3-time1:.2f} s"
-                    )
                     time2 = time3
-                print(future.i)
     except Exception as exc:
         send_output(
             isLocal,
