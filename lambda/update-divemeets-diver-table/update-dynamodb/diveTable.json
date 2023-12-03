@@ -1,0 +1,1738 @@
+{
+   "101A": {
+      "name": "Forward Dive Straight",
+      "dd": {
+         "1": 1.4,
+         "3": 1.6,
+         "5": 1.4,
+         "7.5": 1.6,
+         "10": 1.6
+      }
+   },
+   "101B": {
+      "name": "Forward Dive Pike",
+      "dd": {
+         "1": 1.3,
+         "3": 1.5,
+         "5": 1.3,
+         "7.5": 1.5,
+         "10": 1.5
+      }
+   },
+   "101C": {
+      "name": "Forward Dive Tuck",
+      "dd": {
+         "1": 1.2,
+         "3": 1.4,
+         "5": 1.2,
+         "7.5": 1.4,
+         "10": 1.4
+      }
+   },
+   "102A": {
+      "name": "Forward Somersault Straight",
+      "dd": {
+         "1": 1.6,
+         "3": 1.7,
+         "5": 1.6,
+         "7.5": 1.7,
+         "10": 1.8
+      }
+   },
+   "102B": {
+      "name": "Forward Somersault Pike",
+      "dd": {
+         "1": 1.5,
+         "3": 1.6,
+         "5": 1.5,
+         "7.5": 1.6,
+         "10": 1.7
+      }
+   },
+   "102C": {
+      "name": "Forward Somersault Tuck",
+      "dd": {
+         "1": 1.4,
+         "3": 1.5,
+         "5": 1.4,
+         "7.5": 1.5,
+         "10": 1.6
+      }
+   },
+   "103A": {
+      "name": "Forward 1 1/2 Somersault Straight",
+      "dd": {
+         "1": 2.0,
+         "3": 1.9,
+         "5": 1.6,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "103B": {
+      "name": "Forward 1 1/2 Somersault Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.6,
+         "5": 1.5,
+         "7.5": 1.6,
+         "10": 1.6
+      }
+   },
+   "103C": {
+      "name": "Forward 1 1/2 Somersault Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.5,
+         "5": 1.4,
+         "7.5": 1.5,
+         "10": 1.5
+      }
+   },
+   "104A": {
+      "name": "Forward Double Somersault Straight",
+      "dd": {
+         "1": 2.6,
+         "3": 2.4,
+         "10": 2.5
+      }
+   },
+   "104B": {
+      "name": "Forward Double Somersault Pike",
+      "dd": {
+         "1": 2.3,
+         "3": 2.1,
+         "5": 2.3,
+         "7.5": 2.1,
+         "10": 2.2
+      }
+   },
+   "104C": {
+      "name": "Forward Double Somersault Tuck",
+      "dd": {
+         "1": 2.2,
+         "3": 2.0,
+         "5": 2.2,
+         "7.5": 2.0,
+         "10": 2.1
+      }
+   },
+   "105A": {
+      "name": "Forward 2 1/2 Somersault Straight",
+      "dd": {
+         "3": 2.8
+      }
+   },
+   "105B": {
+      "name": "Forward 2 1/2 Somersault Pike",
+      "dd": {
+         "1": 2.6,
+         "3": 2.4,
+         "5": 2.6,
+         "7.5": 2.4,
+         "10": 2.3
+      }
+   },
+   "105C": {
+      "name": "Forward 2 1/2 Somersault Tuck",
+      "dd": {
+         "1": 2.4,
+         "3": 2.2,
+         "5": 2.4,
+         "7.5": 2.2,
+         "10": 2.1
+      }
+   },
+   "106B": {
+      "name": "Forward Triple Somersault Pike",
+      "dd": {
+         "1": 3.2,
+         "3": 2.8
+      }
+   },
+   "106C": {
+      "name": "Forward Triple Somersault Tuck",
+      "dd": {
+         "1": 2.9,
+         "3": 2.5
+      }
+   },
+   "107B": {
+      "name": "Forward 3 1/2 Somersault Pike",
+      "dd": {
+         "1": 3.3,
+         "3": 3.1,
+         "10": 3.0
+      }
+   },
+   "107C": {
+      "name": "Forward 3 1/2 Somersault Tuck",
+      "dd": {
+         "1": 3.0,
+         "3": 2.8,
+         "5": 3.0,
+         "7.5": 2.8,
+         "10": 2.7
+      }
+   },
+   "109C": {
+      "name": "Forward 4 1/2 Somersault Tuck",
+      "dd": {
+         "3": 3.5,
+         "10": 3.5
+      }
+   },
+   "112B": {
+      "name": "Forward Flying Somersault Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.8,
+         "5": 1.7,
+         "7.5": 1.8,
+         "10": 1.9
+      }
+   },
+   "112C": {
+      "name": "Forward Flying Somersault Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.7,
+         "5": 1.6,
+         "7.5": 1.7,
+         "10": 1.8
+      }
+   },
+   "113B": {
+      "name": "Forward Flying 1 1/2 Somersault Pike",
+      "dd": {
+         "1": 1.9,
+         "3": 1.8,
+         "5": 1.9,
+         "7.5": 1.8,
+         "10": 1.8
+      }
+   },
+   "113C": {
+      "name": "Forward Flying 1 1/2 Somersault Tuck",
+      "dd": {
+         "1": 1.8,
+         "3": 1.7,
+         "5": 1.8,
+         "7.5": 1.7,
+         "10": 1.7
+      }
+   },
+   "114C": {
+      "name": "Forward Flying Double Somersault Tuck",
+      "dd": {
+         "7.5": 2.2,
+         "10": 2.3
+      }
+   },
+   "115B": {
+      "name": "Forward Flying 2 1/2 Somersault Pike",
+      "dd": {
+         "3": 2.7,
+         "10": 2.6
+      }
+   },
+   "115C": {
+      "name": "Forward Flying 2 1/2 Somersault Tuck",
+      "dd": {
+         "3": 2.5,
+         "7.5": 2.5,
+         "10": 2.4
+      }
+   },
+   "201A": {
+      "name": "Back Dive Straight",
+      "dd": {
+         "1": 1.7,
+         "3": 1.9,
+         "5": 1.7,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "201B": {
+      "name": "Back Dive Pike",
+      "dd": {
+         "1": 1.6,
+         "3": 1.8,
+         "5": 1.6,
+         "7.5": 1.8,
+         "10": 1.8
+      }
+   },
+   "201C": {
+      "name": "Back Dive Tuck",
+      "dd": {
+         "1": 1.5,
+         "3": 1.7,
+         "5": 1.5,
+         "7.5": 1.7,
+         "10": 1.7
+      }
+   },
+   "202A": {
+      "name": "Back Somersault Straight",
+      "dd": {
+         "1": 1.7,
+         "3": 1.8,
+         "5": 1.7,
+         "7.5": 1.8,
+         "10": 1.9
+      }
+   },
+   "202B": {
+      "name": "Back Somersault Pike",
+      "dd": {
+         "1": 1.6,
+         "3": 1.7,
+         "5": 1.6,
+         "7.5": 1.7,
+         "10": 1.8
+      }
+   },
+   "202C": {
+      "name": "Back Somersault Tuck",
+      "dd": {
+         "1": 1.5,
+         "3": 1.6,
+         "5": 1.5,
+         "7.5": 1.6,
+         "10": 1.7
+      }
+   },
+   "203A": {
+      "name": "Back 1 1/2 Somersault Straight",
+      "dd": {
+         "1": 2.5,
+         "3": 2.4,
+         "5": 2.5,
+         "7.5": 2.4,
+         "10": 2.4
+      }
+   },
+   "203B": {
+      "name": "Back 1 1/2 Somersault Pike",
+      "dd": {
+         "1": 2.3,
+         "3": 2.2,
+         "5": 2.3,
+         "7.5": 2.2,
+         "10": 2.2
+      }
+   },
+   "203C": {
+      "name": "Back 1 1/2 Somersault Tuck",
+      "dd": {
+         "1": 2.0,
+         "3": 1.9,
+         "5": 2.0,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "204A": {
+      "name": "Back Double Somersault Straight",
+      "dd": {
+         "3": 2.5,
+         "7.5": 2.5,
+         "10": 2.6
+      }
+   },
+   "204B": {
+      "name": "Back Double Somersault Pike",
+      "dd": {
+         "1": 2.5,
+         "3": 2.3,
+         "5": 2.5,
+         "7.5": 2.3,
+         "10": 2.4
+      }
+   },
+   "204C": {
+      "name": "Back Double Somersault Tuck",
+      "dd": {
+         "1": 2.2,
+         "3": 2.0,
+         "5": 2.2,
+         "7.5": 2.0,
+         "10": 2.1
+      }
+   },
+   "205A": {
+      "name": "Back 2 1/2 Somersault Straight",
+      "dd": {
+         "10": 3.3
+      }
+   },
+   "205B": {
+      "name": "Back 2 1/2 Somersault Pike",
+      "dd": {
+         "1": 3.2,
+         "3": 3.0,
+         "7.5": 3.0,
+         "10": 2.9
+      }
+   },
+   "205C": {
+      "name": "Back 2 1/2 Somersault Tuck",
+      "dd": {
+         "1": 3.0,
+         "3": 2.8,
+         "5": 3.0,
+         "7.5": 2.8,
+         "10": 2.7
+      }
+   },
+   "206B": {
+      "name": "Back Triple Somersault Pike",
+      "dd": {
+         "1": 3.2,
+         "3": 2.8
+      }
+   },
+   "206C": {
+      "name": "Back Triple Somersault Tuck",
+      "dd": {
+         "1": 2.9,
+         "3": 2.5
+      }
+   },
+   "207B": {
+      "name": "Back 3 1/2 Somersault Pike",
+      "dd": {
+         "3": 3.7
+      }
+   },
+   "207C": {
+      "name": "Back 3 1/2 Somersault Tuck",
+      "dd": {
+         "3": 3.4,
+         "7.5": 3.4,
+         "10": 3.3
+      }
+   },
+   "212B": {
+      "name": "Back Flying Somersault Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.8,
+         "5": 1.7,
+         "7.5": 1.8,
+         "10": 1.9
+      }
+   },
+   "212C": {
+      "name": "Back Flying Somersault Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.7,
+         "5": 1.6,
+         "7.5": 1.7,
+         "10": 1.8
+      }
+   },
+   "213C": {
+      "name": "Back Flying 1 1/2 Somersault Tuck",
+      "dd": {
+         "3": 2.1,
+         "7.5": 2.1,
+         "10": 2.1
+      }
+   },
+   "215B": {
+      "name": "Back Flying 2 1/2 Somersault Pike",
+      "dd": {
+         "3": 3.3
+      }
+   },
+   "215C": {
+      "name": "Back Flying 2 1/2 Somersault Tuck",
+      "dd": {
+         "3": 3.1
+      }
+   },
+   "301A": {
+      "name": "Reverse Dive Straight",
+      "dd": {
+         "1": 1.8,
+         "3": 2.0,
+         "5": 1.8,
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "301B": {
+      "name": "Reverse Dive Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.9,
+         "5": 1.7,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "301C": {
+      "name": "Reverse Dive Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.8,
+         "5": 1.6,
+         "7.5": 1.8,
+         "10": 1.8
+      }
+   },
+   "302A": {
+      "name": "Reverse Somersault Straight",
+      "dd": {
+         "1": 1.8,
+         "3": 1.9,
+         "5": 1.8,
+         "7.5": 1.9,
+         "10": 2.0
+      }
+   },
+   "302B": {
+      "name": "Reverse Somersault Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.8,
+         "5": 1.7,
+         "7.5": 1.8,
+         "10": 1.9
+      }
+   },
+   "302C": {
+      "name": "Reverse Somersault Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.7,
+         "5": 1.6,
+         "7.5": 1.7,
+         "10": 1.8
+      }
+   },
+   "303A": {
+      "name": "Reverse 1 1/2 Somersault Straight",
+      "dd": {
+         "1": 2.7,
+         "3": 2.6,
+         "5": 2.7,
+         "7.5": 2.6,
+         "10": 2.6
+      }
+   },
+   "303B": {
+      "name": "Reverse 1 1/2 Somersault Pike",
+      "dd": {
+         "1": 2.4,
+         "3": 2.3,
+         "5": 2.4,
+         "7.5": 2.3,
+         "10": 2.3
+      }
+   },
+   "303C": {
+      "name": "Reverse 1 1/2 Somersault Tuck",
+      "dd": {
+         "1": 2.1,
+         "3": 2.0,
+         "5": 2.1,
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "304A": {
+      "name": "Reverse Double Somersault Straight",
+      "dd": {
+         "1": 2.9,
+         "3": 2.7
+      }
+   },
+   "304B": {
+      "name": "Reverse Double Somersault Pike",
+      "dd": {
+         "1": 2.6,
+         "3": 2.4,
+         "5": 2.6,
+         "7.5": 2.4,
+         "10": 2.5
+      }
+   },
+   "304C": {
+      "name": "Reverse Double Somersault Tuck",
+      "dd": {
+         "1": 2.3,
+         "3": 2.1,
+         "5": 2.3,
+         "7.5": 2.1,
+         "10": 2.2
+      }
+   },
+   "305A": {
+      "name": "Reverse 2 1/2 Somersault Straight",
+      "dd": {
+         "3": 3.4
+      }
+   },
+   "305B": {
+      "name": "Reverse 2 1/2 Somersault Pike",
+      "dd": {
+         "1": 3.2,
+         "3": 3.0,
+         "7.5": 3.0,
+         "10": 2.9
+      }
+   },
+   "305C": {
+      "name": "Reverse 2 1/2 Somersault Tuck",
+      "dd": {
+         "1": 3.0,
+         "3": 2.8,
+         "5": 3.0,
+         "7.5": 2.8,
+         "10": 2.7
+      }
+   },
+   "306B": {
+      "name": "Reverse Triple Somersault Pike",
+      "dd": {
+         "1": 3.3,
+         "3": 2.9
+      }
+   },
+   "306C": {
+      "name": "Reverse Triple Somersault Tuck",
+      "dd": {
+         "1": 3.0,
+         "3": 2.6
+      }
+   },
+   "307B": {
+      "name": "Reverse 3 1/2 Somersault Pike",
+      "dd": {
+         "3": 3.8
+      }
+   },
+   "307C": {
+      "name": "Reverse 3 1/2 Somersault Tuck",
+      "dd": {
+         "3": 3.5,
+         "10": 3.4
+      }
+   },
+   "312B": {
+      "name": "Reverse Flying Somersault Pike",
+      "dd": {
+         "1": 1.8,
+         "3": 1.9,
+         "5": 1.8
+      }
+   },
+   "312C": {
+      "name": "Reverse Flying Somersault Tuck",
+      "dd": {
+         "1": 1.7,
+         "3": 1.8,
+         "5": 1.7,
+         "7.5": 1.8,
+         "10": 1.9
+      }
+   },
+   "313B": {
+      "name": "Reverse Flying 1 1/2 Somersault Pike",
+      "dd": {
+         "1": 2.6,
+         "3": 2.5
+      }
+   },
+   "313C": {
+      "name": "Reverse Flying 1 1/2 Somersault Tuck",
+      "dd": {
+         "1": 2.3,
+         "3": 2.2,
+         "7.5": 2.2,
+         "10": 2.2
+      }
+   },
+   "401A": {
+      "name": "Inward Dive Straight",
+      "dd": {
+         "1": 1.8,
+         "3": 1.7,
+         "5": 1.8,
+         "7.5": 1.7,
+         "10": 1.7
+      }
+   },
+   "401B": {
+      "name": "Inward Dive Pike",
+      "dd": {
+         "1": 1.5,
+         "3": 1.4,
+         "5": 1.5,
+         "7.5": 1.4,
+         "10": 1.4
+      }
+   },
+   "401C": {
+      "name": "Inward Dive Tuck",
+      "dd": {
+         "1": 1.4,
+         "3": 1.3,
+         "5": 1.4,
+         "7.5": 1.3,
+         "10": 1.3
+      }
+   },
+   "402A": {
+      "name": "Inward Somersault Straight",
+      "dd": {
+         "1": 2.0,
+         "3": 1.8
+      }
+   },
+   "402B": {
+      "name": "Inward Somersault Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.5,
+         "5": 1.7,
+         "7.5": 1.5,
+         "10": 1.6
+      }
+   },
+   "402C": {
+      "name": "Inward Somersault Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.4,
+         "5": 1.6,
+         "7.5": 1.4,
+         "10": 1.5
+      }
+   },
+   "403B": {
+      "name": "Inward 1 1/2 Somersault Pike",
+      "dd": {
+         "1": 2.4,
+         "3": 2.1,
+         "5": 2.4,
+         "7.5": 2.1,
+         "10": 2.0
+      }
+   },
+   "403C": {
+      "name": "Inward 1 1/2 Somersault Tuck",
+      "dd": {
+         "1": 2.2,
+         "3": 1.9,
+         "5": 2.2,
+         "7.5": 1.9,
+         "10": 1.8
+      }
+   },
+   "404B": {
+      "name": "Inward Double Somersault Pike",
+      "dd": {
+         "1": 3.0,
+         "3": 2.6,
+         "7.5": 2.6,
+         "10": 2.6
+      }
+   },
+   "404C": {
+      "name": "Inward Double Somersault Tuck",
+      "dd": {
+         "1": 2.8,
+         "3": 2.4,
+         "5": 2.8,
+         "7.5": 2.4,
+         "10": 2.4
+      }
+   },
+   "405B": {
+      "name": "Inward 2 1/2 Somersault Pike",
+      "dd": {
+         "1": 3.4,
+         "3": 3.0,
+         "7.5": 3.0,
+         "10": 2.8
+      }
+   },
+   "405C": {
+      "name": "Inward 2 1/2 Somersault Tuck",
+      "dd": {
+         "1": 3.1,
+         "3": 2.7,
+         "5": 3.1,
+         "7.5": 2.7,
+         "10": 2.5
+      }
+   },
+   "407B": {
+      "name": "Inward 3 1/2 Somersault Pike",
+      "dd": {
+         "10": 3.5
+      }
+   },
+   "407C": {
+      "name": "Inward 3 1/2 Somersault Tuck",
+      "dd": {
+         "3": 3.4,
+         "7.5": 3.4,
+         "10": 3.5
+      }
+   },
+   "412B": {
+      "name": "Inward Flying Somersault Pike",
+      "dd": {
+         "1": 2.1,
+         "3": 1.9,
+         "7.5": 1.9,
+         "10": 2.0
+      }
+   },
+   "412C": {
+      "name": "Inward Flying Somersault Tuck",
+      "dd": {
+         "1": 2.0,
+         "3": 1.8,
+         "5": 2.0,
+         "7.5": 1.8,
+         "10": 1.9
+      }
+   },
+   "413B": {
+      "name": "Inward Flying 1 1/2 Somersault Pike",
+      "dd": {
+         "1": 2.9,
+         "3": 2.6,
+         "10": 2.5
+      }
+   },
+   "413C": {
+      "name": "Inward Flying 1 1/2 Somersault Tuck",
+      "dd": {
+         "1": 2.7,
+         "3": 2.4,
+         "7.5": 2.4,
+         "10": 2.3
+      }
+   },
+   "5111A": {
+      "name": "Forward Dive 1/2 Twist Straight",
+      "dd": {
+         "1": 1.8,
+         "3": 2.0,
+         "5": 1.8,
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "5111B": {
+      "name": "Forward Dive 1/2 Twist Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.9,
+         "5": 1.7,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "5111C": {
+      "name": "Forward Dive 1/2 Twist Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.8
+      }
+   },
+   "5112A": {
+      "name": "Forward Dive 1 Twist Straight",
+      "dd": {
+         "1": 2.0,
+         "3": 2.2,
+         "5": 2.0,
+         "7.5": 2.2,
+         "10": 2.2
+      }
+   },
+   "5112B": {
+      "name": "Forward Dive 1 Twist Pike",
+      "dd": {
+         "1": 1.9,
+         "3": 2.1,
+         "5": 1.9,
+         "7.5": 2.1,
+         "10": 2.1
+      }
+   },
+   "5121A": {
+      "name": "Forward Somersault 1/2 Twist Straight",
+      "dd": {
+         "5": 1.9,
+         "7.5": 2.0
+      }
+   },
+   "5121B": {
+      "name": "Forward Somersault 1/2 Twist Pike",
+      "dd": {
+         "5": 1.8,
+         "7.5": 1.9
+      }
+   },
+   "5121D": {
+      "name": "Forward Somersault 1/2 Twist Free",
+      "dd": {
+         "1": 1.7,
+         "3": 1.8,
+         "5": 1.7
+      }
+   },
+   "5122D": {
+      "name": "Forward Somersault 1 Twist Free",
+      "dd": {
+         "1": 1.9,
+         "3": 2.0,
+         "5": 1.9
+      }
+   },
+   "5124D": {
+      "name": "Forward Somersault 2 Twists Free",
+      "dd": {
+         "1": 2.3,
+         "3": 2.4,
+         "5": 1.9
+      }
+   },
+   "5126D": {
+      "name": "Forward Somersault 3 Twists Free",
+      "dd": {
+         "1": 2.7,
+         "3": 2.8
+      }
+   },
+   "5131B": {
+      "name": "Forward 1 1/2 Somersault 1/2 Twist Pike",
+      "dd": {
+         "5": 2.1
+      }
+   },
+   "5131C": {
+      "name": "Forward 1 1/2 Somersault 1/2 Twist Tuck",
+      "dd": {
+         "5": 2.0
+      }
+   },
+   "5131D": {
+      "name": "Forward 1 1/2 Somersault 1/2 Twist Free",
+      "dd": {
+         "1": 2.0,
+         "3": 1.9
+      }
+   },
+   "5132D": {
+      "name": "Forward 1 1/2 Somersault 1 Twist Free",
+      "dd": {
+         "1": 2.2,
+         "3": 2.1,
+         "5": 2.2,
+         "7.5": 2.1,
+         "10": 2.1
+      }
+   },
+   "5134D": {
+      "name": "Forward 1 1/2 Somersault 2 Twists Free",
+      "dd": {
+         "1": 2.6,
+         "3": 2.5,
+         "5": 2.6,
+         "7.5": 2.5,
+         "10": 2.5
+      }
+   },
+   "5136D": {
+      "name": "Forward 1 1/2 Somersault 3 Twists Free",
+      "dd": {
+         "1": 3.0,
+         "3": 2.9,
+         "7.5": 2.9,
+         "10": 2.9
+      }
+   },
+   "5138D": {
+      "name": "Forward 1 1/2 Somersault 4 Twists Free",
+      "dd": {
+         "1": 3.4,
+         "3": 3.3,
+         "7.5": 3.3,
+         "10": 3.3
+      }
+   },
+   "5151B": {
+      "name": "Forward 2 1/2 Somersault 1/2 Twist Pike",
+      "dd": {
+         "1": 3.0,
+         "3": 2.8
+      }
+   },
+   "5151C": {
+      "name": "Forward 2 1/2 Somersault 1/2 Twist Tuck",
+      "dd": {
+         "1": 2.8,
+         "3": 2.6
+      }
+   },
+   "5152B": {
+      "name": "Forward 2 1/2 Somersault 1 Twist Pike",
+      "dd": {
+         "1": 3.2,
+         "3": 3.0,
+         "7.5": 3.0,
+         "10": 2.9
+      }
+   },
+   "5152C": {
+      "name": "Forward 2 1/2 Somersault 1 Twist Tuck",
+      "dd": {
+         "1": 3.0,
+         "3": 2.8,
+         "7.5": 2.8,
+         "10": 2.7
+      }
+   },
+   "5152D": {
+      "name": "Forward 2 1/2 Somersault 1 Twist Free",
+      "dd": {
+         "7.5": 2.8,
+         "10": 2.7
+      }
+   },
+   "5154B": {
+      "name": "Forward 2 1/2 Somersault 2 Twists Pike",
+      "dd": {
+         "1": 3.6,
+         "3": 3.4,
+         "10": 3.3
+      }
+   },
+   "5154C": {
+      "name": "Forward 2 1/2 Somersault 2 Twists Tuck",
+      "dd": {
+         "1": 3.4,
+         "3": 3.2,
+         "10": 3.1
+      }
+   },
+   "5154D": {
+      "name": "Forward 2 1/2 Somersault 2 Twists Free",
+      "dd": {
+         "7.5": 3.2,
+         "10": 3.1
+      }
+   },
+   "5172B": {
+      "name": "Forward 3 1/2 Somersault 1 Twist Pike",
+      "dd": {
+         "3": 3.7
+      }
+   },
+   "5172C": {
+      "name": "Forward 3 1/2 Somersault 1 Twist Tuck",
+      "dd": {
+         "3": 3.4
+      }
+   },
+   "5211A": {
+      "name": "Back Dive 1/2 Twist Straight",
+      "dd": {
+         "1": 1.8,
+         "3": 2.0,
+         "5": 1.8,
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "5211B": {
+      "name": "Back Dive 1/2 Twist Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.9
+      }
+   },
+   "5211C": {
+      "name": "Back Dive 1/2 Twist Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.8
+      }
+   },
+   "5212A": {
+      "name": "Back Dive 1 Twist Straight",
+      "dd": {
+         "1": 2.0,
+         "3": 2.2,
+         "5": 2.0,
+         "7.5": 2.2,
+         "10": 2.2
+      }
+   },
+   "5221D": {
+      "name": "Back Somersault 1/2 Twist Free",
+      "dd": {
+         "1": 1.7,
+         "3": 1.8,
+         "5": 1.7
+      }
+   },
+   "5222D": {
+      "name": "Back Somersault 1 Twist Free",
+      "dd": {
+         "1": 1.9,
+         "3": 2.0,
+         "5": 1.9
+      }
+   },
+   "5223D": {
+      "name": "Back Somersault 1 1/2 Twist Free",
+      "dd": {
+         "1": 2.3,
+         "3": 2.4,
+         "5": 2.3
+      }
+   },
+   "5225D": {
+      "name": "Back Somersault 2 1/2 Twist Free",
+      "dd": {
+         "1": 2.7,
+         "3": 2.8,
+         "5": 2.7
+      }
+   },
+   "5227D": {
+      "name": "Back Somersault 3 1/2 Twist Free",
+      "dd": {
+         "1": 3.1,
+         "3": 3.2
+      }
+   },
+   "5231D": {
+      "name": "Back 1 1/2 Somersault 1/2 Twist Free",
+      "dd": {
+         "1": 2.1,
+         "3": 2.0,
+         "5": 2.1,
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "5233D": {
+      "name": "Back 1 1/2 Somersault 1 1/2 Twist Free",
+      "dd": {
+         "1": 2.5,
+         "3": 2.4,
+         "5": 2.5,
+         "7.5": 2.4,
+         "10": 2.4
+      }
+   },
+   "5235D": {
+      "name": "Back 1 1/2 Somersault 2 1/2 Twist Free",
+      "dd": {
+         "1": 2.9,
+         "3": 2.8,
+         "7.5": 2.8,
+         "10": 2.8
+      }
+   },
+   "5237D": {
+      "name": "Back 1 1/2 Somersault 3 1/2 Twist Free",
+      "dd": {
+         "3": 3.2,
+         "10": 3.2
+      }
+   },
+   "5239D": {
+      "name": "Back 1 1/2 Somersault 4 1/2 Twist Free",
+      "dd": {
+         "3": 3.6,
+         "10": 3.6
+      }
+   },
+   "5251B": {
+      "name": "Back 2 1/2 Somersault 1/2 Twist Pike",
+      "dd": {
+         "1": 2.9,
+         "3": 2.7
+      }
+   },
+   "5251C": {
+      "name": "Back 2 1/2 Somersault 1/2 Twist Tuck",
+      "dd": {
+         "1": 2.7,
+         "3": 2.5
+      }
+   },
+   "5251D": {
+      "name": "Back 2 1/2 Somersault 1/2 Twist Free",
+      "dd": {
+         "7.5": 2.7,
+         "10": 2.6
+      }
+   },
+   "5253B": {
+      "name": "Back 2 1/2 Somersault 1 1/2 Twist Pike",
+      "dd": {
+         "3": 3.5,
+         "10": 3.4
+      }
+   },
+   "5253C": {
+      "name": "Back 2 1/2 Somersault 1 1/2 Twist Tuck",
+      "dd": {
+         "3": 3.3,
+         "10": 3.2
+      }
+   },
+   "5253D": {
+      "name": "Back 2 1/2 Somersault 1 1/2 Twist Free",
+      "dd": {
+         "10": 3.0
+      }
+   },
+   "5311A": {
+      "name": "Reverse Dive 1/2 Twist Straight",
+      "dd": {
+         "1": 1.9,
+         "3": 2.1,
+         "5": 1.9,
+         "7.5": 2.1,
+         "10": 2.1
+      }
+   },
+   "5311B": {
+      "name": "Reverse Dive 1/2 Twist Pike",
+      "dd": {
+         "1": 1.8,
+         "3": 2.0
+      }
+   },
+   "5311C": {
+      "name": "Reverse Dive 1/2 Twist Tuck",
+      "dd": {
+         "1": 1.7,
+         "3": 1.9
+      }
+   },
+   "5312A": {
+      "name": "Reverse Dive 1 Twist Straight",
+      "dd": {
+         "1": 2.1,
+         "3": 2.3,
+         "5": 2.2,
+         "7.5": 2.3,
+         "10": 2.3
+      }
+   },
+   "5321D": {
+      "name": "Reverse Somersault 1/2 Twist Free",
+      "dd": {
+         "1": 1.8,
+         "3": 1.9,
+         "5": 1.8
+      }
+   },
+   "5322D": {
+      "name": "Reverse Somersault 1 Twist Free",
+      "dd": {
+         "1": 2.0,
+         "3": 2.1,
+         "5": 2.0
+      }
+   },
+   "5323D": {
+      "name": "Reverse Somersault 1 1/2 Twist Free",
+      "dd": {
+         "1": 2.4,
+         "3": 2.5,
+         "5": 2.4
+      }
+   },
+   "5325D": {
+      "name": "Reverse Somersault 2 1/2 Twist Free",
+      "dd": {
+         "1": 2.8,
+         "3": 2.9,
+         "5": 2.8
+      }
+   },
+   "5331D": {
+      "name": "Reverse 1 1/2 Somersault 1/2 Twist Free",
+      "dd": {
+         "1": 2.2,
+         "3": 2.1,
+         "7.5": 2.1,
+         "10": 2.1
+      }
+   },
+   "5333D": {
+      "name": "Reverse 1 1/2 Somersault 1 1/2 Twist Free",
+      "dd": {
+         "1": 2.6,
+         "3": 2.5,
+         "7.5": 2.5,
+         "10": 2.5
+      }
+   },
+   "5335D": {
+      "name": "Reverse 1 1/2 Somersault 2 1/2 Twist Free",
+      "dd": {
+         "1": 3.0,
+         "3": 2.9,
+         "7.5": 2.9,
+         "10": 2.9
+      }
+   },
+   "5337D": {
+      "name": "Reverse 1 1/2 Somersault 3 1/2 Twist Free",
+      "dd": {
+         "1": 3.4,
+         "3": 3.3,
+         "10": 3.3
+      }
+   },
+   "5339D": {
+      "name": "Reverse 1 1/2 Somersault 4 1/2 Twist Free",
+      "dd": {
+         "3": 3.7,
+         "10": 3.7
+      }
+   },
+   "5351B": {
+      "name": "Reverse 2 1/2 Somersault 1/2 Twist Pike",
+      "dd": {
+         "1": 2.9,
+         "3": 2.7
+      }
+   },
+   "5351C": {
+      "name": "Reverse 2 1/2 Somersault 1/2 Twist Tuck",
+      "dd": {
+         "1": 2.7,
+         "3": 2.5
+      }
+   },
+   "5351D": {
+      "name": "Reverse 2 1/2 Somersault 1/2 Twist Free",
+      "dd": {
+         "10": 2.6
+      }
+   },
+   "5353B": {
+      "name": "Reverse 2 1/2 Somersault 1 1/2 Twist Pike",
+      "dd": {
+         "3": 3.5,
+         "10": 3.4
+      }
+   },
+   "5353C": {
+      "name": "Reverse 2 1/2 Somersault 1 1/2 Twist Tuck",
+      "dd": {
+         "1": 3.5,
+         "3": 3.3,
+         "10": 3.2
+      }
+   },
+   "5353D": {
+      "name": "Reverse 2 1/2 Somersault 1 1/2 Twist Free",
+      "dd": {
+         "10": 3.0
+      }
+   },
+   "5371B": {
+      "name": "Reverse 3 1/2 Somersault 1/2 Twist Pike",
+      "dd": {
+         "3": 3.4
+      }
+   },
+   "5371C": {
+      "name": "Reverse 3 1/2 Somersault 1/2 Twist Tuck",
+      "dd": {
+         "3": 3.1
+      }
+   },
+   "5411A": {
+      "name": "Inward Dive 1/2 Twist Straight",
+      "dd": {
+         "1": 2.0,
+         "3": 1.9,
+         "5": 2.0,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "5411B": {
+      "name": "Inward Dive 1/2 Twist Pike",
+      "dd": {
+         "1": 1.7,
+         "3": 1.6,
+         "5": 1.7,
+         "7.5": 1.6,
+         "10": 1.6
+      }
+   },
+   "5411C": {
+      "name": "Inward Dive 1/2 Twist Tuck",
+      "dd": {
+         "1": 1.6,
+         "3": 1.5
+      }
+   },
+   "5412A": {
+      "name": "Inward Dive 1 Twist Straight",
+      "dd": {
+         "1": 2.2,
+         "3": 2.1,
+         "5": 2.2,
+         "7.5": 2.1,
+         "10": 2.1
+      }
+   },
+   "5412B": {
+      "name": "Inward Dive 1 Twist Pike",
+      "dd": {
+         "1": 1.9,
+         "3": 1.8,
+         "5": 1.9,
+         "7.5": 1.8,
+         "10": 1.8
+      }
+   },
+   "5412C": {
+      "name": "Inward Dive 1 Twist Tuck",
+      "dd": {
+         "1": 1.8,
+         "3": 1.7
+      }
+   },
+   "5421B": {
+      "name": "Inward Somersault 1/2 Twist Pike",
+      "dd": {
+         "5": 1.8,
+         "7.5": 1.6,
+         "10": 1.7
+      }
+   },
+   "5421C": {
+      "name": "Inward Somersault 1/2 Twist Tuck",
+      "dd": {
+         "5": 1.7,
+         "7.5": 1.5,
+         "10": 1.6
+      }
+   },
+   "5421D": {
+      "name": "Inward Somersault 1/2 Twist Free",
+      "dd": {
+         "1": 1.9,
+         "3": 1.7
+      }
+   },
+   "5422D": {
+      "name": "Inward Somersault 1 Twist Free",
+      "dd": {
+         "1": 2.1,
+         "3": 1.9,
+         "5": 2.1,
+         "7.5": 1.9,
+         "10": 2.0
+      }
+   },
+   "5432D": {
+      "name": "Inward 1 1/2 Somersault 1 Twist Free",
+      "dd": {
+         "1": 2.7,
+         "3": 2.4,
+         "5": 2.7,
+         "7.5": 2.4,
+         "10": 2.3
+      }
+   },
+   "5434D": {
+      "name": "Inward 1 1/2 Somersault 2 Twists Free",
+      "dd": {
+         "1": 3.1,
+         "3": 2.8,
+         "10": 2.7
+      }
+   },
+   "5436D": {
+      "name": "Inward 1 1/2 Somersault 3 Twists Free",
+      "dd": {
+         "3": 3.4
+      }
+   },
+   "600A": {
+      "name": "Armstand Dive Straight",
+      "dd": {
+         "5": 1.5,
+         "7.5": 1.6,
+         "10": 1.6
+      }
+   },
+   "611A": {
+      "name": "Armstand Forward 1/2 Somersault Straight",
+      "dd": {
+         "5": 1.8,
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "612A": {
+      "name": "Armstand Forward Somersault Straight",
+      "dd": {
+         "5": 1.8,
+         "7.5": 1.9,
+         "10": 2.0
+      }
+   },
+   "612B": {
+      "name": "Armstand Forward Somersault Pike",
+      "dd": {
+         "5": 1.7,
+         "7.5": 1.8,
+         "10": 1.9
+      }
+   },
+   "612C": {
+      "name": "Armstand Forward Somersault Tuck",
+      "dd": {
+         "5": 1.5,
+         "7.5": 1.6,
+         "10": 1.7
+      }
+   },
+   "614B": {
+      "name": "Armstand Forward Double Somersault Pike",
+      "dd": {
+         "7.5": 2.3,
+         "10": 2.4
+      }
+   },
+   "614C": {
+      "name": "Armstand Forward Double Somersault Tuck",
+      "dd": {
+         "5": 2.2,
+         "7.5": 2.0,
+         "10": 2.1
+      }
+   },
+   "616B": {
+      "name": "Armstand Forward Triple Somersault Pike",
+      "dd": {
+         "10": 3.3
+      }
+   },
+   "616C": {
+      "name": "Armstand Forward Triple Somersault Tuck",
+      "dd": {
+         "10": 3.0
+      }
+   },
+   "621A": {
+      "name": "Armstand Backward 1/2 Somersault Straight",
+      "dd": {
+         "5": 1.7,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "621B": {
+      "name": "Armstand Backward 1/2 Somersault Pike",
+      "dd": {
+         "5": 1.6,
+         "7.5": 1.8,
+         "10": 1.8
+      }
+   },
+   "622A": {
+      "name": "Armstand Backward 1 Somersault Straight",
+      "dd": {
+         "5": 2.1,
+         "7.5": 2.2,
+         "10": 2.3
+      }
+   },
+   "622B": {
+      "name": "Armstand Backward 1 Somersault Pike",
+      "dd": {
+         "5": 2.0,
+         "7.5": 2.1,
+         "10": 2.2
+      }
+   },
+   "622C": {
+      "name": "Armstand Backward 1 Somersault Tuck",
+      "dd": {
+         "5": 1.8,
+         "7.5": 1.9,
+         "10": 2.0
+      }
+   },
+   "623B": {
+      "name": "Armstand Backward 1 1/2 Somersault Pike",
+      "dd": {
+         "5": 2.3,
+         "7.5": 2.2,
+         "10": 2.2
+      }
+   },
+   "623C": {
+      "name": "Armstand Backward 1 1/2 Somersault Tuck",
+      "dd": {
+         "5": 2.0,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "624A": {
+      "name": "Armstand Backward Double Somersault Straight",
+      "dd": {
+         "10": 3.0
+      }
+   },
+   "624B": {
+      "name": "Armstand Backward Double Somersault Pike",
+      "dd": {
+         "7.5": 2.7,
+         "10": 2.8
+      }
+   },
+   "624C": {
+      "name": "Armstand Backward Double Somersault Tuck",
+      "dd": {
+         "7.5": 2.4,
+         "10": 2.5
+      }
+   },
+   "626B": {
+      "name": "Armstand Forward Triple Somersault Pike",
+      "dd": {
+         "10": 3.5
+      }
+   },
+   "626C": {
+      "name": "Armstand Forward Triple Somersault Tuck",
+      "dd": {
+         "10": 3.3
+      }
+   },
+   "631A": {
+      "name": "Armstand Reverse 1/2 Somersault Straight",
+      "dd": {
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "631B": {
+      "name": "Armstand Reverse 1/2 Somersault Pike",
+      "dd": {
+         "5": 1.7,
+         "7.5": 1.9,
+         "10": 1.9
+      }
+   },
+   "631C": {
+      "name": "Armstand Reverse 1/2 Somersault Tuck",
+      "dd": {
+         "5": 1.5,
+         "7.5": 1.7,
+         "10": 1.7
+      }
+   },
+   "632B": {
+      "name": "Armstand Reverse 1 Somersault Pike",
+      "dd": {
+         "7.5": 2.2,
+         "10": 2.3
+      }
+   },
+   "632C": {
+      "name": "Armstand Reverse 1 Somersault Tuck",
+      "dd": {
+         "5": 1.9,
+         "7.5": 2.0,
+         "10": 2.1
+      }
+   },
+   "633C": {
+      "name": "Armstand Reverse 1 1/2 Somersault Tuck",
+      "dd": {
+         "5": 2.1,
+         "7.5": 2.0,
+         "10": 2.0
+      }
+   },
+   "634C": {
+      "name": "Armstand Reverse Double Somersault Tuck",
+      "dd": {
+         "7.5": 2.5,
+         "10": 2.6
+      }
+   },
+   "636C": {
+      "name": "Armstand Reverse Triple Somersault Tuck",
+      "dd": {
+         "10": 3.3
+      }
+   },
+   "6122D": {
+      "name": "Armstand Forward Somersault 1 Twist",
+      "dd": {
+         "5": 2.2,
+         "7.5": 2.3,
+         "10": 2.4
+      }
+   },
+   "6124D": {
+      "name": "Armstand Forward Somersault 2 Twists",
+      "dd": {
+         "10": 2.8
+      }
+   },
+   "6142D": {
+      "name": "Armstand Forward Double Somersault 1 Twists",
+      "dd": {
+         "10": 3.1
+      }
+   },
+   "6144D": {
+      "name": "Armstand Forward Double Somersault 2 Twists",
+      "dd": {
+         "10": 3.5
+      }
+   },
+   "6221D": {
+      "name": "Armstand Back Somersault 1/2 Twist",
+      "dd": {
+         "5": 1.9,
+         "7.5": 2.0,
+         "10": 2.1
+      }
+   },
+   "6241D": {
+      "name": "Armstand Back Double Somersault 1/2 Twist Free",
+      "dd": {
+         "10": 2.8
+      }
+   },
+   "6243D": {
+      "name": "Armstand Back Double Somersault 1 1/2 Twist Free",
+      "dd": {
+         "10": 3.2
+      }
+   }
+}

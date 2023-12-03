@@ -1661,6 +1661,7 @@ mutation CreateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
+    _ttl
     createdAt
     updatedAt
     _version
@@ -1684,6 +1685,7 @@ mutation UpdateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
+    _ttl
     createdAt
     updatedAt
     _version
@@ -1707,6 +1709,7 @@ mutation DeleteDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
+    _ttl
     createdAt
     updatedAt
     _version

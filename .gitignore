@@ -49,3 +49,4 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 media-convert/venv
+**/__pycache__/

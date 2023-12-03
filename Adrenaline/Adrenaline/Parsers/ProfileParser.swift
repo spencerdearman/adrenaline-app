@@ -110,7 +110,7 @@ final class ProfileParser: ObservableObject {
         do {
             var result: String = text
             let minStringLen = "<br>".count
-            let pattern = "<br>[a-zA-z0-9\\s&;:]+"
+            let pattern = "<br>[a-zA-z0-9\\s&;:-]+"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let nsrange = NSRange(text.startIndex..<text.endIndex,
                                   in: text)
@@ -149,7 +149,7 @@ final class ProfileParser: ObservableObject {
         do {
             var result: String = text
             let minStringLen = 1
-            let pattern = "[a-zA-z0-9\\s&;:]+<br>"
+            let pattern = "[a-zA-z0-9\\s&;:-]+<br>"
             let regex = try NSRegularExpression(pattern: pattern, options: [])
             let nsrange = NSRange(text.startIndex..<text.endIndex,
                                   in: text)
