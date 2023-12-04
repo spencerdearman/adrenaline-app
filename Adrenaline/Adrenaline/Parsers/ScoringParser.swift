@@ -18,9 +18,10 @@ final class ScoreHTMLParser: ObservableObject {
             return ""
         }
         let main = try body.getElementsByTag("tbody")
-        //let scores = try main[0].getElementsByTag("tr")
         let scores = try main.select("td[style*=color:000000]")
         let scoreList = try scores.text().components(separatedBy: " ").compactMap { Double($0) }
+        if scoreList.isEmpty { return "N/A" }
+        
         let formatted = "| " + scoreList.map { String($0) }.joined(separator: " | ") + " |"
         return formatted
     }
