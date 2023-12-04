@@ -81,7 +81,8 @@ struct NewPostView: View {
             // Store Data and URL where data is saved in case it
             // needs deleted
             videoData[id] = data
-            return PostMediaItem(id: id, data: PostMedia.localVideo(AVPlayer(url: url)))
+            return PostMediaItem(id: id, data: PostMedia.localVideo(AVPlayer(url: url)),
+                                 playVideoOnAppear: true, videoIsLooping: true)
             
         } else if let data = selectedFileData,
                   type.conforms(to: UTType.image) {
