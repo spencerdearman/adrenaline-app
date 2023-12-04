@@ -191,19 +191,28 @@ final class EventHTMLParser: ObservableObject {
             // Net score, sometimes contains changed dive, failed dive, or balk text
             let tempScoreText = try diveInformation[4].text()
             let hasFailedDiveText = tempScoreText.contains("Failed Dive")
+            let hasNoDiveText = tempScoreText.contains("No Dive")
             let tempScore = tempScoreText
             // Failed Dive is text after the net score with a leading space
                 .replacingOccurrences(of: " Failed Dive", with: "")
+            // No Dive is text after the net score with a leading space
+                .replacingOccurrences(of: " No Dive", with: "")
             // Dive Changed is text before the net score without a trailing space
                 .replacingOccurrences(of: "Dive Changed", with: "")
             // Balk is text after the net score with a leading space
                 .replacingOccurrences(of: " Balk", with: "")
             netScore = Double(tempScore) ?? 0.0
             
-            // If netScore is zero but the dive wasn't failed, then the row is skipped
+            // Adds (No Dive) next to dive number to signify it is not a parsing error causing the
+            // empty score
+            if hasNoDiveText {
+                diveNum += " (No Dive)"
+            }
+            
+            // If netScore is zero but the dive wasn't failed or scratched, then the row is skipped
             // This should account for carryover dives from a prelim that sometimes appear in the
             // table, but don't contain any score information
-            if !isCarryOverRow, !hasFailedDiveText, netScore == 0.0 {
+            if !isCarryOverRow, !hasFailedDiveText, !hasNoDiveText, netScore == 0.0 {
                 continue
             }
             
