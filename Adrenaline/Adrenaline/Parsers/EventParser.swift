@@ -192,6 +192,7 @@ final class EventHTMLParser: ObservableObject {
             let tempScoreText = try diveInformation[4].text()
             let hasFailedDiveText = tempScoreText.contains("Failed Dive")
             let hasNoDiveText = tempScoreText.contains("No Dive")
+            let hasBalkText = tempScoreText.contains("Balk")
             let tempScore = tempScoreText
             // Failed Dive is text after the net score with a leading space
                 .replacingOccurrences(of: " Failed Dive", with: "")
@@ -203,10 +204,12 @@ final class EventHTMLParser: ObservableObject {
                 .replacingOccurrences(of: " Balk", with: "")
             netScore = Double(tempScore) ?? 0.0
             
-            // Adds (No Dive) next to dive number to signify it is not a parsing error causing the
-            // empty score
+            // Adds (No Dive) or (Balk) next to dive number to signify why a score may differ from
+            // what is expected
             if hasNoDiveText {
                 diveNum += " (No Dive)"
+            } else if hasBalkText {
+                diveNum += " (Balk)"
             }
             
             // If netScore is zero but the dive wasn't failed or scratched, then the row is skipped
