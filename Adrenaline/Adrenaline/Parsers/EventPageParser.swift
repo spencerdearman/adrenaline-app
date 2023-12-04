@@ -32,7 +32,14 @@ final class EventPageHTMLParser: ObservableObject {
                 let place = String(i - 4)
                 let nameSplit = try line[0].text().split(separator: " / ", maxSplits: 1)
                 if nameSplit.count == 0 { return [[]] }
-                let name = String(nameSplit[0])
+                var name = String(nameSplit[0])
+                
+                // Check if the diver has scratched and reformat name string
+                let checkScratched = name.split(separator: " - - ")
+                if checkScratched.count > 1 {
+                    name = checkScratched[0] + " (Scratched)"
+                }
+                
                 let linkSplit = try line[0].getElementsByTag("a").map { try $0.attr("href") }
                 if linkSplit.count == 0 { return [[]] }
                 let nameLink = String(leadingLink + linkSplit[0])
