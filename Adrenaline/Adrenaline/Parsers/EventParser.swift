@@ -168,24 +168,37 @@ final class EventHTMLParser: ObservableObject {
         let diveTable = try table[0].getElementsByAttribute("bgcolor")
         for dive in diveTable {
             let diveInformation = try dive.getElementsByTag("td")
+            
+            // Gets dive order number
             order = Int(try diveInformation[0].text()) ?? 0
             
+            // Dive number, potentially contains Changed Dive information
             let tempNum = try diveInformation[1].html().split(separator:"<br>")
             if tempNum.count > 1{
                 diveNum = tempNum[1] + " (Changed from " + tempNum[0] + ")"
             } else {
                 diveNum = try diveInformation[1].text()
             }
+            
+            // Dive height
             height = try String(diveInformation[2].html().split(separator:"<br>").last!)
+            
+            // Dive description
             name = try String(diveInformation[3].html().split(separator:"<br>").last!)
+            // Accounts for carryover row from a prelim
             let isCarryOverRow = order == 0
             
+            // Net score, sometimes contains changed dive, failed dive, or balk text
             let tempScoreText = try diveInformation[4].text()
             let hasFailedDiveText = tempScoreText.contains("Failed Dive")
             let tempScore = tempScoreText
+            // Failed Dive is text after the net score with a leading space
                 .replacingOccurrences(of: " Failed Dive", with: "")
-            let updatedScore = (tempScore.replacingOccurrences(of: "Dive Changed", with: ""))
-            netScore = Double(updatedScore) ?? 0.0
+            // Dive Changed is text before the net score without a trailing space
+                .replacingOccurrences(of: "Dive Changed", with: "")
+            // Balk is text after the net score with a leading space
+                .replacingOccurrences(of: " Balk", with: "")
+            netScore = Double(tempScore) ?? 0.0
             
             // If netScore is zero but the dive wasn't failed, then the row is skipped
             // This should account for carryover dives from a prelim that sometimes appear in the
@@ -194,15 +207,21 @@ final class EventHTMLParser: ObservableObject {
                 continue
             }
             
+            // DD
             if try diveInformation[5].text().count > 4 {
                 DD = Double(try diveInformation[5].text().suffix(4)) ?? 0.0
             } else {
                 DD = Double(try diveInformation[5].text()) ?? 0.0
             }
+            
+            // Total score
             score = Double(try diveInformation[6].text()
                 .replacingOccurrences(of: "  ", with: "")) ?? 0.0
+            
+            // Total score link, which allows us to get individual judge scores
             scoreLink = "https://secure.meetcontrol.com/divemeets/system/" +
             (try diveInformation[6].getElementsByTag("a").attr("href"))
+            
             await MainActor.run { [order, diveNum, height, name, netScore, DD, score, scoreLink] in
                 meetScores[order] = (diveNum, height, name, netScore, DD, score, scoreLink)
             }
