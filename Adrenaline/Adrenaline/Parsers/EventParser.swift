@@ -169,12 +169,14 @@ final class EventHTMLParser: ObservableObject {
         for dive in diveTable {
             let diveInformation = try dive.getElementsByTag("td")
             
-            // Gets dive order number
-            order = Int(try diveInformation[0].text()) ?? 0
+            // Gets dive order number; if it fails, skip the td entirely
+            // (this helps account for rows missing an order value, which appears in synchro events)
+            guard let o = Int(try diveInformation[0].text()) else { continue }
+            order = o
             
             // Dive number, potentially contains Changed Dive information
             let tempNum = try diveInformation[1].html().split(separator:"<br>")
-            if tempNum.count > 1{
+            if tempNum.count > 1 {
                 diveNum = tempNum[1] + " (Changed from " + tempNum[0] + ")"
             } else {
                 diveNum = try diveInformation[1].text()
