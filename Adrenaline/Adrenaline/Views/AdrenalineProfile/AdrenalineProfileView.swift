@@ -322,6 +322,24 @@ struct DiveMeetsLink: View {
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
     
+    // Computes Athlete skill ratings for newUser linking a DiveMeets account after intial creation
+    private func assignSkillRatings() async throws -> NewAthlete? {
+        guard let diveMeetsID = newUser.diveMeetsID else { print("diveMeetsId nil"); return nil }
+        
+        let athletes: [NewAthlete] = await queryAWSAthletes().filter { $0.user.id == newUser.id }
+        if athletes.count != 1 { print("count not 1"); return nil }
+        var athlete = athletes[0]
+        
+        let (s, p, t) = await SkillRating().getSkillRating(diveMeetsID: diveMeetsID)
+        
+        // TODO: this is not publishing to DataStore due to GraphQL error
+        athlete.springboardRating = s
+        athlete.platformRating = p
+        athlete.totalRating = t
+        
+        return try await saveToDataStore(object: athlete)
+    }
+    
     var body: some View {
         VStack {
             Text("Remake this view")
@@ -334,6 +352,14 @@ struct DiveMeetsLink: View {
             Button {
                 Task {
                     newUser.diveMeetsID = diveMeetsID
+                    
+                    do {
+                        // Assign skill ratings for newUser
+                        let _ = try await assignSkillRatings()
+                    } catch {
+                        print("\(error)")
+                    }
+                    
                     let _ = try await saveToDataStore(object: newUser)
                     
                     updateDataStoreData = true

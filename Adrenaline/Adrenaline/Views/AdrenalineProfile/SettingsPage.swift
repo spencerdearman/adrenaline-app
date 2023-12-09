@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Authenticator
+import Amplify
 
 struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
@@ -37,6 +38,21 @@ struct SettingsView: View {
         self.newUser = newUser
         self._showAccount = showAccount
         self._updateDataStoreData = updateDataStoreData
+    }
+    
+    // Clears Athlete skill ratings for newUser unlinking a DiveMeets account
+    private func clearSkillRatings() async throws -> NewAthlete? {
+        guard let user = newUser else { print("user nil"); return nil }
+        let athletes: [NewAthlete] = await queryAWSAthletes().filter { $0.user.id == user.id }
+        if athletes.count != 1 { print("count not 1"); return nil }
+        var athlete = athletes[0]
+        
+        // TODO: this is not publishing to DataStore due to GraphQL error
+        athlete.springboardRating = nil
+        athlete.platformRating = nil
+        athlete.totalRating = nil
+        
+        return try await saveToDataStore(object: athlete)
     }
     
     var body: some View {
@@ -138,12 +154,20 @@ struct SettingsView: View {
             Section {
                 NavigationLink {
                     if let user = newUser {
-                        if newUser?.diveMeetsID != nil {
+                        if user.diveMeetsID != nil {
                             Button {
                                 Task {
-                                    if newUser == nil { return }
-                                    
                                     newUser?.diveMeetsID = nil
+                                    
+                                    // If account is an Athlete, clear its skill ratings
+                                    if newUser?.accountType == "Athlete" {
+                                        do {
+                                            let _ = try await clearSkillRatings()
+                                        } catch {
+                                            print("\(error)")
+                                        }
+                                    }
+                                
                                     let _ = try await saveToDataStore(object: newUser!)
                                     
                                     updateDataStoreData = true
@@ -261,5 +285,32 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+}
+
+// Convenience init for updating skill ratings with new NewAthlete object
+extension NewAthlete {
+    public init(from: NewAthlete, springboard: Double?, platform: Double?, total: Double?) {
+        self.init(id: from.id,
+                  user: from.user,
+                  team: from.team,
+                  college: from.college,
+                  heightFeet: from.heightFeet,
+                  heightInches: from.heightInches,
+                  weight: from.weight,
+                  weightUnit: from.weightUnit,
+                  gender: from.gender,
+                  age: from.age,
+                  graduationYear: from.graduationYear,
+                  highSchool: from.highSchool,
+                  hometown: from.hometown,
+                  springboardRating: springboard,
+                  platformRating: platform,
+                  totalRating: total,
+                  dives: from.dives ?? [],
+                  collegeID: from.collegeID,
+                  newteamID: from.newteamID,
+                  createdAt: nil,
+                  updatedAt: nil)
     }
 }
