@@ -13,7 +13,7 @@ struct NavigationBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
-    var diveMeetsID:  Binding<String>
+    @Binding var newUser: NewUser?
     @State private var showSearchSheet = false
     @State private var showPostSheet = false
     @State private var isLogged = true
@@ -88,9 +88,11 @@ struct NavigationBar: View {
                     }
                 } label: {
                     Group {
-                        if diveMeetsID.wrappedValue != "" {
+                        if let user = newUser, 
+                            let diveMeetsID = user.diveMeetsID,
+                            diveMeetsID != "" {
                             CachedAsyncImage(url: URL(string:
-                                                        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID.wrappedValue).jpg?&x=511121484"),
+                                                        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID).jpg?&x=511121484"),
                                              urlCache: .imageCache,
                                              transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {

@@ -26,7 +26,6 @@ struct ContentView: View {
     @AppStorage("email") var email: String = ""
     @AppStorage("authUserId") var authUserId: String = ""
     @State private var showAccount: Bool = false
-    @State private var diveMeetsID: String = ""
     @State private var newUser: NewUser? = nil
     @State private var recentSearches: [SearchItem] = []
     @State private var uploadingPost: Post? = nil
@@ -91,7 +90,6 @@ struct ContentView: View {
             }
             
             newUser = user
-            diveMeetsID = user.diveMeetsID ?? ""
             
             // Adds device token to user's list of tokens for push notifications
             guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
@@ -142,14 +140,14 @@ struct ContentView: View {
                     } else {
                         ZStack(alignment: .bottom) {
                             TabView {
-                                FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                FeedBase(newUser: $newUser, showAccount: $showAccount,
                                          recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
                                 
                                 if let user = newUser, user.accountType != "Spectator" {
-                                    ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                    ChatView(newUser: $newUser, showAccount: $showAccount,
                                              recentSearches: $recentSearches,
                                              uploadingPost: $uploadingPost)
                                     .tabItem {
@@ -157,7 +155,7 @@ struct ContentView: View {
                                     }
                                 }
                                 
-                                RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
+                                RankingsView(newUser: $newUser, tabBarState: $tabBarState,
                                              showAccount: $showAccount, recentSearches: $recentSearches,
                                              uploadingPost: $uploadingPost)
                                 .tabItem {

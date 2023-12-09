@@ -12,7 +12,7 @@ import Combine
 
 struct ChatView: View {
     // Bindings
-    @Binding var diveMeetsID: String
+    @Binding var newUser: NewUser?
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
     @Binding var uploadingPost: Post?
@@ -170,7 +170,7 @@ struct ChatView: View {
             .overlay{
                 if feedModel.showTab {
                     NavigationBar(title: "Messaging",
-                                  diveMeetsID: $diveMeetsID,
+                                  newUser: $newUser,
                                   showAccount: $showAccount,
                                   contentHasScrolled: $contentHasScrolled,
                                   feedModel: $feedModel,

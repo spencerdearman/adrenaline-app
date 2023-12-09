@@ -64,7 +64,7 @@ struct RankingsView: View {
     @State private var feedModel: FeedModel = FeedModel()
     @State private var selection: BoardSelection = .springboard
     @State private var isAdrenalineProfilesOnlyChecked: Bool = false
-    @Binding var diveMeetsID: String
+    @Binding var newUser: NewUser?
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
@@ -297,7 +297,7 @@ struct RankingsView: View {
             }
             .overlay (
                 NavigationBar(title: "Rankings",
-                              diveMeetsID: $diveMeetsID,
+                              newUser: $newUser,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
                               feedModel: $feedModel, recentSearches: $recentSearches,
