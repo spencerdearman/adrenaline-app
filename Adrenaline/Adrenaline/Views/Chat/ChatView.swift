@@ -15,7 +15,7 @@ typealias ChatConversations = [String: [(Message, Bool)]]
 struct ChatView: View {
     @EnvironmentObject private var appLogic: AppLogic
     // Bindings
-    @Binding var diveMeetsID: String
+    @Binding var newUser: NewUser?
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
     @Binding var deletedChatIds: Set<String>
@@ -146,7 +146,7 @@ struct ChatView: View {
             .overlay {
                 if feedModel.showTab {
                     MessagingBar(title: "Messaging",
-                                 diveMeetsID: $diveMeetsID,
+                                 newUser: $newUser,
                                  showAccount: $showAccount,
                                  contentHasScrolled: $contentHasScrolled,
                                  feedModel: $feedModel,
