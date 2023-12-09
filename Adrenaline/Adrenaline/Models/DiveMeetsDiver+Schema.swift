@@ -26,6 +26,7 @@ extension DiveMeetsDiver {
     let diveMeetsDiver = DiveMeetsDiver.keys
     
     model.authRules = [
+      rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read]),
       rule(allow: .private, operations: [.create, .update, .delete, .read])
     ]
     
