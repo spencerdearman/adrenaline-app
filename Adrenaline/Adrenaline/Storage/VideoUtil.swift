@@ -102,9 +102,9 @@ func getVideosByEmail(email: String) async -> [VideoPlayerViewModel]? {
         
         return sorted.map {
             // Remove extension from key name
-            guard let basename = $0.key.split(separator: "/").last else { return VideoPlayerViewModel(video: VideoItem(), initialResolution: .p540) }
+            guard let basename = $0.key.split(separator: "/").last else { return VideoPlayerViewModel(video: VideoItem(), initialResolution: .p1080) }
             let videoId = String(basename.dropLast(4))
-            return VideoPlayerViewModel(video: VideoItem(email: email, videoId: videoId), initialResolution: .p540)
+            return VideoPlayerViewModel(video: VideoItem(email: email, videoId: videoId), initialResolution: .p1080)
         }
     } catch {
         print("Failed to get VideoItems from S3")

@@ -27,23 +27,24 @@ final class VideoPlayerViewModel: ObservableObject {
     init(video: VideoItem, initialResolution: Resolution) {
         self.video = video
         self.selectedResolution = initialResolution
+        self.replaceItem(with: self.selectedResolution)
         
-        $shouldLowerResolution
-            .dropFirst()
-            .filter({ $0 == true })
-            .sink(receiveValue: { [weak self] _ in
-                guard let self = self else { return }
-                self.lowerResolutionIfPossible()
-            })
-            .store(in: &subscriptions)
+//        $shouldLowerResolution
+//            .dropFirst()
+//            .filter({ $0 == true })
+//            .sink(receiveValue: { [weak self] _ in
+//                guard let self = self else { return }
+//                self.lowerResolutionIfPossible()
+//            })
+//            .store(in: &subscriptions)
         
-        $selectedResolution
-            .sink(receiveValue: { [weak self] resolution in
-                guard let self = self else { return }
-                self.replaceItem(with: resolution)
-                self.setObserver()
-            })
-            .store(in: &subscriptions)
+//        $selectedResolution
+//            .sink(receiveValue: { [weak self] resolution in
+//                guard let self = self else { return }
+////                self.replaceItem(with: resolution)
+//                self.setObserver()
+//            })
+//            .store(in: &subscriptions)
     }
     
     deinit {
