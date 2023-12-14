@@ -233,18 +233,8 @@ struct NewSignupSequence: View {
                                                    dmSearchSubmitted: $dmSearchSubmitted,
                                                    linksParsed: $linksParsed,
                                                    timedOut: $personTimedOut)
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        if currentMode == .light {
-                                            Image("LoginBackground")
-                                        } else {
-                                            Image("LoginBackground-Dark")
-                                        }
-                                        Text("Loading...")
-                                            .font(.largeTitle).bold()
-                                            .foregroundColor(.primary)
-                                            .slideFadeIn(show: appear[0], offset: 30)
-                                    }
                                 }
+                                .opacity(0)
                             } else {
                                 if linksParsed || personTimedOut {
                                     VStack(alignment: .leading, spacing: 20) {
@@ -610,6 +600,9 @@ struct NewSignupSequence: View {
                             .onTapGesture {
                                 withAnimation(.openCard) {
                                     pageIndex = 1
+                                    
+                                    // Reset the DiveMeets ID Search
+                                    searchSubmitted = false
                                 }
                             }
                         
