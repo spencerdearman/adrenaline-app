@@ -12,6 +12,18 @@ import Amplify
 //                 [Gender: [AgeGrp: [Board : NumberedRankingList]]]
 var cachedRatings: [String: [String: [String: NumberedRankingList]]] = [:]
 
+// Cache previously queried NewUser objects so it doesn't query AWS again to check if the user has
+// an Adrenaline profile
+// Some keys will have nil value to signify that the DiveMeetsID was checked and did not find a user
+//                         [DiveMeetsID: user]
+var cachedAdrenalineUsers: [String: NewUser] = [:]
+
+// Stores all seen Adrenaline users so that seen users are not recomputed when switching list types
+var seenAdrenalineUsers: Set<String> = Set()
+
+// Lock to stop concurrent writes to the ratings cache during concurrent precompute
+let lock = NSLock()
+
 enum BoardSelection: String, CaseIterable {
     case springboard = "Springboard"
     case combined = "Combined"
@@ -64,6 +76,7 @@ struct RankingsView: View {
     @State private var feedModel: FeedModel = FeedModel()
     @State private var selection: BoardSelection = .springboard
     @State private var isAdrenalineProfilesOnlyChecked: Bool = false
+    @State private var currentSettingsAddedToCache: Bool = false
     @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
@@ -71,6 +84,7 @@ struct RankingsView: View {
     @Binding var uploadingPost: Post?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    private let skill = SkillRating()
     
     @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
@@ -89,6 +103,17 @@ struct RankingsView: View {
     
     private var typeBubbleColor: Color {
         currentMode == .light ? Color.white : Color.black
+    }
+    
+    // Sets currentList to nil unless there is a value stored in the cache
+    private var currentList: NumberedRankingList? {
+        if currentSettingsAddedToCache,
+            let ageDict = cachedRatings[gender.rawValue],
+           let boardDict = ageDict[ageGroup.rawValue] {
+            return boardDict[rankingType.rawValue]
+        }
+        
+        return nil
     }
     
     private func getMaleAthletes() async -> [NewAthlete] {
@@ -220,6 +245,203 @@ struct RankingsView: View {
         femaleRatings = removeDuplicates(pendingFemaleRatings)
     }
     
+    private func isInAgeRange(age: Int) -> Bool {
+        switch ageGroup {
+            case .fourteenFifteen:
+                return 14 <= age && age <= 15
+            case .sixteenEighteen:
+                return 16 <= age && age <= 18
+        }
+    }
+    
+    private func filterByAgeGroup(_ ratings: GenderRankingList, 
+                                  ageGroup: AgeGroup) -> GenderRankingList {
+        var result: GenderRankingList = []
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
+        let currentDate: Date = .now
+        let boundaryYear: Int
+        
+        // If in or after June, set boundary at the following year
+        // e.g. if Nov 2023, set year to 2024
+        if Calendar.current.component(.month, from: currentDate) >= 6 {
+            boundaryYear = Calendar.current.component(.year, from: currentDate) + 1
+        } else {
+            boundaryYear = Calendar.current.component(.year, from: currentDate)
+        }
+        
+        var lowerBoundYear = boundaryYear
+        if ageGroup == .fourteenFifteen {
+            lowerBoundYear += 3
+        }
+        
+        // Sets gradYear range for age group
+        // e.g. 14-15 age group -> 2027-2028, 16-18 age group -> 2024-2026
+        let upperBoundYear = ageGroup == .fourteenFifteen ? lowerBoundYear + 1 : lowerBoundYear + 2
+        
+        for rating in ratings {
+            let user = rating.0
+            
+            // If age exists and in age range, append and continue
+            if let age = user.finaAge, isInAgeRange(age: age) {
+                result.append(rating)
+                continue
+            }
+            
+            // If age doesn't exist or it is not in range, but gradYear is, append
+            if let gradYear = user.hsGradYear,
+               gradYear >= lowerBoundYear, gradYear <= upperBoundYear {
+                result.append(rating)
+            }
+        }
+        
+        return result
+    }
+    
+    private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
+        var result: GenderRankingList = []
+        var springboard: [Double] = []
+        var platform: [Double] = []
+        var total: [Double] = []
+        
+        for (_, spring, plat, tot) in ratings {
+            springboard.append(spring)
+            platform.append(plat)
+            total.append(tot)
+        }
+        
+        springboard = skill.normalizeRatings(ratings: springboard)
+        platform = skill.normalizeRatings(ratings: platform)
+        total = skill.normalizeRatings(ratings: total)
+        
+        // Don't include only one user, since ratings don't make sense
+        if ratings.count > 1 {
+            for i in 0..<ratings.count {
+                result.append((ratings[i].0, springboard[i], platform[i], total[i]))
+            }
+        }
+        
+        return result
+    }
+    
+    private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
+                                   board: RankingType) -> NumberedRankingList? {
+        if let genderDict = cachedRatings[gender.rawValue],
+           let ageGroupDict = genderDict[ageGroup.rawValue],
+           let boardList = ageGroupDict[board.rawValue] {
+            return boardList
+        }
+        
+        return nil
+    }
+    
+    private func cacheRatingList(gender: Gender, ageGroup: AgeGroup, board: RankingType,
+                                 ratings: NumberedRankingList) {
+        lock.lock()
+        
+        if !cachedRatings.keys.contains(gender.rawValue) {
+            cachedRatings[gender.rawValue] = [:]
+        }
+        
+        if !cachedRatings[gender.rawValue]!.keys.contains(ageGroup.rawValue) {
+            cachedRatings[gender.rawValue]![ageGroup.rawValue] = [:]
+        }
+        
+        cachedRatings[gender.rawValue]![ageGroup.rawValue]![board.rawValue] = ratings
+        
+        lock.unlock()
+    }
+    
+    private func getSortedRankingList(gender: Gender, ageGroup: AgeGroup,
+                                      board: RankingType) -> RankingList {
+        let list = gender == .male ? maleRatings : femaleRatings
+        let filtered = filterByAgeGroup(list, ageGroup: ageGroup)
+        let normalized = normalizeRatings(ratings: filtered)
+        let keep = normalized.map {
+            // Values rounded to one decimal place
+            switch board {
+                case .springboard:
+                    return ($0.0, round($0.1 * 10) / 10.0)
+                case .combined:
+                    return ($0.0, round($0.3 * 10) / 10.0)
+                case .platform:
+                    return ($0.0, round($0.2 * 10) / 10.0)
+            }
+        }
+        
+        // Sorts by decreasing rating and filters out ratings below 1.0
+        return keep.sorted(by: {
+            if $0.1 > $1.1 { return true }
+            else if $0.1 == $1.1 {
+                // If they share matching values, sort by first name
+                return $0.0.firstName < $1.0.firstName
+            } else {
+                return false
+            }
+        }).filter { $0.1 >= 1.0 }
+    }
+    
+    // This should be called after sorting to get a number for that result in the ranking list view
+    private func numberSortedRankingList(_ list: RankingList, gender: Gender, ageGroup: AgeGroup,
+                                         board: RankingType) -> NumberedRankingList {
+        var result: NumberedRankingList = []
+        
+        var everyIdx: Int = 0
+        var curIdx: Int = 0
+        var curRating: Double = 100.1
+        
+        do {
+            for item in list {
+                let rating = item.1
+                
+                // Fails fast if unsorted list is passed in (ratings should be in descending order)
+                if rating > curRating {
+                    print(rating, item)
+                    throw ParseError("Numbering ranking list failed")
+                }
+                
+                // If the rating is strictly less than the previous, then it updates the assigned
+                // number to the next number of the items it has seen (this keeps track of the
+                // total number of items seen so when there are ties, the next stricly lower rating
+                // will be appropriately ranked)
+                if rating < curRating {
+                    curRating = rating
+                    curIdx = everyIdx + 1
+                }
+                // If the rating is equal to the previous, the current rating need not be updated
+                // and the current index stays the same (this creates multiple of the same ranking
+                // number for ratings that are equal)
+                
+                result.append((curIdx, item))
+                
+                everyIdx += 1
+            }
+        } catch {
+            print("\(error)")
+            print("Failed to number list, items not sorted in descending order")
+            return []
+        }
+        
+        // Caches rating list for future viewing since it won't change
+        cacheRatingList(gender: gender, ageGroup: ageGroup, board: board, ratings: result)
+        
+        return result
+    }
+    
+    private func getFinalRankingList(gender: Gender, ageGroup: AgeGroup,
+                                     board: RankingType) -> NumberedRankingList {
+        if let result = ratingListInCache(gender: gender, ageGroup: ageGroup, board: board) {
+            return result
+        }
+        
+        return numberSortedRankingList(
+            getSortedRankingList(gender: gender, ageGroup: ageGroup, board: board),
+            gender: gender,
+            ageGroup: ageGroup,
+            board: board
+        )
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -266,14 +488,10 @@ struct RankingsView: View {
                         
                         boardSelector
                         
-                        if (gender == .male && !maleRatings.isEmpty) ||
-                            (gender == .female && !femaleRatings.isEmpty) {
+                        if let list = currentList {
                             RankingListView(tabBarState: $tabBarState,
                                             adrenalineProfilesOnly: $isAdrenalineProfilesOnlyChecked,
-                                            rankingType: $rankingType,
-                                            gender: $gender, ageGroup: $ageGroup,
-                                            maleRatings: $maleRatings,
-                                            femaleRatings: $femaleRatings)
+                                            numberedList: list)
                             
                             Spacer()
                         } else {
@@ -282,12 +500,42 @@ struct RankingsView: View {
                     }
                     .onAppear {
                         Task {
+                            // Gets male ratings from AWS athletes and DiveMeetsDivers
                             if maleRatings.isEmpty {
                                 try await getMaleRatings()
                             }
                             
+                            // Gets female ratings from AWS athletes and DiveMeetsDivers
                             if femaleRatings.isEmpty {
                                 try await getFemaleRatings()
+                            }
+                            
+                            // Creates task group to precompute all combinations of rankings lists
+                            // in the background
+                            let _ = await withTaskGroup(of: Void.self) { group in
+                                // Creates a task for every combintion of rankings lists we show
+                                // to concurrently compute the lists and cache them
+                                for g in Gender.allCases {
+                                    for a in AgeGroup.allCases {
+                                        for r in RankingType.allCases {
+                                            group.addTask {
+                                                let _ = getFinalRankingList(gender: g,
+                                                                            ageGroup: a,
+                                                                            board: r)
+                                                
+                                                // This updates the computed property to refresh the
+                                                // currentList if no other background changes occur
+                                                // to initiate an update
+                                                if g == gender, a == ageGroup, r == rankingType {
+                                                    currentSettingsAddedToCache = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // No need to await for elements in group since there aren't any
+                                // results that need combining
                             }
                         }
                     }
@@ -414,201 +662,12 @@ struct RankingListView: View {
     @Environment(\.colorScheme) private var currentMode
     @Binding var tabBarState: Visibility
     @Binding var adrenalineProfilesOnly: Bool
-    @Binding var rankingType: RankingType
-    @Binding var gender: Gender
-    @Binding var ageGroup: AgeGroup
-    @Binding var maleRatings: GenderRankingList
-    @Binding var femaleRatings: GenderRankingList
+    var numberedList: NumberedRankingList
     
     private let skill = SkillRating()
     private let screenWidth = UIScreen.main.bounds.width
     
-    private func isInAgeRange(age: Int) -> Bool {
-        switch ageGroup {
-            case .fourteenFifteen:
-                return 14 <= age && age <= 15
-            case .sixteenEighteen:
-                return 16 <= age && age <= 18
-        }
-    }
-    
-    private func filterByAgeGroup(_ ratings: GenderRankingList) -> GenderRankingList {
-        var result: GenderRankingList = []
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
-        let currentDate: Date = .now
-        let boundaryYear: Int
-        
-        // If in or after June, set boundary at the following year
-        // e.g. if Nov 2023, set year to 2024
-        if Calendar.current.component(.month, from: currentDate) >= 6 {
-            boundaryYear = Calendar.current.component(.year, from: currentDate) + 1
-        } else {
-            boundaryYear = Calendar.current.component(.year, from: currentDate)
-        }
-        
-        var lowerBoundYear = boundaryYear
-        if ageGroup == .fourteenFifteen {
-            lowerBoundYear += 3
-        }
-        
-        // Sets gradYear range for age group
-        // e.g. 14-15 age group -> 2027-2028, 16-18 age group -> 2024-2026
-        let upperBoundYear = ageGroup == .fourteenFifteen ? lowerBoundYear + 1 : lowerBoundYear + 2
-        
-        for rating in ratings {
-            let user = rating.0
-            
-            // If age exists and in age range, append and continue
-            if let age = user.finaAge, isInAgeRange(age: age) {
-                result.append(rating)
-                continue
-            }
-            
-            // If age doesn't exist or it is not in range, but gradYear is, append
-            if let gradYear = user.hsGradYear,
-               gradYear >= lowerBoundYear, gradYear <= upperBoundYear {
-                result.append(rating)
-            }
-        }
-        
-        return result
-    }
-    
-    private func normalizeRatings(ratings: GenderRankingList) -> GenderRankingList {
-        var result: GenderRankingList = []
-        var springboard: [Double] = []
-        var platform: [Double] = []
-        var total: [Double] = []
-        
-        for (_, spring, plat, tot) in ratings {
-            springboard.append(spring)
-            platform.append(plat)
-            total.append(tot)
-        }
-        
-        springboard = skill.normalizeRatings(ratings: springboard)
-        platform = skill.normalizeRatings(ratings: platform)
-        total = skill.normalizeRatings(ratings: total)
-        
-        // Don't include only one user, since ratings don't make sense
-        if ratings.count > 1 {
-            for i in 0..<ratings.count {
-                result.append((ratings[i].0, springboard[i], platform[i], total[i]))
-            }
-        }
-        
-        return result
-    }
-    
-    private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
-                                   board: RankingType) -> NumberedRankingList? {
-        if let genderDict = cachedRatings[gender.rawValue],
-           let ageGroupDict = genderDict[ageGroup.rawValue],
-           let boardList = ageGroupDict[board.rawValue] {
-            return boardList
-        }
-        
-        return nil
-    }
-    
-    private func cacheRatingList(gender: Gender, ageGroup: AgeGroup, board: RankingType,
-                                 ratings: NumberedRankingList) {
-        if !cachedRatings.keys.contains(gender.rawValue) {
-            cachedRatings[gender.rawValue] = [:]
-        }
-        
-        if !cachedRatings[gender.rawValue]!.keys.contains(ageGroup.rawValue) {
-            cachedRatings[gender.rawValue]![ageGroup.rawValue] = [:]
-        }
-        
-        cachedRatings[gender.rawValue]![ageGroup.rawValue]![board.rawValue] = ratings
-    }
-    
-    private func getSortedRankingList() -> RankingList {
-        let list = gender == .male ? maleRatings : femaleRatings
-        let filtered = filterByAgeGroup(list)
-        let normalized = normalizeRatings(ratings: filtered)
-        let keep = normalized.map {
-            // Values rounded to one decimal place
-            switch rankingType {
-                case .springboard:
-                    return ($0.0, round($0.1 * 10) / 10.0)
-                case .combined:
-                    return ($0.0, round($0.3 * 10) / 10.0)
-                case .platform:
-                    return ($0.0, round($0.2 * 10) / 10.0)
-            }
-        }
-        
-        // Sorts by decreasing rating and filters out ratings below 1.0
-        return keep.sorted(by: {
-            if $0.1 > $1.1 { return true }
-            else if $0.1 == $1.1 {
-                // If they share matching values, sort by first name
-                return $0.0.firstName < $1.0.firstName
-            } else {
-                return false
-            }
-        }).filter { $0.1 >= 1.0 }
-    }
-    
-    // This should be called after sorting to get a number for that result in the ranking list view
-    private func numberSortedRankingList(_ list: RankingList) -> NumberedRankingList {
-        var result: NumberedRankingList = []
-        
-        var everyIdx: Int = 0
-        var curIdx: Int = 0
-        var curRating: Double = 100.1
-        
-        do {
-            for item in list {
-                let rating = item.1
-                
-                // Fails fast if unsorted list is passed in (ratings should be in descending order)
-                if rating > curRating {
-                    print(rating, item)
-                    throw ParseError("Numbering ranking list failed")
-                }
-                
-                // If the rating is strictly less than the previous, then it updates the assigned
-                // number to the next number of the items it has seen (this keeps track of the
-                // total number of items seen so when there are ties, the next stricly lower rating
-                // will be appropriately ranked)
-                if rating < curRating {
-                    curRating = rating
-                    curIdx = everyIdx + 1
-                }
-                // If the rating is equal to the previous, the current rating need not be updated
-                // and the current index stays the same (this creates multiple of the same ranking
-                // number for ratings that are equal)
-                
-                result.append((curIdx, item))
-                
-                everyIdx += 1
-            }
-        } catch {
-            print("\(error)")
-            print("Failed to number list, items not sorted in descending order")
-            return []
-        }
-        
-        // Caches rating list for future viewing since it won't change
-        cacheRatingList(gender: gender, ageGroup: ageGroup, board: rankingType, ratings: result)
-        
-        return result
-    }
-    
-    private func getFinalRankingList() -> NumberedRankingList {
-        if let result = ratingListInCache(gender: gender, ageGroup: ageGroup, board: rankingType) {
-            return result
-        }
-        
-        return numberSortedRankingList(getSortedRankingList())
-    }
-    
     var body: some View {
-        let numberedList = getFinalRankingList()
         VStack {
             // Column headers
             ZStack {
@@ -698,12 +757,23 @@ struct RankingListDiverView: View {
         }
         .onAppear {
             Task {
-                if newUser == nil {
+                // newUser has not been set, diveMeetsID has not been processed yet
+                if newUser == nil, !seenAdrenalineUsers.contains(rankedUser.diveMeetsID) {
                     let pred = NewUser.keys.diveMeetsID == rankedUser.diveMeetsID
                     let users = await queryAWSUsers(where: pred)
+                    
+                    // Sets newUser and caches object
                     if users.count == 1 {
                         newUser = users[0]
+                        cachedAdrenalineUsers[rankedUser.diveMeetsID] = newUser
                     }
+                    
+                    // Stores diveMeetsID as seen so it does not get recomputed
+                    seenAdrenalineUsers.insert(rankedUser.diveMeetsID)
+                    
+                    // Returns cached value instead of processing user again
+                } else if newUser == nil, let user = cachedAdrenalineUsers[rankedUser.diveMeetsID] {
+                    newUser = user
                 }
             }
         }
