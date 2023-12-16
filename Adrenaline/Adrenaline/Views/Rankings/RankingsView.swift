@@ -24,12 +24,6 @@ var seenAdrenalineUsers: Set<String> = Set()
 // Lock to stop concurrent writes to the ratings cache during concurrent precompute
 let lock = NSLock()
 
-enum BoardSelection: String, CaseIterable {
-    case springboard = "Springboard"
-    case combined = "Combined"
-    case platform = "Platform"
-}
-
 enum RankingType: String, CaseIterable {
     case springboard = "Springboard"
     case combined = "Combined"
@@ -74,7 +68,6 @@ struct RankingsView: View {
     @State private var femaleRatings: GenderRankingList = []
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
-    @State private var selection: BoardSelection = .springboard
     @State private var isAdrenalineProfilesOnlyChecked: Bool = false
     @State private var currentSettingsAddedToCache: Bool = false
     @Binding var diveMeetsID: String
@@ -601,7 +594,7 @@ struct RankingsView: View {
                     Button(action: {
                         rankingType = .springboard
                     }, label: {
-                        Text(BoardSelection.springboard.rawValue)
+                        Text(RankingType.springboard.rawValue)
                             .animation(nil, value: rankingType)
                     })
                     .frame(width: typeBubbleWidth,
@@ -610,7 +603,7 @@ struct RankingsView: View {
                     Button(action: {
                         rankingType = .combined
                     }, label: {
-                        Text(BoardSelection.combined.rawValue)
+                        Text(RankingType.combined.rawValue)
                             .animation(nil, value: rankingType)
                     })
                     .frame(width: typeBubbleWidth + 2,
@@ -619,7 +612,7 @@ struct RankingsView: View {
                     Button(action: {
                         rankingType = .platform
                     }, label: {
-                        Text(BoardSelection.platform.rawValue)
+                        Text(RankingType.platform.rawValue)
                             .animation(nil, value: rankingType)
                     })
                     .frame(width: typeBubbleWidth + 2,
