@@ -233,8 +233,16 @@ struct NewSignupSequence: View {
                                                    dmSearchSubmitted: $dmSearchSubmitted,
                                                    linksParsed: $linksParsed,
                                                    timedOut: $personTimedOut)
+                                    .opacity(0)
+                                    VStack {
+                                        Text("Searching")
+                                            .font(.largeTitle).bold()
+                                            .foregroundColor(.primary)
+                                            .slideFadeIn(show: appear[0], offset: 30)
+                                        ProgressView()
+                                    }
                                 }
-                                .opacity(0)
+                                .frame(height: screenHeight * 0.5)
                             } else {
                                 if linksParsed || personTimedOut {
                                     VStack(alignment: .leading, spacing: 20) {
@@ -255,6 +263,8 @@ struct NewSignupSequence: View {
                         }
                         .onDisappear {
                             searchSubmitted = false
+                            dmSearchSubmitted = false
+                            linksParsed = false
                         }
                     case 3:
                         VStack(alignment: .leading, spacing: 20) {
