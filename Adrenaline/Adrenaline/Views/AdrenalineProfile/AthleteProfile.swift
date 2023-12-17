@@ -98,6 +98,7 @@ struct MeetListView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .padding()
+                .multilineTextAlignment(.center)
         }
     }
 }
