@@ -15,7 +15,6 @@ struct ChatView: View {
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
-    @Binding var uploadingPost: Post?
     
     // Main States
     @Environment(\.colorScheme) var currentMode
@@ -169,12 +168,12 @@ struct ChatView: View {
             }
             .overlay{
                 if feedModel.showTab {
-                    NavigationBar(title: "Messaging",
+                    MessagingBar(title: "Messaging",
                                   diveMeetsID: $diveMeetsID,
                                   showAccount: $showAccount,
                                   contentHasScrolled: $contentHasScrolled,
                                   feedModel: $feedModel,
-                                  recentSearches: $recentSearches, uploadingPost: $uploadingPost)
+                                  recentSearches: $recentSearches)
                     .frame(width: screenWidth)
                 } else {
                     if let recipient = recipient {

@@ -1,36 +1,34 @@
 //
-//  NavigationBar.swift
+//  MessagingBar.swift
 //  Adrenaline
 //
-//  Created by Spencer Dearman on 8/23/23.
+//  Created by Spencer Dearman on 12/16/23.
 //
 
 import SwiftUI
 import Amplify
 import CachedAsyncImage
 
-struct NavigationBar: View {
+struct MessagingBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
     var diveMeetsID:  Binding<String>
-    var showPlus: Bool = true
     @State private var showSearchSheet = false
-    @State private var showPostSheet = false
+    @State private var showNewMessageSheet = false
     @State private var isLogged = true
     @Binding var showAccount: Bool
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
     @Binding var recentSearches: [SearchItem]
-    @Binding var uploadingPost: Post?
     
     // Using this function to swap sheet bools safely
     private func showSheet(showingPost: Bool) {
         if showingPost {
             showSearchSheet = false
-            showPostSheet = true
+            showNewMessageSheet = true
         } else {
-            showPostSheet = false
+            showNewMessageSheet = false
             showSearchSheet = true
         }
     }
@@ -55,20 +53,18 @@ struct NavigationBar: View {
                 .opacity(contentHasScrolled ? 0.7 : 1)
             
             HStack(spacing: 16) {
-                if showPlus {
-                    Button {
-                        showSheet(showingPost: true)
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .sheet(isPresented: $showPostSheet) {
-                        NewPostView(uploadingPost: $uploadingPost)
-                    }
+                Button {
+                    showSheet(showingPost: true)
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                }
+                .sheet(isPresented: $showNewMessageSheet) {
+                    Text("NEED TO LINK TO ACTUAL MESSAGE CREATION")
                 }
                 
                 Button {
@@ -97,14 +93,14 @@ struct NavigationBar: View {
                                              urlCache: .imageCache,
                                              transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {
-                                    case .empty:
-                                        Color.white
-                                    case .success(let image):
-                                        image.resizable()
-                                    case .failure(_):
-                                        Color.gray
-                                    @unknown default:
-                                        Color.gray
+                                case .empty:
+                                    Color.white
+                                case .success(let image):
+                                    image.resizable()
+                                case .failure(_):
+                                    Color.gray
+                                @unknown default:
+                                    Color.gray
                                 }
                             }
                         } else {
