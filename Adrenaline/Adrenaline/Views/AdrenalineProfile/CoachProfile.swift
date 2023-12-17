@@ -100,44 +100,9 @@ struct CoachProfileContent: View {
                 case "Posts":
                     PostsView(newUser: newUser)
                 case "Judging":
-                    if let judging = judgingData {
-//                        JudgedList(data: judging)
-                    } else if diveMeetsID == "" {
-                        BackgroundBubble() {
-                            Text("Cannot get judging data, account is not linked to DiveMeets")
-                                .font(.title2)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                        }
-                        .frame(width: screenWidth * 0.9)
-                    } else {
-                        BackgroundBubble(vPadding: 40, hPadding: 40) {
-                            VStack {
-                                Text("Getting judging data...")
-                                ProgressView()
-                            }
-                        }
-                    }
+                    JudgingView(newUser: newUser, judgingData: judgingData)
                 case "Divers":
-                    if let divers = coachDiversData {
-//                        DiversList(divers: divers)
-//                            .offset(y: -20)
-                    } else if diveMeetsID == "" {
-                        BackgroundBubble() {
-                            Text("Cannot get diver data, account is not linked to DiveMeets")
-                                .font(.title2)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                        }
-                        .frame(width: screenWidth * 0.9)
-                    } else {
-                        BackgroundBubble(vPadding: 40, hPadding: 40) {
-                            VStack {
-                                Text("Getting coach divers list...")
-                                ProgressView()
-                            }
-                        }
-                    }
+                    DiversView(newUser: newUser, diversData: coachDiversData)
                 case "Recruiting":
                     CoachRecruitingView()
                 case "Saved":
@@ -153,21 +118,60 @@ struct CoachProfileContent: View {
     }
 }
 
-struct CoachMetricsView: View {
-    var body: some View {
-        Text("Coach Metrics")
-    }
-}
-
 struct CoachRecruitingView: View {
     var body: some View {
-        Text("Coach Recruiting")
+        Text("Recruiting")
     }
 }
 
-struct CoachStatisticsView: View {
+struct JudgingView: View {
+    var newUser: NewUser
+    var judgingData: ProfileJudgingData?
+    
     var body: some View {
-        Text("Coach Statistics")
+        ZStack {
+            if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
+                if let data = judgingData {
+                    Text("Judging")
+                        .foregroundColor(.primary)
+                } else {
+                    Text("No Judging Data Found")
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                Text("No DiveMeets Account Linked")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .font(.title3)
+        .fontWeight(.semibold)
+        .padding()
+        .multilineTextAlignment(.center)
     }
 }
 
+struct DiversView: View {
+    var newUser: NewUser
+    var diversData: ProfileCoachDiversData?
+    
+    var body: some View {
+        ZStack {
+            if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
+                if let data = diversData {
+                    Text("Divers")
+                        .foregroundColor(.primary)
+                } else {
+                    Text("No Diver Data Found")
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                Text("No DiveMeets Account Linked")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .font(.title3)
+        .fontWeight(.semibold)
+        .padding()
+        .multilineTextAlignment(.center)
+    }
+}
