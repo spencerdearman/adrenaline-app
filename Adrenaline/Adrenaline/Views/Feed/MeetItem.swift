@@ -176,17 +176,18 @@ struct MeetFeedItemExpandedView: View {
                         .foregroundColor(.primary)
                         .matchedGeometryEffect(id: "title\(id)", in: namespace)
                     
-                    Text("Meet Location - Date Range".uppercased())
+                    Text(meet.org?.uppercased() ?? "")
                         .font(.footnote).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
                     
-                    Text("Basic Results are going to go here or something to lure the person in")
-                        .font(.footnote)
+                    Text((meet.location?.uppercased() ?? "") + " - " + (meet.date?.uppercased() ?? ""))
+                        .font(.footnote).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
+                        .matchedGeometryEffect(id: "subtitle1\(id)", in: namespace)
+                    
                     
                     Divider()
                         .foregroundColor(.secondary)

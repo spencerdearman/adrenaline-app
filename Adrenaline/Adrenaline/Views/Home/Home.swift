@@ -88,7 +88,6 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
 
 struct Home: View {
     @Namespace var namespace
-    @Environment(\.scenePhase) var scenePhase
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dictToTuple) private var dictToTuple
     @Environment(\.networkIsConnected) private var networkIsConnected
@@ -263,13 +262,27 @@ struct Home: View {
                                     .padding(.horizontal, 20)
                                     .offset(y: -100)
                                 } else {
-                                    LazyVGrid(columns: columns, spacing: 15) {
-                                        ForEach($currentFeedItems) { item in
-                                            AnyView(item.collapsedView.wrappedValue)
+                                    if currentFeedItems != [] && !timedOut {
+                                        LazyVGrid(columns: columns, spacing: 15) {
+                                            ForEach($currentFeedItems) { item in
+                                                AnyView(item.collapsedView.wrappedValue)
+                                            }
                                         }
+                                        .padding(.horizontal, 20)
+                                        .offset(y: -80)
+                                    } else if !timedOut {
+                                        VStack {
+                                            Text("Getting current meets")
+                                                .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                            ProgressView()
+                                        }
+                                    } else {
+                                        Text("Unable to get upcoming meets, network timed out")
+                                            .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                            .padding()
+                                            .multilineTextAlignment(.center)
+                                            .frame(width: screenWidth * 0.9)
                                     }
-                                    .padding(.horizontal, 20)
-                                    .offset(y: -80)
                                 }
                             } else {
                                 if showDetail {
@@ -285,34 +298,47 @@ struct Home: View {
                                     .padding(.horizontal, 20)
                                     .offset(y: -100)
                                 } else {
-                                    LazyVGrid(columns: columns, spacing: 15) {
-                                        ForEach($upcomingFeedItems) { item in
-                                            AnyView(item.collapsedView.wrappedValue)
+                                    if upcomingFeedItems != [] && !timedOut {
+                                        LazyVGrid(columns: columns, spacing: 15) {
+                                            ForEach($upcomingFeedItems) { item in
+                                                AnyView(item.collapsedView.wrappedValue)
+                                            }
                                         }
+                                        .padding(.horizontal, 20)
+                                        .offset(y: -80)
+                                    } else if !timedOut {
+                                        VStack {
+                                            Text("Getting upcoming meets")
+                                                .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                            ProgressView()
+                                        }
+                                    } else {
+                                        Text("Unable to get upcoming meets, network timed out")
+                                            .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                            .padding()
+                                            .multilineTextAlignment(.center)
+                                            .frame(width: screenWidth * 0.9)
                                     }
-                                    .padding(.horizontal, 20)
-                                    .offset(y: -80)
                                 }
                             }
                         }
-                        
                     } else {
                         NotConnectedView()
                     }
                 }
-                .overlay (
-                    MeetsBar(title: "Meets", diveMeetsID: $diveMeetsID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
-                        .frame(width: screenWidth)
-                )
-                .onChange(of: scenePhase) { newScenePhase in
-                    if newScenePhase == .active {
-                        loadUpcomingMeets()
-                        loadCurrentMeets()
+                .overlay {
+                    if feedModel.showTab {
+                        MeetsBar(title: "Meets", diveMeetsID: $diveMeetsID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
+                            .frame(width: screenWidth)
                     }
                 }
                 .onAppear {
-                    loadUpcomingMeets()
-                    loadCurrentMeets()
+                    if upcomingFeedItems == [] {
+                        loadUpcomingMeets()
+                    }
+                    if currentFeedItems == [] {
+                        loadCurrentMeets()
+                    }
                 }
                 .onChange(of: feedModel.showTile) {
                     withAnimation {
@@ -332,122 +358,6 @@ struct Home: View {
             }
         } else {
             NotConnectedView()
-        }
-    }
-}
-
-struct UpcomingMeetsView: View {
-    @Environment(\.dictToTuple) private var dictToTuple
-    @ObservedObject var meetParser: MeetParser
-    @Binding var timedOut: Bool
-    @Binding var feedModel: FeedModel
-    @Binding var feedItems: [FeedItem]
-    let namespace: Namespace.ID
-    let gridItems = [GridItem(.adaptive(minimum: 300))]
-    
-    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
-    
-    private let screenWidth = UIScreen.main.bounds.width
-    
-    private var maxHeightOffset: CGFloat {
-        min(maxHeightOffsetScaled, 90)
-    }
-    
-    
-    var body: some View {
-        if let meets = meetParser.upcomingMeets {
-            if !meets.isEmpty && !timedOut {
-                let upcoming = tupleToList(tuples: dictToTuple(meets))
-                ScrollView {
-                    LazyVGrid(columns: gridItems, spacing: 10) {
-                        ForEach(upcoming, id: \.self) { elem in
-                            AnyView(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel).collapsedView)
-                                .onAppear {
-                                    feedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel))
-                                }
-                        }
-                    }
-                    .padding(20)
-                }
-            } else {
-                BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
-                    Text("No upcoming meets found")
-                        .dynamicTypeSize(.xSmall ... .xxxLarge)
-                }
-            }
-        } else if !timedOut {
-            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
-                VStack {
-                    Text("Getting upcoming meets")
-                        .dynamicTypeSize(.xSmall ... .xxxLarge)
-                    ProgressView()
-                }
-            }
-        } else {
-            BackgroundBubble(cornerRadius: 30) {
-                Text("Unable to get upcoming meets, network timed out")
-                    .dynamicTypeSize(.xSmall ... .xxxLarge)
-                    .padding()
-                    .multilineTextAlignment(.center)
-                    .frame(width: screenWidth * 0.9)
-            }
-        }
-    }
-}
-
-
-struct CurrentMeetsView: View {
-    @ObservedObject var meetParser: MeetParser
-    let gridItems = [GridItem(.adaptive(minimum: 300))]
-    @Binding var timedOut: Bool
-    @Binding var feedModel: FeedModel
-    @Binding var feedItems: [FeedItem]
-    let namespace: Namespace.ID
-    
-    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
-    
-    private let screenWidth = UIScreen.main.bounds.width
-    
-    private var maxHeightOffset: CGFloat {
-        min(maxHeightOffsetScaled, 90)
-    }
-    
-    var body: some View {
-        if meetParser.currentMeets != nil && !meetParser.currentMeets!.isEmpty {
-            let current = tupleToList(tuples: dictToCurrentTuple(dict: meetParser.currentMeets ?? []))
-            ScrollView {
-                LazyVGrid(columns: gridItems, spacing: 10) {
-                    ForEach(current, id: \.self) { elem in
-                        AnyView(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3], resultsLink: elem[9]), namespace: namespace, feedModel: $feedModel).collapsedView)
-                            .onAppear {
-                                feedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel))
-                            }
-                    }
-                }
-                .padding(20)
-            }
-        } else if meetParser.currentMeets != nil && !timedOut {
-            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
-                Text("No current meets found")
-                    .dynamicTypeSize(.xSmall ... .xxxLarge)
-            }
-        } else if !timedOut {
-            BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
-                VStack {
-                    Text("Getting current meets")
-                    ProgressView()
-                }
-            }
-        } else {
-            BackgroundBubble(cornerRadius: 30) {
-                VStack(alignment: .center) {
-                    Text("Unable to get current meets, network timed out")
-                        .dynamicTypeSize(.xSmall ... .xxxLarge)
-                        .padding()
-                        .multilineTextAlignment(.center)
-                        .frame(width: screenWidth * 0.9)
-                }
-            }
         }
     }
 }
