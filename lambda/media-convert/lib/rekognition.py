@@ -58,6 +58,7 @@ def format_response(response):
 # Blocklist created by including relevant top-level or second-level category
 # words, which should be captured by the label and parentName
 def has_no_inappropriate_content(response):
+    # https://docs.aws.amazon.com/rekognition/latest/dg/moderation.html#moderation-api
     blocklist = {
         "Sexual Activity",
         "Adult Toys",
