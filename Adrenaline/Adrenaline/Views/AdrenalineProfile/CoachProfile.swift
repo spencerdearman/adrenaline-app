@@ -43,8 +43,7 @@ struct CoachView: View {
 struct CoachProfileContent: View {
     @AppStorage("authUserId") private var authUserId: String = ""
     @StateObject private var parser = ProfileParser()
-    @State var scoreValues: [String] = ["Posts", "Judging", "Divers", "Metrics", "Recruiting",
-                                        "Statistics"]
+    @State var scoreValues: [String] = ["Posts", "Recruiting", "Judging", "Divers"]
     @State var selectedPage: Int = 0
     @State var profileLink: String = ""
     @State var judgingData: ProfileJudgingData? = nil
@@ -97,10 +96,10 @@ struct CoachProfileContent: View {
         }
         
         Group {
-            switch selectedPage {
-                case 0:
+            switch scoreValues[selectedPage] {
+                case "Posts":
                     PostsView(newUser: newUser)
-                case 1:
+                case "Judging":
                     if let judging = judgingData {
 //                        JudgedList(data: judging)
                     } else if diveMeetsID == "" {
@@ -119,7 +118,7 @@ struct CoachProfileContent: View {
                             }
                         }
                     }
-                case 2:
+                case "Divers":
                     if let divers = coachDiversData {
 //                        DiversList(divers: divers)
 //                            .offset(y: -20)
@@ -139,20 +138,14 @@ struct CoachProfileContent: View {
                             }
                         }
                     }
-                case 3:
-                    CoachMetricsView()
-                case 4:
+                case "Recruiting":
                     CoachRecruitingView()
-                case 5:
-                    CoachStatisticsView()
-                case 6:
+                case "Saved":
                     SavedPostsView(newUser: newUser)
-                case 7:
+                case "Favorites":
                     FavoritesView(newUser: newUser)
                 default:
-                    if let judging = judgingData {
-//                        JudgedList(data: judging)
-                    }
+                    Text("Default View")
             }
         }
         .offset(y: -screenHeight * 0.05)
