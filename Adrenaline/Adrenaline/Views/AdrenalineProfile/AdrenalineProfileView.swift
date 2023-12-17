@@ -54,7 +54,7 @@ struct AdrenalineProfileWrapperView: View {
             }
         }
         .overlay {
-            ProfileBar(state: state, showAccount: $showAccount, recentSearches: $recentSearches, 
+            ProfileBar(state: state, showAccount: $showAccount, recentSearches: $recentSearches,
                        updateDataStoreData: $updateDataStoreData, user: user)
             .frame(width: screenWidth)
         }
@@ -140,7 +140,8 @@ struct AdrenalineProfileView: View {
                             Text("This is a spectator profile")
                         } else {
                             Text("The account type has not been specified")
-                        }                    }
+                        }
+                    }
                 }
                 .frame(width: screenWidth, height: swiped ? screenHeight * 0.85: screenHeight * 0.6)
                 .onSwipeGesture(trigger: .onChanged) { direction in
@@ -265,14 +266,15 @@ struct PersonalInfoView: View {
                                 
                             }
                         }
-                        if user.accountType != "Spectator" {
+                        
+                        if user.accountType == "Athlete" {
                             if currentMode == .light {
                                 Divider()
                             } else {
                                 WhiteDivider()
                             }
+                            
                             HStack (alignment: .firstTextBaseline) {
-                                //                                    if user.accountType == "Athlete" {
                                 HStack {
                                     Image(systemName: "mappin.and.ellipse")
                                     if let hometown = athlete?.hometown, !hometown.isEmpty {
@@ -289,7 +291,6 @@ struct PersonalInfoView: View {
                                         Text("?")
                                     }
                                 }
-                                //                                    }
                             }
                         }
                     }

@@ -43,8 +43,7 @@ struct CoachView: View {
 struct CoachProfileContent: View {
     @AppStorage("authUserId") private var authUserId: String = ""
     @StateObject private var parser = ProfileParser()
-    @State var scoreValues: [String] = ["Posts", "Judging", "Divers", "Metrics", "Recruiting",
-                                        "Statistics"]
+    @State var scoreValues: [String] = ["Posts", "Recruiting", "Judging", "Divers"]
     @State var selectedPage: Int = 0
     @State var profileLink: String = ""
     @State var judgingData: ProfileJudgingData? = nil
@@ -97,62 +96,21 @@ struct CoachProfileContent: View {
         }
         
         Group {
-            switch selectedPage {
-                case 0:
+            switch scoreValues[selectedPage] {
+                case "Posts":
                     PostsView(newUser: newUser)
-                case 1:
-                    if let judging = judgingData {
-//                        JudgedList(data: judging)
-                    } else if diveMeetsID == "" {
-                        BackgroundBubble() {
-                            Text("Cannot get judging data, account is not linked to DiveMeets")
-                                .font(.title2)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                        }
-                        .frame(width: screenWidth * 0.9)
-                    } else {
-                        BackgroundBubble(vPadding: 40, hPadding: 40) {
-                            VStack {
-                                Text("Getting judging data...")
-                                ProgressView()
-                            }
-                        }
-                    }
-                case 2:
-                    if let divers = coachDiversData {
-//                        DiversList(divers: divers)
-//                            .offset(y: -20)
-                    } else if diveMeetsID == "" {
-                        BackgroundBubble() {
-                            Text("Cannot get diver data, account is not linked to DiveMeets")
-                                .font(.title2)
-                                .multilineTextAlignment(.center)
-                                .padding()
-                        }
-                        .frame(width: screenWidth * 0.9)
-                    } else {
-                        BackgroundBubble(vPadding: 40, hPadding: 40) {
-                            VStack {
-                                Text("Getting coach divers list...")
-                                ProgressView()
-                            }
-                        }
-                    }
-                case 3:
-                    CoachMetricsView()
-                case 4:
-                    CoachRecruitingView()
-                case 5:
-                    CoachStatisticsView()
-                case 6:
+                case "Judging":
+                    JudgingView(newUser: newUser, judgingData: judgingData)
+                case "Divers":
+                    DiversView(newUser: newUser, diversData: coachDiversData)
+                case "Recruiting":
+                    CoachRecruitingView(newUser: newUser)
+                case "Saved":
                     SavedPostsView(newUser: newUser)
-                case 7:
+                case "Favorites":
                     FavoritesView(newUser: newUser)
                 default:
-                    if let judging = judgingData {
-//                        JudgedList(data: judging)
-                    }
+                    Text("Default View")
             }
         }
         .offset(y: -screenHeight * 0.05)
@@ -160,21 +118,84 @@ struct CoachProfileContent: View {
     }
 }
 
-struct CoachMetricsView: View {
-    var body: some View {
-        Text("Coach Metrics")
-    }
-}
-
 struct CoachRecruitingView: View {
+    var newUser: NewUser
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
     var body: some View {
-        Text("Coach Recruiting")
+        VStack {
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 4)
+                HStack {
+                    Image(systemName: "envelope.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: screenWidth * 0.07,
+                               height: screenWidth * 0.07)
+                    Spacer()
+                    Text("\(newUser.email)")
+                }
+                .padding()
+            }
+            
+            Spacer()
+        }
+        .padding()
     }
 }
 
-struct CoachStatisticsView: View {
+struct JudgingView: View {
+    var newUser: NewUser
+    var judgingData: ProfileJudgingData?
+    
     var body: some View {
-        Text("Coach Statistics")
+        ZStack {
+            if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
+                if let data = judgingData {
+                    Text("Judging")
+                        .foregroundColor(.primary)
+                } else {
+                    Text("No Judging Data Found")
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                Text("No DiveMeets Account Linked")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .font(.title3)
+        .fontWeight(.semibold)
+        .padding()
+        .multilineTextAlignment(.center)
     }
 }
 
+struct DiversView: View {
+    var newUser: NewUser
+    var diversData: ProfileCoachDiversData?
+    
+    var body: some View {
+        ZStack {
+            if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
+                if let data = diversData {
+                    Text("Divers")
+                        .foregroundColor(.primary)
+                } else {
+                    Text("No Diver Data Found")
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                Text("No DiveMeets Account Linked")
+                    .foregroundColor(.secondary)
+            }
+        }
+        .font(.title3)
+        .fontWeight(.semibold)
+        .padding()
+        .multilineTextAlignment(.center)
+    }
+}
