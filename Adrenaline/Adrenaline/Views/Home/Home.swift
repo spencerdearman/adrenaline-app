@@ -93,6 +93,13 @@ struct Home: View {
     @State private var meetsParsed: Bool = false
     @State private var timedOut: Bool = false
     @State private var selection: ViewType = .upcoming
+    @State private var contentHasScrolled: Bool = false
+    @State private var feedModel: FeedModel = FeedModel()
+    @Binding var diveMeetsID: String
+    @Binding var tabBarState: Visibility
+    @Binding var showAccount: Bool
+    @Binding var recentSearches: [SearchItem]
+    @Binding var uploadingPost: Post?
     
     private let cornerRadius: CGFloat = 30
     private let textColor: Color = Color.primary
@@ -104,6 +111,14 @@ struct Home: View {
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
     @ScaledMetric private var typeBGWidthScaled: CGFloat = 40
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    
+    init(diveMeetsID: Binding<String>, tabBarState: Binding<Visibility>, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, uploadingPost: Binding<Post?>) {
+        self._diveMeetsID = diveMeetsID
+        self._tabBarState = tabBarState
+        self._showAccount = showAccount
+        self._recentSearches = recentSearches
+        self._uploadingPost = uploadingPost
+    }
     
     private var typeBubbleWidth: CGFloat {
         min(typeBubbleWidthScaled, 150)
@@ -155,97 +170,131 @@ struct Home: View {
         min(maxHeightOffsetScaled, 90)
     }
     
+    var selector: some View {
+        VStack {
+            ZStack {
+                ZStack {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .frame(width: typeBubbleWidth * 2 + 5,
+                               height: typeBGWidth)
+                        .foregroundColor(Custom.grayThinMaterial)
+                        .shadow(radius: 5)
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .frame(width: typeBubbleWidth,
+                               height: typeBubbleHeight)
+                        .foregroundColor(Custom.darkGray)
+                        .offset(x: selection == .upcoming
+                                ? -typeBubbleWidth / 2
+                                : typeBubbleWidth / 2)
+                        .animation(.spring(response: 0.2), value: selection)
+                    HStack(spacing: 0) {
+                        Button(action: {
+                            if selection == .current {
+                                selection = .upcoming
+                            }
+                        }, label: {
+                            Text(ViewType.upcoming.rawValue)
+                                .animation(nil, value: selection)
+                        })
+                        .frame(width: typeBubbleWidth,
+                               height: typeBubbleHeight)
+                        .foregroundColor(textColor)
+                        .cornerRadius(cornerRadius)
+                        Button(action: {
+                            if selection == .upcoming {
+                                selection = .current
+                            }
+                        }, label: {
+                            Text(ViewType.current.rawValue)
+                                .animation(nil, value: selection)
+                        })
+                        .frame(width: typeBubbleWidth + 2,
+                               height: typeBubbleHeight)
+                        .foregroundColor(textColor)
+                        .cornerRadius(cornerRadius)
+                    }
+                }
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        Task {
+                            await getPresentMeets()
+                        }
+                    }, label: {
+                        ZStack {
+                            Circle()
+                                .foregroundColor(Custom.grayThinMaterial)
+                                .shadow(radius: 6)
+                                .frame(width: typeBGWidth, height: typeBGWidth)
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.primary)
+                                .font(.title2)
+                        }
+                    })
+                }
+                .padding(.trailing)
+            }
+            .dynamicTypeSize(.xSmall ... .xLarge)
+            
+        }
+    }
+    
+    var scrollDetection: some View {
+        GeometryReader { proxy in
+            let offset = proxy.frame(in: .named("scroll")).minY
+            Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
+        }
+        .onPreferenceChange(ScrollPreferenceKey.self) { offset in
+            withAnimation(.easeInOut) {
+                if offset < 0 {
+                    contentHasScrolled = true
+                } else {
+                    contentHasScrolled = false
+                }
+            }
+        }
+    }
+    
     @ViewBuilder
     var body: some View {
         if networkIsConnected {
             NavigationView {
                 ZStack {
-                    VStack {
-                        VStack {
-                            ZStack {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: cornerRadius)
-                                        .frame(width: typeBubbleWidth * 2 + 5,
-                                               height: typeBGWidth)
-                                        .foregroundColor(Custom.grayThinMaterial)
-                                        .shadow(radius: 5)
-                                    RoundedRectangle(cornerRadius: cornerRadius)
-                                        .frame(width: typeBubbleWidth,
-                                               height: typeBubbleHeight)
-                                        .foregroundColor(Custom.darkGray)
-                                        .offset(x: selection == .upcoming
-                                                ? -typeBubbleWidth / 2
-                                                : typeBubbleWidth / 2)
-                                        .animation(.spring(response: 0.2), value: selection)
-                                    HStack(spacing: 0) {
-                                        Button(action: {
-                                            if selection == .current {
-                                                selection = .upcoming
-                                            }
-                                        }, label: {
-                                            Text(ViewType.upcoming.rawValue)
-                                                .animation(nil, value: selection)
-                                        })
-                                        .frame(width: typeBubbleWidth,
-                                               height: typeBubbleHeight)
-                                        .foregroundColor(textColor)
-                                        .cornerRadius(cornerRadius)
-                                        Button(action: {
-                                            if selection == .upcoming {
-                                                selection = .current
-                                            }
-                                        }, label: {
-                                            Text(ViewType.current.rawValue)
-                                                .animation(nil, value: selection)
-                                        })
-                                        .frame(width: typeBubbleWidth + 2,
-                                               height: typeBubbleHeight)
-                                        .foregroundColor(textColor)
-                                        .cornerRadius(cornerRadius)
-                                    }
-                                }
-                                HStack {
-                                    Spacer()
-                                    Button(action: {
-                                        Task {
-                                            await getPresentMeets()
-                                        }
-                                    }, label: {
-                                        ZStack {
-                                            Circle()
-                                                .foregroundColor(Custom.grayThinMaterial)
-                                                .shadow(radius: 6)
-                                                .frame(width: typeBGWidth, height: typeBGWidth)
-                                            Image(systemName: "arrow.clockwise")
-                                                .foregroundColor(.primary)
-                                                .font(.title2)
-                                        }
-                                    })
-                                }
-                                .padding(.trailing)
-                            }
-                            .dynamicTypeSize(.xSmall ... .xLarge)
+                    (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+                    selector
+                    if networkIsConnected {
+                        ScrollView {
+                            scrollDetection
                             
+                            Rectangle()
+                                .fill(.clear)
+                                .frame(height: screenHeight * 0.08)
+                            
+                    
                         }
-                        Spacer()
+                    } else {
+                        NotConnectedView()
+                    }
+                    VStack {
                         if selection == .upcoming {
                             UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut)
                         } else {
                             CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut)
                         }
-                        Spacer()
                     }
                 }
+                .overlay (
+                    NavigationBar(title: "Meets",
+                                  diveMeetsID: $diveMeetsID,
+                                  showAccount: $showAccount,
+                                  contentHasScrolled: $contentHasScrolled,
+                                  feedModel: $feedModel, recentSearches: $recentSearches,
+                                  uploadingPost: $uploadingPost)
+                    .frame(width: screenWidth)
+                )
             }
             .navigationViewStyle(StackNavigationViewStyle())
             .dynamicTypeSize(.xSmall ... .xxxLarge)
-            .onSwipeGesture(trigger: .onEnded) { direction in
-                if direction == .left && selection == .upcoming {
-                    selection = .current
-                } else if direction == .right && selection == .current {
-                    selection = .upcoming
-                }
-            }
             .onAppear {
                 Task {
                     await getPresentMeets()
