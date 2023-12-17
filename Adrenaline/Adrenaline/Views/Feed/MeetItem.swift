@@ -10,9 +10,9 @@ import UIKit
 import AVKit
 
 class MeetFeedItem: FeedItem {
-    var meet: MeetEvent
+    var meet: MeetBase
     
-    init(meet: MeetEvent, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
+    init(meet: MeetBase, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
         self.meet = meet
         super.init()
         self.collapsedView = MeetFeedItemCollapsedView(feedModel: feedModel, id: self.id,
@@ -30,7 +30,7 @@ struct MeetFeedItemCollapsedView: View {
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var meet: MeetBase
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -100,7 +100,7 @@ struct MeetFeedItemExpandedView: View {
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var meet: MeetBase
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height

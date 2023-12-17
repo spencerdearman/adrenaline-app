@@ -94,17 +94,17 @@ struct FeedBase: View {
         }
         .onAppear {
             feedItems = [
-                MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
+                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Spencer"), namespace: namespace, feedModel: $feedModel),
-                MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
+                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
-                MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
+                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Logan"), namespace: namespace, feedModel: $feedModel),
                 MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
                               namespace: namespace, feedModel: $feedModel),
-                MeetFeedItem(meet: MeetEvent(name: "Test Meet", link: "Body body body"),
+                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
                              namespace: namespace, feedModel: $feedModel),
                 ImageFeedItem(image: Image("Beck"), namespace: namespace, feedModel: $feedModel),
                 MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
