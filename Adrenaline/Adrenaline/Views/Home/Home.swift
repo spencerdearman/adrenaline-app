@@ -96,6 +96,11 @@ struct Home: View {
     @State private var selection: ViewType = .upcoming
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
+    @State private var showTab: Bool = true
+    @State private var showNav: Bool = true
+    @State private var showStatusBar = true
+    @State private var showDetail: Bool = false
+    @State private var feedItems: [FeedItem] = []
     @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
@@ -108,6 +113,7 @@ struct Home: View {
     private let grayValueDark: CGFloat = 0.10
     private var screenWidth = UIScreen.main.bounds.width
     private var screenHeight = UIScreen.main.bounds.height
+    private var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
     @ScaledMetric private var typeBGWidthScaled: CGFloat = 40
@@ -194,6 +200,14 @@ struct Home: View {
                 ZStack {
                     (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
                     
+                    if feedModel.showTile {
+                        ForEach($feedItems) { item in
+                            if item.id == feedModel.selectedItem {
+                                AnyView(item.expandedView.wrappedValue)
+                            }
+                        }
+                    }
+                    
                     if networkIsConnected {
                         ScrollView {
                             scrollDetection
@@ -202,11 +216,31 @@ struct Home: View {
                                 .fill(.clear)
                                 .frame(height: screenHeight * 0.08)
                             
-                            
-                            if selection == .upcoming {
-                                UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, namespace: namespace)
+                            if showDetail {
+                                LazyVGrid(columns: columns, spacing: 20) {
+                                    ForEach($feedItems) { _ in
+                                        Rectangle()
+                                            .fill(.white)
+                                            .cornerRadius(30)
+                                            .shadow(radius: 20)
+                                            .opacity(0.3)
+                                    }
+                                }
+                                .padding(.horizontal, 20)
+                                .offset(y: -100)
+                                
                             } else {
-                                CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, namespace: namespace)
+                                if selection == .upcoming {
+                                    UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, feedItems: $feedItems, namespace: namespace)
+                                        .onDisappear {
+                                            feedItems = []
+                                        }
+                                } else {
+                                    CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, feedItems: $feedItems, namespace: namespace)
+                                        .onDisappear {
+                                            feedItems = []
+                                        }
+                                }
                             }
                         }
                     } else {
@@ -217,6 +251,14 @@ struct Home: View {
                     MeetsBar(title: "Meets", diveMeetsID: $diveMeetsID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                     .frame(width: screenWidth)
                 )
+                .onChange(of: feedModel.showTile) {
+                    withAnimation {
+                        feedModel.showTab.toggle()
+                        showNav.toggle()
+                        showStatusBar.toggle()
+                    }
+                }
+                .statusBar(hidden: !showStatusBar)
             }
             .navigationViewStyle(StackNavigationViewStyle())
             .dynamicTypeSize(.xSmall ... .xxxLarge)
@@ -236,6 +278,7 @@ struct UpcomingMeetsView: View {
     @ObservedObject var meetParser: MeetParser
     @Binding var timedOut: Bool
     @Binding var feedModel: FeedModel
+    @Binding var feedItems: [FeedItem]
     let namespace: Namespace.ID
     let gridItems = [GridItem(.adaptive(minimum: 300))]
     
@@ -247,9 +290,6 @@ struct UpcomingMeetsView: View {
         min(maxHeightOffsetScaled, 90)
     }
     
-    private var isPhone: Bool {
-        UIDevice.current.userInterfaceIdiom != .pad
-    }
     
     var body: some View {
         if let meets = meetParser.upcomingMeets {
@@ -259,6 +299,9 @@ struct UpcomingMeetsView: View {
                     LazyVGrid(columns: gridItems, spacing: 10) {
                         ForEach(upcoming, id: \.self) { elem in
                             AnyView(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel).collapsedView)
+                                .onAppear {
+                                    feedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel))
+                                }
                         }
                     }
                     .padding(20)
@@ -295,6 +338,7 @@ struct CurrentMeetsView: View {
     let gridItems = [GridItem(.adaptive(minimum: 300))]
     @Binding var timedOut: Bool
     @Binding var feedModel: FeedModel
+    @Binding var feedItems: [FeedItem]
     let namespace: Namespace.ID
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
@@ -304,9 +348,6 @@ struct CurrentMeetsView: View {
     private var maxHeightOffset: CGFloat {
         min(maxHeightOffsetScaled, 90)
     }
-    private var isPhone: Bool {
-        UIDevice.current.userInterfaceIdiom != .pad
-    }
     
     var body: some View {
         if meetParser.currentMeets != nil && !meetParser.currentMeets!.isEmpty {
@@ -315,6 +356,9 @@ struct CurrentMeetsView: View {
                 LazyVGrid(columns: gridItems, spacing: 10) {
                     ForEach(current, id: \.self) { elem in
                         AnyView(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3], resultsLink: elem[9]), namespace: namespace, feedModel: $feedModel).collapsedView)
+                            .onAppear {
+                                feedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel))
+                            }
                     }
                 }
                 .padding(20)
