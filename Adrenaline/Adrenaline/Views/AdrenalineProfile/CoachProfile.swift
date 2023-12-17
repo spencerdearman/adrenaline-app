@@ -104,7 +104,7 @@ struct CoachProfileContent: View {
                 case "Divers":
                     DiversView(newUser: newUser, diversData: coachDiversData)
                 case "Recruiting":
-                    CoachRecruitingView()
+                    CoachRecruitingView(newUser: newUser)
                 case "Saved":
                     SavedPostsView(newUser: newUser)
                 case "Favorites":
@@ -119,8 +119,32 @@ struct CoachProfileContent: View {
 }
 
 struct CoachRecruitingView: View {
+    var newUser: NewUser
+    
+    private let screenWidth = UIScreen.main.bounds.width
+    
     var body: some View {
-        Text("Recruiting")
+        VStack {
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .mask(RoundedRectangle(cornerRadius: 40))
+                    .shadow(radius: 4)
+                HStack {
+                    Image(systemName: "envelope.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: screenWidth * 0.07,
+                               height: screenWidth * 0.07)
+                    Spacer()
+                    Text("\(newUser.email)")
+                }
+                .padding()
+            }
+            
+            Spacer()
+        }
+        .padding()
     }
 }
 
