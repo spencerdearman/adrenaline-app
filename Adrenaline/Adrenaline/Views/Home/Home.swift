@@ -87,6 +87,7 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
 }
 
 struct Home: View {
+    @Namespace var namespace
     @Environment(\.colorScheme) var currentMode
     @Environment(\.networkIsConnected) private var networkIsConnected
     @StateObject var meetParser: MeetParser = MeetParser()
@@ -170,75 +171,6 @@ struct Home: View {
         min(maxHeightOffsetScaled, 90)
     }
     
-    var selector: some View {
-        VStack {
-            ZStack {
-                ZStack {
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .frame(width: typeBubbleWidth * 2 + 5,
-                               height: typeBGWidth)
-                        .foregroundColor(Custom.grayThinMaterial)
-                        .shadow(radius: 5)
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .frame(width: typeBubbleWidth,
-                               height: typeBubbleHeight)
-                        .foregroundColor(Custom.darkGray)
-                        .offset(x: selection == .upcoming
-                                ? -typeBubbleWidth / 2
-                                : typeBubbleWidth / 2)
-                        .animation(.spring(response: 0.2), value: selection)
-                    HStack(spacing: 0) {
-                        Button(action: {
-                            if selection == .current {
-                                selection = .upcoming
-                            }
-                        }, label: {
-                            Text(ViewType.upcoming.rawValue)
-                                .animation(nil, value: selection)
-                        })
-                        .frame(width: typeBubbleWidth,
-                               height: typeBubbleHeight)
-                        .foregroundColor(textColor)
-                        .cornerRadius(cornerRadius)
-                        Button(action: {
-                            if selection == .upcoming {
-                                selection = .current
-                            }
-                        }, label: {
-                            Text(ViewType.current.rawValue)
-                                .animation(nil, value: selection)
-                        })
-                        .frame(width: typeBubbleWidth + 2,
-                               height: typeBubbleHeight)
-                        .foregroundColor(textColor)
-                        .cornerRadius(cornerRadius)
-                    }
-                }
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        Task {
-                            await getPresentMeets()
-                        }
-                    }, label: {
-                        ZStack {
-                            Circle()
-                                .foregroundColor(Custom.grayThinMaterial)
-                                .shadow(radius: 6)
-                                .frame(width: typeBGWidth, height: typeBGWidth)
-                            Image(systemName: "arrow.clockwise")
-                                .foregroundColor(.primary)
-                                .font(.title2)
-                        }
-                    })
-                }
-                .padding(.trailing)
-            }
-            .dynamicTypeSize(.xSmall ... .xLarge)
-            
-        }
-    }
-    
     var scrollDetection: some View {
         GeometryReader { proxy in
             let offset = proxy.frame(in: .named("scroll")).minY
@@ -261,7 +193,7 @@ struct Home: View {
             NavigationView {
                 ZStack {
                     (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
-                    selector
+                    
                     if networkIsConnected {
                         ScrollView {
                             scrollDetection
@@ -270,26 +202,19 @@ struct Home: View {
                                 .fill(.clear)
                                 .frame(height: screenHeight * 0.08)
                             
-                    
+                            
+                            if selection == .upcoming {
+                                UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, namespace: namespace)
+                            } else {
+                                CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, namespace: namespace)
+                            }
                         }
                     } else {
                         NotConnectedView()
                     }
-                    VStack {
-                        if selection == .upcoming {
-                            UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut)
-                        } else {
-                            CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut)
-                        }
-                    }
                 }
                 .overlay (
-                    NavigationBar(title: "Meets",
-                                  diveMeetsID: $diveMeetsID,
-                                  showAccount: $showAccount,
-                                  contentHasScrolled: $contentHasScrolled,
-                                  feedModel: $feedModel, recentSearches: $recentSearches,
-                                  uploadingPost: $uploadingPost)
+                    MeetsBar(title: "Meets", diveMeetsID: $diveMeetsID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                     .frame(width: screenWidth)
                 )
             }
@@ -309,6 +234,8 @@ struct Home: View {
 struct UpcomingMeetsView: View {
     @ObservedObject var meetParser: MeetParser
     @Binding var timedOut: Bool
+    @Binding var feedModel: FeedModel
+    let namespace: Namespace.ID
     let gridItems = [GridItem(.adaptive(minimum: 300))]
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
@@ -327,20 +254,13 @@ struct UpcomingMeetsView: View {
         if let meets = meetParser.upcomingMeets {
             if !meets.isEmpty && !timedOut {
                 let upcoming = tupleToList(tuples: dictToTuple(meets))
-                if isPhone {
-                    ScalingScrollView(records: upcoming, bgColor: .clear, rowSpacing: 15,
-                                      shadowRadius: 10) { (elem) in
-                        MeetBubbleView(elements: elem)
-                    }
-                } else {
-                    ScrollView {
-                        LazyVGrid(columns: gridItems, spacing: 10) {
-                            ForEach(upcoming, id: \.self) { elem in
-                                MeetBubbleView(elements: elem)
-                            }
+                ScrollView {
+                    LazyVGrid(columns: gridItems, spacing: 10) {
+                        ForEach(upcoming, id: \.self) { elem in
+                            AnyView(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel).collapsedView)
                         }
-                        .padding(20)
                     }
+                    .padding(20)
                 }
             } else {
                 BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
@@ -373,6 +293,8 @@ struct CurrentMeetsView: View {
     @ObservedObject var meetParser: MeetParser
     let gridItems = [GridItem(.adaptive(minimum: 300))]
     @Binding var timedOut: Bool
+    @Binding var feedModel: FeedModel
+    let namespace: Namespace.ID
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     
@@ -388,22 +310,13 @@ struct CurrentMeetsView: View {
     var body: some View {
         if meetParser.currentMeets != nil && !meetParser.currentMeets!.isEmpty {
             let current = tupleToList(tuples: dictToCurrentTuple(dict: meetParser.currentMeets ?? []))
-            if isPhone {
-                ScalingScrollView(records: current, bgColor: .clear, rowSpacing: 15,
-                                  shadowRadius: 10) {
-                    (elem) in
-                    MeetBubbleView(elements: elem)
-                }
-                                  .padding(.bottom, maxHeightOffset)
-            } else {
-                ScrollView {
-                    LazyVGrid(columns: gridItems, spacing: 10) {
-                        ForEach(current, id: \.self) { elem in
-                            MeetBubbleView(elements: elem)
-                        }
+            ScrollView {
+                LazyVGrid(columns: gridItems, spacing: 10) {
+                    ForEach(current, id: \.self) { elem in
+                        AnyView(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3], resultsLink: elem[9]), namespace: namespace, feedModel: $feedModel).collapsedView)
                     }
-                    .padding(20)
                 }
+                .padding(20)
             }
         } else if meetParser.currentMeets != nil && !timedOut {
             BackgroundBubble(cornerRadius: 30, vPadding: 30, hPadding: 50) {
@@ -593,98 +506,6 @@ struct MeetBubbleView: View {
                     .foregroundColor(.primary)
                 }
                 .padding()
-            }
-        }
-    }
-}
-
-struct HomeColorfulView: View {
-    @Environment(\.colorScheme) var currentMode
-    private let screenWidth = UIScreen.main.bounds.width
-    private let screenHeight = UIScreen.main.bounds.height
-    private var bgColor: Color {
-        currentMode == .light ? Color.white : Color.black
-    }
-    private var isPhone: Bool {
-        UIDevice.current.userInterfaceIdiom != .pad
-    }
-    private var isLandscape: Bool {
-        let deviceOrientation = UIDevice.current.orientation
-        return deviceOrientation.isLandscape
-    }
-    
-    var body: some View {
-        ZStack{
-            bgColor.ignoresSafeArea()
-            GeometryReader { geometry in
-                ZStack{
-                    Circle()
-                        .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
-                    
-                    Circle()
-                        .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth, height: screenWidth)
-                    
-                    Circle()
-                        .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
-                    
-                    Circle()
-                        .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
-                    
-                }
-                .offset(x: screenWidth / 1.4,
-                        y: isPhone
-                        ? screenHeight / 15
-                        : (!isLandscape
-                           ? -screenHeight / 5
-                           : -screenHeight))
-                
-                ZStack{
-                    Circle()
-                        .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
-                    
-                    Circle()
-                        .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth, height: screenWidth)
-                    
-                    Circle()
-                        .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
-                    
-                    Circle()
-                        .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
-                    
-                }
-                .offset(x: -screenWidth / 2,
-                        y: isPhone
-                        ? screenHeight / 5
-                        : !isLandscape
-                        ? screenHeight / 20
-                        : -screenHeight / 1.5)
-                ZStack{
-                    Circle()
-                        .stroke(Custom.darkBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 1.1, height: screenWidth * 1.1)
-                    
-                    Circle()
-                        .stroke(Custom.coolBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth, height: screenWidth)
-                    
-                    Circle()
-                        .stroke(Custom.medBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 0.9, height: screenWidth * 0.9)
-                    
-                    Circle()
-                        .stroke(Custom.lightBlue, lineWidth: screenWidth * 0.023)
-                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.8)
-                    
-                }
-                .offset(x: screenWidth / 3, y: screenHeight / 1.5)
             }
         }
     }
