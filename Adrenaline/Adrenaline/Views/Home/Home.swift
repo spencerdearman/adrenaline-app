@@ -88,7 +88,9 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
 
 struct Home: View {
     @Namespace var namespace
+    @Environment(\.scenePhase) var scenePhase
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.dictToTuple) private var dictToTuple
     @Environment(\.networkIsConnected) private var networkIsConnected
     @StateObject var meetParser: MeetParser = MeetParser()
     @State private var meetsParsed: Bool = false
@@ -100,7 +102,8 @@ struct Home: View {
     @State private var showNav: Bool = true
     @State private var showStatusBar = true
     @State private var showDetail: Bool = false
-    @State private var feedItems: [FeedItem] = []
+    @State private var upcomingFeedItems: [FeedItem] = []
+    @State private var currentFeedItems: [FeedItem] = []
     @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
@@ -177,6 +180,28 @@ struct Home: View {
         min(maxHeightOffsetScaled, 90)
     }
     
+    private func loadUpcomingMeets() {
+        upcomingFeedItems = []
+        if let meets = meetParser.upcomingMeets {
+            if !meets.isEmpty && !timedOut {
+                let upcoming = tupleToList(tuples: dictToTuple(meets))
+                for elem in upcoming {
+                    upcomingFeedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel))
+                }
+            }
+        }
+    }
+    
+    private func loadCurrentMeets() {
+        currentFeedItems = []
+        if meetParser.currentMeets != nil && !meetParser.currentMeets!.isEmpty {
+            let current = tupleToList(tuples: dictToCurrentTuple(dict: meetParser.currentMeets ?? []))
+            for elem in current {
+                currentFeedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3], resultsLink: elem[9]), namespace: namespace, feedModel: $feedModel))
+            }
+        }
+    }
+    
     var scrollDetection: some View {
         GeometryReader { proxy in
             let offset = proxy.frame(in: .named("scroll")).minY
@@ -201,9 +226,17 @@ struct Home: View {
                     (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
                     
                     if feedModel.showTile {
-                        ForEach($feedItems) { item in
-                            if item.id == feedModel.selectedItem {
-                                AnyView(item.expandedView.wrappedValue)
+                        if selection == .current {
+                            ForEach($currentFeedItems) { item in
+                                if item.id == feedModel.selectedItem {
+                                    AnyView(item.expandedView.wrappedValue)
+                                }
+                            }
+                        } else {
+                            ForEach($upcomingFeedItems) { item in
+                                if item.id == feedModel.selectedItem {
+                                    AnyView(item.expandedView.wrappedValue)
+                                }
                             }
                         }
                     }
@@ -214,43 +247,73 @@ struct Home: View {
                             
                             Rectangle()
                                 .fill(.clear)
-                                .frame(height: screenHeight * 0.08)
+                                .frame(height: screenHeight * 0.15)
                             
-                            if showDetail {
-                                LazyVGrid(columns: columns, spacing: 20) {
-                                    ForEach($feedItems) { _ in
-                                        Rectangle()
-                                            .fill(.white)
-                                            .cornerRadius(30)
-                                            .shadow(radius: 20)
-                                            .opacity(0.3)
+                            if selection == .current {
+                                if showDetail {
+                                    LazyVGrid(columns: columns, spacing: 20) {
+                                        ForEach($currentFeedItems) { _ in
+                                            Rectangle()
+                                                .fill(.white)
+                                                .cornerRadius(30)
+                                                .shadow(radius: 20)
+                                                .opacity(0.3)
+                                        }
                                     }
-                                }
-                                .padding(.horizontal, 20)
-                                .offset(y: -100)
-                                
-                            } else {
-                                if selection == .upcoming {
-                                    UpcomingMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, feedItems: $feedItems, namespace: namespace)
-                                        .onDisappear {
-                                            feedItems = []
-                                        }
+                                    .padding(.horizontal, 20)
+                                    .offset(y: -100)
                                 } else {
-                                    CurrentMeetsView(meetParser: meetParser, timedOut: $timedOut, feedModel: $feedModel, feedItems: $feedItems, namespace: namespace)
-                                        .onDisappear {
-                                            feedItems = []
+                                    LazyVGrid(columns: columns, spacing: 15) {
+                                        ForEach($currentFeedItems) { item in
+                                            AnyView(item.collapsedView.wrappedValue)
                                         }
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .offset(y: -80)
+                                }
+                            } else {
+                                if showDetail {
+                                    LazyVGrid(columns: columns, spacing: 20) {
+                                        ForEach($upcomingFeedItems) { _ in
+                                            Rectangle()
+                                                .fill(.white)
+                                                .cornerRadius(30)
+                                                .shadow(radius: 20)
+                                                .opacity(0.3)
+                                        }
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .offset(y: -100)
+                                } else {
+                                    LazyVGrid(columns: columns, spacing: 15) {
+                                        ForEach($upcomingFeedItems) { item in
+                                            AnyView(item.collapsedView.wrappedValue)
+                                        }
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .offset(y: -80)
                                 }
                             }
                         }
+                        
                     } else {
                         NotConnectedView()
                     }
                 }
                 .overlay (
                     MeetsBar(title: "Meets", diveMeetsID: $diveMeetsID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
-                    .frame(width: screenWidth)
+                        .frame(width: screenWidth)
                 )
+                .onChange(of: scenePhase) { newScenePhase in
+                    if newScenePhase == .active {
+                        loadUpcomingMeets()
+                        loadCurrentMeets()
+                    }
+                }
+                .onAppear {
+                    loadUpcomingMeets()
+                    loadCurrentMeets()
+                }
                 .onChange(of: feedModel.showTile) {
                     withAnimation {
                         feedModel.showTab.toggle()
