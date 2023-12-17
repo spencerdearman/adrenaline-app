@@ -45,12 +45,17 @@ def wait_for_job_completion(client, job_id):
 
 
 def format_response(response):
-    print("Metadata:", response["VideoMetadata"])
+    if "VideoMetadata" in response:
+        print("Metadata:", response["VideoMetadata"])
+    else:
+        print("Could not find Metadata key in response")
 
-    if len(response["ModerationLabels"]) > 0:
+    if "ModerationLabels" in response and len(response["ModerationLabels"]) > 0:
         for detection in response["ModerationLabels"]:
             print(detection["ModerationLabel"])
             print()
+    elif "ModerationLabels" not in response:
+        print("Could not find ModerationLabels key in response")
     else:
         print("No content was flagged in this video")
 
@@ -71,6 +76,10 @@ def has_no_inappropriate_content(response):
         "Gambling",
         "Hate Symbols",
     }
+
+    if "ModerationLabels" not in response:
+        print("Could not find ModerationLabels key")
+        return False
 
     for detection in response["ModerationLabels"]:
         label = str(detection["ModerationLabel"]["Name"])
