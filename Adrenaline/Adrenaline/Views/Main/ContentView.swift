@@ -150,8 +150,7 @@ struct ContentView: View {
                                 
                                 if let user = newUser, user.accountType != "Spectator" {
                                     ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
-                                             recentSearches: $recentSearches,
-                                             uploadingPost: $uploadingPost)
+                                             recentSearches: $recentSearches)
                                     .tabItem {
                                         Label("Chat", systemImage: "message")
                                     }

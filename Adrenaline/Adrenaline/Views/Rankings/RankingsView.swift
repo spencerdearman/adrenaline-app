@@ -539,6 +539,7 @@ struct RankingsView: View {
             .overlay (
                 NavigationBar(title: "Rankings",
                               diveMeetsID: $diveMeetsID,
+                              showPlus: false,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
                               feedModel: $feedModel, recentSearches: $recentSearches,
