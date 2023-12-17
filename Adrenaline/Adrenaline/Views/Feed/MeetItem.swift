@@ -51,28 +51,28 @@ struct MeetFeedItemCollapsedView: View {
                         .foregroundColor(.primary)
                         .matchedGeometryEffect(id: "title\(id)", in: namespace)
                     
-                    Text("Meet Location - Date Range".uppercased())
+                    Text(meet.org?.uppercased() ?? "")
+                        .font(.footnote).bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .matchedGeometryEffect(id: "subtitle1\(id)", in: namespace)
+                    
+                    Text((meet.location?.uppercased() ?? "") + " - " + (meet.date?.uppercased() ?? ""))
                         .font(.footnote).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-                    
-                    Text("Basic Results are going to go here or something to lure the person in")
-                        .font(.footnote)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                    
-                    HStack {
-                        LogoView(imageName: "Spencer")
-                            .shadow(radius: 10)
-                        Text("You attended, check your results now")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
+                    // WORK ON LATER TO ADDRESS IF YOU WERE IN THE MEET OR NOT
+//                    Divider()
+//                        .foregroundColor(.secondary)
+//                    
+//                    HStack {
+//                        LogoView(imageName: "Spencer")
+//                            .shadow(radius: 10)
+//                        Text("You attended, check your results now")
+//                            .font(.footnote.weight(.medium))
+//                            .foregroundStyle(.secondary)
+//                    }
                     .accessibilityElement(children: .combine)
                 }
                 .padding(20)
