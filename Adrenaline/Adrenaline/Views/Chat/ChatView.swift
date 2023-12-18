@@ -121,6 +121,23 @@ struct ChatView: View {
                         .padding(.horizontal, 16)
                         .padding(.vertical, 10)
                         .matchedGeometryEffect(id: "form", in: namespace)
+                        // When viewing main conversation page, but no users are present
+                    } else if users.count == 0 {
+                        VStack {
+                            Text("You don't have any active conversations")
+                                .foregroundColor(.secondary)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .padding()
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding(20)
+                        .background(.ultraThinMaterial)
+                        .modifier(OutlineOverlay(cornerRadius: 30))
+                        .backgroundStyle(cornerRadius: 30)
+                        .padding(20)
+                        .padding(.vertical, 80)
+                        .matchedGeometryEffect(id: "form", in: namespace)
                     } else {
                         ScrollView {
                             scrollDetection
@@ -187,16 +204,16 @@ struct ChatView: View {
                     currentUser = mainUsers[0]
                 }
                 
-//                let allUsersPredicate = NewUser.keys.id != currentUser?.id
-//                let allUsers = await queryAWSUsers(where: allUsersPredicate)
-//                if allUsers.count >= 1 {
-//                    if let lastOrder = lastUserOrder {
-//                        let extras = Set(allUsers).subtracting(Set(users))
-//                        users = Array(extras) + lastOrder
-//                    } else {
-//                        users = allUsers
-//                    }
-//                }
+                //                let allUsersPredicate = NewUser.keys.id != currentUser?.id
+                //                let allUsers = await queryAWSUsers(where: allUsersPredicate)
+                //                if allUsers.count >= 1 {
+                //                    if let lastOrder = lastUserOrder {
+                //                        let extras = Set(allUsers).subtracting(Set(users))
+                //                        users = Array(extras) + lastOrder
+                //                    } else {
+                //                        users = allUsers
+                //                    }
+                //                }
                 
                 // Observe new messages and build users list associated with current user
                 observeNewMessages()
@@ -255,12 +272,12 @@ struct ChatView: View {
                                         if msgMessageNewUsers.elements[0].newuserID == currentUser.id {
                                             currentMessageNewUser = msgMessageNewUsers.elements[0]
                                             recipientMessageNewUser = msgMessageNewUsers.elements[1]
-                                        // If second element is current user
+                                            // If second element is current user
                                         } else if msgMessageNewUsers.elements[1].newuserID ==
                                                     currentUser.id {
                                             currentMessageNewUser = msgMessageNewUsers.elements[1]
                                             recipientMessageNewUser = msgMessageNewUsers.elements[0]
-                                        // If neither message is the current user, it is ignored
+                                            // If neither message is the current user, it is ignored
                                         } else {
                                             observedMessageIDs.insert(message.id)
                                             continue
@@ -350,7 +367,7 @@ struct ChatView: View {
                     separateChatRequests(conversations: currentUserConversations, users: reorderedUsers)
                     
                     withAnimation {
-//                        users = reorderedUsers
+                        //                        users = reorderedUsers
                         users = conversationUsers
                         chatRequestUsers = requestUsers
                     }
@@ -372,7 +389,7 @@ struct ChatView: View {
     // page
     // Returns (convo dict, convo user list, chat req dict, chat req user list)
     private func separateChatRequests(conversations: [String: [(Message, Bool)]],
-                                      users: [NewUser]) -> ([String: [(Message, Bool)]], 
+                                      users: [NewUser]) -> ([String: [(Message, Bool)]],
                                                             [NewUser],
                                                             [String: [(Message, Bool)]],
                                                             [NewUser]) {
