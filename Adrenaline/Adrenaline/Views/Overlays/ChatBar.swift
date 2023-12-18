@@ -12,7 +12,7 @@ import Authenticator
 struct ChatBar: View {
     @Environment(\.colorScheme) var currentMode
     @State var showSheet: Bool = false
-    @Binding var selection: Int
+    @Binding var showChatBar: Bool
     @Binding var feedModel: FeedModel
     var user: NewUser
     private let screenWidth = UIScreen.main.bounds.width
@@ -28,7 +28,7 @@ struct ChatBar: View {
             HStack(spacing: 16) {
                 Button {
                     withAnimation(.closeCard) {
-                        selection -= 1
+                        showChatBar = false
                         feedModel.showTab = true
                     }
                 } label: {
