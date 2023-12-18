@@ -10,7 +10,7 @@ import Foundation
 import Amplify
 import Combine
 
-struct ChatConversations {
+struct ChatObjects {
     var conversations: [String: [(Message, Bool)]] = [:]
     var users: [NewUser] = []
 }
@@ -26,9 +26,6 @@ struct ChatView: View {
     @AppStorage("authUserId") private var authUserId = ""
     @Namespace var namespace
     @State private var feedModel: FeedModel = FeedModel()
-//    @State private var users: [NewUser] = []
-//    @State private var incomingChatRequestUsers: [NewUser] = []
-//    @State private var outgoingChatRequestUsers: [NewUser] = []
     @State private var lastUserOrder: [NewUser]? = nil
     @State private var currentUser: NewUser?
     @State private var showChatBar: Bool = false
@@ -47,9 +44,9 @@ struct ChatView: View {
     
     // Personal Chat States
     @State private var text: String = ""
-    @State private var currentUserConversations = ChatConversations()
-    @State private var currentUserIncomingChatRequests = ChatConversations()
-    @State private var currentUserOutgoingChatRequests = ChatConversations()
+    @State private var mainConversations = ChatObjects()
+    @State private var incomingChatRequests = ChatObjects()
+    @State private var outgoingChatRequests = ChatObjects()
     @State private var recipient: NewUser?
     
     var body: some View {
@@ -74,7 +71,7 @@ struct ChatView: View {
                                     .frame(height: 100)
                                 LazyVStack {
                                     if let recipient = recipient,
-                                       let messages = currentUserConversations.conversations[recipient.id] {
+                                       let messages = mainConversations.conversations[recipient.id] {
                                         ForEach(messages, id:\.0.id) { message, currentUserIsSender in
                                             MessageRow(message: message,
                                                        currentUserIsSender: currentUserIsSender)
@@ -129,7 +126,7 @@ struct ChatView: View {
                         .padding(.vertical, 10)
                         .matchedGeometryEffect(id: "form", in: namespace)
                         // When viewing main conversation page, but no users are present
-                    } else if currentUserConversations.users.count == 0 {
+                    } else if mainConversations.users.count == 0 {
                         VStack {
                             Text("You don't have any active conversations")
                                 .foregroundColor(.secondary)
@@ -155,8 +152,8 @@ struct ChatView: View {
                                     HStack {
                                         Text("Chat Requests")
                                         Spacer()
-                                        Text(String(currentUserIncomingChatRequests.users.count +
-                                                    currentUserOutgoingChatRequests.users.count))
+                                        Text(String(incomingChatRequests.users.count +
+                                                    outgoingChatRequests.users.count))
                                     }
                                     .foregroundColor(.primary)
                                     .fontWeight(.semibold)
@@ -167,8 +164,8 @@ struct ChatView: View {
                                     .padding(.bottom, 10)
                                 
                                 LazyVGrid(columns: columns, spacing: 20) {
-                                    ForEach(currentUserConversations.users.indices, id: \.self) { index in
-                                        let user = currentUserConversations.users[index]
+                                    ForEach(mainConversations.users.indices, id: \.self) { index in
+                                        let user = mainConversations.users[index]
                                         if index != 0 { Divider() }
                                         ProfileRow(user: user, newMessages: $newMessages)
                                             .onTapGesture {
@@ -244,7 +241,7 @@ struct ChatView: View {
             }
         }
         .onDisappear {
-            lastUserOrder = currentUserConversations.users
+            lastUserOrder = mainConversations.users
         }
     }
     
@@ -284,7 +281,7 @@ struct ChatView: View {
                 HStack {
                     Text("Sent Requests")
                     Spacer()
-                    Text(String(currentUserOutgoingChatRequests.users.count))
+                    Text(String(outgoingChatRequests.users.count))
                 }
                 .foregroundColor(.primary)
                 .fontWeight(.semibold)
@@ -299,7 +296,7 @@ struct ChatView: View {
                 HStack {
                     Text("Received Requests")
                     Spacer()
-                    Text(String(currentUserOutgoingChatRequests.users.count))
+                    Text(String(outgoingChatRequests.users.count))
                 }
                 .foregroundColor(.primary)
                 .fontWeight(.semibold)
@@ -357,10 +354,10 @@ struct ChatView: View {
                                         let value = (message, currentMessageNewUser.isSender)
                                         
                                         // Update current user's conversation with recipient
-                                        if !currentUserConversations.conversations.keys.contains(key) {
-                                            currentUserConversations.conversations[key] = []
+                                        if !mainConversations.conversations.keys.contains(key) {
+                                            mainConversations.conversations[key] = []
                                         }
-                                        currentUserConversations.conversations[key]!.append(value)
+                                        mainConversations.conversations[key]!.append(value)
                                         
                                         // If we haven't seen this person's conversation yet, just
                                         // add their creationDate directly
@@ -391,8 +388,8 @@ struct ChatView: View {
                     
                     // Sort each conversation's messages in chronological order
                     for userId in updatedConversations {
-                        currentUserConversations.conversations[userId]! =
-                        currentUserConversations.conversations[userId]!.sorted(by: {
+                        mainConversations.conversations[userId]! =
+                        mainConversations.conversations[userId]!.sorted(by: {
                             $0.0.creationDate < $1.0.creationDate
                         })
                     }
@@ -408,21 +405,21 @@ struct ChatView: View {
                     
                     // Iterate over all users that have messages with the current user and add any
                     // NewUser objects missing from the users list
-                    let conversationUserIds = Set(currentUserConversations.users.map { $0.id })
+                    let conversationUserIds = Set(mainConversations.users.map { $0.id })
                     for userId in sortedUserIds {
                         if !conversationUserIds.contains(userId) {
                             guard let user = try await Amplify.DataStore.query(NewUser.self,
                                                                                byId: userId) else {
                                 continue
                             }
-                            currentUserConversations.users.append(user)
+                            mainConversations.users.append(user)
                         }
                     }
                     
                     // Uses sortedUserIds to determine the appropriate indices for each of the users
                     // to be placed in based on this ordering
                     // https://stackoverflow.com/a/51683055/22068672
-                    let reorderedUsers = currentUserConversations.users.sorted {
+                    let reorderedUsers = mainConversations.users.sorted {
                         guard let first = sortedUserIds.firstIndex(of: $0.id) else { return false }
                         guard let second = sortedUserIds.firstIndex(of: $1.id) else { return true }
                         
@@ -430,10 +427,10 @@ struct ChatView: View {
                     }
                     
                     withAnimation {
-                        (currentUserConversations,
-                         currentUserIncomingChatRequests,
-                         currentUserOutgoingChatRequests) =
-                        separateChatRequests(conversations: currentUserConversations.conversations,
+                        (mainConversations,
+                         incomingChatRequests,
+                         outgoingChatRequests) =
+                        separateChatRequests(conversations: mainConversations.conversations,
                                              users: reorderedUsers)
                     }
                         
@@ -455,12 +452,10 @@ struct ChatView: View {
     // Returns (convo dict, convo user list, incoming chat req dict, incoming chat req user list,
     //          outgoing chat req dict, outgoing chat req user list)
     private func separateChatRequests(conversations: [String: [(Message, Bool)]],
-                                      users: [NewUser]) -> (ChatConversations,
-                                                            ChatConversations,
-                                                            ChatConversations) {
-        var newConversations = ChatConversations()
-        var incomingChatRequests = ChatConversations()
-        var outgoingChatRequests = ChatConversations()
+                                      users: [NewUser]) -> (ChatObjects, ChatObjects, ChatObjects) {
+        var newConversations = ChatObjects()
+        var incomingChatRequests = ChatObjects()
+        var outgoingChatRequests = ChatObjects()
         
         for user in users {
             guard let messages = conversations[user.id] else {
