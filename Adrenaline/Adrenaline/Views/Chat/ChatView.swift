@@ -22,7 +22,8 @@ struct ChatView: View {
     @Namespace var namespace
     @State private var feedModel: FeedModel = FeedModel()
     @State private var users: [NewUser] = []
-    @State private var chatRequestUsers: [NewUser] = []
+    @State private var incomingChatRequestUsers: [NewUser] = []
+    @State private var outgoingChatRequestUsers: [NewUser] = []
     @State private var lastUserOrder: [NewUser]? = nil
     @State private var currentUser: NewUser?
     @State private var showChatBar: Bool = false
@@ -42,7 +43,8 @@ struct ChatView: View {
     // Personal Chat States
     @State private var text: String = ""
     @State private var currentUserConversations: [String : [(Message, Bool)]] = [:]
-    @State private var currentUserChatRequests: [String : [(Message, Bool)]] = [:]
+    @State private var currentUserIncomingChatRequests: [String : [(Message, Bool)]] = [:]
+    @State private var currentUserOutgoingChatRequests: [String : [(Message, Bool)]] = [:]
     @State private var recipient: NewUser?
     
     var body: some View {
@@ -142,6 +144,23 @@ struct ChatView: View {
                         ScrollView {
                             scrollDetection
                             VStack {
+                                NavigationLink {
+                                    chatRequestsView
+                                } label: {
+                                    HStack {
+                                        Text("Chat Requests")
+                                        Spacer()
+                                        Text(String(incomingChatRequestUsers.count +
+                                                    outgoingChatRequestUsers.count))
+                                    }
+                                    .foregroundColor(.primary)
+                                    .fontWeight(.semibold)
+                                    .padding()
+                                }
+                                
+                                Divider()
+                                    .padding(.bottom, 10)
+                                
                                 LazyVGrid(columns: columns, spacing: 20) {
                                     ForEach(users.indices, id: \.self) { index in
                                         let user = users[index]
@@ -238,6 +257,51 @@ struct ChatView: View {
                 }
             }
         }
+    }
+    
+    var incomingChatRequestsView: some View {
+        HStack {
+            Text("Incoming")
+        }
+    }
+    
+    var outgoingChatRequestsView: some View {
+        HStack {
+            Text("Outgoing")
+        }
+    }
+    
+    var chatRequestsView: some View {
+        VStack {
+            NavigationLink {
+                outgoingChatRequestsView
+            } label: {
+                HStack {
+                    Text("Sent Requests")
+                    Spacer()
+                    Text(String(outgoingChatRequestUsers.count))
+                }
+                .foregroundColor(.primary)
+                .fontWeight(.semibold)
+                .padding()
+            }
+            
+            Divider()
+            
+            NavigationLink {
+                incomingChatRequestsView
+            } label: {
+                HStack {
+                    Text("Received Requests")
+                    Spacer()
+                    Text(String(incomingChatRequestUsers.count))
+                }
+                .foregroundColor(.primary)
+                .fontWeight(.semibold)
+                .padding()
+            }
+        }
+        .padding()
     }
     
     // This function is used to observe changes in the Message model
@@ -361,15 +425,19 @@ struct ChatView: View {
                     }
                     
                     var conversationUsers: [NewUser]
-                    var requestUsers: [NewUser]
+                    var incomingRequestUsers: [NewUser]
+                    var outgoingRequestUsers: [NewUser]
                     (currentUserConversations, conversationUsers,
-                     currentUserChatRequests, requestUsers) =
-                    separateChatRequests(conversations: currentUserConversations, users: reorderedUsers)
+                     currentUserIncomingChatRequests, incomingRequestUsers,
+                     currentUserOutgoingChatRequests, outgoingRequestUsers) =
+                    separateChatRequests(conversations: currentUserConversations,
+                                         users: reorderedUsers)
                     
                     withAnimation {
                         //                        users = reorderedUsers
                         users = conversationUsers
-                        chatRequestUsers = requestUsers
+                        incomingChatRequestUsers = incomingRequestUsers
+                        outgoingChatRequestUsers = outgoingRequestUsers
                     }
                     
                     // Assignment needs to follow user sorting in order for message ring to
@@ -387,27 +455,38 @@ struct ChatView: View {
     // Conversations is a dict mapping a recipient's user ID to a list of (Message, Bool) tuples
     // Users is a list of NewUser objects in the order they should appear on the main conversation
     // page
-    // Returns (convo dict, convo user list, chat req dict, chat req user list)
+    // Returns (convo dict, convo user list, incoming chat req dict, incoming chat req user list,
+    //          outgoing chat req dict, outgoing chat req user list)
     private func separateChatRequests(conversations: [String: [(Message, Bool)]],
                                       users: [NewUser]) -> ([String: [(Message, Bool)]],
+                                                            [NewUser],
+                                                            [String: [(Message, Bool)]],
                                                             [NewUser],
                                                             [String: [(Message, Bool)]],
                                                             [NewUser]) {
         var newConversations: [String: [(Message, Bool)]] = [:]
         var newConversationUsers: [NewUser] = []
-        var chatRequests: [String: [(Message, Bool)]] = [:]
-        var chatRequestUsers: [NewUser] = []
+        var incomingChatRequests: [String: [(Message, Bool)]] = [:]
+        var incomingChatRequestUsers: [NewUser] = []
+        var outgoingChatRequests: [String: [(Message, Bool)]] = [:]
+        var outgoingChatRequestUsers: [NewUser] = []
         
         for user in users {
             guard let messages = conversations[user.id] else {
                 print("User not found in conversations")
                 continue
             }
-            // If only one message is in the list, it is a chat request (incoming or outgoing)
-            if messages.count == 1 {
-                print("only one message")
-                chatRequests[user.id] = messages
-                chatRequestUsers.append(user)
+            // If only one message is in the list and they aren't the sender, incoming chat request
+            if messages.count == 1, !messages[0].1 {
+                print("only one message, incoming")
+                incomingChatRequests[user.id] = messages
+                incomingChatRequestUsers.append(user)
+                // If only one message is in the list and they are the sender, outgoing chat request
+            } else if messages.count == 1, messages[0].1 {
+                print("only one message, outgoing")
+                outgoingChatRequests[user.id] = messages
+                outgoingChatRequestUsers.append(user)
+                // More than one message, normal conversation
             } else {
                 print("more than one message")
                 newConversations[user.id] = messages
@@ -417,9 +496,12 @@ struct ChatView: View {
         
         print(newConversations)
         print(newConversationUsers)
-        print(chatRequests)
-        print(chatRequestUsers)
+        print(incomingChatRequests)
+        print(incomingChatRequestUsers)
+        print(outgoingChatRequests)
+        print(outgoingChatRequestUsers)
         print()
-        return (newConversations, newConversationUsers, chatRequests, chatRequestUsers)
+        return (newConversations, newConversationUsers, incomingChatRequests,
+                incomingChatRequestUsers, outgoingChatRequests, outgoingChatRequestUsers)
     }
 }
