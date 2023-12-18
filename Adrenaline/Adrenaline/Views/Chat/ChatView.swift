@@ -189,7 +189,9 @@ struct ChatView: View {
                                  showAccount: $showAccount,
                                  contentHasScrolled: $contentHasScrolled,
                                  feedModel: $feedModel,
-                                 recentSearches: $recentSearches)
+                                 recentSearches: $recentSearches,
+                                 recipient: $recipient,
+                                 showChatBar: $showChatBar)
                     .frame(width: screenWidth)
                 } else {
                     if let recipient = recipient {

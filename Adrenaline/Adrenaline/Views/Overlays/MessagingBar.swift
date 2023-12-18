@@ -13,7 +13,7 @@ struct MessagingBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
-    var diveMeetsID:  Binding<String>
+    var diveMeetsID: Binding<String>
     @State private var showSearchSheet = false
     @State private var showNewMessageSheet = false
     @State private var isLogged = true
@@ -21,10 +21,12 @@ struct MessagingBar: View {
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
     @Binding var recentSearches: [SearchItem]
+    @Binding var recipient: NewUser?
+    @Binding var showChatBar: Bool
     
     // Using this function to swap sheet bools safely
-    private func showSheet(showingPost: Bool) {
-        if showingPost {
+    private func showSheet(showingNewMessage: Bool) {
+        if showingNewMessage {
             showSearchSheet = false
             showNewMessageSheet = true
         } else {
@@ -54,7 +56,7 @@ struct MessagingBar: View {
             
             HStack(spacing: 16) {
                 Button {
-                    showSheet(showingPost: true)
+                    showSheet(showingNewMessage: true)
                 } label: {
                     Image(systemName: "square.and.pencil")
                         .font(.system(size: 17, weight: .bold))
@@ -64,11 +66,12 @@ struct MessagingBar: View {
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 .sheet(isPresented: $showNewMessageSheet) {
-                    Text("NEED TO LINK TO ACTUAL MESSAGE CREATION")
+                    CreateNewMessageView(recipient: $recipient, showChatBar: $showChatBar, 
+                                         feedModel: $feedModel)
                 }
                 
                 Button {
-                    showSheet(showingPost: false)
+                    showSheet(showingNewMessage: false)
                 } label: {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 17, weight: .bold))
