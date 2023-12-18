@@ -10,9 +10,16 @@ import Amplify
 
 struct CreateNewMessageView: View {
     @AppStorage("authUserId") private var authUserId = ""
-    @State private var objects = ChatObjects()
     @State private var currentUser: NewUser?
+    // users available to send a new message to
+    @State private var users: [NewUser] = []
+    // State newMessages to satisfy ProfileRow view, but not actually used in this context
     @State private var newMessages: Set<String> = Set()
+    // objects should be outgoingChatRequests so chats can be updated in real time as messages are
+    // sent
+    @Binding var mainConversations: ChatObjects
+    @Binding var incomingChatRequests: ChatObjects
+    @Binding var currentChatObjects: ChatObjects
     @Binding var recipient: NewUser?
     @Binding var showChatBar: Bool
     @Binding var feedModel: FeedModel
@@ -22,12 +29,39 @@ struct CreateNewMessageView: View {
     var body: some View {
         VStack {
             LazyVGrid(columns: columns, spacing: 20) {
-                ChatMessageListView(newMessages: $newMessages,
-                                    recipient: $recipient,
-                                    showChatBar: $showChatBar,
-                                    feedModel: $feedModel,
-                                    objects: $objects,
-                                    columns: columns)
+                ForEach(users.indices, id: \.self) { index in
+                    let user = users[index]
+                    if index != 0 { Divider() }
+                    ProfileRow(user: user, newMessages: $newMessages)
+                        .onTapGesture {
+                            Task {
+                                let recipientPredicate = NewUser.keys.id == user.id
+                                let recipientUsers = await
+                                queryAWSUsers(where: recipientPredicate)
+                                if recipientUsers.count == 1 {
+                                    recipient = recipientUsers[0]
+                                    
+                                    withAnimation {
+                                        newMessages.remove(user.id)
+                                        showChatBar = true
+                                        feedModel.showTab = false
+                                        
+                                        // If the current user has an incoming request from the user
+                                        // they are trying to message, it will appear instead of an
+                                        // empty conversation
+                                        if incomingChatRequests.users
+                                            .map({ $0.id })
+                                            .contains(recipient?.id) {
+                                            currentChatObjects = incomingChatRequests
+                                        } else {
+                                            currentChatObjects = mainConversations
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                }
+                .padding(.horizontal, 20)
             }
         }
         .padding(20)
@@ -46,10 +80,7 @@ struct CreateNewMessageView: View {
                 }
                 
                 let allUsersPredicate = NewUser.keys.id != currentUser?.id
-                let allUsers = await queryAWSUsers(where: allUsersPredicate)
-                if allUsers.count > 0 {
-                    objects.users = allUsers
-                }
+                users = await queryAWSUsers(where: allUsersPredicate)
             }
         }
     }
