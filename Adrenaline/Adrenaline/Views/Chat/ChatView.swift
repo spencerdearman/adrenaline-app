@@ -22,6 +22,7 @@ struct ChatView: View {
     @Namespace var namespace
     @State private var feedModel: FeedModel = FeedModel()
     @State private var users: [NewUser] = []
+    @State private var chatRequestUsers: [NewUser] = []
     @State private var lastUserOrder: [NewUser]? = nil
     @State private var currentUser: NewUser?
     @State private var showChatBar: Bool = false
@@ -41,6 +42,7 @@ struct ChatView: View {
     // Personal Chat States
     @State private var text: String = ""
     @State private var currentUserConversations: [String : [(Message, Bool)]] = [:]
+    @State private var currentUserChatRequests: [String : [(Message, Bool)]] = [:]
     @State private var recipient: NewUser?
     
     var body: some View {
@@ -176,22 +178,27 @@ struct ChatView: View {
             }
         }
         .onAppear {
+            // Get list of users to display in conversation list
             Task {
+                // Get current user
                 let mainUsersPredicate = NewUser.keys.id == authUserId
                 let mainUsers = await queryAWSUsers(where: mainUsersPredicate)
                 if mainUsers.count >= 1 {
                     currentUser = mainUsers[0]
                 }
-                let allUsersPredicate = NewUser.keys.id != currentUser?.id
-                let allUsers = await queryAWSUsers(where: allUsersPredicate)
-                if allUsers.count >= 1 {
-                    if let lastOrder = lastUserOrder {
-                        let extras = Set(allUsers).subtracting(Set(users))
-                        users = Array(extras) + lastOrder
-                    } else {
-                        users = allUsers
-                    }
-                }
+                
+//                let allUsersPredicate = NewUser.keys.id != currentUser?.id
+//                let allUsers = await queryAWSUsers(where: allUsersPredicate)
+//                if allUsers.count >= 1 {
+//                    if let lastOrder = lastUserOrder {
+//                        let extras = Set(allUsers).subtracting(Set(users))
+//                        users = Array(extras) + lastOrder
+//                    } else {
+//                        users = allUsers
+//                    }
+//                }
+                
+                // Observe new messages and build users list associated with current user
                 observeNewMessages()
             }
         }
@@ -243,13 +250,17 @@ struct ChatView: View {
                                     if msgMessageNewUsers.elements.count == 2 {
                                         let currentMessageNewUser: MessageNewUser
                                         let recipientMessageNewUser: MessageNewUser
+                                        
+                                        // If first element is current user
                                         if msgMessageNewUsers.elements[0].newuserID == currentUser.id {
                                             currentMessageNewUser = msgMessageNewUsers.elements[0]
                                             recipientMessageNewUser = msgMessageNewUsers.elements[1]
+                                        // If second element is current user
                                         } else if msgMessageNewUsers.elements[1].newuserID ==
                                                     currentUser.id {
                                             currentMessageNewUser = msgMessageNewUsers.elements[1]
                                             recipientMessageNewUser = msgMessageNewUsers.elements[0]
+                                        // If neither message is the current user, it is ignored
                                         } else {
                                             observedMessageIDs.insert(message.id)
                                             continue
@@ -259,6 +270,7 @@ struct ChatView: View {
                                         let key = recipientMessageNewUser.newuserID
                                         let value = (message, currentMessageNewUser.isSender)
                                         
+                                        // Update current user's conversation with recipient
                                         if !currentUserConversations.keys.contains(key) {
                                             currentUserConversations[key] = []
                                         }
@@ -291,33 +303,56 @@ struct ChatView: View {
                         }
                     }
                     
-                    for key in updatedConversations {
-                        currentUserConversations[key]! =
-                        currentUserConversations[key]!.sorted(by: {
+                    // Sort each conversation's messages in chronological order
+                    for userId in updatedConversations {
+                        currentUserConversations[userId]! =
+                        currentUserConversations[userId]!.sorted(by: {
                             $0.0.creationDate < $1.0.creationDate
                         })
                     }
                     
                     // Sorts all conversations in reverse chronological order by last sent message
+                    // so the conversation list shows the most recent conversations at the top
                     let sorted = sortOrder.map { ($0.key, $0.value) }.sorted {
                         $0.1 > $1.1
                     }
                     
                     // Gets all user ids in sorted order
-                    let userIds = sorted.map { $0.0 }
+                    let sortedUserIds = sorted.map { $0.0 }
                     
-                    // Uses userIds to determine the appropriate indices for each of the users to
-                    // be placed in based on this ordering
+                    // Iterate over all users that have messages with the current user and add any
+                    // NewUser objects missing from the users list
+                    let conversationUserIds = Set(users.map { $0.id })
+                    for userId in sortedUserIds {
+                        if !conversationUserIds.contains(userId) {
+                            guard let user = try await Amplify.DataStore.query(NewUser.self,
+                                                                               byId: userId) else {
+                                continue
+                            }
+                            users.append(user)
+                        }
+                    }
+                    
+                    // Uses sortedUserIds to determine the appropriate indices for each of the users
+                    // to be placed in based on this ordering
                     // https://stackoverflow.com/a/51683055/22068672
                     let reorderedUsers = users.sorted {
-                        guard let first = userIds.firstIndex(of: $0.id) else { return false }
-                        guard let second = userIds.firstIndex(of: $1.id) else { return true }
+                        guard let first = sortedUserIds.firstIndex(of: $0.id) else { return false }
+                        guard let second = sortedUserIds.firstIndex(of: $1.id) else { return true }
                         
                         return first < second
                     }
                     
+                    var conversationUsers: [NewUser]
+                    var requestUsers: [NewUser]
+                    (currentUserConversations, conversationUsers,
+                     currentUserChatRequests, requestUsers) =
+                    separateChatRequests(conversations: currentUserConversations, users: reorderedUsers)
+                    
                     withAnimation {
-                        users = reorderedUsers
+//                        users = reorderedUsers
+                        users = conversationUsers
+                        chatRequestUsers = requestUsers
                     }
                     
                     // Assignment needs to follow user sorting in order for message ring to
@@ -329,5 +364,45 @@ struct ChatView: View {
                 print("Error observing new messages: \(error)")
             }
         }
+    }
+    
+    // Separates conversations and users into active conversations and chat requests
+    // Conversations is a dict mapping a recipient's user ID to a list of (Message, Bool) tuples
+    // Users is a list of NewUser objects in the order they should appear on the main conversation
+    // page
+    // Returns (convo dict, convo user list, chat req dict, chat req user list)
+    private func separateChatRequests(conversations: [String: [(Message, Bool)]],
+                                      users: [NewUser]) -> ([String: [(Message, Bool)]], 
+                                                            [NewUser],
+                                                            [String: [(Message, Bool)]],
+                                                            [NewUser]) {
+        var newConversations: [String: [(Message, Bool)]] = [:]
+        var newConversationUsers: [NewUser] = []
+        var chatRequests: [String: [(Message, Bool)]] = [:]
+        var chatRequestUsers: [NewUser] = []
+        
+        for user in users {
+            guard let messages = conversations[user.id] else {
+                print("User not found in conversations")
+                continue
+            }
+            // If only one message is in the list, it is a chat request (incoming or outgoing)
+            if messages.count == 1 {
+                print("only one message")
+                chatRequests[user.id] = messages
+                chatRequestUsers.append(user)
+            } else {
+                print("more than one message")
+                newConversations[user.id] = messages
+                newConversationUsers.append(user)
+            }
+        }
+        
+        print(newConversations)
+        print(newConversationUsers)
+        print(chatRequests)
+        print(chatRequestUsers)
+        print()
+        return (newConversations, newConversationUsers, chatRequests, chatRequestUsers)
     }
 }
