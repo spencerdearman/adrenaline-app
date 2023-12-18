@@ -35,7 +35,8 @@ struct ChatView: View {
     @State private var newMessages: Set<String> = Set()
     @State private var observedMessageIDs: Set<String> = Set()
     @State private var recipientMessageSubscription: AmplifyAsyncThrowingSequence<DataStoreQuerySnapshot<MessageNewUser>>?
-    var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
+    
+    private let columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -163,30 +164,12 @@ struct ChatView: View {
                                 Divider()
                                     .padding(.bottom, 10)
                                 
-                                LazyVGrid(columns: columns, spacing: 20) {
-                                    ForEach(mainConversations.users.indices, id: \.self) { index in
-                                        let user = mainConversations.users[index]
-                                        if index != 0 { Divider() }
-                                        ProfileRow(user: user, newMessages: $newMessages)
-                                            .onTapGesture {
-                                                Task {
-                                                    let recipientPredicate = NewUser.keys.id == user.id
-                                                    let recipientUsers = await
-                                                    queryAWSUsers(where: recipientPredicate)
-                                                    if recipientUsers.count == 1 {
-                                                        recipient = recipientUsers[0]
-                                                        
-                                                        withAnimation {
-                                                            newMessages.remove(user.id)
-                                                            showChatBar = true
-                                                            feedModel.showTab = false
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                    }
-                                    .padding(.horizontal, 20)
-                                }
+                                ChatMessageListView(newMessages: $newMessages,
+                                                    recipient: $recipient,
+                                                    showChatBar: $showChatBar,
+                                                    feedModel: $feedModel,
+                                                    objects: $mainConversations,
+                                                    columns: columns)
                             }
                             .padding(20)
                             .background(.ultraThinMaterial)
@@ -264,28 +247,12 @@ struct ChatView: View {
     var incomingChatRequestsView: some View {
         VStack {
             LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(incomingChatRequests.users.indices, id: \.self) { index in
-                    let user = incomingChatRequests.users[index]
-                    if index != 0 { Divider() }
-                    ProfileRow(user: user, newMessages: $newMessages)
-                        .onTapGesture {
-                            Task {
-                                let recipientPredicate = NewUser.keys.id == user.id
-                                let recipientUsers = await
-                                queryAWSUsers(where: recipientPredicate)
-                                if recipientUsers.count == 1 {
-                                    recipient = recipientUsers[0]
-                                    
-                                    withAnimation {
-                                        newMessages.remove(user.id)
-                                        showChatBar = true
-                                        feedModel.showTab = false
-                                    }
-                                }
-                            }
-                        }
-                }
-                .padding(.horizontal, 20)
+                ChatMessageListView(newMessages: $newMessages,
+                                    recipient: $recipient,
+                                    showChatBar: $showChatBar,
+                                    feedModel: $feedModel,
+                                    objects: $incomingChatRequests,
+                                    columns: columns)
             }
         }
         .padding(20)
@@ -299,28 +266,12 @@ struct ChatView: View {
     var outgoingChatRequestsView: some View {
         VStack {
             LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(outgoingChatRequests.users.indices, id: \.self) { index in
-                    let user = outgoingChatRequests.users[index]
-                    if index != 0 { Divider() }
-                    ProfileRow(user: user, newMessages: $newMessages)
-                        .onTapGesture {
-                            Task {
-                                let recipientPredicate = NewUser.keys.id == user.id
-                                let recipientUsers = await
-                                queryAWSUsers(where: recipientPredicate)
-                                if recipientUsers.count == 1 {
-                                    recipient = recipientUsers[0]
-                                    
-                                    withAnimation {
-                                        newMessages.remove(user.id)
-                                        showChatBar = true
-                                        feedModel.showTab = false
-                                    }
-                                }
-                            }
-                        }
-                }
-                .padding(.horizontal, 20)
+                ChatMessageListView(newMessages: $newMessages,
+                                    recipient: $recipient,
+                                    showChatBar: $showChatBar,
+                                    feedModel: $feedModel,
+                                    objects: $outgoingChatRequests,
+                                    columns: columns)
             }
         }
         .padding(20)
@@ -491,7 +442,7 @@ struct ChatView: View {
                         separateChatRequests(conversations: mainConversations.conversations,
                                              users: reorderedUsers)
                     }
-                        
+                    
                     // Assignment needs to follow user sorting in order for message ring to
                     // appear with the correct MessageRow
                     newMessages = updatedConversations
@@ -543,5 +494,41 @@ struct ChatView: View {
         print(outgoingChatRequests)
         print()
         return (newConversations, incomingChatRequests, outgoingChatRequests)
+    }
+}
+
+struct ChatMessageListView: View {
+    @Binding var newMessages: Set<String>
+    @Binding var recipient: NewUser?
+    @Binding var showChatBar: Bool
+    @Binding var feedModel: FeedModel
+    @Binding var objects: ChatObjects
+    var columns: [GridItem]
+    
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: 20) {
+            ForEach(objects.users.indices, id: \.self) { index in
+                let user = objects.users[index]
+                if index != 0 { Divider() }
+                ProfileRow(user: user, newMessages: $newMessages)
+                    .onTapGesture {
+                        Task {
+                            let recipientPredicate = NewUser.keys.id == user.id
+                            let recipientUsers = await
+                            queryAWSUsers(where: recipientPredicate)
+                            if recipientUsers.count == 1 {
+                                recipient = recipientUsers[0]
+                                
+                                withAnimation {
+                                    newMessages.remove(user.id)
+                                    showChatBar = true
+                                    feedModel.showTab = false
+                                }
+                            }
+                        }
+                    }
+            }
+            .padding(.horizontal, 20)
+        }
     }
 }
