@@ -262,15 +262,73 @@ struct ChatView: View {
     }
     
     var incomingChatRequestsView: some View {
-        HStack {
-            Text("Incoming")
+        VStack {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(incomingChatRequests.users.indices, id: \.self) { index in
+                    let user = incomingChatRequests.users[index]
+                    if index != 0 { Divider() }
+                    ProfileRow(user: user, newMessages: $newMessages)
+                        .onTapGesture {
+                            Task {
+                                let recipientPredicate = NewUser.keys.id == user.id
+                                let recipientUsers = await
+                                queryAWSUsers(where: recipientPredicate)
+                                if recipientUsers.count == 1 {
+                                    recipient = recipientUsers[0]
+                                    
+                                    withAnimation {
+                                        newMessages.remove(user.id)
+                                        showChatBar = true
+                                        feedModel.showTab = false
+                                    }
+                                }
+                            }
+                        }
+                }
+                .padding(.horizontal, 20)
+            }
         }
+        .padding(20)
+        .background(.ultraThinMaterial)
+        .modifier(OutlineOverlay(cornerRadius: 30))
+        .backgroundStyle(cornerRadius: 30)
+        .padding(20)
+        .padding(.vertical, 80)
     }
     
     var outgoingChatRequestsView: some View {
-        HStack {
-            Text("Outgoing")
+        VStack {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(outgoingChatRequests.users.indices, id: \.self) { index in
+                    let user = outgoingChatRequests.users[index]
+                    if index != 0 { Divider() }
+                    ProfileRow(user: user, newMessages: $newMessages)
+                        .onTapGesture {
+                            Task {
+                                let recipientPredicate = NewUser.keys.id == user.id
+                                let recipientUsers = await
+                                queryAWSUsers(where: recipientPredicate)
+                                if recipientUsers.count == 1 {
+                                    recipient = recipientUsers[0]
+                                    
+                                    withAnimation {
+                                        newMessages.remove(user.id)
+                                        showChatBar = true
+                                        feedModel.showTab = false
+                                    }
+                                }
+                            }
+                        }
+                }
+                .padding(.horizontal, 20)
+            }
         }
+        .padding(20)
+        .background(.ultraThinMaterial)
+        .modifier(OutlineOverlay(cornerRadius: 30))
+        .backgroundStyle(cornerRadius: 30)
+        .padding(20)
+        .padding(.vertical, 80)
     }
     
     var chatRequestsView: some View {
