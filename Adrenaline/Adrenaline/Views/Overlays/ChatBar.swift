@@ -14,6 +14,7 @@ struct ChatBar: View {
     @State var showSheet: Bool = false
     @Binding var showChatBar: Bool
     @Binding var feedModel: FeedModel
+    @Binding var deletedChatIds: Set<String>
     // user is the recipient
     var user: NewUser
     // currentUser is the current account that is logged in
@@ -34,7 +35,7 @@ struct ChatBar: View {
                 .foregroundColor(currentMode == .light ? .white : .black)
                 .offset(y: -screenHeight * 0.4)
                 .frame(height: 90, alignment: .top)
-                
+            
             HStack(spacing: 16) {
                 Button {
                     goBack()
@@ -54,6 +55,7 @@ struct ChatBar: View {
                 Menu {
                     Button(role: .destructive) {
                         Task {
+                            deletedChatIds.insert(user.id)
                             try await deleteConversation(between: currentUser, and: user)
                             goBack()
                         }
@@ -73,18 +75,18 @@ struct ChatBar: View {
                         .transition(.scale.combined(with: .slide))
                         .foregroundColor(.secondary)
                 }
-
+                
                 NavigationLink {
                     AdrenalineProfileView(newUser: user)
                 } label: {
                     Image(systemName: "person")
-                    .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
-                    .cornerRadius(10)
-                    .padding(8)
-                    .background(.ultraThinMaterial)
-                    .backgroundStyle(cornerRadius: 18, opacity: 0.4)
-                    .transition(.scale.combined(with: .slide))
-                    .foregroundColor(.secondary)
+                        .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
+                        .cornerRadius(10)
+                        .padding(8)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 18, opacity: 0.4)
+                        .transition(.scale.combined(with: .slide))
+                        .foregroundColor(.secondary)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: screenHeight, alignment: .topTrailing)

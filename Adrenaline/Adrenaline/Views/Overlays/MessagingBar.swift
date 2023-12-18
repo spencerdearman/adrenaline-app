@@ -97,14 +97,14 @@ struct MessagingBar: View {
                                              urlCache: .imageCache,
                                              transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {
-                                case .empty:
-                                    Color.white
-                                case .success(let image):
-                                    image.resizable()
-                                case .failure(_):
-                                    Color.gray
-                                @unknown default:
-                                    Color.gray
+                                    case .empty:
+                                        Color.white
+                                    case .success(let image):
+                                        image.resizable()
+                                    case .failure(_):
+                                        Color.gray
+                                    @unknown default:
+                                        Color.gray
                                 }
                             }
                         } else {

@@ -17,6 +17,7 @@ struct ChatView: View {
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
+    @Binding var deletedChatIds: Set<String>
     
     // Main States
     @Environment(\.colorScheme) var currentMode
@@ -135,11 +136,22 @@ struct ChatView: View {
                     if let recipient = recipient, let currentUser = currentUser {
                         ChatBar(showChatBar: $showChatBar,
                                 feedModel: $feedModel,
+                                deletedChatIds: $deletedChatIds,
                                 user: recipient,
                                 currentUser: currentUser)
                     }
                 }
             }
+        }
+        // Manually clearing these since Amplify bug doesn't do this through the observeQuery
+        .onChange(of: deletedChatIds) {
+            for id in deletedChatIds {
+                if let _ = currentUserConversations[id] {
+                    currentUserConversations.removeValue(forKey: id)
+                }
+            }
+            
+            users = users.filter { !deletedChatIds.contains($0.id) }
         }
         .onAppear {
             // Get list of users to display in conversation list
@@ -189,8 +201,10 @@ struct ChatView: View {
     
     var chatMessageListView: some View {
         LazyVGrid(columns: columns, spacing: 20) {
-            ForEach(users.filter { !incomingChatRequests.contains($0.id) }.indices, id: \.self) { index in
-                let user = users[index]
+            // Filter out users who sent incoming requests or were deleted
+            let filtered = users.filter { !incomingChatRequests.union(deletedChatIds).contains($0.id) }
+            ForEach(filtered.indices, id: \.self) { index in
+                let user = filtered[index]
                 if index != 0 { Divider() }
                 ProfileRow(user: user, newMessages: $newMessages)
                     .onTapGesture {
@@ -376,6 +390,11 @@ struct ChatView: View {
                                         
                                         updatedConversations.insert(key)
                                         
+                                        // Remove key from deleted chats if a new message was sent
+                                        if deletedChatIds.contains(key) {
+                                            deletedChatIds.remove(key)
+                                        }
+                                        
                                         // Update the observedMessageIDs set to mark this message as
                                         // observed
                                         observedMessageIDs.insert(message.id)
@@ -406,30 +425,27 @@ struct ChatView: View {
                     // Gets all user ids in sorted order
                     let sortedUserIds = sorted.map { $0.0 }
                     
-                    // Iterate over all users that have messages with the current user and add any
-                    // NewUser objects missing from the users list
+                    // Add users to the users list who have new messages to add
                     let conversationUserIds = Set(users.map { $0.id })
-                    for userId in sortedUserIds {
-                        if !conversationUserIds.contains(userId) {
-                            guard let user = try await Amplify.DataStore.query(NewUser.self,
-                                                                               byId: userId) else {
-                                continue
-                            }
-                            users.append(user)
+                    for userId in Set(sortedUserIds).subtracting(conversationUserIds) {
+                        guard let user = try await Amplify.DataStore.query(NewUser.self,
+                                                                           byId: userId) else {
+                            continue
                         }
-                    }
-                    
-                    // Uses sortedUserIds to determine the appropriate indices for each of the users
-                    // to be placed in based on this ordering
-                    // https://stackoverflow.com/a/51683055/22068672
-                    users = users.sorted {
-                        guard let first = sortedUserIds.firstIndex(of: $0.id) else { return false }
-                        guard let second = sortedUserIds.firstIndex(of: $1.id) else { return true }
-                        
-                        return first < second
+                        users.append(user)
                     }
                     
                     withAnimation {
+                        // Uses sortedUserIds to determine the appropriate indices for each of the users
+                        // to be placed in based on this ordering
+                        // https://stackoverflow.com/a/51683055/22068672
+                        users = users.sorted {
+                            guard let first = sortedUserIds.firstIndex(of: $0.id) else { return false }
+                            guard let second = sortedUserIds.firstIndex(of: $1.id) else { return true }
+                            
+                            return first < second
+                        }
+                        
                         incomingChatRequests = separateChatRequests(conversations: currentUserConversations,
                                                                     users: users)
                     }
