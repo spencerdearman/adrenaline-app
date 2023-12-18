@@ -17,9 +17,6 @@ struct CreateNewMessageView: View {
     @State private var newMessages: Set<String> = Set()
     // objects should be outgoingChatRequests so chats can be updated in real time as messages are
     // sent
-    @Binding var mainConversations: ChatObjects
-    @Binding var incomingChatRequests: ChatObjects
-    @Binding var currentChatObjects: ChatObjects
     @Binding var recipient: NewUser?
     @Binding var showChatBar: Bool
     @Binding var feedModel: FeedModel
@@ -45,17 +42,6 @@ struct CreateNewMessageView: View {
                                         newMessages.remove(user.id)
                                         showChatBar = true
                                         feedModel.showTab = false
-                                        
-                                        // If the current user has an incoming request from the user
-                                        // they are trying to message, it will appear instead of an
-                                        // empty conversation
-                                        if incomingChatRequests.users
-                                            .map({ $0.id })
-                                            .contains(recipient?.id) {
-                                            currentChatObjects = incomingChatRequests
-                                        } else {
-                                            currentChatObjects = mainConversations
-                                        }
                                     }
                                 }
                             }

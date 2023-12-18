@@ -23,9 +23,6 @@ struct MessagingBar: View {
     @Binding var recentSearches: [SearchItem]
     @Binding var recipient: NewUser?
     @Binding var showChatBar: Bool
-    @Binding var mainConversations: ChatObjects
-    @Binding var incomingChatRequests: ChatObjects
-    @Binding var currentChatObjects: ChatObjects
     
     // Using this function to swap sheet bools safely
     private func showSheet(showingNewMessage: Bool) {
@@ -69,10 +66,7 @@ struct MessagingBar: View {
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 .sheet(isPresented: $showNewMessageSheet) {
-                    CreateNewMessageView(mainConversations: $mainConversations,
-                                         incomingChatRequests: $incomingChatRequests,
-                                         currentChatObjects: $currentChatObjects,
-                                         recipient: $recipient,
+                    CreateNewMessageView(recipient: $recipient,
                                          showChatBar: $showChatBar,
                                          feedModel: $feedModel)
                 }

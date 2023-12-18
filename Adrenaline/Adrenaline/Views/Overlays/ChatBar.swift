@@ -14,9 +14,19 @@ struct ChatBar: View {
     @State var showSheet: Bool = false
     @Binding var showChatBar: Bool
     @Binding var feedModel: FeedModel
+    // user is the recipient
     var user: NewUser
+    // currentUser is the current account that is logged in
+    var currentUser: NewUser
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    
+    private func goBack() {
+        withAnimation(.closeCard) {
+            showChatBar = false
+            feedModel.showTab = true
+        }
+    }
     
     var body: some View {
         ZStack {
@@ -27,10 +37,7 @@ struct ChatBar: View {
                 
             HStack(spacing: 16) {
                 Button {
-                    withAnimation(.closeCard) {
-                        showChatBar = false
-                        feedModel.showTab = true
-                    }
+                    goBack()
                 } label: {
                     Image(systemName: "arrow.left")
                         .font(.system(size: 17, weight: .bold))
@@ -43,6 +50,29 @@ struct ChatBar: View {
                 Text("\(user.firstName) \(user.lastName)")
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity, alignment: .center)
+                
+                Menu {
+                    Button(role: .destructive) {
+                        Task {
+                            try await deleteConversation(between: currentUser, and: user)
+                            goBack()
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "trash.fill")
+                            Text("Delete Conversation")
+                        }
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
+                        .cornerRadius(10)
+                        .padding(8)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 18, opacity: 0.4)
+                        .transition(.scale.combined(with: .slide))
+                        .foregroundColor(.secondary)
+                }
 
                 NavigationLink {
                     AdrenalineProfileView(newUser: user)

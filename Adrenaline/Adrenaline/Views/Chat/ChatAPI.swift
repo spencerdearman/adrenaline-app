@@ -32,3 +32,63 @@ func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
     }
 }
 
+// Returns a set of user IDs that have sent incoming chat requests to the current user
+func separateChatRequests(conversations: ChatConversations, users: [NewUser]) -> Set<String> {
+//    var newConversations = ChatObjects()
+//    var incomingChatRequests = ChatObjects()
+    var result = Set<String>()
+    
+    for user in users {
+        print("User:", user.id, user.email)
+        guard let messages = conversations[user.id] else {
+            print("User not found in conversations")
+            continue
+        }
+        
+        // If only one message is in the list and they aren't the sender, incoming chat request
+        if messages.count == 1, !messages[0].1 {
+            print("incoming chat request")
+            result.insert(user.id)
+        }
+    }
+    
+    return result
+}
+
+// Deletes all MessageNewUser and Message entries shared between the two given users
+func deleteConversation(between userA: NewUser, and userB: NewUser) async throws {
+    // Get linker table entries with userA in them
+    let userAPred = MessageNewUser.keys.newuserID == userA.id
+    let userAMessageNewUsers: [MessageNewUser] = try await query(where: userAPred)
+    
+    // Get linker table entries with userB in them
+    let userBPred = MessageNewUser.keys.newuserID == userB.id
+    let userBMessageNewUsers: [MessageNewUser] = try await query(where: userBPred)
+    
+    // Gets a set of unique message ids that are associated with the current user
+    let userAMessageIds = Set(userAMessageNewUsers.map { $0.messageID })
+    
+    // Gets a set of unique message ids that are associated with the recipient
+    let userBMessageIds = Set(userBMessageNewUsers.map { $0.messageID })
+    
+    // Gets message IDs that are shared between current user and recipient
+    let sharedMessageIds = userAMessageIds.intersection(userBMessageIds)
+    
+    // Deletes all linker table entries with message ids associated with both users
+    // (both linker table entries, one associated with the current user and the other associated
+    //  with the recipient)
+    for msg in sharedMessageIds {
+        let pred = MessageNewUser.keys.messageID == msg
+        let msgNewUsers: [MessageNewUser] = try await query(where: pred)
+        
+        for msgNewUser in msgNewUsers {
+            try await deleteFromDataStore(object: msgNewUser)
+        }
+    }
+    
+    // Deletes all Message entries if their id was in the linker table and associated with either
+    // user
+    for msgId in sharedMessageIds {
+        try await Amplify.DataStore.delete(Message.self, withId: msgId)
+    }
+}

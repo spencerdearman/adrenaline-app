@@ -10,10 +10,7 @@ import Foundation
 import Amplify
 import Combine
 
-struct ChatObjects {
-    var conversations: [String: [(Message, Bool)]] = [:]
-    var users: [NewUser] = []
-}
+typealias ChatConversations = [String: [(Message, Bool)]]
 
 struct ChatView: View {
     // Bindings
@@ -26,6 +23,7 @@ struct ChatView: View {
     @AppStorage("authUserId") private var authUserId = ""
     @Namespace var namespace
     @State private var feedModel: FeedModel = FeedModel()
+    @State private var users: [NewUser] = []
     @State private var lastUserOrder: [NewUser]? = nil
     @State private var currentUser: NewUser?
     @State private var showChatBar: Bool = false
@@ -45,16 +43,10 @@ struct ChatView: View {
     
     // Personal Chat States
     @State private var text: String = ""
-    // All chat objects, regardless of type
-    @State private var allChats = ChatObjects()
-    // Active conversations and outgoing chat requests appear the same
-    @State private var mainConversations = ChatObjects()
-    // Incoming chat requests are placed in the "Chat Requests" section
-    @State private var incomingChatRequests = ChatObjects()
+    @State private var currentUserConversations: ChatConversations = [:]
+    // Set of user IDs who have sent incoming chat requests to the current user
+    @State private var incomingChatRequests: Set<String> = Set()
     @State private var recipient: NewUser?
-    // Current ChatObjects being referenced and displayed in lists and conversations
-    // (this is swapped between mainConversations and incomingChatRequests depending on the view)
-    @State private var currentChatObjects = ChatObjects()
     
     var body: some View {
         NavigationView {
@@ -77,7 +69,7 @@ struct ChatView: View {
                             .padding(.vertical, 10)
                             .matchedGeometryEffect(id: "form", in: namespace)
                         // When viewing main conversation page, but no users are present
-                    } else if mainConversations.users.count == 0 {
+                    } else if users.count == 0 {
                         VStack {
                             Text("You don't have any active conversations")
                                 .foregroundColor(.secondary)
@@ -97,29 +89,25 @@ struct ChatView: View {
                         ScrollView {
                             scrollDetection
                             VStack {
-                                NavigationLink {
-                                    chatRequestsView
-                                } label: {
-                                    HStack {
-                                        Text("Chat Requests")
-                                        Spacer()
-                                        Text(String(incomingChatRequests.users.count))
+                                if incomingChatRequests.count > 0 {
+                                    NavigationLink {
+                                        chatRequestsView
+                                    } label: {
+                                        HStack {
+                                            Text("Chat Requests")
+                                            Spacer()
+                                            Text(String(incomingChatRequests.count))
+                                        }
+                                        .foregroundColor(.primary)
+                                        .fontWeight(.semibold)
+                                        .padding()
                                     }
-                                    .foregroundColor(.primary)
-                                    .fontWeight(.semibold)
-                                    .padding()
+                                    
+                                    Divider()
+                                        .padding(.bottom, 10)
                                 }
                                 
-                                Divider()
-                                    .padding(.bottom, 10)
-                                
-                                ChatMessageListView(newMessages: $newMessages,
-                                                    recipient: $recipient,
-                                                    showChatBar: $showChatBar,
-                                                    feedModel: $feedModel,
-                                                    objects: $mainConversations,
-                                                    currentChatObjects: $currentChatObjects,
-                                                    columns: columns)
+                                chatMessageListView
                             }
                             .padding(20)
                             .background(.ultraThinMaterial)
@@ -141,14 +129,14 @@ struct ChatView: View {
                                  feedModel: $feedModel,
                                  recentSearches: $recentSearches,
                                  recipient: $recipient,
-                                 showChatBar: $showChatBar,
-                                 mainConversations: $mainConversations,
-                                 incomingChatRequests: $incomingChatRequests,
-                                 currentChatObjects: $currentChatObjects)
+                                 showChatBar: $showChatBar)
                     .frame(width: screenWidth)
                 } else {
-                    if let recipient = recipient {
-                        ChatBar(showChatBar: $showChatBar, feedModel: $feedModel, user: recipient)
+                    if let recipient = recipient, let currentUser = currentUser {
+                        ChatBar(showChatBar: $showChatBar,
+                                feedModel: $feedModel,
+                                user: recipient,
+                                currentUser: currentUser)
                     }
                 }
             }
@@ -176,12 +164,10 @@ struct ChatView: View {
                 
                 // Observe new messages and build users list associated with current user
                 observeNewMessages()
-                
-                currentChatObjects = mainConversations
             }
         }
         .onDisappear {
-            lastUserOrder = mainConversations.users
+            lastUserOrder = users
         }
     }
     
@@ -201,24 +187,30 @@ struct ChatView: View {
         }
     }
     
-    var chatRequestsView: some View {
-        VStack {
-            LazyVGrid(columns: columns, spacing: 20) {
-                ChatMessageListView(newMessages: $newMessages,
-                                    recipient: $recipient,
-                                    showChatBar: $showChatBar,
-                                    feedModel: $feedModel,
-                                    objects: $incomingChatRequests,
-                                    currentChatObjects: $currentChatObjects,
-                                    columns: columns)
+    var chatMessageListView: some View {
+        LazyVGrid(columns: columns, spacing: 20) {
+            ForEach(users.filter { !incomingChatRequests.contains($0.id) }.indices, id: \.self) { index in
+                let user = users[index]
+                if index != 0 { Divider() }
+                ProfileRow(user: user, newMessages: $newMessages)
+                    .onTapGesture {
+                        withAnimation {
+                            newMessages.remove(user.id)
+                            showChatBar = true
+                            feedModel.showTab = false
+                        }
+                        Task {
+                            let recipientPredicate = NewUser.keys.id == user.id
+                            let recipientUsers = await
+                            queryAWSUsers(where: recipientPredicate)
+                            if recipientUsers.count >= 1 {
+                                recipient = recipientUsers[0]
+                            }
+                        }
+                    }
             }
+            .padding(.horizontal, 20)
         }
-        .padding(20)
-        .background(.ultraThinMaterial)
-        .modifier(OutlineOverlay(cornerRadius: 30))
-        .backgroundStyle(cornerRadius: 30)
-        .padding(20)
-        .padding(.vertical, 80)
     }
     
     var chatConversationView: some View {
@@ -229,7 +221,7 @@ struct ChatView: View {
                     .frame(height: 100)
                 LazyVStack {
                     if let recipient = recipient,
-                       let messages = currentChatObjects.conversations[recipient.id] {
+                       let messages = currentUserConversations[recipient.id] {
                         ForEach(messages, id:\.0.id) { message, currentUserIsSender in
                             MessageRow(message: message,
                                        currentUserIsSender: currentUserIsSender)
@@ -282,6 +274,41 @@ struct ChatView: View {
         }
     }
     
+    var chatRequestsView: some View {
+        LazyVGrid(columns: columns, spacing: 20) {
+            let filtered = users.filter { incomingChatRequests.contains($0.id) }.sorted {
+                $0.firstName < $1.firstName
+            }
+            ForEach(filtered.indices, id: \.self) { index in
+                let user = filtered[index]
+                if index != 0 { Divider() }
+                ProfileRow(user: user, newMessages: $newMessages)
+                    .onTapGesture {
+                        withAnimation {
+                            newMessages.remove(user.id)
+                            showChatBar = true
+                            feedModel.showTab = false
+                        }
+                        Task {
+                            let recipientPredicate = NewUser.keys.id == user.id
+                            let recipientUsers = await
+                            queryAWSUsers(where: recipientPredicate)
+                            if recipientUsers.count >= 1 {
+                                recipient = recipientUsers[0]
+                            }
+                        }
+                    }
+            }
+            .padding(.horizontal, 20)
+        }
+        .padding(20)
+        .background(.ultraThinMaterial)
+        .modifier(OutlineOverlay(cornerRadius: 30))
+        .backgroundStyle(cornerRadius: 30)
+        .padding(20)
+        .padding(.vertical, 80)
+    }
+    
     // This function is used to observe changes in the Message model
     func observeNewMessages() {
         // Set up a subscription to observe new messages
@@ -330,10 +357,10 @@ struct ChatView: View {
                                         let value = (message, currentMessageNewUser.isSender)
                                         
                                         // Update current user's conversation with recipient
-                                        if !allChats.conversations.keys.contains(key) {
-                                            allChats.conversations[key] = []
+                                        if !currentUserConversations.keys.contains(key) {
+                                            currentUserConversations[key] = []
                                         }
-                                        allChats.conversations[key]!.append(value)
+                                        currentUserConversations[key]!.append(value)
                                         
                                         // If we haven't seen this person's conversation yet, just
                                         // add their creationDate directly
@@ -364,8 +391,8 @@ struct ChatView: View {
                     
                     // Sort each conversation's messages in chronological order
                     for userId in updatedConversations {
-                        allChats.conversations[userId]! =
-                        allChats.conversations[userId]!.sorted(by: {
+                        currentUserConversations[userId]! =
+                        currentUserConversations[userId]!.sorted(by: {
                             $0.0.creationDate < $1.0.creationDate
                         })
                     }
@@ -381,21 +408,21 @@ struct ChatView: View {
                     
                     // Iterate over all users that have messages with the current user and add any
                     // NewUser objects missing from the users list
-                    let conversationUserIds = Set(allChats.users.map { $0.id })
+                    let conversationUserIds = Set(users.map { $0.id })
                     for userId in sortedUserIds {
                         if !conversationUserIds.contains(userId) {
                             guard let user = try await Amplify.DataStore.query(NewUser.self,
                                                                                byId: userId) else {
                                 continue
                             }
-                            allChats.users.append(user)
+                            users.append(user)
                         }
                     }
                     
                     // Uses sortedUserIds to determine the appropriate indices for each of the users
                     // to be placed in based on this ordering
                     // https://stackoverflow.com/a/51683055/22068672
-                    let reorderedUsers = allChats.users.sorted {
+                    users = users.sorted {
                         guard let first = sortedUserIds.firstIndex(of: $0.id) else { return false }
                         guard let second = sortedUserIds.firstIndex(of: $1.id) else { return true }
                         
@@ -403,93 +430,17 @@ struct ChatView: View {
                     }
                     
                     withAnimation {
-                        (mainConversations,
-                         incomingChatRequests) =
-                        separateChatRequests(conversations: allChats.conversations,
-                                             users: reorderedUsers)
+                        incomingChatRequests = separateChatRequests(conversations: currentUserConversations,
+                                                                    users: users)
                     }
                     
                     // Assignment needs to follow user sorting in order for message ring to
                     // appear with the correct MessageRow
                     newMessages = updatedConversations
-                    
                 }
             } catch {
                 print("Error observing new messages: \(error)")
             }
-        }
-    }
-    
-    // Separates conversations and users into active conversations and chat requests
-    // Conversations is a dict mapping a recipient's user ID to a list of (Message, Bool) tuples
-    // Users is a list of NewUser objects in the order they should appear on the main conversation
-    // page
-    // Returns (convo dict, convo user list, incoming chat req dict, incoming chat req user list,
-    //          outgoing chat req dict, outgoing chat req user list)
-    private func separateChatRequests(conversations: [String: [(Message, Bool)]],
-                                      users: [NewUser]) -> (ChatObjects, ChatObjects) {
-        var newConversations = ChatObjects()
-        var incomingChatRequests = ChatObjects()
-        
-        for user in users {
-            guard let messages = conversations[user.id] else {
-                print("User not found in conversations")
-                continue
-            }
-            
-            // If only one message is in the list and they aren't the sender, incoming chat request
-            if messages.count == 1, !messages[0].1 {
-                print("incoming chat request")
-                incomingChatRequests.conversations[user.id] = messages
-                incomingChatRequests.users.append(user)
-            } else {
-                print("else")
-                newConversations.conversations[user.id] = messages
-                newConversations.users.append(user)
-            }
-        }
-        
-        print(newConversations)
-        print(incomingChatRequests)
-        print()
-        return (newConversations, incomingChatRequests)
-    }
-}
-
-struct ChatMessageListView: View {
-    @Binding var newMessages: Set<String>
-    @Binding var recipient: NewUser?
-    @Binding var showChatBar: Bool
-    @Binding var feedModel: FeedModel
-    @Binding var objects: ChatObjects
-    @Binding var currentChatObjects: ChatObjects
-    var columns: [GridItem]
-    
-    var body: some View {
-        LazyVGrid(columns: columns, spacing: 20) {
-            ForEach(objects.users.indices, id: \.self) { index in
-                let user = objects.users[index]
-                if index != 0 { Divider() }
-                ProfileRow(user: user, newMessages: $newMessages)
-                    .onTapGesture {
-                        Task {
-                            let recipientPredicate = NewUser.keys.id == user.id
-                            let recipientUsers = await
-                            queryAWSUsers(where: recipientPredicate)
-                            if recipientUsers.count == 1 {
-                                recipient = recipientUsers[0]
-                                
-                                withAnimation {
-                                    newMessages.remove(user.id)
-                                    showChatBar = true
-                                    feedModel.showTab = false
-                                    currentChatObjects = objects
-                                }
-                            }
-                        }
-                    }
-            }
-            .padding(.horizontal, 20)
         }
     }
 }
