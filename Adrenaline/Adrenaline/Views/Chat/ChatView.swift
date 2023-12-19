@@ -48,6 +48,7 @@ struct ChatView: View {
     // Set of user IDs who have sent incoming chat requests to the current user
     @State private var incomingChatRequests: Set<String> = Set()
     @State private var recipient: NewUser?
+    @State private var isViewingChatRequest: Bool = false
     
     var body: some View {
         NavigationView {
@@ -137,6 +138,7 @@ struct ChatView: View {
                         ChatBar(showChatBar: $showChatBar,
                                 feedModel: $feedModel,
                                 deletedChatIds: $deletedChatIds,
+                                isViewingChatRequest: $isViewingChatRequest,
                                 user: recipient,
                                 currentUser: currentUser)
                     }
@@ -249,6 +251,65 @@ struct ChatView: View {
                 }
             }
             .defaultScrollAnchor(.bottom)
+            // Chat Request overlay
+            .overlay(alignment: .bottom) {
+                if isViewingChatRequest {
+                    VStack {
+                        Text("Send a response to accept this chat request, or select an option below")
+                            .foregroundColor(.secondary)
+                            .fontWeight(.semibold)
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom)
+                        
+                        HStack {
+                            Spacer()
+                            
+                            Button(role: .destructive) {
+                                print("Block")
+                            } label: {
+                                Text("Block")
+                                    .fontWeight(.semibold)
+                                    .padding()
+                            }
+                            .buttonStyle(.bordered)
+                            .buttonBorderShape(.roundedRectangle(radius: 15))
+                            
+                            Spacer()
+                            
+                            Button(role: .destructive) {
+                                Task {
+                                    if let currentUser = currentUser, let recipient = recipient {
+                                        deletedChatIds.insert(recipient.id)
+                                        try await deleteConversation(between: currentUser,
+                                                                     and: recipient)
+                                        
+                                        // Dismiss view back to main conversation page
+                                        withAnimation(.closeCard) {
+                                            showChatBar = false
+                                            feedModel.showTab = true
+                                            isViewingChatRequest = false
+                                        }
+                                    }
+                                }
+                            } label: {
+                                Text("Decline")
+                                    .fontWeight(.semibold)
+                                    .padding()
+                            }
+                            .buttonStyle(.bordered)
+                            .buttonBorderShape(.roundedRectangle(radius: 15))
+                            
+                            Spacer()
+                        }
+                    }
+                    .padding(20)
+                    .background(.ultraThinMaterial)
+                    .modifier(OutlineOverlay(cornerRadius: 30))
+                    .backgroundStyle(cornerRadius: 30)
+                    .padding(20)
+                }
+            }
+            
             HStack {
                 TextField("Enter message", text: $text)
                     .onChange(of: text, initial: true) { _, newText in
@@ -266,6 +327,7 @@ struct ChatView: View {
                                let recipient = recipient {
                                 didTapSend(message: text, sender: currentUser,
                                            recipient: recipient)
+                                isViewingChatRequest = false
                                 
                                 text.removeAll()
                             } else {
@@ -302,6 +364,7 @@ struct ChatView: View {
                             newMessages.remove(user.id)
                             showChatBar = true
                             feedModel.showTab = false
+                            isViewingChatRequest = true
                         }
                         Task {
                             let recipientPredicate = NewUser.keys.id == user.id

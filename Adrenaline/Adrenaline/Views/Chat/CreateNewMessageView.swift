@@ -12,6 +12,7 @@ struct CreateNewMessageView: View {
     @AppStorage("authUserId") private var authUserId = ""
     @State private var currentUser: NewUser?
     // users available to send a new message to
+    // TODO: restrict this list based on future privacy settings
     @State private var users: [NewUser] = []
     // State newMessages to satisfy ProfileRow view, but not actually used in this context
     @State private var newMessages: Set<String> = Set()

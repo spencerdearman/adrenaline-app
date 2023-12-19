@@ -15,6 +15,7 @@ struct ChatBar: View {
     @Binding var showChatBar: Bool
     @Binding var feedModel: FeedModel
     @Binding var deletedChatIds: Set<String>
+    @Binding var isViewingChatRequest: Bool
     // user is the recipient
     var user: NewUser
     // currentUser is the current account that is logged in
@@ -26,6 +27,7 @@ struct ChatBar: View {
         withAnimation(.closeCard) {
             showChatBar = false
             feedModel.showTab = true
+            isViewingChatRequest = false
         }
     }
     
@@ -52,28 +54,30 @@ struct ChatBar: View {
                     .fontWeight(.bold)
                     .frame(maxWidth: .infinity, alignment: .center)
                 
-                Menu {
-                    Button(role: .destructive) {
-                        Task {
-                            deletedChatIds.insert(user.id)
-                            try await deleteConversation(between: currentUser, and: user)
-                            goBack()
+                if !isViewingChatRequest {
+                    Menu {
+                        Button(role: .destructive) {
+                            Task {
+                                deletedChatIds.insert(user.id)
+                                try await deleteConversation(between: currentUser, and: user)
+                                goBack()
+                            }
+                        } label: {
+                            HStack {
+                                Image(systemName: "trash.fill")
+                                Text("Delete Conversation")
+                            }
                         }
                     } label: {
-                        HStack {
-                            Image(systemName: "trash.fill")
-                            Text("Delete Conversation")
-                        }
+                        Image(systemName: "ellipsis.circle")
+                            .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
+                            .cornerRadius(10)
+                            .padding(8)
+                            .background(.ultraThinMaterial)
+                            .backgroundStyle(cornerRadius: 18, opacity: 0.4)
+                            .transition(.scale.combined(with: .slide))
+                            .foregroundColor(.secondary)
                     }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .frame(width: screenWidth * 0.06, height: screenWidth * 0.06)
-                        .cornerRadius(10)
-                        .padding(8)
-                        .background(.ultraThinMaterial)
-                        .backgroundStyle(cornerRadius: 18, opacity: 0.4)
-                        .transition(.scale.combined(with: .slide))
-                        .foregroundColor(.secondary)
                 }
                 
                 NavigationLink {
