@@ -5,7 +5,6 @@
 //  Created by Logan Sherwin on 3/22/23.
 //
 
-import CoreData
 import SwiftUI
 import SwiftSoup
 
