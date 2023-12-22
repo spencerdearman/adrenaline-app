@@ -272,22 +272,9 @@ struct NewSearchView: View {
     }
 }
 
-struct Suggestion: Identifiable {
-    let id = UUID()
-    var text: String
-}
-
-var suggestionsData = [
-    Suggestion(text: "MEET 1"),
-    Suggestion(text: "MEET 2"),
-    Suggestion(text: "PERSON 1"),
-    Suggestion(text: "PERSON 2")
-]
-
-
 struct ListRow: View {
-    var title = "Development"
-    var icon = "iphone"
+    var title: String
+    var icon: String
     
     var body: some View {
         HStack(spacing: 16) {
