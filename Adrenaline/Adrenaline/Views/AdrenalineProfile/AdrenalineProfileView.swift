@@ -203,16 +203,6 @@ struct PersonalInfoView: View {
         user.id != authUserId
     }
     
-    private func isFollowedByUser(email: String, user: User) -> Bool {
-        for followed in user.followedArray {
-            if followed.email == email {
-                return true
-            }
-        }
-        
-        return false
-    }
-    
     var body: some View {
         VStack {
             ZStack {
