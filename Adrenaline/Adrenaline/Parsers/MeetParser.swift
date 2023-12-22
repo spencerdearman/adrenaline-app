@@ -293,62 +293,6 @@ final class MeetParser: ObservableObject {
         }
     }
     
-    // Counts the meets to be parsed on a given HTML page
-    private func countMeetNames(text: String) -> Int? {
-        var count: Int = 0
-        do {
-            let document: Document = try SwiftSoup.parse(text)
-            guard let body = document.body() else { return nil }
-            guard let content = try body.getElementById("dm_content") else { return nil }
-            let rows = try content.getElementsByTag("td")
-            for row in rows {
-                // Only continues on rows w/o align field and w valign == top
-                if !(try !row.hasAttr("align")
-                     && row.hasAttr("valign") && row.attr("valign") == "top") {
-                    continue
-                }
-                
-                // Gets links from list of meets
-                let elem = try row.getElementsByTag("a")
-                for e in elem {
-                    if try e.tagName() == "a"
-                        && e.attr("href").starts(with: "meet") {
-                        count += 1
-                        break
-                    }
-                }
-            }
-        } catch {
-            print("Count failed")
-        }
-        
-        return count
-    }
-    
-    // Counts all of the current meets to be parsed
-    private func countCurrentMeets(html: String) async -> Int? {
-        do {
-            let document: Document = try SwiftSoup.parse(html)
-            guard let body = document.body() else { return nil }
-            let content = try body.getElementById("dm_content")
-            let sidebar = try content?.getElementsByTag("div")[3]
-            // Gets table of all current meet rows
-            let currentTable = try sidebar?.getElementsByTag("table")
-                .first()?.children().first()
-            // Gets list of Elements for each current meet
-            let currentRows = try currentTable?.getElementsByTag("table")
-            if let rows = currentRows {
-                return rows.count
-            } else {
-                return 0
-            }
-        } catch {
-            print("Counting current meets failed")
-        }
-        
-        return nil
-    }
-    
     private func waitForNetworkAccess() async throws {
         while blockingNetwork {
             try await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
