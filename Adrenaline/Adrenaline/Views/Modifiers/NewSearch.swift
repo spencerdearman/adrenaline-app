@@ -131,48 +131,62 @@ struct NewSearchView: View {
     }
     
     var content: some View {
-        ScrollView {
-            VStack {
-                if searchTerm.isEmpty {
-                    ForEach(recentSearches) { item in
-                        ListRow(title: item.title, icon: "clock.arrow.circlepath")
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                showResult = true
-                                selectedItem = item
-                                updateRecentSearches(item: item)
+        Group {
+            if results.isEmpty {
+                VStack {
+                    Spacer()
+                    Text("No results found")
+                    Text("Please try a different category or search term")
+                    Spacer()
+                }
+                .foregroundColor(.secondary)
+                .fontWeight(.semibold)
+                .multilineTextAlignment(.center)
+            } else {
+                ScrollView {
+                    VStack {
+                        if searchTerm.isEmpty {
+                            ForEach(recentSearches) { item in
+                                ListRow(title: item.title, icon: "clock.arrow.circlepath")
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        showResult = true
+                                        selectedItem = item
+                                        updateRecentSearches(item: item)
+                                    }
                             }
-                    }
-                    .zIndex(3)
-                }
-                ForEach(results) { item in
-                    ListRow(title: item.title, icon: "magnifyingglass")
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            showResult = true
-                            selectedItem = item
-                            updateRecentSearches(item: item)
+                            .zIndex(3)
                         }
+                        ForEach(results) { item in
+                            ListRow(title: item.title, icon: "magnifyingglass")
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    showResult = true
+                                    selectedItem = item
+                                    updateRecentSearches(item: item)
+                                }
+                        }
+                    }
+                    .padding(20)
+                    .background(.ultraThinMaterial)
+                    .backgroundStyle(cornerRadius: 30)
+                    .padding(20)
+                    .navigationTitle("Search")
+                    .background(
+                        Rectangle()
+                            .fill(.regularMaterial)
+                            .frame(height: 200)
+                            .frame(maxHeight: .infinity, alignment: .top)
+                            .offset(y: -200)
+                            .blur(radius: 20)
+                    )
+                    .sheet(isPresented: $showResult) {
+                        presentedSearchItems
+                    }
                 }
-            }
-            .padding(20)
-            .background(.ultraThinMaterial)
-            .backgroundStyle(cornerRadius: 30)
-            .padding(20)
-            .navigationTitle("Search")
-            .background(
-                Rectangle()
-                    .fill(.regularMaterial)
-                    .frame(height: 200)
-                    .frame(maxHeight: .infinity, alignment: .top)
-                    .offset(y: -200)
-                    .blur(radius: 20)
-            )
-            .sheet(isPresented: $showResult) {
-                presentedSearchItems
+                .scrollIndicators(.hidden)
             }
         }
-        .scrollIndicators(.hidden)
     }
     
     var closeButton: some View {
