@@ -152,7 +152,7 @@ struct AdrenalineApp: App {
     @StateObject var networkMonitor: NetworkMonitor = NetworkMonitor()
     @StateObject var appLogic = AppLogic()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -175,7 +175,8 @@ struct AdrenalineApp: App {
                     Task {
                         let user = try await Amplify.Auth.getCurrentUser().userId
                         try await Amplify.Notifications.Push.identifyUser(userId: user)
-                    }                }
+                    }
+                }
         }
     }
 }
