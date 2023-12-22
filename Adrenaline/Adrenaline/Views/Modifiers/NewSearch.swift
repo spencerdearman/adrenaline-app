@@ -50,7 +50,7 @@ enum SearchItem: Hashable, Identifiable {
             return ""
         }
     }
-  
+    
     var subtitle: String {
         if case .user(let user) = self {
             return user.accountType
@@ -76,7 +76,7 @@ struct NewSearchView: View {
     @Environment(\.newMeets) private var newMeets
     @Environment(\.newTeams) private var newTeams
     @Environment(\.colleges) private var colleges
-    @State private var text = ""
+    @State private var searchTerm = ""
     @State private var showResult: Bool = false
     @State private var selectedItem: SearchItem? = nil
     @State private var searchItems: [SearchItem] = []
@@ -104,26 +104,8 @@ struct NewSearchView: View {
                 Spacer()
             }
         }
-        .searchable(text: $text, placement: .navigationBarDrawer(displayMode: .always)) {
-            ForEach(suggestions) { suggestion in
-                Button {
-                    text = suggestion.title
-                } label: {
-                    HStack {
-                        ListRow(title: suggestion.title,
-                                icon: text.isEmpty ? "clock.arrow.circlepath" : "magnifyingglass")
-                        .foregroundColor(.primary)
-                        
-                        if searchScope == .all || searchScope == .users {
-                            Text(suggestion.subtitle)
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-                // Uses item's title to determine if search text matches
-                .searchCompletion(suggestion.title)
-            }
-        }
+        .searchable(text: $searchTerm, placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: "Search Adrenaline")
         .searchScopes($searchScope) {
             ForEach(SearchScope.allCases, id: \.self) { scope in
                 Text(scope.rawValue.capitalized)
@@ -132,16 +114,13 @@ struct NewSearchView: View {
         .onAppear {
             searchItems = [
                 .meet(NewMeet(meetID: 1, name: "Test Meet 1", startDate: Temporal.Date(Date()),
-                                endDate: Temporal.Date(Date()),
-                                city: "Pittsburgh", state: "PA", country: "United States",
-                                link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9080", meetType: 2)),
+                              endDate: Temporal.Date(Date()),
+                              city: "Pittsburgh", state: "PA", country: "United States",
+                              link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9080", meetType: 2)),
                 .meet(NewMeet(meetID: 2, name: "Test Meet 2", startDate: Temporal.Date(Date()),
-                                endDate: Temporal.Date(Date()),
-                                city: "Oakton", state: "VA", country: "United States",
-                                link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9088", meetType: 2)),
-                //                .team(GraphTeam(name: "Pitt Aquatic Club")),
-                //                .college(GraphCollege(name: "University of Chicago",
-                //                                      imageLink: "https://www.google.com"))
+                              endDate: Temporal.Date(Date()),
+                              city: "Oakton", state: "VA", country: "United States",
+                              link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9088", meetType: 2))
             ]
             
             searchItems += newMeets.map { .meet($0) }
@@ -154,21 +133,9 @@ struct NewSearchView: View {
     var content: some View {
         ScrollView {
             VStack {
-                VStack {
-                    if text == "" {
-                        ForEach(recentSearches) { item in
-                            ListRow(title: item.title, icon: "clock.arrow.circlepath")
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    showResult = true
-                                    selectedItem = item
-                                    updateRecentSearches(item: item)
-                                }
-                        }
-                        .zIndex(3)
-                    }
-                    ForEach(results) { item in
-                        ListRow(title: item.title, icon: "magnifyingglass")
+                if searchTerm.isEmpty {
+                    ForEach(recentSearches) { item in
+                        ListRow(title: item.title, icon: "clock.arrow.circlepath")
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 showResult = true
@@ -176,23 +143,33 @@ struct NewSearchView: View {
                                 updateRecentSearches(item: item)
                             }
                     }
+                    .zIndex(3)
                 }
-                .padding(20)
-                .background(.ultraThinMaterial)
-                .backgroundStyle(cornerRadius: 30)
-                .padding(20)
-                .navigationTitle("Search")
-                .background(
-                    Rectangle()
-                        .fill(.regularMaterial)
-                        .frame(height: 200)
-                        .frame(maxHeight: .infinity, alignment: .top)
-                        .offset(y: -200)
-                        .blur(radius: 20)
-                )
-                .sheet(isPresented: $showResult) {
-                    presentedSearchItems
+                ForEach(results) { item in
+                    ListRow(title: item.title, icon: "magnifyingglass")
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            showResult = true
+                            selectedItem = item
+                            updateRecentSearches(item: item)
+                        }
                 }
+            }
+            .padding(20)
+            .background(.ultraThinMaterial)
+            .backgroundStyle(cornerRadius: 30)
+            .padding(20)
+            .navigationTitle("Search")
+            .background(
+                Rectangle()
+                    .fill(.regularMaterial)
+                    .frame(height: 200)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .offset(y: -200)
+                    .blur(radius: 20)
+            )
+            .sheet(isPresented: $showResult) {
+                presentedSearchItems
             }
         }
         .scrollIndicators(.hidden)
@@ -255,12 +232,12 @@ struct NewSearchView: View {
     }
     
     var results: [SearchItem] {
-        if text.isEmpty {
+        if searchTerm.isEmpty {
             return searchItems
         } else if searchScope == .users {
             return searchItems.filter {
                 if case .user(_) = $0 {
-                    return $0.title.localizedCaseInsensitiveContains(text)
+                    return $0.title.localizedCaseInsensitiveContains(searchTerm)
                 } else {
                     return false
                 }
@@ -268,7 +245,7 @@ struct NewSearchView: View {
         } else if searchScope == .meets {
             return searchItems.filter {
                 if case .meet(_) = $0 {
-                    return $0.title.localizedCaseInsensitiveContains(text)
+                    return $0.title.localizedCaseInsensitiveContains(searchTerm)
                 } else {
                     return false
                 }
@@ -276,7 +253,7 @@ struct NewSearchView: View {
         } else if searchScope == .teams {
             return searchItems.filter {
                 if case .team(_) = $0 {
-                    return $0.title.localizedCaseInsensitiveContains(text)
+                    return $0.title.localizedCaseInsensitiveContains(searchTerm)
                 } else {
                     return false
                 }
@@ -284,23 +261,13 @@ struct NewSearchView: View {
         } else if searchScope == .colleges {
             return searchItems.filter {
                 if case .college(_) = $0 {
-                    return $0.title.localizedCaseInsensitiveContains(text)
+                    return $0.title.localizedCaseInsensitiveContains(searchTerm)
                 } else {
                     return false
                 }
             }
         } else {
-            return searchItems.filter { $0.title.localizedCaseInsensitiveContains(text) }
-        }
-    }
-    
-    var suggestions: [SearchItem] {
-        if text.isEmpty {
-            return recentSearches
-        } else {
-            return results
-                .filter { $0.title.localizedCaseInsensitiveContains(text) }
-                .sorted(by: { $0.title < $1.title })
+            return searchItems.filter { $0.title.localizedCaseInsensitiveContains(searchTerm) }
         }
     }
 }
