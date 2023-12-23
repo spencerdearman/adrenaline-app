@@ -552,6 +552,7 @@ struct RankingsView: View {
                 NavigationBar(title: "Rankings",
                               diveMeetsID: $diveMeetsID,
                               showPlus: false,
+                              showSearch: false,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
                               feedModel: $feedModel, recentSearches: $recentSearches,
