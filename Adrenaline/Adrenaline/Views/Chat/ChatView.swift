@@ -13,6 +13,7 @@ import Combine
 typealias ChatConversations = [String: [(Message, Bool)]]
 
 struct ChatView: View {
+    @EnvironmentObject private var appLogic: AppLogic
     // Bindings
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
@@ -74,6 +75,22 @@ struct ChatView: View {
                             .matchedGeometryEffect(id: "form", in: namespace)
                         // When viewing main conversation page, but no users are present
                     } else if users.count == 0 {
+                        VStack {
+                            Text("Refreshing chats")
+                                .foregroundColor(.secondary)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .multilineTextAlignment(.center)
+                            ProgressView()
+                        }
+                        .padding(20)
+                        .background(.ultraThinMaterial)
+                        .modifier(OutlineOverlay(cornerRadius: 30))
+                        .backgroundStyle(cornerRadius: 30)
+                        .padding(20)
+                        .padding(.vertical, 80)
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    } else if appLogic.dataStoreReady && users.count == 0 {
                         VStack {
                             Text("You don't have any active conversations")
                                 .foregroundColor(.secondary)
