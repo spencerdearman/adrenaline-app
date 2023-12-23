@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var isDeleted = false
     @State private var showDeleteAccountAlert: Bool = false
     @State private var isDeletingAccount: Bool = false
+    @State private var selectedCollege: String = ""
     @AppStorage("authUserId") private var authUserId: String = ""
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
@@ -72,7 +73,13 @@ struct SettingsView: View {
                 .padding()
             }
             Section {
-                NavigationLink {} label: {
+                NavigationLink {
+                    NavigationLink {
+                        CommittedCollegeView(selectedCollege: $selectedCollege)
+                    } label: {
+                        Text("Change Commited College")
+                    }
+                } label: {
                     Label("Profile", systemImage: "person")
                 }
                 
@@ -218,6 +225,31 @@ struct SettingsView: View {
                             .foregroundColor(.secondary)
                             .background(.ultraThinMaterial)
                             .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                    }
+                }
+            }
+        }
+        .onAppear {
+            Task {
+                if let user = newUser, user.accountType != "Spectator" {
+                    let college: College?
+                    switch user.accountType {
+                        case "Athlete":
+                            guard let userAthlete = user.athlete else { return }
+                            guard let athlete = try await queryAWSAthleteById(id: userAthlete.id)
+                            else { return }
+                            guard let athleteCollege = athlete.college else { return }
+                            college = try await queryAWSCollegeById(id: athleteCollege.id)
+                        case "Coach":
+                            // TODO: implement for coaches to associate with a college
+                            print("Coaches can't associate with a College yet")
+                            college = nil
+                        default:
+                            return
+                    }
+                    
+                    if let college = college {
+                        selectedCollege = college.name
                     }
                 }
             }
