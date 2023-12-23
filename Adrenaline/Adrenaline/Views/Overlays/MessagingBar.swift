@@ -14,7 +14,6 @@ struct MessagingBar: View {
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
     var diveMeetsID: Binding<String>
-    @State private var showSearchSheet = false
     @State private var showNewMessageSheet = false
     @State private var isLogged = true
     @Binding var showAccount: Bool
@@ -23,17 +22,6 @@ struct MessagingBar: View {
     @Binding var recentSearches: [SearchItem]
     @Binding var recipient: NewUser?
     @Binding var showChatBar: Bool
-    
-    // Using this function to swap sheet bools safely
-    private func showSheet(showingNewMessage: Bool) {
-        if showingNewMessage {
-            showSearchSheet = false
-            showNewMessageSheet = true
-        } else {
-            showNewMessageSheet = false
-            showSearchSheet = true
-        }
-    }
     
     var body: some View {
         ZStack {
@@ -56,7 +44,7 @@ struct MessagingBar: View {
             
             HStack(spacing: 16) {
                 Button {
-                    showSheet(showingNewMessage: true)
+                    showNewMessageSheet = true
                 } label: {
                     Image(systemName: "square.and.pencil")
                         .font(.system(size: 17, weight: .bold))
@@ -69,20 +57,6 @@ struct MessagingBar: View {
                     CreateNewMessageView(recipient: $recipient,
                                          showChatBar: $showChatBar,
                                          feedModel: $feedModel)
-                }
-                
-                Button {
-                    showSheet(showingNewMessage: false)
-                } label: {
-                    Image(systemName: "magnifyingglass")
-                        .font(.system(size: 17, weight: .bold))
-                        .frame(width: 36, height: 36)
-                        .foregroundColor(.secondary)
-                        .background(.ultraThinMaterial)
-                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                }
-                .sheet(isPresented: $showSearchSheet) {
-                    NewSearchView(recentSearches: $recentSearches)
                 }
                 
                 Button {
