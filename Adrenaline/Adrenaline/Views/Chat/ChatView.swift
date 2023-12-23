@@ -50,6 +50,8 @@ struct ChatView: View {
     @State private var recipient: NewUser?
     @State private var isViewingChatRequest: Bool = false
     
+    @State private var searchTerm: String = ""
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -201,10 +203,20 @@ struct ChatView: View {
         }
     }
     
+    var filteredChats: [NewUser] {
+        guard !searchTerm.isEmpty else { return users }
+        return users.filter {
+            let name = $0.firstName + " " + $0.lastName
+            return name.localizedCaseInsensitiveContains(searchTerm)
+        }
+    }
+    
     var chatMessageListView: some View {
         LazyVGrid(columns: columns, spacing: 20) {
             // Filter out users who sent incoming requests or were deleted
-            let filtered = users.filter { !incomingChatRequests.union(deletedChatIds).contains($0.id) }
+            let filtered = filteredChats.filter {
+                !incomingChatRequests.union(deletedChatIds).contains($0.id)
+            }
             ForEach(filtered.indices, id: \.self) { index in
                 let user = filtered[index]
                 if index != 0 { Divider() }
@@ -214,6 +226,7 @@ struct ChatView: View {
                             newMessages.remove(user.id)
                             showChatBar = true
                             feedModel.showTab = false
+                            searchTerm = ""
                         }
                         Task {
                             let recipientPredicate = NewUser.keys.id == user.id
@@ -227,6 +240,7 @@ struct ChatView: View {
             }
             .padding(.horizontal, 20)
         }
+        .searchable(text: $searchTerm, placement: .navigationBarDrawer, prompt: "Search Chat")
     }
     
     var chatConversationView: some View {
