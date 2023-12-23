@@ -30,6 +30,10 @@ func queryAWSUsers(where predicate: QueryPredicate? = nil,
     return []
 }
 
+func queryAWSUserById(id: String) async throws -> NewUser? {
+    try await Amplify.DataStore.query(NewUser.self, byId: id)
+}
+
 func queryAWSAthletes(where predicate: QueryPredicate? = nil,
                 sortBy: QuerySortInput? = nil) async -> [NewAthlete] {
     do {
@@ -41,6 +45,18 @@ func queryAWSAthletes(where predicate: QueryPredicate? = nil,
         print("Unexpected error while calling DataStore : \(error)")
     }
     return []
+}
+
+func queryAWSAthleteById(id: String) async throws -> NewAthlete? {
+    try await Amplify.DataStore.query(NewAthlete.self, byId: id)
+}
+
+func queryAWSCoachById(id: String) async throws -> CoachUser? {
+    try await Amplify.DataStore.query(CoachUser.self, byId: id)
+}
+
+func queryAWSCollegeById(id: String) async throws -> College? {
+    try await Amplify.DataStore.query(College.self, byId: id)
 }
 
 // Saves to DataStore without converting object from Swift class
