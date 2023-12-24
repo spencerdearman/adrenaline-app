@@ -169,6 +169,10 @@ struct CommittedCollegeView: View {
                             let _ = try await saveToDataStore(object: college)
                         }
                     }
+                    
+                    athlete.college = newCollege
+                    athlete.collegeID = newCollege?.id
+                    let _ = try await saveToDataStore(object: athlete)
                 }
             }
         }
