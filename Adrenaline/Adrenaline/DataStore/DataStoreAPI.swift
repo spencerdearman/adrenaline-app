@@ -34,6 +34,15 @@ func queryAWSUserById(id: String) async throws -> NewUser? {
     try await Amplify.DataStore.query(NewUser.self, byId: id)
 }
 
+func getUserAthleteByUserId(id: String) async throws -> NewAthlete? {
+    let athletes = await queryAWSAthletes().filter { $0.user.id == id }
+    if athletes.count == 1 {
+        return athletes[0]
+    }
+    
+    return nil
+}
+
 func queryAWSAthletes(where predicate: QueryPredicate? = nil,
                 sortBy: QuerySortInput? = nil) async -> [NewAthlete] {
     do {

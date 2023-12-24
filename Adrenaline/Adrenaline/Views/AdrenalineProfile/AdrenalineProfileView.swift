@@ -302,10 +302,7 @@ struct PersonalInfoView: View {
         .onAppear {
             Task {
                 if user.accountType == "Athlete" {
-                    let athletes = await queryAWSAthletes().filter { $0.user.id == user.id }
-                    if athletes.count == 1 {
-                        athlete = athletes[0]
-                    }
+                    athlete = try await getUserAthleteByUserId(id: user.id)
                 }
                 
                 // Get current user for favoriting

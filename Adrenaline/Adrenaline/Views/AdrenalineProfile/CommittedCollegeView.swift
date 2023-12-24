@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import Amplify
 
 let colleges: [String: String]? = getCollegeLogoData()
 
 struct CommittedCollegeView: View {
+    @State private var newAthlete: NewAthlete? = nil
     @State private var searchTerm: String = ""
+    @State private var originalSelectedCollege: String = ""
     @Binding var selectedCollege: String
+    var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
     
@@ -24,6 +28,10 @@ struct CommittedCollegeView: View {
         guard let collegeNames = collegeNames else { return nil }
         guard !searchTerm.isEmpty else { return collegeNames }
         return collegeNames.filter { $0.localizedCaseInsensitiveContains(searchTerm) }
+    }
+    
+    private func getCollegeId(name: String) -> String {
+        return name.lowercased().replacingOccurrences(of: " ", with: "-")
     }
     
     var body: some View {
@@ -84,6 +92,86 @@ struct CommittedCollegeView: View {
             }
         }
         .searchable(text: $searchTerm, prompt: "Search Colleges")
+        .onAppear {
+            print("original college: \(originalSelectedCollege)")
+            print("selected college: \(selectedCollege)")
+            Task {
+                originalSelectedCollege = selectedCollege
+                
+                newAthlete = try await getUserAthleteByUserId(id: newUser.id)
+            }
+        }
+        .onDisappear {
+            print("original college: \(originalSelectedCollege)")
+            print("selected college: \(selectedCollege)")
+            Task {
+                // If there was a change in selection, handle updating the DataStore
+                if var athlete = newAthlete, selectedCollege != originalSelectedCollege {
+                    var originalCollege: College? = nil
+                    var newCollege: College? = nil
+                    
+                    print("inside task")
+                    
+                    if originalSelectedCollege != "" {
+                        originalCollege = try await queryAWSCollegeById(id:
+                        getCollegeId(name: originalSelectedCollege))
+                        print("originalSelectedCollege not None: \(originalCollege?.id)")
+                    } else {
+                        print("originalSelectedCollege is None")
+                    }
+                    
+                    if selectedCollege != "" {
+                        newCollege = try await queryAWSCollegeById(id: getCollegeId(name: selectedCollege))
+                        print("selectedCollege not None: \(newCollege?.id)")
+                    } else {
+                        print("selectedCollege is None")
+                    }
+                    
+                    // If the user has selected a new college and the new college does not exist
+                    // yet, create it with an empty athletes list
+                    if selectedCollege != "",
+                       newCollege == nil,
+                       let imageLink = colleges?[selectedCollege] {
+                        print("creating new college")
+                        let college = College(id: getCollegeId(name: selectedCollege),
+                                              name: selectedCollege,
+                                              imageLink: imageLink)
+                        newCollege = try await saveToDataStore(object: college)
+                        print("New college: \(newCollege?.id)")
+                    }
+                    
+                    // If originalCollege was not None, remove athlete from its athletes list
+                    if var college = originalCollege {
+                        print("removing athlete from original list")
+                        try await college.athletes?.fetch()
+                        
+                        if let athletes = college.athletes {
+                            college.athletes = List<NewAthlete>.init(elements: 
+                                                                        athletes.elements.filter {
+                                                                            $0.id != athlete.id
+                                                                        })
+                            
+                            print("saving old")
+                            let _ = try await saveToDataStore(object: college)
+                        }
+                    }
+                    
+                    // If newCollege is not None, add athlete to its athletes list
+                    if var college = newCollege {
+                        print("adding athlete to new list")
+                        try await college.athletes?.fetch()
+                        
+                        if let athletes = college.athletes {
+                            college.athletes = List<NewAthlete>.init(elements: athletes.elements +
+                                                                     [athlete])
+                            
+                            print("saving new")
+                            let _ = try await saveToDataStore(object: college)
+                        }
+                    }
+                }
+            }
+        }
     }
     
     var noSelectionView: some View {
