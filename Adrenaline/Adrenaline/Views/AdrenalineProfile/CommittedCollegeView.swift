@@ -30,10 +30,6 @@ struct CommittedCollegeView: View {
         return collegeNames.filter { $0.localizedCaseInsensitiveContains(searchTerm) }
     }
     
-    private func getCollegeId(name: String) -> String {
-        return name.lowercased().replacingOccurrences(of: " ", with: "-")
-    }
-    
     var body: some View {
         VStack {
             currentSelectionView
@@ -229,22 +225,11 @@ struct CollegeRowView: View {
     
     var body: some View {
         HStack {
-            let url = URL(string: colleges?[collegeName] ?? "")
-            AsyncImage(url: url) { img in
-                switch img {
-                    case .success(let i):
-                        i
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    default:
-                        Image(systemName: "exclamationmark.circle.fill")
-                            .resizable()
-                            .foregroundColor(.secondary)
-                            .aspectRatio(contentMode: .fit)
-                }
-            }
-            .clipShape(Circle())
-            .padding(.trailing)
+            Image(getCollegeImageFilename(name: collegeName))
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .clipShape(Circle())
+                .padding(.trailing)
             
             Text(collegeName)
                 .padding()

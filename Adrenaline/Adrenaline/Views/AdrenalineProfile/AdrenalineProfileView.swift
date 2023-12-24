@@ -223,7 +223,7 @@ struct PersonalInfoView: View {
                     .shadow(radius: 10)
                 HStack {
                     if selectedCollege != "" {
-                        Image(selectedCollege)
+                        Image(getCollegeImageFilename(name: selectedCollege))
                             .resizable()
                             .clipShape(Circle())
                             .aspectRatio(contentMode: .fit)
@@ -303,6 +303,7 @@ struct PersonalInfoView: View {
             Task {
                 if user.accountType == "Athlete" {
                     athlete = try await getUserAthleteByUserId(id: user.id)
+                    selectedCollege = athlete?.college?.name ?? ""
                 }
                 
                 // Get current user for favoriting

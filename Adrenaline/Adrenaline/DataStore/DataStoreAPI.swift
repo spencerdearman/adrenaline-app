@@ -68,6 +68,10 @@ func queryAWSCollegeById(id: String) async throws -> College? {
     try await Amplify.DataStore.query(College.self, byId: id)
 }
 
+func getCollegeId(name: String) -> String {
+    return name.lowercased().replacingOccurrences(of: " ", with: "-")
+}
+
 // Saves to DataStore without converting object from Swift class
 // Note: updating is the same as saving an existing object, so this is also used for updating
 func saveToDataStore<M: Model>(object: M) async throws -> M {
