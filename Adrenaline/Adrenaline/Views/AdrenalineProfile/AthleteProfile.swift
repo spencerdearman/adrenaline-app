@@ -352,13 +352,7 @@ struct RecruitingView: View {
         }
         .onAppear {
             Task {
-                let athletes = await queryAWSAthletes().filter { $0.user.id == newUser.id }
-                if athletes.count != 1 {
-                    print("Invalid athletes count, returning...")
-                } else {
-                    newAthlete = athletes[0]
-                }
-                
+                newAthlete = try await getUserAthleteByUserId(id: newUser.id)
                 loaded = true
             }
         }

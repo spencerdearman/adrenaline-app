@@ -213,7 +213,7 @@ struct PersonalInfoView: View {
                     .shadow(radius: 10)
                 HStack {
                     if selectedCollege != "" {
-                        Image(selectedCollege)
+                        Image(getCollegeImageFilename(name: selectedCollege))
                             .resizable()
                             .clipShape(Circle())
                             .aspectRatio(contentMode: .fit)
@@ -292,10 +292,8 @@ struct PersonalInfoView: View {
         .onAppear {
             Task {
                 if user.accountType == "Athlete" {
-                    let athletes = await queryAWSAthletes().filter { $0.user.id == user.id }
-                    if athletes.count == 1 {
-                        athlete = athletes[0]
-                    }
+                    athlete = try await getUserAthleteByUserId(id: user.id)
+                    selectedCollege = athlete?.college?.name ?? ""
                 }
                 
                 // Get current user for favoriting
@@ -314,196 +312,6 @@ struct PersonalInfoView: View {
         }
     }
 }
-
-//struct CommittedCollegeView: View {
-//    @Environment(\.dismiss) private var dismiss
-//    @State var college: String = ""
-//    //@Binding var userViewData: UserViewData
-//
-//    var body: some View {
-//        VStack {
-//            VStack {
-//                Text("Have you committed to dive in college?")
-//                    .font(.title)
-//                    .bold()
-//                    .multilineTextAlignment(.center)
-//                    .padding(.bottom)
-//                Text("Start typing below to choose a college to display on your profile")
-//                    .font(.title2)
-//                    .multilineTextAlignment(.center)
-//            }
-//            Spacer()
-//            SuggestionsTextField(userViewData: $userViewData)
-//            Spacer()
-//            Spacer()
-//        }
-//        .padding()
-//        .navigationBarBackButtonHidden(true)
-//        .toolbar {
-//            ToolbarItem(placement: .navigationBarLeading) {
-//                Button(action: { dismiss() }) {
-//                    NavigationViewBackButton()
-//                }
-//            }
-//        }
-//    }
-//}
-
-// https://stackoverflow.com/questions/76389104/how-to-create-autocomplete-textfield-in-swiftui
-//struct SuggestionsTextField: View {
-//    @Environment(\.updateAthleteField) var updateAthleteField
-//    @Environment(\.getAthlete) var getAthlete
-//    @State var college: String = ""
-//    @State var suggestions: [String] = []
-//    @State var suggestionsImages: [URL: UIImage] = [:]
-//    @State var showSuggestions: Bool = false
-//    @State var selectedCollege: String = ""
-//    @Binding var userViewData: UserViewData
-//    @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
-//    @ScaledMetric private var imgScaleScaled: CGFloat = 0.7
-//
-//    private let colleges: [String: String]? = getCollegeLogoData()
-//    private let screenWidth = UIScreen.main.bounds.width
-//    private let screenHeight = UIScreen.main.bounds.height
-//
-//    private var maxHeightOffset: CGFloat {
-//        min(maxHeightOffsetScaled, 90)
-//    }
-//
-//    private var imgScale: CGFloat {
-//        min(imgScaleScaled, 1.1)
-//    }
-//
-//    private var selectedCollegeImage: Image? {
-//        selectedCollege != "" ? Image(getCollegeImageFilename(name: selectedCollege)) : nil
-//    }
-//
-//    var body: some View {
-//        VStack {
-//            TextField("Start typing your college...", text: $college)
-//                .onChange(of: college) { newValue in
-//                    if newValue != selectedCollege {
-//                        showSuggestions = true
-//                        selectedCollege = ""
-//                    }
-//                }
-//                .textFieldStyle(.roundedBorder)
-//                .frame(width: screenWidth * 0.9)
-//
-//            if selectedCollege != "" {
-//                Spacer()
-//
-//                VStack {
-//                    Text("Current College")
-//                        .font(.title)
-//                        .bold()
-//                        .padding(.bottom)
-//                    BackgroundBubble() {
-//                        HStack {
-//                            if let image = selectedCollegeImage {
-//                                image
-//                                    .resizable()
-//                                    .clipShape(Circle())
-//                                    .scaleEffect(imgScale)
-//                                    .aspectRatio(contentMode: .fit)
-//                            } else {
-//                                ProgressView()
-//                            }
-//                            Spacer()
-//
-//                            Text(selectedCollege)
-//
-//                            Spacer()
-//                            Spacer()
-//                            Spacer()
-//                        }
-//                        .foregroundColor(.primary)
-//                        .frame(width: screenWidth * 0.8, height: screenWidth * 0.3)
-//                        .padding()
-//                    }
-//
-//                    if selectedCollege != "" {
-//                        ZStack {
-//                            Rectangle()
-//                                .foregroundColor(Custom.darkGray)
-//                                .cornerRadius(50)
-//                                .shadow(radius: 10)
-//                            Text("Clear")
-//                        }
-//                        .frame(width: screenWidth * 0.15, height: screenHeight * 0.05)
-//                        .onTapGesture {
-//                            selectedCollege = ""
-//                        }
-//                    }
-//                }
-//
-//                Spacer()
-//                Spacer()
-//            }
-//
-//            if showSuggestions && !college.isEmpty {
-//                ScrollView {
-//                    LazyVStack(alignment: .center) {
-//                        ForEach(suggestions.filter({ $0.localizedCaseInsensitiveContains(college) }),
-//                                id: \.self) { suggestion in
-//                            ZStack {
-//                                Button(action: {
-//                                    selectedCollege = suggestion
-//                                    college = selectedCollege
-//                                    showSuggestions = false
-//                                }) {
-//                                    BackgroundBubble() {
-//                                        HStack {
-//                                            Image(getCollegeImageFilename(name: suggestion))
-//                                                .resizable()
-//                                                .clipShape(Circle())
-//                                                .scaleEffect(min(imgScale, 1.0))
-//                                                .aspectRatio(contentMode: .fit)
-//
-//                                            Spacer()
-//
-//                                            Text(suggestion)
-//
-//                                            Spacer()
-//                                            Spacer()
-//                                        }
-//                                        .foregroundColor(.primary)
-//                                        .frame(width: screenWidth * 0.80, height: screenWidth * 0.2)
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                    .padding(.top)
-//                    .padding(.bottom, maxHeightOffset)
-//                }
-//            }
-//        }
-//        .dynamicTypeSize(.xSmall ... .xxxLarge)
-//        .onAppear {
-//            // Gets colleges for suggestions
-//            guard let colleges = colleges else { return }
-//            suggestions = Array(colleges.keys)
-//
-//            // Checks if athlete already has a selected college and updates view if so
-//            guard let email = userViewData.email else { return }
-//            if let athlete = getAthlete(email),
-//               let college = athlete.committedCollege {
-//                selectedCollege = college
-//            }
-//        }
-//        .onDisappear {
-//            guard let email = userViewData.email else { return }
-//
-//            // Saves selected college to athlete entity if it is not empty
-//            if selectedCollege != "" {
-//                updateAthleteField(email, "committedCollege", selectedCollege)
-//            } else {
-//                updateAthleteField(email, "committedCollege", nil)
-//            }
-//        }
-//    }
-//}
 
 struct DiveMeetsLink: View {
     @Environment(\.dismiss) private var dismiss
