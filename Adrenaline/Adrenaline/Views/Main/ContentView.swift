@@ -33,6 +33,9 @@ struct ContentView: View {
     @State private var uploadingProgress: Double = 0.0
     @State private var uploadFailed: Bool = false
     @State private var updateDataStoreData: Bool = false
+    // DataStore doesn't seem to update on deletion right away (Amplify bug), so keeping track of
+    // deleted users so we can hide them until the app is restarted
+    @State private var deletedChatIds = Set<String>()
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -178,7 +181,8 @@ struct ContentView: View {
                                 
                                 if let user = newUser, user.accountType != "Spectator" {
                                     ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
-                                             recentSearches: $recentSearches)
+                                             recentSearches: $recentSearches,
+                                             deletedChatIds: $deletedChatIds)
                                     .tabItem {
                                         Label("Chat", systemImage: "message")
                                     }

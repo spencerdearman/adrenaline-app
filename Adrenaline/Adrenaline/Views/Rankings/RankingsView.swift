@@ -319,12 +319,16 @@ struct RankingsView: View {
     
     private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
                                    board: RankingType) -> NumberedRankingList? {
+        lock.lock()
+        
         if let genderDict = cachedRatings[gender.rawValue],
            let ageGroupDict = genderDict[ageGroup.rawValue],
            let boardList = ageGroupDict[board.rawValue] {
+            lock.unlock()
             return boardList
         }
         
+        lock.unlock()
         return nil
     }
     
