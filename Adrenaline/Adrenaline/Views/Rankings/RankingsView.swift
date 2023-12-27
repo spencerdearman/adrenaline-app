@@ -70,6 +70,7 @@ struct RankingsView: View {
     @State private var feedModel: FeedModel = FeedModel()
     @State private var isAdrenalineProfilesOnlyChecked: Bool = false
     @State private var currentSettingsAddedToCache: Bool = false
+    @State private var searchTerm: String = ""
     @Binding var diveMeetsID: String
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
@@ -101,12 +102,22 @@ struct RankingsView: View {
     // Sets currentList to nil unless there is a value stored in the cache
     private var currentList: NumberedRankingList? {
         if currentSettingsAddedToCache,
-            let ageDict = cachedRatings[gender.rawValue],
+           let ageDict = cachedRatings[gender.rawValue],
            let boardDict = ageDict[ageGroup.rawValue] {
             return boardDict[rankingType.rawValue]
         }
         
         return nil
+    }
+    
+    private var filteredList: NumberedRankingList? {
+        guard !searchTerm.isEmpty else { return currentList }
+        
+        return currentList?.filter {
+            let user = $0.1.0
+            let name = user.firstName + " " + user.lastName
+            return name.localizedCaseInsensitiveContains(searchTerm)
+        }
     }
     
     private func getMaleAthletes() async -> [NewAthlete] {
@@ -247,7 +258,7 @@ struct RankingsView: View {
         }
     }
     
-    private func filterByAgeGroup(_ ratings: GenderRankingList, 
+    private func filterByAgeGroup(_ ratings: GenderRankingList,
                                   ageGroup: AgeGroup) -> GenderRankingList {
         var result: GenderRankingList = []
         let df = DateFormatter()
@@ -319,12 +330,16 @@ struct RankingsView: View {
     
     private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
                                    board: RankingType) -> NumberedRankingList? {
+        lock.lock()
+        
         if let genderDict = cachedRatings[gender.rawValue],
            let ageGroupDict = genderDict[ageGroup.rawValue],
            let boardList = ageGroupDict[board.rawValue] {
+            lock.unlock()
             return boardList
         }
         
+        lock.unlock()
         return nil
     }
     
@@ -481,7 +496,7 @@ struct RankingsView: View {
                         
                         boardSelector
                         
-                        if let list = currentList {
+                        if let list = filteredList {
                             RankingListView(tabBarState: $tabBarState,
                                             adrenalineProfilesOnly: $isAdrenalineProfilesOnlyChecked,
                                             numberedList: list)
@@ -491,6 +506,7 @@ struct RankingsView: View {
                             ProgressView()
                         }
                     }
+                    .searchable(text: $searchTerm, prompt: "Search Rankings")
                     .onAppear {
                         Task {
                             // Gets male ratings from AWS athletes and DiveMeetsDivers
@@ -540,6 +556,7 @@ struct RankingsView: View {
                 NavigationBar(title: "Rankings",
                               diveMeetsID: $diveMeetsID,
                               showPlus: false,
+                              showSearch: false,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
                               feedModel: $feedModel, recentSearches: $recentSearches,
