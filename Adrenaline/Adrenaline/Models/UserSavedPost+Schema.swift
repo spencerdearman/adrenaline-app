@@ -39,9 +39,29 @@ extension UserSavedPost {
       .field(userSavedPost.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<UserSavedPost> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension UserSavedPost: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == UserSavedPost {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var newuserID: FieldPath<String>   {
+      string("newuserID") 
+    }
+  public var postID: FieldPath<String>   {
+      string("postID") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

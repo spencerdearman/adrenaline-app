@@ -37,9 +37,29 @@ extension CoachUser {
       .field(coachUser.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<CoachUser> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension CoachUser: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == CoachUser {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var user: ModelPath<NewUser>   {
+      NewUser.Path(name: "user", parent: self) 
+    }
+  public var team: ModelPath<NewTeam>   {
+      NewTeam.Path(name: "team", parent: self) 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

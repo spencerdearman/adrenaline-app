@@ -193,12 +193,12 @@ struct RankingsView: View {
         maleRatings = []
         var pendingMaleRatings: GenderRankingList = []
         for male in males {
-            if let diveMeetsID = male.user.diveMeetsID, diveMeetsID != "",
+            if let diveMeetsID = try await male.user.diveMeetsID, diveMeetsID != "",
                let springboard = male.springboardRating,
                let platform = male.platformRating,
                let total = male.totalRating {
-                let rankedUser = RankedUser(firstName: male.user.firstName,
-                                            lastName: male.user.lastName,
+                let rankedUser = RankedUser(firstName: try await male.user.firstName,
+                                            lastName: try await male.user.lastName,
                                             diveMeetsID: diveMeetsID,
                                             gender: male.gender,
                                             finaAge: male.age,
@@ -224,12 +224,12 @@ struct RankingsView: View {
         femaleRatings = []
         var pendingFemaleRatings: GenderRankingList = []
         for female in females {
-            if let diveMeetsID = female.user.diveMeetsID, diveMeetsID != "",
+            if let diveMeetsID = try await female.user.diveMeetsID, diveMeetsID != "",
                let springboard = female.springboardRating,
                let platform = female.platformRating,
                let total = female.totalRating {
-                let rankedUser = RankedUser(firstName: female.user.firstName,
-                                            lastName: female.user.lastName,
+                let rankedUser = RankedUser(firstName: try await female.user.firstName,
+                                            lastName: try await female.user.lastName,
                                             diveMeetsID: diveMeetsID,
                                             gender: female.gender,
                                             finaAge: female.age,

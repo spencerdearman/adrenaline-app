@@ -91,7 +91,7 @@ struct CommittedCollegeView: View {
         .onAppear {
             Task {
                 originalSelectedCollege = selectedCollege
-                newAthlete = try await getUserAthleteByUserId(id: newUser.id)
+                newAthlete = try await newUser.athlete
             }
         }
         .onDisappear {
@@ -148,8 +148,7 @@ struct CommittedCollegeView: View {
                         }
                     }
                     
-                    athlete.college = newCollege
-                    athlete.collegeID = newCollege?.id
+                    athlete.setCollege(newCollege)
                     let _ = try await saveToDataStore(object: athlete)
                 }
             }

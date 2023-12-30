@@ -41,13 +41,10 @@ struct SettingsView: View {
     }
     
     // Clears Athlete skill ratings for newUser unlinking a DiveMeets account
-    private func clearSkillRatings() async throws -> NewAthlete? {
+    private func clearSkillRatings(newUser: NewUser?) async throws -> NewAthlete? {
         guard let user = newUser else { print("user nil"); return nil }
-        let athletes: [NewAthlete] = await queryAWSAthletes().filter { $0.user.id == user.id }
-        if athletes.count != 1 { print("count not 1"); return nil }
-        var athlete = athletes[0]
+        guard var athlete = try await user.athlete else { print("athlete nil"); return nil }
         
-        // TODO: this is not publishing to DataStore due to GraphQL error
         athlete.springboardRating = nil
         athlete.platformRating = nil
         athlete.totalRating = nil
@@ -157,12 +154,13 @@ struct SettingsView: View {
                         if user.diveMeetsID != nil {
                             Button {
                                 Task {
+                                    var newUser = newUser
                                     newUser?.diveMeetsID = nil
                                     
                                     // If account is an Athlete, clear its skill ratings
                                     if newUser?.accountType == "Athlete" {
                                         do {
-                                            let _ = try await clearSkillRatings()
+                                            let _ = try await clearSkillRatings(newUser: newUser)
                                         } catch {
                                             print("\(error)")
                                         }
@@ -212,7 +210,7 @@ struct SettingsView: View {
                     UserDefaults.standard.removeObject(forKey: "authUserId")
                     
                     // Remove current device token from user
-                    if let user = newUser {
+                    if var user = newUser {
                         guard let token = UserDefaults.standard.string(forKey: "userToken") else { print("Token not found"); return }
                         user.tokens = user.tokens.filter { $0 != token }
                         
@@ -245,12 +243,11 @@ struct SettingsView: View {
                     let college: College?
                     switch user.accountType {
                         case "Athlete":
-                            guard let athlete = try await getUserAthleteByUserId(id: user.id)
+                            guard let athlete = try await user.athlete
                             else { return }
                             print("athlete: \(athlete.id)")
-                            guard let athleteCollege = athlete.college else { print("failed"); return }
-                            print("athleteCollege: \(athleteCollege.id)")
-                            college = try await queryAWSCollegeById(id: athleteCollege.id)
+                            college = try await athlete.college
+                            if college == nil { print("failed"); return }
                             print("college: \(college?.id)")
                         case "Coach":
                             // TODO: implement for coaches to associate with a college
@@ -285,32 +282,5 @@ struct SettingsView: View {
                 }
             }
         }
-    }
-}
-
-// Convenience init for updating skill ratings with new NewAthlete object
-extension NewAthlete {
-    public init(from: NewAthlete, springboard: Double?, platform: Double?, total: Double?) {
-        self.init(id: from.id,
-                  user: from.user,
-                  team: from.team,
-                  college: from.college,
-                  heightFeet: from.heightFeet,
-                  heightInches: from.heightInches,
-                  weight: from.weight,
-                  weightUnit: from.weightUnit,
-                  gender: from.gender,
-                  age: from.age,
-                  graduationYear: from.graduationYear,
-                  highSchool: from.highSchool,
-                  hometown: from.hometown,
-                  springboardRating: springboard,
-                  platformRating: platform,
-                  totalRating: total,
-                  dives: from.dives ?? [],
-                  collegeID: from.collegeID,
-                  newteamID: from.newteamID,
-                  createdAt: nil,
-                  updatedAt: nil)
     }
 }
