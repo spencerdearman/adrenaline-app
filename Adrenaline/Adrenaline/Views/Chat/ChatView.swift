@@ -194,7 +194,7 @@ struct ChatView: View {
                 let allUsers = await queryAWSUsers(where: allUsersPredicate)
                 if allUsers.count >= 1 {
                     if let lastOrder = lastUserOrder {
-                        let extras = Set(allUsers).subtracting(Set(users))
+                        let extras = allUsers.filter { !Set(users.map { $0.id }).contains($0.id) }
                         users = Array(extras) + lastOrder
                     } else {
                         users = allUsers

@@ -55,9 +55,56 @@ extension NewMeet {
       .field(newMeet.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<NewMeet> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension NewMeet: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == NewMeet {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var meetID: FieldPath<Int>   {
+      int("meetID") 
+    }
+  public var name: FieldPath<String>   {
+      string("name") 
+    }
+  public var organization: FieldPath<String>   {
+      string("organization") 
+    }
+  public var startDate: FieldPath<Temporal.Date>   {
+      date("startDate") 
+    }
+  public var endDate: FieldPath<Temporal.Date>   {
+      date("endDate") 
+    }
+  public var city: FieldPath<String>   {
+      string("city") 
+    }
+  public var state: FieldPath<String>   {
+      string("state") 
+    }
+  public var country: FieldPath<String>   {
+      string("country") 
+    }
+  public var link: FieldPath<String>   {
+      string("link") 
+    }
+  public var meetType: FieldPath<Int>   {
+      int("meetType") 
+    }
+  public var events: ModelPath<NewEvent>   {
+      NewEvent.Path(name: "events", isCollection: true, parent: self) 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

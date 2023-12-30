@@ -61,9 +61,65 @@ extension NewUser {
       .field(newUser.newUserCoachId, is: .optional, ofType: .string)
     )
     }
+    public class Path: ModelPath<NewUser> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension NewUser: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
-  public typealias IdentifierProtocol = DefaultModelIdentifier<NewUser>
+  public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == NewUser {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var firstName: FieldPath<String>   {
+      string("firstName") 
+    }
+  public var lastName: FieldPath<String>   {
+      string("lastName") 
+    }
+  public var email: FieldPath<String>   {
+      string("email") 
+    }
+  public var phone: FieldPath<String>   {
+      string("phone") 
+    }
+  public var diveMeetsID: FieldPath<String>   {
+      string("diveMeetsID") 
+    }
+  public var accountType: FieldPath<String>   {
+      string("accountType") 
+    }
+  public var athlete: ModelPath<NewAthlete>   {
+      NewAthlete.Path(name: "athlete", parent: self) 
+    }
+  public var coach: ModelPath<CoachUser>   {
+      CoachUser.Path(name: "coach", parent: self) 
+    }
+  public var posts: ModelPath<Post>   {
+      Post.Path(name: "posts", isCollection: true, parent: self) 
+    }
+  public var tokens: FieldPath<String>   {
+      string("tokens") 
+    }
+  public var savedPosts: ModelPath<UserSavedPost>   {
+      UserSavedPost.Path(name: "savedPosts", isCollection: true, parent: self) 
+    }
+  public var favoritesIds: FieldPath<String>   {
+      string("favoritesIds") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
+  public var newUserAthleteId: FieldPath<String>   {
+      string("newUserAthleteId") 
+    }
+  public var newUserCoachId: FieldPath<String>   {
+      string("newUserCoachId") 
+    }
 }

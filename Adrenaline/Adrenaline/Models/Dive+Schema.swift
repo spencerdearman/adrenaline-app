@@ -57,9 +57,56 @@ extension Dive {
       .field(dive.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<Dive> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Dive: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == Dive {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var event: ModelPath<NewEvent>   {
+      NewEvent.Path(name: "event", parent: self) 
+    }
+  public var athlete: ModelPath<NewAthlete>   {
+      NewAthlete.Path(name: "athlete", parent: self) 
+    }
+  public var number: FieldPath<String>   {
+      string("number") 
+    }
+  public var name: FieldPath<String>   {
+      string("name") 
+    }
+  public var height: FieldPath<Double>   {
+      double("height") 
+    }
+  public var netScore: FieldPath<Double>   {
+      double("netScore") 
+    }
+  public var dd: FieldPath<Double>   {
+      double("dd") 
+    }
+  public var totalScore: FieldPath<Double>   {
+      double("totalScore") 
+    }
+  public var scores: ModelPath<JudgeScore>   {
+      JudgeScore.Path(name: "scores", isCollection: true, parent: self) 
+    }
+  public var newathleteID: FieldPath<String>   {
+      string("newathleteID") 
+    }
+  public var neweventID: FieldPath<String>   {
+      string("neweventID") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

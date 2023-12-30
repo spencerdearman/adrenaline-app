@@ -84,7 +84,7 @@ struct ContentView: View {
         do {
             // Waits with exponential backoff to give DataStore time to update
             try await Task.sleep(seconds: pow(Double(numAttempts), 2))
-            guard let user = await getCurrentUser() else {
+            guard var user = await getCurrentUser() else {
                 print("Failed attempt \(numAttempts + 1) getting DataStore data, retrying...")
                 return await getDataStoreData(numAttempts: numAttempts + 1)
             }

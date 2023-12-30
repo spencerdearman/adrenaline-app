@@ -33,11 +33,12 @@ struct DiverView: View {
 
 struct ProfileContent: View {
     @AppStorage("authUserId") private var authUserId: String = ""
-    @State var scoreValues: [String] = ["Posts", "Results", "Recruiting"]
+    @State var scoreValues: [String] = []
     @State var selectedPage: Int = 0
     var newUser: NewUser
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenHeight = UIScreen.main.bounds.height
+    private let baseScoreValues = ["Posts", "Results", "Recruiting"]
     
     var body: some View {
         SwiftUIWheelPicker($selectedPage, items: scoreValues) { value in
@@ -54,6 +55,8 @@ struct ProfileContent: View {
         .scrollScale(0.7)
         .frame(height: 40)
         .onAppear {
+            scoreValues = baseScoreValues
+            
             // If viewing the user's own profile, show Saved and Favorites tab
             if newUser.id == authUserId {
                 scoreValues += ["Saved", "Favorites"]
@@ -347,13 +350,7 @@ struct RecruitingView: View {
         }
         .onAppear {
             Task {
-                let athletes = await queryAWSAthletes().filter { $0.user.id == newUser.id }
-                if athletes.count != 1 {
-                    print("Invalid athletes count, returning...")
-                } else {
-                    newAthlete = athletes[0]
-                }
-                
+                newAthlete = try await newUser.athlete
                 loaded = true
             }
         }

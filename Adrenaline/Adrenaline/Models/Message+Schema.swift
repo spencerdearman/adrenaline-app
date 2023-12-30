@@ -39,9 +39,32 @@ extension Message {
       .field(message.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<Message> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Message: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == Message {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var body: FieldPath<String>   {
+      string("body") 
+    }
+  public var creationDate: FieldPath<Temporal.DateTime>   {
+      datetime("creationDate") 
+    }
+  public var MessageNewUsers: ModelPath<MessageNewUser>   {
+      MessageNewUser.Path(name: "MessageNewUsers", isCollection: true, parent: self) 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

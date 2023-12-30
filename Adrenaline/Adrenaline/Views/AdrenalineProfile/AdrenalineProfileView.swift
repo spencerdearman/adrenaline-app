@@ -301,10 +301,7 @@ struct PersonalInfoView: View {
         .onAppear {
             Task {
                 if user.accountType == "Athlete" {
-                    let athletes = await queryAWSAthletes().filter { $0.user.id == user.id }
-                    if athletes.count == 1 {
-                        athlete = athletes[0]
-                    }
+                    athlete = try await user.athlete
                 }
                 
                 // Get current user for favoriting
@@ -524,21 +521,20 @@ struct DiveMeetsLink: View {
     @Binding var updateDataStoreData: Bool
     
     // Computes Athlete skill ratings for newUser linking a DiveMeets account after intial creation
-    private func assignSkillRatings() async throws -> NewAthlete? {
+    private func assignSkillRatings(newUser: NewUser) async throws -> NewAthlete? {
         guard let diveMeetsID = newUser.diveMeetsID else { print("diveMeetsId nil"); return nil }
-        
-        let athletes: [NewAthlete] = await queryAWSAthletes().filter { $0.user.id == newUser.id }
-        if athletes.count != 1 { print("count not 1"); return nil }
-        var athlete = athletes[0]
+        guard var athlete = try await newUser.athlete else { print("athlete nil"); return nil }
         
         let (s, p, t) = await SkillRating().getSkillRating(diveMeetsID: diveMeetsID)
-        
-        // TODO: this is not publishing to DataStore due to GraphQL error
+
         athlete.springboardRating = s
         athlete.platformRating = p
         athlete.totalRating = t
         
-        return try await saveToDataStore(object: athlete)
+        let result = try await saveToDataStore(object: athlete)
+        
+        updateDataStoreData = true
+        return result
     }
     
     var body: some View {
@@ -552,11 +548,12 @@ struct DiveMeetsLink: View {
             
             Button {
                 Task {
+                    var newUser = newUser
                     newUser.diveMeetsID = diveMeetsID
                     
                     do {
                         // Assign skill ratings for newUser
-                        let _ = try await assignSkillRatings()
+                        let _ = try await assignSkillRatings(newUser: newUser)
                     } catch {
                         print("\(error)")
                     }

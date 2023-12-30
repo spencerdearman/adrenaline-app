@@ -48,9 +48,44 @@ extension Post {
       .field(post.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<Post> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension Post: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == Post {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var caption: FieldPath<String>   {
+      string("caption") 
+    }
+  public var creationDate: FieldPath<Temporal.DateTime>   {
+      datetime("creationDate") 
+    }
+  public var images: ModelPath<NewImage>   {
+      NewImage.Path(name: "images", isCollection: true, parent: self) 
+    }
+  public var videos: ModelPath<Video>   {
+      Video.Path(name: "videos", isCollection: true, parent: self) 
+    }
+  public var newuserID: FieldPath<String>   {
+      string("newuserID") 
+    }
+  public var usersSaving: ModelPath<UserSavedPost>   {
+      UserSavedPost.Path(name: "usersSaving", isCollection: true, parent: self) 
+    }
+  public var isCoachesOnly: FieldPath<Bool>   {
+      bool("isCoachesOnly") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }
