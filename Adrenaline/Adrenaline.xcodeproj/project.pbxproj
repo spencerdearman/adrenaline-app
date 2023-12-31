@@ -113,6 +113,7 @@
 		4D541C102AAACC7200EC47D8 /* ChatBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D541C0F2AAACC7200EC47D8 /* ChatBar.swift */; };
 		4D5A77932B2F572100FA43B8 /* MeetsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5A77922B2F572100FA43B8 /* MeetsBar.swift */; };
 		4D60E8F92A1737A90011A295 /* ScoringParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D60E8F82A1737A90011A295 /* ScoringParser.swift */; };
+		4D660D782B4105DA00AD1E45 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D660D772B4105DA00AD1E45 /* MapView.swift */; };
 		4D74FE9729AE7B9800401178 /* AdrenalineApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */; };
 		4D74FE9B29AE7B9800401178 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D74FE9A29AE7B9800401178 /* Assets.xcassets */; };
 		4D74FE9E29AE7B9800401178 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D74FE9D29AE7B9800401178 /* Preview Assets.xcassets */; };
@@ -296,6 +297,7 @@
 		4D541C0F2AAACC7200EC47D8 /* ChatBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBar.swift; sourceTree = "<group>"; };
 		4D5A77922B2F572100FA43B8 /* MeetsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetsBar.swift; sourceTree = "<group>"; };
 		4D60E8F82A1737A90011A295 /* ScoringParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoringParser.swift; sourceTree = "<group>"; };
+		4D660D772B4105DA00AD1E45 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4D74FE9329AE7B9800401178 /* Adrenaline.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Adrenaline.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D74FE9629AE7B9800401178 /* AdrenalineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdrenalineApp.swift; sourceTree = "<group>"; };
 		4D74FE9A29AE7B9800401178 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -483,6 +485,7 @@
 				4D1A31D42A985F4000128F81 /* ImageItem.swift */,
 				4D1A31CC2A971FEA00128F81 /* MediaFeedItem.swift */,
 				4D1A31C22A97006500128F81 /* MeetItem.swift */,
+				4D660D772B4105DA00AD1E45 /* MapView.swift */,
 				00CEDFD52ABFE08200F079CE /* NewPostView.swift */,
 				00CEDFD72AC11F2A00F079CE /* PostMediaItem.swift */,
 			);
@@ -956,6 +959,7 @@
 				00FEF7B92A2A972800AAFC7C /* EntriesParser.swift in Sources */,
 				00D6DDD82AE5F2BA0065F040 /* PostProfileView.swift in Sources */,
 				4D76438E2A71A4D1000F35CB /* Account.swift in Sources */,
+				4D660D782B4105DA00AD1E45 /* MapView.swift in Sources */,
 				00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */,
 				4DA482F32AA98BE8003DFA3B /* NewTeam+Schema.swift in Sources */,
 				00DAFEE22A8EED2500497917 /* VideoUtil.swift in Sources */,
