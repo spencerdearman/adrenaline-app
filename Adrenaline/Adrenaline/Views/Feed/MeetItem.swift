@@ -98,6 +98,8 @@ struct MeetFeedItemExpandedView: View {
     @State var viewState: CGSize = .zero
     @State var showSection = false
     @State var appear = [false, false, false]
+//    @State var selectedItem: String = ""
+//    @State var showSheet: Bool = false
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
@@ -122,7 +124,9 @@ struct MeetFeedItemExpandedView: View {
             .background(.ultraThinMaterial)
             .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
-            
+//            .sheet(isPresented: $showSheet) {
+//                EntryPageView(entriesLink: selectedItem)
+//            }
             CloseButtonWithFeedModel(feedModel: $feedModel)
         }
         .frame(maxWidth: screenWidth)
@@ -144,18 +148,22 @@ struct MeetFeedItemExpandedView: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
-//            .background(
-//                ZStack {
-//                    Circle()
-//                        .fill(.ultraThinMaterial)
-//                        .frame(width: screenWidth * 0.5, height: screenWidth * 0.5)
-//                        .shadow(radius: 10)
-//                    Image("PlatformImage")
-//                        .frame(width: screenWidth * 0.3, height: screenWidth * 0.3)
-//                        .scaleEffect(0.2)
-//                }
-//                    .offset(y: scrollY > 0 ? -scrollY - 45 : -45)
-//            )
+//            .background(AnimatedBlobView(
+//                colors: [.white, Custom.coolBlue])
+//                .frame(width: 400, height: 414)
+//                .offset(x: 200, y: 0)
+//                .scaleEffect(0.8))
+//            .background(AnimatedBlobView(
+//                colors: [.white, Custom.lightBlue, Custom.coolBlue])
+//                .frame(width: 400, height: 414)
+//                .offset(x: -50, y: 200)
+//                .scaleEffect(0.7))
+//            .background(AnimatedBlobView(
+//                colors: [.white, Custom.lightBlue, Custom.medBlue, Custom.coolBlue])
+//                .frame(width: 400, height: 414)
+//                .offset(x: -100, y: 20)
+//                .scaleEffect(1.6)
+//                .rotationEffect(Angle(degrees: 60)))
             .background(
                 Image("WaveBackground")
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)

@@ -20,7 +20,7 @@ class MapViewModel: ObservableObject {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(location) { [weak self] (placemarks, error) in
             guard let self = self, let placemark = placemarks?.first, let location = placemark.location else { return }
-            self.region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+            self.region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002))
         }
     }
 }
