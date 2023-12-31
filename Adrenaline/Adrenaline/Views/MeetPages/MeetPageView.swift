@@ -234,34 +234,34 @@ struct MeetPageView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
-                }
-            }
-            
-            if meetInfoData != nil || meetResultsData != nil {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ZStack {
-                        Circle()
-                            .foregroundColor(Custom.grayThinMaterial)
-                            .shadow(radius: 4)
-                            .frame(width: buttonHeight, height: buttonHeight)
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundColor(.primary)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                    }
-                    .onTapGesture {
-                        clearMeetDataCache()
-                        Task {
-                            try await getMeetData(info: meetInfoData, results: meetResultsData)
-                        }
-                    }
-                }
-            }
-        }
+//        .toolbar {
+//            ToolbarItem(placement: .navigationBarLeading) {
+//                Button(action: { dismiss() }) {
+//                    NavigationViewBackButton()
+//                }
+//            }
+//            
+//            if meetInfoData != nil || meetResultsData != nil {
+//                ToolbarItem(placement: .navigationBarTrailing) {
+//                    ZStack {
+//                        Circle()
+//                            .foregroundColor(Custom.grayThinMaterial)
+//                            .shadow(radius: 4)
+//                            .frame(width: buttonHeight, height: buttonHeight)
+//                        Image(systemName: "arrow.clockwise")
+//                            .foregroundColor(.primary)
+//                            .font(.subheadline)
+//                            .fontWeight(.medium)
+//                    }
+//                    .onTapGesture {
+//                        clearMeetDataCache()
+//                        Task {
+//                            try await getMeetData(info: meetInfoData, results: meetResultsData)
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }
 
@@ -271,6 +271,7 @@ struct MeetInfoPageView: View {
     @State private var warmupDetailsExpanded: Bool = false
     @State private var showingAlert: Bool = false
     @State private var alertText: String = ""
+    private let screenWidth = UIScreen.main.bounds.width
     
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -303,88 +304,88 @@ struct MeetInfoPageView: View {
     var body: some View {
         let info = meetInfoData.0
         let time = meetInfoData.1
-        VStack(alignment: .leading, spacing: 10) {
-            Text(info["Name"]!)
-                .font(.title)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity, alignment: .center)
-            Text(info["Sponsor"]!)
-                .font(.title3)
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .lineLimit(2)
-                .multilineTextAlignment(.center)
-            Text(getDisplayDateString(start: info["Start Date"]!, end: info["End Date"]!))
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .multilineTextAlignment(.trailing)
-            
-            Divider()
-            
-            DisclosureGroup(
-                isExpanded: $meetDetailsExpanded,
-                content: {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack(alignment: .top) {
-                                Text("Signup Deadline: ")
-                                    .bold()
-                                Text(info["Online Signup Closes at"]!)
-                                    .multilineTextAlignment(.trailing)
-                            }
-                            keyToHStack(data: info, key: "Time Left Before Late Fee")
-                            keyToHStack(data: info, key: "Type")
-                            keyToHStack(data: info, key: "Rules")
-                            keyToHStack(data: info, key: "Pool")
-                            
-                            keyToHStack(data: info, key: "Fee per event")
-                            keyToHStack(data: info,
-                                        key: "USA Diving Per Event Insurance Surcharge Fee")
-                            keyToHStack(data: info, key: "Late Fee")
-                            keyToHStack(data: info, key: "Fee must be paid by")
-                                .multilineTextAlignment(.trailing)
-                            keyToHStack(data: info, key: "Warm up time prior to event")
-                        }
-                    }
-                    .frame(maxHeight: screenHeight * 0.5)
-                },
-                label: {
-                    Text("Meet Details")
-                        .font(.headline)
-                        .foregroundColor(Color.primary)
+        VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .center, spacing: 16) {
+                Text("Meet Details")
+                    .font(.title2).bold()
+                    .foregroundColor(.primary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                
+                Divider()
+                
+                HStack(alignment: .top) {
+                    Text("Signup Deadline: ")
+                        .bold()
+                    Text(info["Online Signup Closes at"]!)
+                        .multilineTextAlignment(.trailing)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Time Left Before Late Fee")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Type")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Rules")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Pool")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
+                keyToHStack(data: info, key: "Fee per event")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info,
+                            key: "USA Diving Per Event Insurance Surcharge Fee")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Late Fee")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Fee must be paid by")
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Warm up time prior to event")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(20)
+            .padding(.vertical, 10)
+            .background(
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .backgroundStyle(cornerRadius: 30)
+                    .frame(width: screenWidth * 0.9)
             )
-            .padding([.leading, .trailing])
             
-            Divider()
+            MapView(locationString: info["Pool"] ?? "")
+                .backgroundStyle(cornerRadius: 30)
+                .frame(width: screenWidth * 0.9, height: screenHeight * 0.25)
+                .frame(maxWidth: .infinity, alignment: .center)
             
-            DisclosureGroup(
-                isExpanded: $warmupDetailsExpanded,
-                content: {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            ForEach(dateSorted(time), id: \.key) { key, value in
-                                Text(key)
-                                    .bold()
-                                VStack(alignment: .leading) {
-                                    keyToHStack(data: value, key: "Warmup Starts")
-                                    keyToHStack(data: value, key: "Warmup Ends")
-                                    keyToHStack(data: value, key: "Events Start")
-                                }
-                                .padding(.leading, 30)
-                            }
+            VStack(alignment: .center, spacing: 16) {
+                Text("Warmup Details")
+                    .font(.title2).bold()
+                    .foregroundColor(.primary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                
+                Divider()
+                
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(dateSorted(time), id: \.key) { key, value in
+                        Text(key)
+                            .bold()
+                        VStack(alignment: .leading) {
+                            keyToHStack(data: value, key: "Warmup Starts")
+                            keyToHStack(data: value, key: "Warmup Ends")
+                            keyToHStack(data: value, key: "Events Start")
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 30)
                     }
-                    .frame(maxHeight: screenHeight * 0.5)
-                },
-                label: {
-                    Text("Warmup Details")
-                        .font(.headline)
-                        .foregroundColor(Color.primary)
                 }
+            }
+            .padding(20)
+            .padding(.vertical, 10)
+            .background(
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .backgroundStyle(cornerRadius: 30)
+                    .frame(width: screenWidth * 0.9)
             )
-            .padding([.leading, .trailing])
             
             Divider()
             

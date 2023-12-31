@@ -62,6 +62,7 @@ struct MeetFeedItemCollapsedView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
+        
                     // WORK ON LATER TO ADDRESS IF YOU WERE IN THE MEET OR NOT
 //                    Divider()
 //                        .foregroundColor(.secondary)
@@ -109,6 +110,8 @@ struct MeetFeedItemExpandedView: View {
         ZStack {
             ScrollView {
                 cover
+                
+                MeetPageView(meetLink: meet.link ?? "")
             }
             .coordinateSpace(name: "scroll")
             .background(currentMode == .light ? Color.white : Color.black)
@@ -141,18 +144,18 @@ struct MeetFeedItemExpandedView: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
-            .background(
-                ZStack {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .frame(width: screenWidth * 0.5, height: screenWidth * 0.5)
-                        .shadow(radius: 10)
-                    Image("PlatformImage")
-                        .frame(width: screenWidth * 0.3, height: screenWidth * 0.3)
-                        .scaleEffect(0.2)
-                }
-                    .offset(y: scrollY > 0 ? -scrollY - 45 : -45)
-            )
+//            .background(
+//                ZStack {
+//                    Circle()
+//                        .fill(.ultraThinMaterial)
+//                        .frame(width: screenWidth * 0.5, height: screenWidth * 0.5)
+//                        .shadow(radius: 10)
+//                    Image("PlatformImage")
+//                        .frame(width: screenWidth * 0.3, height: screenWidth * 0.3)
+//                        .scaleEffect(0.2)
+//                }
+//                    .offset(y: scrollY > 0 ? -scrollY - 45 : -45)
+//            )
             .background(
                 Image("WaveBackground")
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
@@ -169,38 +172,26 @@ struct MeetFeedItemExpandedView: View {
                     .offset(y: scrollY > 0 ? -scrollY : 0)
             )
             .overlay(
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .center, spacing: 16) {
                     Text(meet.name)
                         .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .center)
                         .foregroundColor(.primary)
+                        .multilineTextAlignment(.center)
                         .matchedGeometryEffect(id: "title\(id)", in: namespace)
                     
-                    Text(meet.org?.uppercased() ?? "")
-                        .font(.footnote).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
+                    Text(meet.org ?? "")
+                        .font(.title3).fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.center)
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
                     
-                    Text((meet.location?.uppercased() ?? "") + " - " + (meet.date?.uppercased() ?? ""))
-                        .font(.footnote).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
+                    Text(meet.date?.uppercased() ?? "")
+                        .font(.headline).bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.primary)
                         .matchedGeometryEffect(id: "subtitle1\(id)", in: namespace)
-                    
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                        .opacity(appear[1] ? 1 : 0)
-                    
-                    HStack {
-                        LogoView(imageName: "Spencer")
-                        Text("You attended, check your results now")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
-                    .opacity(appear[1] ? 1 : 0)
-                    .accessibilityElement(children: .combine)
                 }
                     .padding(20)
                     .padding(.vertical, 10)
@@ -221,7 +212,6 @@ struct MeetFeedItemExpandedView: View {
                     )
                     .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
                     .frame(maxHeight: .infinity, alignment: .bottom)
-                    .offset(y: 100)
                     .padding(20)
             )
         }
