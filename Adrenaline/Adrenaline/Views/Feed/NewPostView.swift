@@ -34,29 +34,6 @@ struct NewPostView: View {
         !mediaItems.isEmpty
     }
     
-    // Removes media items from local variables and deletes locally stored files
-    private func clearMediaItems() {
-        mediaItems = []
-        imageData = [:]
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        let path = paths[0]
-        
-        for (name, _) in videoData {
-            do {
-                let url = path.appendingPathComponent("\(email)-\(name).mp4")
-                try FileManager.default.removeItem(at: url)
-            } catch {
-                print("Failed to remove data at URL")
-            }
-        }
-        videoData = [:]
-    }
-    
-    private func didDismiss() {
-        clearMediaItems()
-        dismiss()
-    }
-    
     private func getPostMediaItem(item: PhotosPickerItem) async -> PostMediaItem? {
         var selectedFileData: Data? = nil
         
@@ -81,7 +58,8 @@ struct NewPostView: View {
             // Store Data and URL where data is saved in case it
             // needs deleted
             videoData[id] = data
-            return PostMediaItem(id: id, data: PostMedia.localVideo(AVPlayer(url: url)))
+            return PostMediaItem(id: id, data: PostMedia.localVideo(AVPlayer(url: url)),
+                                 playVideoOnAppear: true, videoIsLooping: true)
             
         } else if let data = selectedFileData,
                   type.conforms(to: UTType.image) {
@@ -277,7 +255,10 @@ struct NewPostView: View {
                                         print("Could not get user with email \(email)")
                                     }
                                     
-                                    didDismiss()
+                                    dismiss()
+                                } catch PostError.videoTooLong {
+                                    print("Post creation failed, video is too long")
+                                    postErrorMsg = "Failed to create post, videos must be under three minutes long"
                                 } catch {
                                     print("\(error)")
                                     postErrorMsg = "Failed to create post, please try again"
@@ -304,7 +285,11 @@ struct NewPostView: View {
             }
         }
         .onChange(of: selectedItems) {
-            clearMediaItems()
+            // Remove local videos and manually clear locals after a change in selection
+            removeLocalVideos(email: email, videoIds: Array(videoData.keys))
+            videoData = [:]
+            imageData = [:]
+            mediaItems = []
             
             Task {
                 isLoadingMediaItems = true

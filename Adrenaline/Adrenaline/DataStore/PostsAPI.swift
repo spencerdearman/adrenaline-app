@@ -9,6 +9,10 @@ import Foundation
 import Amplify
 import SwiftUI
 
+enum PostError: Error {
+    case videoTooLong
+}
+
 func getCurrentDateTime() -> String {
     let df = DateFormatter()
     df.dateFormat = "yyyy-MM-dd--HH:mm:ss"
@@ -25,6 +29,23 @@ func uploadImage(data: Data, email: String, name: String) async throws {
     print("Image \(name) uploaded")
 }
 
+// Deletes locally stored video files
+func removeLocalVideos(email: String, videoIds: [String]) {
+    for name in videoIds {
+        let url = getVideoPathURL(email: email, name: name)
+        let compressed = getCompressedFileURL(email: email, name: name)
+        do {
+            try FileManager.default.removeItem(at: url)
+            
+            if FileManager.default.fileExists(atPath: compressed.absoluteString) {
+                try FileManager.default.removeItem(at: compressed)
+            }
+        } catch {
+            print("Failed to remove data at URL \(url)")
+        }
+    }
+}
+
 // Creates a Post object given a user, title, description, and potential videos and images data
 // Note: This function saves images and videos to S3 to get the links and stop carrying the Data,
 //       but this doesn't save to the DataStore until savePost() is called
@@ -33,31 +54,41 @@ func createPost(user: NewUser, caption: String, videosData: [String: Data],
     var videos: [Video]? = nil
     var images: [NewImage]? = nil
     let email = user.email.lowercased()
+    // Limit video duration to 3 minutes
+    let maxVideoDurationSeconds: Double = 180
     
     let postId = UUID().uuidString
     
-    do {
-        for id in idOrder {
-            if videosData.keys.contains(id) {
-                try await uploadVideo(data: videosData[id]!, email: email, name: id)
-                
-                if videos == nil { videos = [] }
-                videos?.append(Video(id: id, s3key: id, uploadDate: .now(), postID: postId))
-            } else if imagesData.keys.contains(id) {
-                try await uploadImage(data: imagesData[id]!, email: email, name: id)
-                
-                if images == nil { images = [] }
-                images?.append(NewImage(id: id, s3key: id, uploadDate: .now(), postID: postId))
-            }
+    // Preliminary check on videos to be sure they conform to length guardrail before any uploads
+    // are started
+    for (id, _) in videosData {
+        if try await getVideoDurationSeconds(url: getVideoPathURL(email: email, name: id))
+            > maxVideoDurationSeconds {
+            print("Video \(id) is too long, aborting...")
+            throw PostError.videoTooLong
         }
-        
-        let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)
-        let videosList = videos == nil ? nil : List<Video>.init(elements: videos!)
-        
-        return Post(id: postId, caption: caption, creationDate: .now(),
-                    images: imagesList, videos: videosList, newuserID: user.id, 
-                    isCoachesOnly: isCoachesOnly)
     }
+    
+    for id in idOrder {
+        if videosData.keys.contains(id) {
+            try await uploadVideo(data: videosData[id]!, email: email, name: id)
+            
+            if videos == nil { videos = [] }
+            videos?.append(Video(id: id, s3key: id, uploadDate: .now(), postID: postId))
+        } else if imagesData.keys.contains(id) {
+            try await uploadImage(data: imagesData[id]!, email: email, name: id)
+            
+            if images == nil { images = [] }
+            images?.append(NewImage(id: id, s3key: id, uploadDate: .now(), postID: postId))
+        }
+    }
+    
+    let imagesList = images == nil ? nil : List<NewImage>.init(elements: images!)
+    let videosList = videos == nil ? nil : List<Video>.init(elements: videos!)
+    
+    return Post(id: postId, caption: caption, creationDate: .now(),
+                images: imagesList, videos: videosList, newuserID: user.id,
+                isCoachesOnly: isCoachesOnly)
 }
 
 // Saves a Post object and updates the user's posts list; returns the updated
@@ -219,14 +250,22 @@ func reportPost(currentUserId: String, reportedUserId: String, postId: String) a
     return false
 }
 
-// Tracks upload progress for up to 30s before failing
+// Tracks upload progress for up to maxWaitTimeSeconds before failing
+// Note: numAttempts resets if there is at least one completion in the attempt. In other words,
+// this function fails after (maxWaitTimeSeconds / sleepTimeSeconds) straight attempts without a
+// successful upload
 func trackUploadProgress(email: String, videos: [Video], completedUploads: Int = 0,
                          totalUploads: Int,
                          uploadingProgress: Binding<Double>,
                          numAttempts: Int = 0,
-                         successfulUploads: Set<String> = []) async throws -> Bool {
-    // Give up on retrying after 10 attempts
-    if numAttempts == 15 { print("Failed after \(numAttempts) attempts"); return false }
+                         successfulUploads: Set<String> = [],
+                         maxWaitTimeSeconds: Double) async throws -> Bool {
+    let sleepTimeSeconds: Double = 2.0
+    
+    if numAttempts == Int(round(maxWaitTimeSeconds / sleepTimeSeconds)) {
+        print("Failed after \(numAttempts) attempts")
+        return false
+    }
     var successes: Set<String> = Set()
     
     // Only run with videos that haven't succeeded yet
@@ -255,17 +294,17 @@ func trackUploadProgress(email: String, videos: [Video], completedUploads: Int =
     // If all video elements are in set of all successful uploads, then uploads are complete
     if Set(videos.map { $0.id }).subtracting(successes).isEmpty { return true }
     
-    try await Task.sleep(seconds: 2.0)
+    try await Task.sleep(seconds: sleepTimeSeconds)
     
     // Else, retry with videos that still need to succeed
-    // Note: numAttempts resets if there is at least one completion in the attempt. In other words,
-    // this function fails after 15 straight attempts (30s) without a completion
+    // Note: numAttempts resets after a successful upload
     return try await trackUploadProgress(email: email, videos: videos,
                                          completedUploads: totalCompletedUploads,
                                          totalUploads: totalUploads,
                                          uploadingProgress: uploadingProgress,
                                          numAttempts: completedRunUploads == 0 ? numAttempts + 1 : 0,
-                                         successfulUploads: successes)
+                                         successfulUploads: successes,
+                                         maxWaitTimeSeconds: maxWaitTimeSeconds)
 }
 
 extension Post {
@@ -278,7 +317,7 @@ extension Post {
                   images: from.images,
                   videos: from.videos,
                   newuserID: from.newuserID,
-                  usersSaving: List<UserSavedPost>.init(elements: usersSaving), 
+                  usersSaving: List<UserSavedPost>.init(elements: usersSaving),
                   isCoachesOnly: from.isCoachesOnly,
                   createdAt: from.createdAt,
                   updatedAt: from.updatedAt)

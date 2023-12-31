@@ -11,8 +11,8 @@ import AVKit
 struct BufferVideoPlayerView: View {
     @StateObject var videoPlayerVM: VideoPlayerViewModel
     @State private var showResolutions = false
-    var playOnAppear: Bool = true
-    var isLooping: Bool = false
+    var playOnAppear: Bool
+    var isLooping: Bool
     var debugMode: Bool = false
     
     var body: some View {

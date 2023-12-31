@@ -17,6 +17,7 @@ struct SettingsView: View {
     @State private var isDeleted = false
     @State private var showDeleteAccountAlert: Bool = false
     @State private var isDeletingAccount: Bool = false
+    @State private var selectedCollege: String = ""
     @AppStorage("authUserId") private var authUserId: String = ""
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
@@ -85,7 +86,15 @@ struct SettingsView: View {
                 .padding()
             }
             Section {
-                NavigationLink {} label: {
+                NavigationLink {
+                    if let user = newUser {
+                        NavigationLink {
+                            CommittedCollegeView(selectedCollege: $selectedCollege, newUser: user)
+                        } label: {
+                            Text("Change Commited College")
+                        }
+                    }
+                } label: {
                     Label("Profile", systemImage: "person")
                 }
                 
@@ -226,6 +235,36 @@ struct SettingsView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Account")
+        .onAppear {
+            Task {
+                print("appeared")
+                if let user = newUser, user.accountType != "Spectator" {
+                    print("user not nil")
+                    let college: College?
+                    switch user.accountType {
+                        case "Athlete":
+                            guard let athlete = try await getUserAthleteByUserId(id: user.id)
+                            else { return }
+                            print("athlete: \(athlete.id)")
+                            guard let athleteCollege = athlete.college else { print("failed"); return }
+                            print("athleteCollege: \(athleteCollege.id)")
+                            college = try await queryAWSCollegeById(id: athleteCollege.id)
+                            print("college: \(college?.id)")
+                        case "Coach":
+                            // TODO: implement for coaches to associate with a college
+                            print("Coaches can't associate with a College yet")
+                            college = nil
+                        default:
+                            return
+                    }
+                    
+                    if let college = college {
+                        print("setting college to \(college.name)")
+                        selectedCollege = college.name
+                    }
+                }
+            }
+        }
         .toolbar {
             if newUser?.accountType == "Spectator" {
                 ToolbarItem(placement: .topBarTrailing) {

@@ -85,12 +85,20 @@ struct PostsView: View {
                 // If posts is empty but it is the current user's profile, show message directed to
                 // themself
             } else if newUser.id == authUserId {
-                Text("You have not added any posts yet")
+                Text("You haven't added any posts yet")
                     .foregroundColor(.secondary)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding()
+                    .multilineTextAlignment(.center)
                 // Else, posts view is someone else's empty grid, show message to user
             } else {
-                Text("This user has not added any posts yet")
+                Text("This user hasn't added any posts yet")
                     .foregroundColor(.secondary)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding()
+                    .multilineTextAlignment(.center)
             }
         }
         .onChange(of: shouldRefreshPosts) {
