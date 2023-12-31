@@ -387,8 +387,6 @@ struct MeetInfoPageView: View {
                     .frame(width: screenWidth * 0.9)
             )
             
-            Divider()
-            
             if let meetEventData = meetInfoData.2 {
                 MeetEventListView(showingAlert: $showingAlert, alertText: $alertText,
                                   meetEventData: meetEventData)
@@ -711,6 +709,7 @@ struct MeetEventListView: View {
     @Binding var alertText: String
     @ObservedObject private var mpp: MeetPageParser = MeetPageParser()
     var meetEventData: MeetEventData
+    private let screenWidth = UIScreen.main.bounds.width
     
     private func dateSorted(
         _ events: [String: MeetEventData]) -> [(key: String, value: MeetEventData)] {
@@ -744,10 +743,7 @@ struct MeetEventListView: View {
     
     var body: some View {
         let data = dateSorted(groupByDay(data: meetEventData))
-        
-        
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
                 ForEach(data, id: \.key) { key, value in
                     Section {
                         ForEach(value.indices, id: \.self) { index in
@@ -796,10 +792,15 @@ struct MeetEventListView: View {
                         }
                     } header: {
                         Text(key)
-                            .font(.subheadline)
+                            .font(.title3).bold()
                     }
                 }
             }
-        }
+            .padding(20)
+            .background(.ultraThinMaterial)
+            .backgroundStyle(cornerRadius: 30)
+            .modifier(OutlineOverlay(cornerRadius: 30))
+            .frame(width: screenWidth * 0.9)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 }
