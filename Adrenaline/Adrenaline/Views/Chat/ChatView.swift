@@ -13,6 +13,7 @@ import Combine
 typealias ChatConversations = [String: [(Message, Bool)]]
 
 struct ChatView: View {
+    @EnvironmentObject private var appLogic: AppLogic
     // Bindings
     @Binding var diveMeetsID: String
     @Binding var showAccount: Bool
@@ -46,9 +47,11 @@ struct ChatView: View {
     @State private var text: String = ""
     @State private var currentUserConversations: ChatConversations = [:]
     // Set of user IDs who have sent incoming chat requests to the current user
-    @State private var incomingChatRequests: Set<String> = Set()
+    @State private var incomingChatRequests: [NewUser] = []
     @State private var recipient: NewUser?
     @State private var isViewingChatRequest: Bool = false
+    
+    @State private var searchTerm: String = ""
     
     var body: some View {
         NavigationView {
@@ -73,6 +76,22 @@ struct ChatView: View {
                         // When viewing main conversation page, but no users are present
                     } else if users.count == 0 {
                         VStack {
+                            Text("Refreshing chats")
+                                .foregroundColor(.secondary)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .multilineTextAlignment(.center)
+                            ProgressView()
+                        }
+                        .padding(20)
+                        .background(.ultraThinMaterial)
+                        .modifier(OutlineOverlay(cornerRadius: 30))
+                        .backgroundStyle(cornerRadius: 30)
+                        .padding(20)
+                        .padding(.vertical, 80)
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    } else if appLogic.dataStoreReady && users.count == 0 {
+                        VStack {
                             Text("You don't have any active conversations")
                                 .foregroundColor(.secondary)
                                 .font(.title3)
@@ -91,20 +110,22 @@ struct ChatView: View {
                         ScrollView {
                             scrollDetection
                             VStack {
-                                if incomingChatRequests.count > 0 {
+                                if filteredChatRequests.count > 0 {
                                     NavigationLink {
                                         chatRequestsView
                                     } label: {
                                         HStack {
                                             Text("Chat Requests")
                                             Spacer()
-                                            Text(String(incomingChatRequests.count))
+                                            Text(String(filteredChatRequests.count))
                                         }
                                         .foregroundColor(.primary)
                                         .fontWeight(.semibold)
                                         .padding()
                                     }
-                                    
+                                }
+                                
+                                if filteredChatRequests.count > 0 && filteredChats.count > 0 {
                                     Divider()
                                         .padding(.bottom, 10)
                                 }
@@ -201,32 +222,71 @@ struct ChatView: View {
         }
     }
     
-    var chatMessageListView: some View {
-        LazyVGrid(columns: columns, spacing: 20) {
-            // Filter out users who sent incoming requests or were deleted
-            let filtered = users.filter { !incomingChatRequests.union(deletedChatIds).contains($0.id) }
-            ForEach(filtered.indices, id: \.self) { index in
-                let user = filtered[index]
-                if index != 0 { Divider() }
-                ProfileRow(user: user, newMessages: $newMessages)
-                    .onTapGesture {
-                        withAnimation {
-                            newMessages.remove(user.id)
-                            showChatBar = true
-                            feedModel.showTab = false
-                        }
-                        Task {
-                            let recipientPredicate = NewUser.keys.id == user.id
-                            let recipientUsers = await
-                            queryAWSUsers(where: recipientPredicate)
-                            if recipientUsers.count >= 1 {
-                                recipient = recipientUsers[0]
-                            }
-                        }
-                    }
+    var filteredChats: [NewUser] {
+        return users.filter {
+            // Filters out chats that are requests or manually hidden from view
+            if deletedChatIds.contains($0.id) ||
+                Set(incomingChatRequests.map { $0.id }).contains($0.id) {
+                return false
             }
-            .padding(.horizontal, 20)
+            
+            // Skip filtering on search term if it is empty
+            guard !searchTerm.isEmpty else { return true }
+            
+            let name = $0.firstName + " " + $0.lastName
+            return name.localizedCaseInsensitiveContains(searchTerm)
         }
+    }
+    
+    var filteredChatRequests: [NewUser] {
+        guard !searchTerm.isEmpty else { return incomingChatRequests }
+        return incomingChatRequests.filter {
+            let name = $0.firstName + " " + $0.lastName
+            return name.localizedCaseInsensitiveContains(searchTerm)
+        }
+    }
+    
+    var chatMessageListView: some View {
+        Group {
+            if filteredChats.count > 0 {
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(filteredChats.indices, id: \.self) { index in
+                        let user = filteredChats[index]
+                        if index != 0 { Divider() }
+                        ProfileRow(user: user, newMessages: $newMessages)
+                            .onTapGesture {
+                                withAnimation {
+                                    newMessages.remove(user.id)
+                                    showChatBar = true
+                                    feedModel.showTab = false
+                                    searchTerm = ""
+                                }
+                                Task {
+                                    let recipientPredicate = NewUser.keys.id == user.id
+                                    let recipientUsers = await
+                                    queryAWSUsers(where: recipientPredicate)
+                                    if recipientUsers.count >= 1 {
+                                        recipient = recipientUsers[0]
+                                    }
+                                }
+                            }
+                    }
+                    .padding(.horizontal, 20)
+                }
+            } else if filteredChatRequests.count == 0 {
+                VStack {
+                    Spacer()
+                    Text("No results found")
+                    Text("Please try a different search term")
+                    Spacer()
+                }
+                .foregroundColor(.secondary)
+                .fontWeight(.semibold)
+            } else {
+                EmptyView()
+            }
+        }
+        .searchable(text: $searchTerm, placement: .navigationBarDrawer, prompt: "Search Chat")
     }
     
     var chatConversationView: some View {
@@ -352,11 +412,8 @@ struct ChatView: View {
     
     var chatRequestsView: some View {
         LazyVGrid(columns: columns, spacing: 20) {
-            let filtered = users.filter { incomingChatRequests.contains($0.id) }.sorted {
-                $0.firstName < $1.firstName
-            }
-            ForEach(filtered.indices, id: \.self) { index in
-                let user = filtered[index]
+            ForEach(filteredChatRequests.indices, id: \.self) { index in
+                let user = filteredChatRequests[index]
                 if index != 0 { Divider() }
                 ProfileRow(user: user, newMessages: $newMessages)
                     .onTapGesture {
@@ -365,6 +422,7 @@ struct ChatView: View {
                             showChatBar = true
                             feedModel.showTab = false
                             isViewingChatRequest = true
+                            searchTerm = ""
                         }
                         Task {
                             let recipientPredicate = NewUser.keys.id == user.id

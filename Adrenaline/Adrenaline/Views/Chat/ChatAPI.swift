@@ -33,8 +33,8 @@ func didTapSend(message: String, sender: NewUser, recipient: NewUser) {
 }
 
 // Returns a set of user IDs that have sent incoming chat requests to the current user
-func separateChatRequests(conversations: ChatConversations, users: [NewUser]) -> Set<String> {
-    var result = Set<String>()
+func separateChatRequests(conversations: ChatConversations, users: [NewUser]) -> [NewUser] {
+    var result: [NewUser] = []
     
     for user in users {
         guard let messages = conversations[user.id] else {
@@ -43,7 +43,7 @@ func separateChatRequests(conversations: ChatConversations, users: [NewUser]) ->
         
         // If only one message is in the list and they aren't the sender, incoming chat request
         if messages.count == 1, !messages[0].1 {
-            result.insert(user.id)
+            result.append(user)
         }
     }
     
