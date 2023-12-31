@@ -10,6 +10,7 @@ import MapKit
 
 class MapViewModel: ObservableObject {
     @Published var region: MKCoordinateRegion
+    @Published var locationCoordinate: CLLocationCoordinate2D?
 
     init() {
         // Initialize with a default location
@@ -19,8 +20,11 @@ class MapViewModel: ObservableObject {
     func findLocation(location: String) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(location) { [weak self] (placemarks, error) in
-            guard let self = self, let placemark = placemarks?.first, let location = placemark.location else { return }
-            self.region = MKCoordinateRegion(center: location.coordinate, span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002))
+            guard let self = self, let placemark = placemarks?.first, let locationCoordinate = placemark.location?.coordinate else { return }
+            
+            // Now set the locationCoordinate and region
+            self.locationCoordinate = locationCoordinate
+            self.region = MKCoordinateRegion(center: locationCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002))
         }
     }
 }
@@ -33,11 +37,24 @@ struct MapView: View {
         self.locationString = locationString
         _viewModel = StateObject(wrappedValue: MapViewModel())
     }
+    
+    private func openInMaps() {
+            guard let coordinate = viewModel.locationCoordinate else { return }
+
+            let placemark = MKPlacemark(coordinate: coordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = locationString // Optional: Set the name of the location
+
+            MKMapItem.openMaps(with: [mapItem], launchOptions: nil)
+        }
 
     var body: some View {
         Map(coordinateRegion: $viewModel.region)
             .onAppear {
                 viewModel.findLocation(location: locationString)
+            }
+            .onTapGesture {
+                openInMaps()
             }
     }
 }
