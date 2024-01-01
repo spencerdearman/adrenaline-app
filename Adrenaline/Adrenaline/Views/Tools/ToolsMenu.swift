@@ -42,8 +42,6 @@ struct ToolsMenu: View {
                             .font(.title2).bold()
                             .dynamicTypeSize(.xSmall ... .xxxLarge)
                     }
-                    .padding(.top)
-                    
                     Spacer()
                     VStack {
                         NavigationLink(destination: MeetScoreCalculator()) {

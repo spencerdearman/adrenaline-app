@@ -26,9 +26,9 @@ struct ProfileRow: View {
                                              case .success(let image):
                                                  image.resizable()
                                              case .failure(_):
-                                                Image("defaultImage").resizable()
+                                                 Color.gray
                                              @unknown default:
-                                                Image("defaultImage").resizable()
+                                                 Color.gray
                                          }
                                      })
                 : AnyView(Image("defaultImage").resizable())

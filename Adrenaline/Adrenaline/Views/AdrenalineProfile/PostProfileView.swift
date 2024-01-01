@@ -51,8 +51,7 @@ struct PostProfileItem: Hashable, Identifiable {
                                        PostMediaItem(id: video.id, data: PostMedia.video(
                                         VideoPlayerViewModel(
                                             video: VideoItem(email: user.email, videoId: video.id),
-                                            initialResolution: .p1080)), playVideoOnAppear: true,
-                                                     videoIsLooping: true)))
+                                            initialResolution: .p1080)))))
             }
         }
         
@@ -171,8 +170,10 @@ struct PostProfileExpandedView: View {
         UserSavedPost.keys.postID == post.id
         let savedPosts: [UserSavedPost] = try await query(where: pred)
         if savedPosts.count == 1 {
+            print("Found saved post")
             savedPost = savedPosts[0]
         } else {
+            print("No single post found, setting to nil")
             savedPost = nil
         }
     }
@@ -207,6 +208,7 @@ struct PostProfileExpandedView: View {
                                         .opacity(phase.isIdentity ? 1.0 : 0.8)
                                         .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
                                 }
+                                
                         }
                     }
                     .frame(height: 450)

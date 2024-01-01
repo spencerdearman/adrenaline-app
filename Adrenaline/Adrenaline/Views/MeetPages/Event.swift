@@ -110,10 +110,7 @@ struct Event: View {
                                             isExpanded: isExpanded(key),
                                             content: {
                                                 VStack(alignment: .leading, spacing: 5) {
-                                                    if value.1 != "1M" && value.1 != "3M" {
-                                                        Text("Height: \(value.1)")
-                                                    }
-                                                    
+                                                    Text("Height: \(value.1)")
                                                     Text("Scores: " + (scoreDictionary[value.0] ?? ""))
                                                     Text("Name: \(value.2)")
                                                     Text("Net Score: \(value.3, specifier: "%.2f")")

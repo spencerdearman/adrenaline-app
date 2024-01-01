@@ -38,21 +38,7 @@ struct ProfileBar: View {
                         .background(.ultraThinMaterial)
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
-                Spacer()
-                
-                Button {
-                    showSheet.toggle()
-                } label: {
-                    Image(systemName: "wrench.and.screwdriver.fill")
-                        .font(.system(size: 17, weight: .bold))
-                        .frame(width: 36, height: 36)
-                        .foregroundColor(.secondary)
-                        .background(.ultraThinMaterial)
-                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                }
-                .sheet(isPresented: $showSheet) {
-                    ToolsMenu()
-                }
+                .offset(x: -screenWidth * 0.57)
                 
                 Button {
                     showSheet.toggle()

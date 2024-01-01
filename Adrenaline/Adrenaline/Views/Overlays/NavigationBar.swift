@@ -13,9 +13,7 @@ struct NavigationBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
-    var diveMeetsID:  Binding<String>
-    var showPlus: Bool = true
-    var showSearch: Bool = true
+    @Binding var newUser: NewUser?
     @State private var showSearchSheet = false
     @State private var showPostSheet = false
     @State private var isLogged = true
@@ -56,36 +54,32 @@ struct NavigationBar: View {
                 .opacity(contentHasScrolled ? 0.7 : 1)
             
             HStack(spacing: 16) {
-                if showPlus {
-                    Button {
-                        showSheet(showingPost: true)
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .sheet(isPresented: $showPostSheet) {
-                        NewPostView(uploadingPost: $uploadingPost)
-                    }
+                Button {
+                    showSheet(showingPost: true)
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                }
+                .sheet(isPresented: $showPostSheet) {
+                    NewPostView(uploadingPost: $uploadingPost)
                 }
                 
-                if showSearch {
-                    Button {
-                        showSheet(showingPost: false)
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .sheet(isPresented: $showSearchSheet) {
-                        NewSearchView(recentSearches: $recentSearches)
-                    }
+                Button {
+                    showSheet(showingPost: false)
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                }
+                .sheet(isPresented: $showSearchSheet) {
+                    NewSearchView(recentSearches: $recentSearches)
                 }
                 
                 Button {

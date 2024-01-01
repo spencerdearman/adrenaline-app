@@ -102,9 +102,9 @@ func getVideosByEmail(email: String) async -> [VideoPlayerViewModel]? {
         
         return sorted.map {
             // Remove extension from key name
-            guard let basename = $0.key.split(separator: "/").last else { return VideoPlayerViewModel(video: VideoItem(), initialResolution: .p1080) }
+            guard let basename = $0.key.split(separator: "/").last else { return VideoPlayerViewModel(video: VideoItem(), initialResolution: .p540) }
             let videoId = String(basename.dropLast(4))
-            return VideoPlayerViewModel(video: VideoItem(email: email, videoId: videoId), initialResolution: .p1080)
+            return VideoPlayerViewModel(video: VideoItem(email: email, videoId: videoId), initialResolution: .p540)
         }
     } catch {
         print("Failed to get VideoItems from S3")
@@ -202,11 +202,4 @@ func getStreamURL(email: String, videoId: String, resolution: Resolution) -> URL
     let videoUrlHead = getVideoHLSUrlKey(email: email, videoId: videoId)
     
     return URL(string: "\(videoUrlHead)_\(resolution.displayValue.dropLast(1)).m3u8")
-}
-
-func getVideoDurationSeconds(url: URL) async throws -> Double {
-    let asset = AVAsset(url: url)
-    
-    let duration = try await asset.load(.duration)
-    return CMTimeGetSeconds(duration)
 }

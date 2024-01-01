@@ -35,17 +35,12 @@ struct VideoItem {
         var streams: [Stream] = []
         let videoUrlHead = getVideoHLSUrlKey(email: email, videoId: videoId)
         
-//        for res in Resolution.allCases {
-//            if let url = URL(string: "\(videoUrlHead).m3u8") {
-//                streams.append(Stream(resolution: res, streamURL: url))
-//            } else {
-//                print("Failed to get url for resolution \(res.displayValue)")
-//            }
-//        }
-        if let url = URL(string: "\(videoUrlHead).m3u8") {
-            streams.append(Stream(resolution: .p1080, streamURL: url))
-        } else {
-            print("Failed to get url for resolution \(Resolution.p1080.displayValue)")
+        for res in Resolution.allCases {
+            if let url = URL(string: "\(videoUrlHead)_\(res.displayValue.dropLast(1)).m3u8") {
+                streams.append(Stream(resolution: res, streamURL: url))
+            } else {
+                print("Failed to get url for resolution \(res.displayValue)")
+            }
         }
         
         self.streams = streams

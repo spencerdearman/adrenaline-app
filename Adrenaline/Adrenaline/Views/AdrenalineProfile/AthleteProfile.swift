@@ -101,7 +101,6 @@ struct MeetListView: View {
                 .font(.title3)
                 .fontWeight(.semibold)
                 .padding()
-                .multilineTextAlignment(.center)
         }
     }
 }
@@ -322,36 +321,32 @@ struct RecruitingView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
                 // Gives view time to query AWS before showing anything (avoids glitching when top
                 // portion appears after lower portion)
                 if loaded {
-                    // Always show DataView once it is loaded
-                    if let athlete = newAthlete {
-                        RecruitingDataView(newUser: newUser, newAthlete: athlete)
+                    VStack {
+                        if let athlete = newAthlete {
+                            RecruitingDataView(newUser: newUser, newAthlete: athlete)
+                            
+                            Divider()
+                        }
                         
-                        Divider()
-                    }
-                    
-                    // Only show metrics and stats if DiveMeets account is linked
-                    if let diveMeetsID = newUser.diveMeetsID, diveMeetsID != "" {
                         MetricsView(diveMeetsID: diveMeetsID)
                         
                         Divider()
                         
                         StatisticsView(diveMeetsID: diveMeetsID)
-                    } else {
-                        Text("Link a DiveMeets account to display metrics and dive statistics on your profile")
-                            .foregroundColor(.secondary)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                            .padding(.bottom, 30)
                     }
+                    .padding()
                 }
+            } else {
+                Text("No DiveMeets Account Linked")
+                    .foregroundColor(.secondary)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding()
             }
-            .padding()
         }
         .onAppear {
             Task {

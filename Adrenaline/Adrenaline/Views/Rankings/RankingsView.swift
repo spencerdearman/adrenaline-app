@@ -12,17 +12,11 @@ import Amplify
 //                 [Gender: [AgeGrp: [Board : NumberedRankingList]]]
 var cachedRatings: [String: [String: [String: NumberedRankingList]]] = [:]
 
-// Cache previously queried NewUser objects so it doesn't query AWS again to check if the user has
-// an Adrenaline profile
-// Some keys will have nil value to signify that the DiveMeetsID was checked and did not find a user
-//                         [DiveMeetsID: user]
-var cachedAdrenalineUsers: [String: NewUser] = [:]
-
-// Stores all seen Adrenaline users so that seen users are not recomputed when switching list types
-var seenAdrenalineUsers: Set<String> = Set()
-
-// Lock to stop concurrent writes to the ratings cache during concurrent precompute
-let lock = NSLock()
+enum BoardSelection: String, CaseIterable {
+    case springboard = "Springboard"
+    case combined = "Combined"
+    case platform = "Platform"
+}
 
 enum RankingType: String, CaseIterable {
     case springboard = "Springboard"
@@ -68,17 +62,15 @@ struct RankingsView: View {
     @State private var femaleRatings: GenderRankingList = []
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
+    @State private var selection: BoardSelection = .springboard
     @State private var isAdrenalineProfilesOnlyChecked: Bool = false
-    @State private var currentSettingsAddedToCache: Bool = false
-    @State private var searchTerm: String = ""
-    @Binding var diveMeetsID: String
+    @Binding var newUser: NewUser?
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
     @Binding var uploadingPost: Post?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    private let skill = SkillRating()
     
     @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
@@ -97,27 +89,6 @@ struct RankingsView: View {
     
     private var typeBubbleColor: Color {
         currentMode == .light ? Color.white : Color.black
-    }
-    
-    // Sets currentList to nil unless there is a value stored in the cache
-    private var currentList: NumberedRankingList? {
-        if currentSettingsAddedToCache,
-           let ageDict = cachedRatings[gender.rawValue],
-           let boardDict = ageDict[ageGroup.rawValue] {
-            return boardDict[rankingType.rawValue]
-        }
-        
-        return nil
-    }
-    
-    private var filteredList: NumberedRankingList? {
-        guard !searchTerm.isEmpty else { return currentList }
-        
-        return currentList?.filter {
-            let user = $0.1.0
-            let name = user.firstName + " " + user.lastName
-            return name.localizedCaseInsensitiveContains(searchTerm)
-        }
     }
     
     private func getMaleAthletes() async -> [NewAthlete] {
@@ -249,6 +220,209 @@ struct RankingsView: View {
         femaleRatings = removeDuplicates(pendingFemaleRatings)
     }
     
+    var body: some View {
+        NavigationView {
+            ZStack {
+                (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
+                Image(currentMode == .light ? "RankingsBackground-Light" : "RankingsBackground-Dark")
+                    .frame(height: screenHeight * 0.8)
+                    .offset(x: -screenWidth * 0.1, y: screenHeight * 0.05)
+                if networkIsConnected {
+                    ScrollView {
+                        scrollDetection
+                        
+                        Rectangle()
+                            .fill(.clear)
+                            .frame(height: screenHeight * 0.08)
+                        
+                        HStack {
+                            Text("Only show Adrenaline profiles")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                            
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    isAdrenalineProfilesOnlyChecked.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "checkmark.shield")
+                                    .opacity(isAdrenalineProfilesOnlyChecked ? 1.0 : 0.0)
+                                    .frame(width: 36, height: 36)
+                                    .foregroundColor(.secondary)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 14)
+                                            .stroke(Custom.medBlue, lineWidth: 1.5)
+                                    )
+                                    .background(isAdrenalineProfilesOnlyChecked
+                                                ? Color.blue.opacity(0.3)
+                                                : Color.clear)
+                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                                    .scaleEffect(0.8)
+                            }
+                            
+                            Spacer()
+                        }
+                        .padding(.leading)
+                        
+                        boardSelector
+                        
+                        if (gender == .male && !maleRatings.isEmpty) ||
+                            (gender == .female && !femaleRatings.isEmpty) {
+                            RankingListView(tabBarState: $tabBarState,
+                                            adrenalineProfilesOnly: $isAdrenalineProfilesOnlyChecked,
+                                            rankingType: $rankingType,
+                                            gender: $gender, ageGroup: $ageGroup,
+                                            maleRatings: $maleRatings,
+                                            femaleRatings: $femaleRatings)
+                            
+                            Spacer()
+                        } else {
+                            ProgressView()
+                        }
+                    }
+                    .onAppear {
+                        Task {
+                            if maleRatings.isEmpty {
+                                try await getMaleRatings()
+                            }
+                            
+                            if femaleRatings.isEmpty {
+                                try await getFemaleRatings()
+                            }
+                        }
+                    }
+                } else {
+                    NotConnectedView()
+                }
+            }
+            .overlay (
+                NavigationBar(title: "Rankings",
+                              newUser: $newUser,
+                              showAccount: $showAccount,
+                              contentHasScrolled: $contentHasScrolled,
+                              feedModel: $feedModel, recentSearches: $recentSearches,
+                              uploadingPost: $uploadingPost)
+                .frame(width: screenWidth)
+            )
+        }
+    }
+    
+    var scrollDetection: some View {
+        GeometryReader { proxy in
+            let offset = proxy.frame(in: .named("scroll")).minY
+            Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
+        }
+        .onPreferenceChange(ScrollPreferenceKey.self) { offset in
+            withAnimation(.easeInOut) {
+                if offset < 0 {
+                    contentHasScrolled = true
+                } else {
+                    contentHasScrolled = false
+                }
+            }
+        }
+    }
+    
+    var boardSelector: some View {
+        HStack {
+            ZStack {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .cornerRadius(30)
+                    .frame(width: typeBubbleWidth * 3 + 5,
+                           height: typeBGWidth)
+                RoundedRectangle(cornerRadius: 30)
+                    .frame(width: typeBubbleWidth,
+                           height: typeBubbleHeight)
+                    .foregroundColor(Custom.darkGray.opacity(0.9))
+                    .offset(x: rankingType == .springboard
+                            ? -typeBubbleWidth / 1
+                            : (rankingType == .combined ? 0 : typeBubbleWidth))
+                    .animation(.spring(response: 0.2), value: rankingType)
+                    .clipShape(RoundedRectangle(cornerRadius: 30))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 30)
+                            .stroke(Color.primary.opacity(0.5), lineWidth: 1)
+                            .offset(x: rankingType == .springboard
+                                    ? -typeBubbleWidth / 1
+                                    : (rankingType == .combined ? 0 : typeBubbleWidth))
+                        // Adjust the lineWidth as needed
+                            .animation(.spring(response: 0.2), value: rankingType)
+                    )
+                HStack(spacing: 0) {
+                    Button(action: {
+                        rankingType = .springboard
+                    }, label: {
+                        Text(BoardSelection.springboard.rawValue)
+                            .animation(nil, value: rankingType)
+                    })
+                    .frame(width: typeBubbleWidth,
+                           height: typeBubbleHeight)
+                    .cornerRadius(30)
+                    Button(action: {
+                        rankingType = .combined
+                    }, label: {
+                        Text(BoardSelection.combined.rawValue)
+                            .animation(nil, value: rankingType)
+                    })
+                    .frame(width: typeBubbleWidth + 2,
+                           height: typeBubbleHeight)
+                    .cornerRadius(30)
+                    Button(action: {
+                        rankingType = .platform
+                    }, label: {
+                        Text(BoardSelection.platform.rawValue)
+                            .animation(nil, value: rankingType)
+                    })
+                    .frame(width: typeBubbleWidth + 2,
+                           height: typeBubbleHeight)
+                    .cornerRadius(30)
+                }
+                .foregroundColor(.primary)
+            }
+            
+            Button {
+                withAnimation(.closeCard) {
+                    if gender == .male {
+                        gender = .female
+                    } else {
+                        gender = .male
+                    }
+                }
+            } label: {
+                Text(gender.rawValue)
+                    .font(.system(size: 17, weight: .bold))
+                    .frame(width: 36, height: 36)
+                    .foregroundColor(.secondary)
+                    .background(gender == .male ? Color.blue.opacity(0.3) : Color.pink.opacity(0.3))
+                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+            }
+            
+            Menu {
+                Picker("", selection: $ageGroup) {
+                    ForEach(AgeGroup.allCases, id: \.self) { g in
+                        Text(g.rawValue)
+                            .tag(g)
+                    }
+                }
+            } label: { Text("Age") }
+        }
+    }
+}
+
+struct RankingListView: View {
+    @Environment(\.colorScheme) private var currentMode
+    @Binding var tabBarState: Visibility
+    @Binding var adrenalineProfilesOnly: Bool
+    @Binding var rankingType: RankingType
+    @Binding var gender: Gender
+    @Binding var ageGroup: AgeGroup
+    @Binding var maleRatings: GenderRankingList
+    @Binding var femaleRatings: GenderRankingList
+    
+    private let skill = SkillRating()
+    private let screenWidth = UIScreen.main.bounds.width
+    
     private func isInAgeRange(age: Int) -> Bool {
         switch ageGroup {
             case .fourteenFifteen:
@@ -258,8 +432,7 @@ struct RankingsView: View {
         }
     }
     
-    private func filterByAgeGroup(_ ratings: GenderRankingList,
-                                  ageGroup: AgeGroup) -> GenderRankingList {
+    private func filterByAgeGroup(_ ratings: GenderRankingList) -> GenderRankingList {
         var result: GenderRankingList = []
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd"
@@ -330,23 +503,17 @@ struct RankingsView: View {
     
     private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
                                    board: RankingType) -> NumberedRankingList? {
-        lock.lock()
-        
         if let genderDict = cachedRatings[gender.rawValue],
            let ageGroupDict = genderDict[ageGroup.rawValue],
            let boardList = ageGroupDict[board.rawValue] {
-            lock.unlock()
             return boardList
         }
         
-        lock.unlock()
         return nil
     }
     
     private func cacheRatingList(gender: Gender, ageGroup: AgeGroup, board: RankingType,
                                  ratings: NumberedRankingList) {
-        lock.lock()
-        
         if !cachedRatings.keys.contains(gender.rawValue) {
             cachedRatings[gender.rawValue] = [:]
         }
@@ -356,18 +523,15 @@ struct RankingsView: View {
         }
         
         cachedRatings[gender.rawValue]![ageGroup.rawValue]![board.rawValue] = ratings
-        
-        lock.unlock()
     }
     
-    private func getSortedRankingList(gender: Gender, ageGroup: AgeGroup,
-                                      board: RankingType) -> RankingList {
+    private func getSortedRankingList() -> RankingList {
         let list = gender == .male ? maleRatings : femaleRatings
-        let filtered = filterByAgeGroup(list, ageGroup: ageGroup)
+        let filtered = filterByAgeGroup(list)
         let normalized = normalizeRatings(ratings: filtered)
         let keep = normalized.map {
             // Values rounded to one decimal place
-            switch board {
+            switch rankingType {
                 case .springboard:
                     return ($0.0, round($0.1 * 10) / 10.0)
                 case .combined:
@@ -390,8 +554,7 @@ struct RankingsView: View {
     }
     
     // This should be called after sorting to get a number for that result in the ranking list view
-    private func numberSortedRankingList(_ list: RankingList, gender: Gender, ageGroup: AgeGroup,
-                                         board: RankingType) -> NumberedRankingList {
+    private func numberSortedRankingList(_ list: RankingList) -> NumberedRankingList {
         var result: NumberedRankingList = []
         
         var everyIdx: Int = 0
@@ -431,254 +594,21 @@ struct RankingsView: View {
         }
         
         // Caches rating list for future viewing since it won't change
-        cacheRatingList(gender: gender, ageGroup: ageGroup, board: board, ratings: result)
+        cacheRatingList(gender: gender, ageGroup: ageGroup, board: rankingType, ratings: result)
         
         return result
     }
     
-    private func getFinalRankingList(gender: Gender, ageGroup: AgeGroup,
-                                     board: RankingType) -> NumberedRankingList {
-        if let result = ratingListInCache(gender: gender, ageGroup: ageGroup, board: board) {
+    private func getFinalRankingList() -> NumberedRankingList {
+        if let result = ratingListInCache(gender: gender, ageGroup: ageGroup, board: rankingType) {
             return result
         }
         
-        return numberSortedRankingList(
-            getSortedRankingList(gender: gender, ageGroup: ageGroup, board: board),
-            gender: gender,
-            ageGroup: ageGroup,
-            board: board
-        )
+        return numberSortedRankingList(getSortedRankingList())
     }
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
-                Image(currentMode == .light ? "RankingsBackground-Light" : "RankingsBackground-Dark")
-                    .frame(height: screenHeight * 0.8)
-                    .offset(x: -screenWidth * 0.1, y: screenHeight * 0.05)
-                if networkIsConnected {
-                    ScrollView {
-                        scrollDetection
-                        
-                        Rectangle()
-                            .fill(.clear)
-                            .frame(height: screenHeight * 0.08)
-                        
-                        HStack {
-                            Text("Only show Adrenaline profiles")
-                                .foregroundColor(.secondary)
-                                .font(.subheadline)
-                            
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.1)) {
-                                    isAdrenalineProfilesOnlyChecked.toggle()
-                                }
-                            } label: {
-                                Image(systemName: "checkmark.shield")
-                                    .opacity(isAdrenalineProfilesOnlyChecked ? 1.0 : 0.0)
-                                    .frame(width: 36, height: 36)
-                                    .foregroundColor(.secondary)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 14)
-                                            .stroke(Custom.medBlue, lineWidth: 1.5)
-                                    )
-                                    .background(isAdrenalineProfilesOnlyChecked
-                                                ? Color.blue.opacity(0.3)
-                                                : Color.clear)
-                                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                                    .scaleEffect(0.8)
-                            }
-                            
-                            Spacer()
-                        }
-                        .padding(.leading)
-                        
-                        boardSelector
-                        
-                        if let list = filteredList {
-                            RankingListView(tabBarState: $tabBarState,
-                                            adrenalineProfilesOnly: $isAdrenalineProfilesOnlyChecked,
-                                            numberedList: list)
-                            
-                            Spacer()
-                        } else {
-                            ProgressView()
-                        }
-                    }
-                    .searchable(text: $searchTerm, prompt: "Search Rankings")
-                    .onAppear {
-                        Task {
-                            // Gets male ratings from AWS athletes and DiveMeetsDivers
-                            if maleRatings.isEmpty {
-                                try await getMaleRatings()
-                            }
-                            
-                            // Gets female ratings from AWS athletes and DiveMeetsDivers
-                            if femaleRatings.isEmpty {
-                                try await getFemaleRatings()
-                            }
-                            
-                            // Creates task group to precompute all combinations of rankings lists
-                            // in the background
-                            let _ = await withTaskGroup(of: Void.self) { group in
-                                // Creates a task for every combintion of rankings lists we show
-                                // to concurrently compute the lists and cache them
-                                for g in Gender.allCases {
-                                    for a in AgeGroup.allCases {
-                                        for r in RankingType.allCases {
-                                            group.addTask {
-                                                let _ = getFinalRankingList(gender: g,
-                                                                            ageGroup: a,
-                                                                            board: r)
-                                                
-                                                // This updates the computed property to refresh the
-                                                // currentList if no other background changes occur
-                                                // to initiate an update
-                                                if g == gender, a == ageGroup, r == rankingType {
-                                                    currentSettingsAddedToCache = true
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                // No need to await for elements in group since there aren't any
-                                // results that need combining
-                            }
-                        }
-                    }
-                } else {
-                    NotConnectedView()
-                }
-            }
-            .overlay (
-                NavigationBar(title: "Rankings",
-                              diveMeetsID: $diveMeetsID,
-                              showPlus: false,
-                              showSearch: false,
-                              showAccount: $showAccount,
-                              contentHasScrolled: $contentHasScrolled,
-                              feedModel: $feedModel, recentSearches: $recentSearches,
-                              uploadingPost: $uploadingPost)
-                .frame(width: screenWidth)
-            )
-        }
-    }
-    
-    var scrollDetection: some View {
-        GeometryReader { proxy in
-            let offset = proxy.frame(in: .named("scroll")).minY
-            Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
-        }
-        .onPreferenceChange(ScrollPreferenceKey.self) { offset in
-            withAnimation(.easeInOut) {
-                if offset < 0 {
-                    contentHasScrolled = true
-                } else {
-                    contentHasScrolled = false
-                }
-            }
-        }
-    }
-    
-    var boardSelector: some View {
-        HStack {
-            ZStack {
-                Rectangle()
-                    .fill(.ultraThinMaterial)
-                    .cornerRadius(30)
-                    .frame(width: typeBubbleWidth * 3 + 5,
-                           height: typeBGWidth)
-                RoundedRectangle(cornerRadius: 30)
-                    .frame(width: typeBubbleWidth,
-                           height: typeBubbleHeight)
-                    .foregroundColor(Custom.darkGray.opacity(0.9))
-                    .offset(x: rankingType == .springboard
-                            ? -typeBubbleWidth / 1
-                            : (rankingType == .combined ? 0 : typeBubbleWidth))
-                    .animation(.spring(response: 0.2), value: rankingType)
-                    .clipShape(RoundedRectangle(cornerRadius: 30))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.primary.opacity(0.5), lineWidth: 1)
-                            .offset(x: rankingType == .springboard
-                                    ? -typeBubbleWidth / 1
-                                    : (rankingType == .combined ? 0 : typeBubbleWidth))
-                        // Adjust the lineWidth as needed
-                            .animation(.spring(response: 0.2), value: rankingType)
-                    )
-                HStack(spacing: 0) {
-                    Button(action: {
-                        rankingType = .springboard
-                    }, label: {
-                        Text(RankingType.springboard.rawValue)
-                            .animation(nil, value: rankingType)
-                    })
-                    .frame(width: typeBubbleWidth,
-                           height: typeBubbleHeight)
-                    .cornerRadius(30)
-                    Button(action: {
-                        rankingType = .combined
-                    }, label: {
-                        Text(RankingType.combined.rawValue)
-                            .animation(nil, value: rankingType)
-                    })
-                    .frame(width: typeBubbleWidth + 2,
-                           height: typeBubbleHeight)
-                    .cornerRadius(30)
-                    Button(action: {
-                        rankingType = .platform
-                    }, label: {
-                        Text(RankingType.platform.rawValue)
-                            .animation(nil, value: rankingType)
-                    })
-                    .frame(width: typeBubbleWidth + 2,
-                           height: typeBubbleHeight)
-                    .cornerRadius(30)
-                }
-                .foregroundColor(.primary)
-            }
-            
-            Button {
-                withAnimation(.closeCard) {
-                    if gender == .male {
-                        gender = .female
-                    } else {
-                        gender = .male
-                    }
-                }
-            } label: {
-                Text(gender.rawValue)
-                    .font(.system(size: 17, weight: .bold))
-                    .frame(width: 36, height: 36)
-                    .foregroundColor(.secondary)
-                    .background(gender == .male ? Color.blue.opacity(0.3) : Color.pink.opacity(0.3))
-                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-            }
-            
-            Menu {
-                Picker("", selection: $ageGroup) {
-                    ForEach(AgeGroup.allCases, id: \.self) { g in
-                        Text(g.rawValue)
-                            .tag(g)
-                    }
-                }
-            } label: { Text("Age") }
-        }
-    }
-}
-
-struct RankingListView: View {
-    @Environment(\.colorScheme) private var currentMode
-    @Binding var tabBarState: Visibility
-    @Binding var adrenalineProfilesOnly: Bool
-    var numberedList: NumberedRankingList
-    
-    private let skill = SkillRating()
-    private let screenWidth = UIScreen.main.bounds.width
-    
-    var body: some View {
+        let numberedList = getFinalRankingList()
         VStack {
             // Column headers
             ZStack {
@@ -768,23 +698,12 @@ struct RankingListDiverView: View {
         }
         .onAppear {
             Task {
-                // newUser has not been set, diveMeetsID has not been processed yet
-                if newUser == nil, !seenAdrenalineUsers.contains(rankedUser.diveMeetsID) {
+                if newUser == nil {
                     let pred = NewUser.keys.diveMeetsID == rankedUser.diveMeetsID
                     let users = await queryAWSUsers(where: pred)
-                    
-                    // Sets newUser and caches object
                     if users.count == 1 {
                         newUser = users[0]
-                        cachedAdrenalineUsers[rankedUser.diveMeetsID] = newUser
                     }
-                    
-                    // Stores diveMeetsID as seen so it does not get recomputed
-                    seenAdrenalineUsers.insert(rankedUser.diveMeetsID)
-                    
-                    // Returns cached value instead of processing user again
-                } else if newUser == nil, let user = cachedAdrenalineUsers[rankedUser.diveMeetsID] {
-                    newUser = user
                 }
             }
         }

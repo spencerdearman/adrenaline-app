@@ -353,12 +353,7 @@ class MeetPageParser: ObservableObject {
                     
                     let eventsStr = teamLast
                     var events = eventsStr.components(separatedBy: " | ")
-                    
-                    if events.count > 1 {
-                        events[events.count - 1].removeLast(2)
-                    } else {
-                        events = []
-                    }
+                    events[events.count - 1].removeLast(2)
                     
                     result.append((name, team, link, events))
                 }

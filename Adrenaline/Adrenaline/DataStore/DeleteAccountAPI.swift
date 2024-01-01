@@ -84,7 +84,7 @@ private func deleteUsersSaving(user: NewUser, post: Post) async throws {
     
     // Iterates over every user that saved this post and removes it from their savedPosts list
     for saving in usersSaving {
-        let result = try await queryAWSUserById(id: saving.newuserID)
+        let result = try await Amplify.DataStore.query(NewUser.self, byId: saving.newuserID)
         guard var user = result else { continue }
         guard let savedPosts = user.savedPosts else { continue }
         try await savedPosts.fetch()

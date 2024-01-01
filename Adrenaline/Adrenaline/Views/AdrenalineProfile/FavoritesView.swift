@@ -24,48 +24,37 @@ struct FavoritesView: View {
     }
     
     var body: some View {
-        ZStack {
-            if favoriteUsers.isEmpty {
-                Text("You haven't favorited any users yet")
-                    .foregroundColor(.secondary)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .padding()
-                    .multilineTextAlignment(.center)
-            } else {
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 10) {
-                        ForEach(favoriteUsers) { favorite in
-                            ZStack {
-                                RoundedRectangle(cornerRadius: cornerRadius)
-                                    .fill(Custom.specialGray)
-                                    .shadow(radius: 5)
-                                HStack(alignment: .center) {
-                                    ProfileImage(diverID: favorite.diveMeetsID ?? "")
-                                        .frame(width: 100, height: 100)
-                                        .scaleEffect(0.3)
-                                    HStack(alignment: .firstTextBaseline) {
-                                        Text((favorite.firstName) + " " + (favorite.lastName))
-                                            .padding()
-                                        Text(favorite.accountType)
-                                            .foregroundColor(Custom.secondaryColor)
-                                        Spacer()
-                                    }
-                                    Spacer()
-                                }
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 10) {
+                ForEach(favoriteUsers) { favorite in
+                    ZStack {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .fill(Custom.specialGray)
+                            .shadow(radius: 5)
+                        HStack(alignment: .center) {
+                            ProfileImage(diverID: favorite.diveMeetsID ?? "")
+                                .frame(width: 100, height: 100)
+                                .scaleEffect(0.3)
+                            HStack(alignment: .firstTextBaseline) {
+                                Text((favorite.firstName) + " " + (favorite.lastName))
+                                    .padding()
+                                Text(favorite.accountType)
+                                    .foregroundColor(Custom.secondaryColor)
+                                Spacer()
                             }
-                            .padding([.leading, .trailing])
-                            .onTapGesture {
-                                print("Tapped")
-                                selectedUser = favorite
-                                showSheet = true
-                            }
+                            Spacer()
                         }
                     }
-                    .padding(.top)
-                    .padding(.bottom, maxHeightOffset)
+                    .padding([.leading, .trailing])
+                    .onTapGesture {
+                        print("Tapped")
+                        selectedUser = favorite
+                        showSheet = true
+                    }
                 }
             }
+            .padding(.top)
+            .padding(.bottom, maxHeightOffset)
         }
         .onChange(of: showSheet) {
             if !showSheet {

@@ -258,6 +258,7 @@ struct Home: View {
 }
 
 struct UpcomingMeetsView: View {
+    @Environment(\.dictToTuple) private var dictToTuple
     @ObservedObject var meetParser: MeetParser
     @Binding var timedOut: Bool
     let gridItems = [GridItem(.adaptive(minimum: 300))]
