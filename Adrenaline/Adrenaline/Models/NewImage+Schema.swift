@@ -40,9 +40,32 @@ extension NewImage {
       .field(newImage.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<NewImage> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension NewImage: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == NewImage {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var s3key: FieldPath<String>   {
+      string("s3key") 
+    }
+  public var uploadDate: FieldPath<Temporal.DateTime>   {
+      datetime("uploadDate") 
+    }
+  public var postID: FieldPath<String>   {
+      string("postID") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }

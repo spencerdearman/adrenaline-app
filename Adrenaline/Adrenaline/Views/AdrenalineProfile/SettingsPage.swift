@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Authenticator
+import Amplify
 
 struct SettingsView: View {
     @Environment(\.presentationMode) private var presentationMode
@@ -16,6 +17,7 @@ struct SettingsView: View {
     @State private var isDeleted = false
     @State private var showDeleteAccountAlert: Bool = false
     @State private var isDeletingAccount: Bool = false
+    @State private var selectedCollege: String = ""
     @AppStorage("authUserId") private var authUserId: String = ""
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
@@ -36,6 +38,18 @@ struct SettingsView: View {
         self.newUser = newUser
         self._showAccount = showAccount
         self._updateDataStoreData = updateDataStoreData
+    }
+    
+    // Clears Athlete skill ratings for newUser unlinking a DiveMeets account
+    private func clearSkillRatings(newUser: NewUser?) async throws -> NewAthlete? {
+        guard let user = newUser else { print("user nil"); return nil }
+        guard var athlete = try await user.athlete else { print("athlete nil"); return nil }
+        
+        athlete.springboardRating = nil
+        athlete.platformRating = nil
+        athlete.totalRating = nil
+        
+        return try await saveToDataStore(object: athlete)
     }
     
     var body: some View {
@@ -72,7 +86,17 @@ struct SettingsView: View {
                 .padding()
             }
             Section {
-                NavigationLink {} label: {
+                NavigationLink {
+                    if let user = newUser {
+                        NavigationLink {
+                            CommittedCollegeView(selectedCollege: $selectedCollege,
+                                                 updateDataStoreData: $updateDataStoreData,
+                                                 newUser: user)
+                        } label: {
+                            Text("Change Commited College")
+                        }
+                    }
+                } label: {
                     Label("Profile", systemImage: "person")
                 }
                 
@@ -129,12 +153,21 @@ struct SettingsView: View {
             Section {
                 NavigationLink {
                     if let user = newUser {
-                        if newUser?.diveMeetsID != nil {
+                        if user.diveMeetsID != nil {
                             Button {
                                 Task {
-                                    if newUser == nil { return }
-                                    
+                                    var newUser = newUser
                                     newUser?.diveMeetsID = nil
+                                    
+                                    // If account is an Athlete, clear its skill ratings
+                                    if newUser?.accountType == "Athlete" {
+                                        do {
+                                            let _ = try await clearSkillRatings(newUser: newUser)
+                                        } catch {
+                                            print("\(error)")
+                                        }
+                                    }
+                                
                                     let _ = try await saveToDataStore(object: newUser!)
                                     
                                     updateDataStoreData = true
@@ -179,7 +212,7 @@ struct SettingsView: View {
                     UserDefaults.standard.removeObject(forKey: "authUserId")
                     
                     // Remove current device token from user
-                    if let user = newUser {
+                    if var user = newUser {
                         guard let token = UserDefaults.standard.string(forKey: "userToken") else { print("Token not found"); return }
                         user.tokens = user.tokens.filter { $0 != token }
                         
@@ -204,6 +237,34 @@ struct SettingsView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Account")
+        .onAppear {
+            Task {
+                print("appeared")
+                if let user = newUser, user.accountType != "Spectator" {
+                    print("user not nil")
+                    let college: College?
+                    switch user.accountType {
+                        case "Athlete":
+                            guard let athlete = try await user.athlete else { return }
+                            print("athlete: \(athlete.id)")
+                            college = try await athlete.college
+                        case "Coach":
+                            // TODO: implement for coaches to associate with a college
+                            print("Coaches can't associate with a College yet")
+                            college = nil
+                        default:
+                            return
+                    }
+                    
+                    if let college = college {
+                        print("setting college to \(college.name)")
+                        selectedCollege = college.name
+                    } else {
+                        print("college is nil")
+                    }
+                }
+            }
+        }
         .toolbar {
             if newUser?.accountType == "Spectator" {
                 ToolbarItem(placement: .topBarTrailing) {

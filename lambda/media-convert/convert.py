@@ -4,21 +4,7 @@ from urllib.parse import urlparse
 import uuid
 import boto3
 from lib.check_vertical_video import checkVerticalVideo
-
-"""
-When you run an S3 Batch Operations job, your job  
-invokes this Lambda function. Specifically, the Lambda function is 
-invoked on each video object listed in the manifest that you specify 
-for the S3 Batch Operations job in Step 5.  
-
-Input parameter "event": The S3 Batch Operations event as a request
-                         for the Lambda function.
-
-Input parameter "context": Context about the event.
-
-Output: A result structure that Amazon S3 uses to interpret the result 
-        of the operation. It is a job response returned back to S3 Batch Operations.
-"""
+from lib.rekognition import checkContentModeration
 
 
 def handler(event, context):
@@ -37,6 +23,17 @@ def handler(event, context):
         print(f"Source S3 Key: {source_s3_key}")
         print(f"Source S3 Bucket: {source_s3_bucket}")
         print(f"Source S3: {source_s3}")
+
+        if int(os.environ["ShouldModerateVideos"]):
+            rekognition_client = boto3.client("rekognition")
+            check_content_moderation = checkContentModeration(
+                rekognition_client, source_s3_bucket, source_s3_key
+            )
+            if not check_content_moderation:
+                print("Video did not pass content moderation, aborting...")
+                return
+        else:
+            print("Skipping video content moderation...")
 
         # Runs processing on video and returns True if the video is meant to be
         # using vertical resolutions, False otherwise

@@ -203,3 +203,10 @@ func getStreamURL(email: String, videoId: String, resolution: Resolution) -> URL
     
     return URL(string: "\(videoUrlHead)_\(resolution.displayValue.dropLast(1)).m3u8")
 }
+
+func getVideoDurationSeconds(url: URL) async throws -> Double {
+    let asset = AVAsset(url: url)
+    
+    let duration = try await asset.load(.duration)
+    return CMTimeGetSeconds(duration)
+}

@@ -1,40 +1,27 @@
 //
-//  NavigationBar.swift
+//  MessagingBar.swift
 //  Adrenaline
 //
-//  Created by Spencer Dearman on 8/23/23.
+//  Created by Spencer Dearman on 12/16/23.
 //
 
 import SwiftUI
 import Amplify
 import CachedAsyncImage
 
-struct NavigationBar: View {
+struct MessagingBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
-    var showPlus: Bool = true
-    var showSearch: Bool = true
-    @State private var showSearchSheet = false
-    @State private var showPostSheet = false
+    @State private var showNewMessageSheet = false
     @State private var isLogged = true
     @Binding var newUser: NewUser?
     @Binding var showAccount: Bool
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
     @Binding var recentSearches: [SearchItem]
-    @Binding var uploadingPost: Post?
-    
-    // Using this function to swap sheet bools safely
-    private func showSheet(showingPost: Bool) {
-        if showingPost {
-            showSearchSheet = false
-            showPostSheet = true
-        } else {
-            showPostSheet = false
-            showSearchSheet = true
-        }
-    }
+    @Binding var recipient: NewUser?
+    @Binding var showChatBar: Bool
     
     var body: some View {
         ZStack {
@@ -56,36 +43,20 @@ struct NavigationBar: View {
                 .opacity(contentHasScrolled ? 0.7 : 1)
             
             HStack(spacing: 16) {
-                if showPlus {
-                    Button {
-                        showSheet(showingPost: true)
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .sheet(isPresented: $showPostSheet) {
-                        NewPostView(uploadingPost: $uploadingPost)
-                    }
+                Button {
+                    showNewMessageSheet = true
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
-                
-                if showSearch {
-                    Button {
-                        showSheet(showingPost: false)
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .sheet(isPresented: $showSearchSheet) {
-                        NewSearchView(recentSearches: $recentSearches)
-                    }
+                .sheet(isPresented: $showNewMessageSheet) {
+                    CreateNewMessageView(recipient: $recipient,
+                                         showChatBar: $showChatBar,
+                                         feedModel: $feedModel)
                 }
                 
                 Button {
@@ -95,8 +66,8 @@ struct NavigationBar: View {
                 } label: {
                     Group {
                         if let user = newUser, 
-                            let diveMeetsID = user.diveMeetsID,
-                            diveMeetsID != "" {
+                        let diveMeetsID = user.diveMeetsID, 
+                        diveMeetsID != "" {
                             CachedAsyncImage(url: URL(string:
                                                         "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID).jpg?&x=511121484"),
                                              urlCache: .imageCache,

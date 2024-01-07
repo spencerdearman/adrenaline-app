@@ -5,11 +5,13 @@ projects:
       - graphql/**/*.graphql
     excludes:
       - ./amplify/**
+      - API.swift
     extensions:
       amplify:
         codeGenTarget: swift
         generatedFileName: API.swift
         docsFilePath: graphql
+        maxDepth: 2
 extensions:
   amplify:
     version: 3

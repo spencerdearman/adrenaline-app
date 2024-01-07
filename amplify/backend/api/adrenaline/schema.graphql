@@ -48,8 +48,8 @@ type NewUser @model @auth(rules: [{allow: private}]) {
 type NewAthlete @model @auth(rules: [{allow: private}]) {
   id: ID!
   user: NewUser! @belongsTo
-  team: NewTeam @belongsTo
-  college: College @belongsTo
+  team: NewTeam @belongsTo(fields: ["newteamID"])
+  college: College @belongsTo(fields: ["collegeID"])
   heightFeet: Int!
   heightInches: Int!
   weight: Int!

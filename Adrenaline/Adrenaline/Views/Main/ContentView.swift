@@ -26,13 +26,15 @@ struct ContentView: View {
     @AppStorage("email") var email: String = ""
     @AppStorage("authUserId") var authUserId: String = ""
     @State private var showAccount: Bool = false
-    @State private var diveMeetsID: String = ""
     @State private var newUser: NewUser? = nil
     @State private var recentSearches: [SearchItem] = []
     @State private var uploadingPost: Post? = nil
     @State private var uploadingProgress: Double = 0.0
     @State private var uploadFailed: Bool = false
     @State private var updateDataStoreData: Bool = false
+    // DataStore doesn't seem to update on deletion right away (Amplify bug), so keeping track of
+    // deleted users so we can hide them until the app is restarted
+    @State private var deletedChatIds = Set<String>()
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -85,13 +87,13 @@ struct ContentView: View {
         do {
             // Waits with exponential backoff to give DataStore time to update
             try await Task.sleep(seconds: pow(Double(numAttempts), 2))
-            guard let user = await getCurrentUser() else {
+            guard var user = await getCurrentUser() else {
                 print("Failed attempt \(numAttempts + 1) getting DataStore data, retrying...")
                 return await getDataStoreData(numAttempts: numAttempts + 1)
             }
             
+            newUser = nil
             newUser = user
-            diveMeetsID = user.diveMeetsID ?? ""
             
             // Adds device token to user's list of tokens for push notifications
             guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
@@ -101,6 +103,34 @@ struct ContentView: View {
             }
         } catch {
             print("Sleep failed")
+        }
+    }
+    
+    private func handleUploadFailure(email: String, videos: [Video], images: [NewImage]) async {
+        // Display upload failure view
+        uploadFailed = true
+        
+        // Remove successful videos from S3
+        for video in videos {
+            // This removal will trigger a lambda function that
+            // removes the streams from the streams bucket
+            do {
+                try await removeVideoFromS3(email: email,
+                                            videoId: video.id)
+            } catch {
+                print("Failed to remove \(video.id) from S3")
+            }
+            
+        }
+        
+        // Remove uploaded images from S3
+        for image in images {
+            do {
+                try await removeImageFromS3(email: email,
+                                            imageId: image.id)
+            } catch {
+                print("Failed to remove \(image.id) from S3")
+            }
         }
     }
     
@@ -142,22 +172,22 @@ struct ContentView: View {
                     } else {
                         ZStack(alignment: .bottom) {
                             TabView {
-                                FeedBase(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                FeedBase(newUser: $newUser, showAccount: $showAccount,
                                          recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
                                 
                                 if let user = newUser, user.accountType != "Spectator" {
-                                    ChatView(diveMeetsID: $diveMeetsID, showAccount: $showAccount,
+                                    ChatView(newUser: $newUser, showAccount: $showAccount,
                                              recentSearches: $recentSearches,
-                                             uploadingPost: $uploadingPost)
+                                             deletedChatIds: $deletedChatIds)
                                     .tabItem {
                                         Label("Chat", systemImage: "message")
                                     }
                                 }
                                 
-                                RankingsView(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
+                                RankingsView(newUser: $newUser, tabBarState: $tabBarState,
                                              showAccount: $showAccount, recentSearches: $recentSearches,
                                              uploadingPost: $uploadingPost)
                                 .tabItem {
@@ -187,8 +217,10 @@ struct ContentView: View {
                                                                  recentSearches: $recentSearches,
                                                                  updateDataStoreData: $updateDataStoreData)
                                 } else if let _ = newUser {
-                                    SettingsView(state: state, newUser: newUser,
-                                                 showAccount: $showAccount, updateDataStoreData: $updateDataStoreData)
+                                    SettingsView(state: state, 
+                                                 newUser: newUser,
+                                                 showAccount: $showAccount,
+                                                 updateDataStoreData: $updateDataStoreData)
                                 } else {
                                     // In the event that a NewUser can't be queried, this is the
                                     // default view
@@ -203,66 +235,79 @@ struct ContentView: View {
                         .onChange(of: uploadingPost) {
                             if let user = newUser, let post = uploadingPost {
                                 Task {
-                                    uploadFailed = false
-                                    uploadingProgress = 0.0
+                                    var videos: [Video] = []
+                                    var images: [NewImage] = []
                                     
-                                    try await post.videos?.fetch()
-                                    try await post.images?.fetch()
-                                    
-                                    let videos: [Video]
-                                    if let vids = post.videos {
-                                        videos = vids.elements
-                                    } else {
-                                        videos = []
-                                    }
-                                    
-                                    let images: [NewImage]
-                                    if let imgs = post.images {
-                                        images = imgs.elements
-                                    } else {
-                                        images = []
-                                    }
-                                    
-                                    // Be aware of data races with uploadingProgress
-                                    if try await trackUploadProgress(email: email,
-                                                                     videos: videos,
-                                                                     completedUploads: images.count,
-                                                                     totalUploads: videos.count + images.count,
-                                                                     uploadingProgress: $uploadingProgress) {
+                                    do {
+                                        uploadFailed = false
+                                        uploadingProgress = 0.0
                                         
-                                        let (savedUser, _) = try await savePost(user: user, post: post)
-                                        newUser = savedUser
-                                    } else {
-                                        // Display upload failure view
-                                        uploadFailed = true
+                                        try await post.videos?.fetch()
+                                        try await post.images?.fetch()
                                         
-                                        // Remove successful videos from S3
-                                        for video in videos {
-                                            // This removal will trigger a lambda function that
-                                            // removes the streams from the streams bucket
-                                            do {
-                                                try await removeVideoFromS3(email: user.email,
-                                                                            videoId: video.id)
-                                            } catch {
-                                                print("Failed to remove \(video.id) from S3")
+                                        if let vids = post.videos {
+                                            videos = vids.elements
+                                        }
+                                        
+                                        if let imgs = post.images {
+                                            images = imgs.elements
+                                        }
+                                        
+                                        do {
+                                            // Increase maximum wait time for uploads to account for content
+                                            // moderation based on longest uploaded video
+                                            let baseWaitTimeSeconds: Double = 45.0
+                                            var maxWaitTimeSeconds: Double = 0.0
+                                            for video in videos {
+                                                let durationSeconds = try await getVideoDurationSeconds(
+                                                    url: getVideoPathURL(email: user.email, name: video.id))
+                                                
+                                                // Add 30s of wait time for every 1 minute of video
+                                                let waitTimeIncrease = durationSeconds / 2
+                                                
+                                                // Take max of current max wait time
+                                                maxWaitTimeSeconds = max(maxWaitTimeSeconds,
+                                                                         baseWaitTimeSeconds + waitTimeIncrease)
                                             }
                                             
-                                        }
-                                        
-                                        // Remove uploaded images from S3
-                                        for image in images {
-                                            do {
-                                                try await removeImageFromS3(email: user.email,
-                                                                            imageId: image.id)
-                                            } catch {
-                                                print("Failed to remove \(image.id) from S3")
+                                            // Be aware of data races with uploadingProgress
+                                            if try await trackUploadProgress(email: email,
+                                                                             videos: videos,
+                                                                             completedUploads: images.count,
+                                                                             totalUploads: videos.count + images.count,
+                                                                             uploadingProgress: $uploadingProgress,
+                                                                             maxWaitTimeSeconds: maxWaitTimeSeconds) {
+                                                
+                                                let (savedUser, _) = try await savePost(user: user, post: post)
+                                                newUser = savedUser
+                                            } else {
+                                                await handleUploadFailure(email: user.email,
+                                                                          videos: videos,
+                                                                          images: images)
                                             }
+                                        } catch {
+                                            print("Processing threw exception")
+                                            print("\(error)")
+                                            await handleUploadFailure(email: user.email,
+                                                                      videos: videos,
+                                                                      images: images)
                                         }
-                                        
+                                    } catch {
+                                        print("Unable to get videos or images, skipping processing")
+                                        print("\(error)")
+                                        await handleUploadFailure(email: user.email,
+                                                                  videos: videos,
+                                                                  images: images)
                                     }
+                                    
+                                    // Remove local videos at this stage since we need them to check
+                                    // video duration
+                                    removeLocalVideos(email: user.email,
+                                                      videoIds: videos.map { $0.id })
                                     
                                     // Sleep to show completed overlay before hiding
                                     try await Task.sleep(seconds: 2.0)
+                                    
                                     withAnimation(.easeOut) {
                                         uploadingPost = nil
                                     }

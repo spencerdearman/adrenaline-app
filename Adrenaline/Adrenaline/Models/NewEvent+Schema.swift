@@ -48,9 +48,44 @@ extension NewEvent {
       .field(newEvent.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<NewEvent> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension NewEvent: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == NewEvent {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var meet: ModelPath<NewMeet>   {
+      NewMeet.Path(name: "meet", parent: self) 
+    }
+  public var name: FieldPath<String>   {
+      string("name") 
+    }
+  public var date: FieldPath<Temporal.Date>   {
+      date("date") 
+    }
+  public var link: FieldPath<String>   {
+      string("link") 
+    }
+  public var numEntries: FieldPath<Int>   {
+      int("numEntries") 
+    }
+  public var dives: ModelPath<Dive>   {
+      Dive.Path(name: "dives", isCollection: true, parent: self) 
+    }
+  public var newmeetID: FieldPath<String>   {
+      string("newmeetID") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }
