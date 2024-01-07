@@ -187,6 +187,16 @@ struct ContentView: View {
                                     }
                                 }
                                 
+                                if let user = newUser, user.accountType == "Coach" {
+                                    RecruitingDashboardView(newUser: $newUser, 
+                                                            showAccount: $showAccount,
+                                                            recentSearches: $recentSearches,
+                                                            uploadingPost: $uploadingPost)
+                                    .tabItem {
+                                        Label("Recruiting", systemImage: "octagon")
+                                    }
+                                }
+                                
                                 RankingsView(newUser: $newUser, tabBarState: $tabBarState,
                                              showAccount: $showAccount, recentSearches: $recentSearches,
                                              uploadingPost: $uploadingPost)
