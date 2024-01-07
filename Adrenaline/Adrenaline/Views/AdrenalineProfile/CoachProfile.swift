@@ -43,7 +43,7 @@ struct CoachView: View {
 struct CoachProfileContent: View {
     @AppStorage("authUserId") private var authUserId: String = ""
     @StateObject private var parser = ProfileParser()
-    @State var scoreValues: [String] = ["Posts", "Recruiting", "Divers"]
+    @State var scoreValues: [String] = []
     @State var selectedPage: Int = 0
     @State var profileLink: String = ""
     @State var coachDiversData: ProfileCoachDiversData? = nil
@@ -51,6 +51,7 @@ struct CoachProfileContent: View {
     @ScaledMetric var wheelPickerSelectedSpacing: CGFloat = 100
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    private let baseScoreValues: [String] = ["Posts", "Recruiting", "Divers"]
     
     private var diveMeetsID: String {
         newUser.diveMeetsID ?? ""
@@ -72,10 +73,16 @@ struct CoachProfileContent: View {
         .frame(height: 40)
         .onAppear {
             Task {
+                scoreValues = baseScoreValues
+                
                 profileLink = "https://secure.meetcontrol.com/divemeets/system/profile.php?number=" + (diveMeetsID)
                 
                 // If viewing the user's own profile, show Saved and Favorites tab
                 if newUser.id == authUserId {
+                    // Remove Recruiting tab from your own profile if you are a coach
+                    if newUser.accountType == "Coach" {
+                        scoreValues = scoreValues.filter { $0 != "Recruiting" }
+                    }
                     scoreValues += ["Saved", "Favorites"]
                 }
                 
@@ -91,23 +98,26 @@ struct CoachProfileContent: View {
             }
         }
         
-        Group {
-            switch scoreValues[selectedPage] {
-                case "Posts":
-                    PostsView(newUser: newUser)
-                case "Divers":
-                    DiversView(newUser: newUser, diversData: coachDiversData)
-                case "Recruiting":
-                    CoachRecruitingView(newUser: newUser)
-                case "Saved":
-                    SavedPostsView(newUser: newUser)
-                case "Favorites":
-                    FavoritesView(newUser: newUser)
-                default:
-                    Text("Default View")
+        if !scoreValues.isEmpty {
+            Group {
+                switch scoreValues[selectedPage] {
+                    case "Posts":
+                        PostsView(newUser: newUser)
+                    case "Divers":
+                        DiversView(newUser: newUser, diversData: coachDiversData)
+                    case "Recruiting":
+                        CoachRecruitingView(newUser: newUser)
+                    case "Saved":
+                        SavedPostsView(newUser: newUser)
+                    case "Favorites":
+                        FavoritesView(newUser: newUser)
+                    default:
+                        Text("Default View")
+                }
             }
+            .offset(y: -screenHeight * 0.05)
         }
-        .offset(y: -screenHeight * 0.05)
+        
         Spacer()
     }
 }
