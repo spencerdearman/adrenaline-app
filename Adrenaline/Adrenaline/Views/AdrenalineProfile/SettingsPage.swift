@@ -89,7 +89,9 @@ struct SettingsView: View {
                 NavigationLink {
                     if let user = newUser {
                         NavigationLink {
-                            CommittedCollegeView(selectedCollege: $selectedCollege, newUser: user)
+                            CommittedCollegeView(selectedCollege: $selectedCollege,
+                                                 updateDataStoreData: $updateDataStoreData,
+                                                 newUser: user)
                         } label: {
                             Text("Change Commited College")
                         }
@@ -243,12 +245,9 @@ struct SettingsView: View {
                     let college: College?
                     switch user.accountType {
                         case "Athlete":
-                            guard let athlete = try await user.athlete
-                            else { return }
+                            guard let athlete = try await user.athlete else { return }
                             print("athlete: \(athlete.id)")
                             college = try await athlete.college
-                            if college == nil { print("failed"); return }
-                            print("college: \(college?.id)")
                         case "Coach":
                             // TODO: implement for coaches to associate with a college
                             print("Coaches can't associate with a College yet")
@@ -260,6 +259,8 @@ struct SettingsView: View {
                     if let college = college {
                         print("setting college to \(college.name)")
                         selectedCollege = college.name
+                    } else {
+                        print("college is nil")
                     }
                 }
             }

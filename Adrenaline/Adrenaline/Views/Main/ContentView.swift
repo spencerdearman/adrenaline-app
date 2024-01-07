@@ -92,6 +92,7 @@ struct ContentView: View {
                 return await getDataStoreData(numAttempts: numAttempts + 1)
             }
             
+            newUser = nil
             newUser = user
             
             // Adds device token to user's list of tokens for push notifications

@@ -15,6 +15,7 @@ struct CommittedCollegeView: View {
     @State private var searchTerm: String = ""
     @State private var originalSelectedCollege: String = ""
     @Binding var selectedCollege: String
+    @Binding var updateDataStoreData: Bool
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -149,7 +150,11 @@ struct CommittedCollegeView: View {
                     }
                     
                     athlete.setCollege(newCollege)
-                    let _ = try await saveToDataStore(object: athlete)
+                    let newAthlete = try await saveToDataStore(object: athlete)
+                    var user = newUser
+                    user.setAthlete(newAthlete)
+                    let _ = try await saveToDataStore(object: user)
+                    updateDataStoreData = true
                 }
             }
         }
