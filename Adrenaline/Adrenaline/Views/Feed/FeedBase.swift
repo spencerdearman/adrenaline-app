@@ -13,7 +13,7 @@ import AVKit
 struct FeedBase: View {
     @Environment(\.colorScheme) var currentMode
     @Namespace var namespace
-    @Binding var diveMeetsID: String
+    @Binding var newUser: NewUser?
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
     @Binding var uploadingPost: Post?
@@ -123,7 +123,7 @@ struct FeedBase: View {
         }
         .overlay{
             if feedModel.showTab {
-                NavigationBar(title: "Adrenaline", diveMeetsID: $diveMeetsID, 
+                NavigationBar(title: "Adrenaline", newUser: $newUser,
                               showAccount: $showAccount, contentHasScrolled: $contentHasScrolled,
                               feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                     .frame(width: screenWidth)

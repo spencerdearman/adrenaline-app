@@ -18,7 +18,7 @@ func query<M: Model>(where predicate: QueryPredicate? = nil,
 }
 
 func queryAWSUsers(where predicate: QueryPredicate? = nil,
-                sortBy: QuerySortInput? = nil) async -> [NewUser] {
+                   sortBy: QuerySortInput? = nil) async -> [NewUser] {
     do {
         let queryResult: [NewUser] = try await query(where: predicate, sortBy: sortBy)
         return queryResult
@@ -34,17 +34,8 @@ func queryAWSUserById(id: String) async throws -> NewUser? {
     try await Amplify.DataStore.query(NewUser.self, byId: id)
 }
 
-func getUserAthleteByUserId(id: String) async throws -> NewAthlete? {
-    let athletes = await queryAWSAthletes().filter { $0.user.id == id }
-    if athletes.count == 1 {
-        return athletes[0]
-    }
-    
-    return nil
-}
-
 func queryAWSAthletes(where predicate: QueryPredicate? = nil,
-                sortBy: QuerySortInput? = nil) async -> [NewAthlete] {
+                      sortBy: QuerySortInput? = nil) async -> [NewAthlete] {
     do {
         let queryResult: [NewAthlete] = try await query(where: predicate, sortBy: sortBy)
         return queryResult
@@ -84,7 +75,7 @@ func updateUserField(email: String, key: String, value: Any) async throws {
     let users: [NewUser] = try await query(where: NewUser.keys.email == email)
     print(users)
     for user in users {
-        let updatedUser = user
+        var updatedUser = user
         switch key {
             case "firstName":
                 updatedUser.firstName = value as! String
@@ -119,54 +110,54 @@ func updateAthleteField(user: NewUser, key: String, value: Any) async throws {
     for athlete in athletes {
         var updatedAthlete = athlete
         switch key {
-        case "team":
-            updatedAthlete.team = value as? NewTeam
-            break
-        case "college":
-            updatedAthlete.college = value as! College?
-            break
-        case "heightFeet":
-            updatedAthlete.heightFeet = value as! Int
-            break
-        case "heightInches":
-            updatedAthlete.heightInches = value as! Int
-            break
-        case "weight":
-            updatedAthlete.weight = value as! Int
-            break
-        case "weightUnit":
-            updatedAthlete.weightUnit = value as! String
-            break
-        case "gender":
-            updatedAthlete.gender = value as! String
-            break
-        case "age":
-            updatedAthlete.age = value as! Int
-            break
-        case "graduationYear":
-            updatedAthlete.graduationYear = value as! Int
-            break
-        case "highSchool":
-            updatedAthlete.highSchool = value as! String
-            break
-        case "hometown":
-            updatedAthlete.hometown = value as! String
-            break
-        case "springboardRating":
-            updatedAthlete.springboardRating = value as? Double
-            break
-        case "platformRating":
-            updatedAthlete.platformRating = value as? Double
-            break
-        case "totalRating":
-            updatedAthlete.totalRating = value as? Double
-            break
-        case "dives":
+            case "team":
+                updatedAthlete.setTeam(value as? NewTeam)
+                break
+            case "college":
+                updatedAthlete.setCollege(value as! College?)
+                break
+            case "heightFeet":
+                updatedAthlete.heightFeet = value as! Int
+                break
+            case "heightInches":
+                updatedAthlete.heightInches = value as! Int
+                break
+            case "weight":
+                updatedAthlete.weight = value as! Int
+                break
+            case "weightUnit":
+                updatedAthlete.weightUnit = value as! String
+                break
+            case "gender":
+                updatedAthlete.gender = value as! String
+                break
+            case "age":
+                updatedAthlete.age = value as! Int
+                break
+            case "graduationYear":
+                updatedAthlete.graduationYear = value as! Int
+                break
+            case "highSchool":
+                updatedAthlete.highSchool = value as! String
+                break
+            case "hometown":
+                updatedAthlete.hometown = value as! String
+                break
+            case "springboardRating":
+                updatedAthlete.springboardRating = value as? Double
+                break
+            case "platformRating":
+                updatedAthlete.platformRating = value as? Double
+                break
+            case "totalRating":
+                updatedAthlete.totalRating = value as? Double
+                break
+            case "dives":
                 updatedAthlete.dives = value as? List<Dive> ?? []
-            break
-        default:
-            print("Invalid key in NewAthlete")
-            return
+                break
+            default:
+                print("Invalid key in NewAthlete")
+                return
         }
         
         let _ = try await saveToDataStore(object: updatedAthlete)

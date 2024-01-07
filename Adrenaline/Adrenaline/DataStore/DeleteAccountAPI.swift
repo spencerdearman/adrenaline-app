@@ -10,9 +10,9 @@ import Amplify
 
 // Remove all data nested with CoachUser object associated with the user
 private func deleteDataStoreCoach(coach: CoachUser) async throws {
-    if let team = coach.team {
+    if var team = try await coach.team {
         // Remove coach from team association and update team in DataStore
-        team.coach = nil
+        team.setCoach()
         let _ = try await saveToDataStore(object: team)
     }
     
@@ -48,13 +48,13 @@ private func deleteDataStoreDives(dives: [Dive]) async throws {
 // Remove all data nested with NewAthlete object associated with the user
 private func deleteDataStoreAthlete(athlete: NewAthlete) async throws {
     // Update team to remove association of this athlete
-    if let team = athlete.team, let athletes = team.athletes {
+    if var team = try await athlete.team, let athletes = team.athletes {
         team.athletes = List<NewAthlete>.init(elements: athletes.elements.filter { $0.id != athlete.id })
         let _ = try await saveToDataStore(object: team)
     }
     
     // Update college to remove association of this athlete
-    if var college = athlete.college, let athletes = college.athletes {
+    if var college = try await athlete.college, let athletes = college.athletes {
         college.athletes = List<NewAthlete>.init(elements: athletes.elements.filter { $0.id != athlete.id })
         let _ = try await saveToDataStore(object: college)
     }
@@ -71,9 +71,9 @@ private func deleteDataStoreAthlete(athlete: NewAthlete) async throws {
 
 // Remove all data nested within NewAthlete or CoachUser object associated with the user
 private func deleteDataStoreCoachOrAthlete(user: NewUser) async throws {
-    if let coach = user.coach {
+    if let coach = try await user.coach {
         return try await deleteDataStoreCoach(coach: coach)
-    } else if let athlete = user.athlete {
+    } else if let athlete = try await user.athlete {
         return try await deleteDataStoreAthlete(athlete: athlete)
     }
 }
@@ -85,7 +85,7 @@ private func deleteUsersSaving(user: NewUser, post: Post) async throws {
     // Iterates over every user that saved this post and removes it from their savedPosts list
     for saving in usersSaving {
         let result = try await queryAWSUserById(id: saving.newuserID)
-        guard let user = result else { continue }
+        guard var user = result else { continue }
         guard let savedPosts = user.savedPosts else { continue }
         try await savedPosts.fetch()
         
@@ -175,7 +175,7 @@ private func deleteDataStoreFavorites(user: NewUser) async throws {
     
     // For each user, remove the given user from their favorites and update their favoritesIds list
     // in the DataStore
-    for user in result {
+    for var user in result {
         user.favoritesIds = user.favoritesIds.filter { $0 != user.id }
         let _ = try await saveToDataStore(object: user)
     }

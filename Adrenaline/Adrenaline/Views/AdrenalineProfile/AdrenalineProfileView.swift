@@ -292,8 +292,8 @@ struct PersonalInfoView: View {
         .onAppear {
             Task {
                 if user.accountType == "Athlete" {
-                    athlete = try await getUserAthleteByUserId(id: user.id)
-                    selectedCollege = athlete?.college?.name ?? ""
+                    athlete = try await user.athlete
+                    selectedCollege = try await athlete?.college?.name ?? ""
                 }
                 
                 // Get current user for favoriting
@@ -322,6 +322,23 @@ struct DiveMeetsLink: View {
     @Binding var showAccount: Bool
     @Binding var updateDataStoreData: Bool
     
+    // Computes Athlete skill ratings for newUser linking a DiveMeets account after intial creation
+    private func assignSkillRatings(newUser: NewUser) async throws -> NewAthlete? {
+        guard let diveMeetsID = newUser.diveMeetsID else { print("diveMeetsId nil"); return nil }
+        guard var athlete = try await newUser.athlete else { print("athlete nil"); return nil }
+        
+        let (s, p, t) = await SkillRating().getSkillRating(diveMeetsID: diveMeetsID)
+
+        athlete.springboardRating = s
+        athlete.platformRating = p
+        athlete.totalRating = t
+        
+        let result = try await saveToDataStore(object: athlete)
+        
+        updateDataStoreData = true
+        return result
+    }
+    
     var body: some View {
         VStack {
             Text("Remake this view")
@@ -333,7 +350,16 @@ struct DiveMeetsLink: View {
             
             Button {
                 Task {
+                    var newUser = newUser
                     newUser.diveMeetsID = diveMeetsID
+                    
+                    do {
+                        // Assign skill ratings for newUser
+                        let _ = try await assignSkillRatings(newUser: newUser)
+                    } catch {
+                        print("\(error)")
+                    }
+                    
                     let _ = try await saveToDataStore(object: newUser)
                     
                     updateDataStoreData = true

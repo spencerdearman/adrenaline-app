@@ -4,7 +4,12 @@ import Foundation
 
 public struct NewEvent: Model {
   public let id: String
-  public var meet: NewMeet
+  internal var _meet: LazyReference<NewMeet>
+  public var meet: NewMeet   {
+      get async throws { 
+        try await _meet.require()
+      } 
+    }
   public var name: String
   public var date: Temporal.Date
   public var link: String
@@ -44,7 +49,7 @@ public struct NewEvent: Model {
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
-      self.meet = meet
+      self._meet = LazyReference(meet)
       self.name = name
       self.date = date
       self.link = link
@@ -53,5 +58,34 @@ public struct NewEvent: Model {
       self.newmeetID = newmeetID
       self.createdAt = createdAt
       self.updatedAt = updatedAt
+  }
+  public mutating func setMeet(_ meet: NewMeet) {
+    self._meet = LazyReference(meet)
+  }
+  public init(from decoder: Decoder) throws {
+      let values = try decoder.container(keyedBy: CodingKeys.self)
+      id = try values.decode(String.self, forKey: .id)
+      _meet = try values.decodeIfPresent(LazyReference<NewMeet>.self, forKey: .meet) ?? LazyReference(identifiers: nil)
+      name = try values.decode(String.self, forKey: .name)
+      date = try values.decode(Temporal.Date.self, forKey: .date)
+      link = try values.decode(String.self, forKey: .link)
+      numEntries = try values.decode(Int.self, forKey: .numEntries)
+      dives = try values.decodeIfPresent(List<Dive>?.self, forKey: .dives) ?? .init()
+      newmeetID = try values.decode(String.self, forKey: .newmeetID)
+      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+  }
+  public func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(id, forKey: .id)
+      try container.encode(_meet, forKey: .meet)
+      try container.encode(name, forKey: .name)
+      try container.encode(date, forKey: .date)
+      try container.encode(link, forKey: .link)
+      try container.encode(numEntries, forKey: .numEntries)
+      try container.encode(dives, forKey: .dives)
+      try container.encode(newmeetID, forKey: .newmeetID)
+      try container.encode(createdAt, forKey: .createdAt)
+      try container.encode(updatedAt, forKey: .updatedAt)
   }
 }

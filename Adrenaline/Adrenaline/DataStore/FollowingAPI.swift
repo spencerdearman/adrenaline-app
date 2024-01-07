@@ -10,6 +10,7 @@ import Amplify
 
 func follow(follower user: NewUser, followingId: String) async {
     do {
+        var user = user
         print("Following: \(followingId)")
         user.favoritesIds.append(followingId)
         
@@ -22,6 +23,7 @@ func follow(follower user: NewUser, followingId: String) async {
 
 func unfollow(follower user: NewUser, unfollowingId: String) async {
     do {
+        var user = user
         print("Unfollowing: \(unfollowingId)")
         user.favoritesIds = user.favoritesIds.filter { $0 != unfollowingId }
         
@@ -29,5 +31,15 @@ func unfollow(follower user: NewUser, unfollowingId: String) async {
         print("saved user \(savedUser)")
     } catch {
         print("Failed to unfollow user")
+    }
+}
+
+extension NewUser: Hashable, Identifiable {
+    public static func == (lhs: NewUser, rhs: NewUser) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

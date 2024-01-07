@@ -96,6 +96,7 @@ func createPost(user: NewUser, caption: String, videosData: [String: Data],
 // Note: This saves the associated images and videos with the Post to the DataStore before
 //       saving the Post itself
 func savePost(user: NewUser, post: Post) async throws -> (NewUser, Post) {
+    var user = user
     if let videos = post.videos {
         try await videos.fetch()
         for video in videos {
@@ -129,6 +130,7 @@ func savePost(user: NewUser, post: Post) async throws -> (NewUser, Post) {
 // returns the updated User struct
 // Note: this also deletes the associated videos and images with the post to be deleted
 func deletePost(user: NewUser, post: Post) async throws -> NewUser {
+    var user = user
     if let list = user.posts {
         try await list.fetch()
         user.posts = List<Post>.init(elements: list.elements.filter { $0.id != post.id })
@@ -162,6 +164,7 @@ func deletePost(user: NewUser, post: Post) async throws -> NewUser {
 // Create UserSavedPost object to associate a post saved by a user
 func userSavePost(user: NewUser, post: Post) async throws -> UserSavedPost {
     do {
+        var user = user
         let userSavedPost = UserSavedPost(newuserID: user.id, postID: post.id)
         let savedPost = try await saveToDataStore(object: userSavedPost)
         
@@ -194,6 +197,7 @@ func userSavePost(user: NewUser, post: Post) async throws -> UserSavedPost {
 
 // Remove savedPost object and its associations with the user and post
 func userUnsavePost(user: NewUser, post: Post, savedPost: UserSavedPost) async throws {
+    var user = user
     if let list = user.savedPosts {
         try await list.fetch()
         user.savedPosts = List<UserSavedPost>.init(elements: list.elements.filter {
@@ -317,6 +321,12 @@ extension Post {
                   isCoachesOnly: from.isCoachesOnly,
                   createdAt: from.createdAt,
                   updatedAt: from.updatedAt)
+    }
+}
+
+extension Post: Equatable {
+    public static func == (lhs: Post, rhs: Post) -> Bool {
+        lhs.id == rhs.id
     }
 }
 

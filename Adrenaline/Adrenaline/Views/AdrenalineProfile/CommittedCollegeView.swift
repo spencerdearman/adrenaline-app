@@ -15,6 +15,7 @@ struct CommittedCollegeView: View {
     @State private var searchTerm: String = ""
     @State private var originalSelectedCollege: String = ""
     @Binding var selectedCollege: String
+    @Binding var updateDataStoreData: Bool
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -91,7 +92,7 @@ struct CommittedCollegeView: View {
         .onAppear {
             Task {
                 originalSelectedCollege = selectedCollege
-                newAthlete = try await getUserAthleteByUserId(id: newUser.id)
+                newAthlete = try await newUser.athlete
             }
         }
         .onDisappear {
@@ -148,9 +149,12 @@ struct CommittedCollegeView: View {
                         }
                     }
                     
-                    athlete.college = newCollege
-                    athlete.collegeID = newCollege?.id
-                    let _ = try await saveToDataStore(object: athlete)
+                    athlete.setCollege(newCollege)
+                    let newAthlete = try await saveToDataStore(object: athlete)
+                    var user = newUser
+                    user.setAthlete(newAthlete)
+                    let _ = try await saveToDataStore(object: user)
+                    updateDataStoreData = true
                 }
             }
         }

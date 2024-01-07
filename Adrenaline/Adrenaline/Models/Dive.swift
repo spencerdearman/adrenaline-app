@@ -4,8 +4,18 @@ import Foundation
 
 public struct Dive: Model {
   public let id: String
-  public var event: NewEvent
-  public var athlete: NewAthlete
+  internal var _event: LazyReference<NewEvent>
+  public var event: NewEvent   {
+      get async throws { 
+        try await _event.require()
+      } 
+    }
+  internal var _athlete: LazyReference<NewAthlete>
+  public var athlete: NewAthlete   {
+      get async throws { 
+        try await _athlete.require()
+      } 
+    }
   public var number: String
   public var name: String
   public var height: Double
@@ -60,8 +70,8 @@ public struct Dive: Model {
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
-      self.event = event
-      self.athlete = athlete
+      self._event = LazyReference(event)
+      self._athlete = LazyReference(athlete)
       self.number = number
       self.name = name
       self.height = height
@@ -73,5 +83,45 @@ public struct Dive: Model {
       self.neweventID = neweventID
       self.createdAt = createdAt
       self.updatedAt = updatedAt
+  }
+  public mutating func setEvent(_ event: NewEvent) {
+    self._event = LazyReference(event)
+  }
+  public mutating func setAthlete(_ athlete: NewAthlete) {
+    self._athlete = LazyReference(athlete)
+  }
+  public init(from decoder: Decoder) throws {
+      let values = try decoder.container(keyedBy: CodingKeys.self)
+      id = try values.decode(String.self, forKey: .id)
+      _event = try values.decodeIfPresent(LazyReference<NewEvent>.self, forKey: .event) ?? LazyReference(identifiers: nil)
+      _athlete = try values.decodeIfPresent(LazyReference<NewAthlete>.self, forKey: .athlete) ?? LazyReference(identifiers: nil)
+      number = try values.decode(String.self, forKey: .number)
+      name = try values.decode(String.self, forKey: .name)
+      height = try values.decode(Double.self, forKey: .height)
+      netScore = try values.decode(Double.self, forKey: .netScore)
+      dd = try values.decode(Double.self, forKey: .dd)
+      totalScore = try values.decode(Double.self, forKey: .totalScore)
+      scores = try values.decodeIfPresent(List<JudgeScore>?.self, forKey: .scores) ?? .init()
+      newathleteID = try values.decode(String.self, forKey: .newathleteID)
+      neweventID = try values.decode(String.self, forKey: .neweventID)
+      createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
+      updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
+  }
+  public func encode(to encoder: Encoder) throws {
+      var container = encoder.container(keyedBy: CodingKeys.self)
+      try container.encode(id, forKey: .id)
+      try container.encode(_event, forKey: .event)
+      try container.encode(_athlete, forKey: .athlete)
+      try container.encode(number, forKey: .number)
+      try container.encode(name, forKey: .name)
+      try container.encode(height, forKey: .height)
+      try container.encode(netScore, forKey: .netScore)
+      try container.encode(dd, forKey: .dd)
+      try container.encode(totalScore, forKey: .totalScore)
+      try container.encode(scores, forKey: .scores)
+      try container.encode(newathleteID, forKey: .newathleteID)
+      try container.encode(neweventID, forKey: .neweventID)
+      try container.encode(createdAt, forKey: .createdAt)
+      try container.encode(updatedAt, forKey: .updatedAt)
   }
 }

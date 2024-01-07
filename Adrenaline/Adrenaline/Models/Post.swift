@@ -2,7 +2,7 @@
 import Amplify
 import Foundation
 
-public struct Post: Model, Equatable {
+public struct Post: Model {
   public let id: String
   public var caption: String?
   public var creationDate: Temporal.DateTime
@@ -13,10 +13,6 @@ public struct Post: Model, Equatable {
   public var isCoachesOnly: Bool
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
-    
-  public static func == (lhs: Post, rhs: Post) -> Bool {
-      lhs.id == rhs.id
-  }
   
   public init(id: String = UUID().uuidString,
       caption: String? = nil,
@@ -58,22 +54,4 @@ public struct Post: Model, Equatable {
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }
-    
-    // Not generated, added afterwards as a convenience init for creationDate
-    public init(id: String = UUID().uuidString,
-                            caption: String? = nil,
-                            images: List<NewImage>? = [],
-                            videos: List<Video>? = [],
-                            newuserID: String,
-                            isCoachesOnly: Bool) {
-        self.init(id: id,
-                  caption: caption,
-                  creationDate: .now(),
-                  images: images,
-                  videos: videos,
-                  newuserID: newuserID,
-                  isCoachesOnly: isCoachesOnly,
-                  createdAt: nil,
-                  updatedAt: nil)
-    }
 }

@@ -40,9 +40,32 @@ extension JudgeScore {
       .field(judgeScore.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
+    public class Path: ModelPath<JudgeScore> { }
+    
+    public static var rootPath: PropertyContainerPath? { Path() }
 }
 
 extension JudgeScore: ModelIdentifiable {
   public typealias IdentifierFormat = ModelIdentifierFormat.Default
   public typealias IdentifierProtocol = DefaultModelIdentifier<Self>
+}
+extension ModelPath where ModelType == JudgeScore {
+  public var id: FieldPath<String>   {
+      string("id") 
+    }
+  public var dive: ModelPath<Dive>   {
+      Dive.Path(name: "dive", parent: self) 
+    }
+  public var score: FieldPath<Double>   {
+      double("score") 
+    }
+  public var diveID: FieldPath<String>   {
+      string("diveID") 
+    }
+  public var createdAt: FieldPath<Temporal.DateTime>   {
+      datetime("createdAt") 
+    }
+  public var updatedAt: FieldPath<Temporal.DateTime>   {
+      datetime("updatedAt") 
+    }
 }
