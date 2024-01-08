@@ -6,10 +6,15 @@
 //
 
 import SwiftUI
+import Amplify
 
 struct RecruitingDashboardView: View {
+    @EnvironmentObject private var appLogic: AppLogic
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
+    @State private var favorites: [NewUser] = []
+    @State private var showSheet: Bool = false
+    @State private var selectedUser: NewUser? = nil
     @Binding var newUser: NewUser?
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
@@ -18,20 +23,82 @@ struct RecruitingDashboardView: View {
     private let screenWidth = UIScreen.main.bounds.width
     
     var body: some View {
-        VStack {
-            Text("")
+        ZStack {
+            VStack {
+                HStack {
+                    Text("Tracked Divers")
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                    Spacer()
+                }
+                
+                if favorites.count == 0 {
+                    Text("You have not favorited any athletes yet")
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
+                        .padding(10)
+                        .multilineTextAlignment(.center)
+                } else {
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 0) {
+                            ForEach(favorites, id: \.id) { fav in
+                                VStack {
+                                    Text(fav.firstName + " " + fav.lastName)
+                                }
+                                .padding(20)
+                                .background(.white)
+                                .modifier(OutlineOverlay(cornerRadius: 30))
+                                .backgroundStyle(cornerRadius: 30)
+                                .padding(10)
+                                .shadow(radius: 5)
+                                .onTapGesture {
+                                    selectedUser = fav
+                                    showSheet = true
+                                }
+                            }
+                        }
+                    }
+            }
+            }
+            .padding(20)
+            .background(.ultraThinMaterial)
+            .modifier(OutlineOverlay(cornerRadius: 30))
+            .backgroundStyle(cornerRadius: 30)
+            .padding(20)
+        }
+        .sheet(isPresented: $showSheet) {
+            NavigationView {
+                if let user = selectedUser {
+                    AdrenalineProfileView(newUser: user)
+                }
+            }
         }
         .overlay {
-            NavigationBar(title: "Recruiting",
-                          showPlus: false,
-                          showSearch: true,
-                          newUser: $newUser,
-                          showAccount: $showAccount,
-                          contentHasScrolled: $contentHasScrolled,
-                          feedModel: $feedModel, 
-                          recentSearches: $recentSearches,
-                          uploadingPost: $uploadingPost)
-            .frame(width: screenWidth)
+            if feedModel.showTab {
+                NavigationBar(title: "Recruiting",
+                              newUser: $newUser,
+                              showAccount: $showAccount,
+                              contentHasScrolled: $contentHasScrolled,
+                              feedModel: $feedModel,
+                              recentSearches: $recentSearches,
+                              uploadingPost: $uploadingPost)
+                .frame(width: screenWidth)
+            }
+        }
+        .onChange(of: showSheet) {
+            if !showSheet {
+                selectedUser = nil
+            }
+        }
+        .onChange(of: appLogic.currentUserUpdated, initial: true) {
+            if !appLogic.currentUserUpdated {
+                Task {
+                    guard let favsIds = newUser?.favoritesIds else { return }
+                    let favUsers = try await getAthleteUsersByFavoritesIds(ids: favsIds)
+                    favorites = favUsers
+//                    print("Favorites:", favorites.map { $0.id })
+                }
+            }
         }
     }
 }
