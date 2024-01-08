@@ -174,7 +174,7 @@ struct NewSignupSequence: View {
     // Saves new user with stored State data, and handles CoachUser creation if needed
     private func saveNewUser() async -> Bool {
         do {
-            let user = createNewUser()
+            var user = createNewUser()
             savedUser = try await saveToDataStore(object: user)
             print("Saved New User")
             
@@ -182,7 +182,12 @@ struct NewSignupSequence: View {
                 let coach = CoachUser(user: savedUser)
                 let savedCoach = try await Amplify.DataStore.save(coach)
                 print("Saved Coach Profile \(savedCoach)")
+                user.setCoach(savedCoach)
+                user.newUserCoachId = savedCoach.id
             }
+            
+            savedUser = try await saveToDataStore(object: user)
+            print("Updated New User")
             
             return true
         } catch {
