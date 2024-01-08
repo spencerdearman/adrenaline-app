@@ -65,6 +65,10 @@ struct ContentView: View {
     }
     
     private func getCurrentUser() async -> NewUser? {
+        if appLogic.currentUser != nil {
+            return appLogic.currentUser
+        }
+        
         let idPredicate = NewUser.keys.id == authUserId
         let users = await queryAWSUsers(where: idPredicate)
         if users.count == 1 {
@@ -330,6 +334,13 @@ struct ContentView: View {
                                     await getDataStoreData()
                                     updateDataStoreData = false
                                 }
+                            }
+                        }
+                        .onChange(of: appLogic.currentUserUpdated) {
+                            if appLogic.currentUserUpdated {
+                                newUser = nil
+                                newUser = appLogic.currentUser
+                                appLogic.currentUserUpdated = false
                             }
                         }
                         .onAppear {
