@@ -193,3 +193,27 @@ func clearLocalDataStore() async throws {
     try await Amplify.DataStore.clear()
     try await Amplify.DataStore.start()
 }
+
+func getAthleteUsersByFavoritesIds(ids: [String]) async throws -> [NewUser] {
+    var pred: QueryPredicateGroup
+    if ids.count == 0 { return [] }
+    else if ids.count == 1 {
+        let user = try await queryAWSUserById(id: ids[0])
+        if let user = user, user.accountType == "Athlete" {
+            return [user]
+        } else {
+            return []
+        }
+    }
+    
+    pred = (NewUser.keys.id == ids[0]).or(NewUser.keys.id == ids[1])
+    
+    if ids.count > 2 {
+        for id in ids[2...] {
+            pred = pred.or(NewUser.keys.id == id)
+        }
+    }
+    
+    let users = await queryAWSUsers(where: pred)
+    return users.filter { $0.accountType == "Athlete" }
+}
