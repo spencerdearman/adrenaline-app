@@ -11,11 +11,11 @@ import Amplify
 func follow(follower user: NewUser, followingId: String) async {
     do {
         var user = user
-        print("Following: \(followingId)")
+//        print("Following: \(followingId)")
         user.favoritesIds.append(followingId)
         
         let savedUser = try await saveToDataStore(object: user)
-        print("saved user \(savedUser)")
+//        print("saved user \(savedUser)")
     } catch {
         print("Failed to follow user")
     }
@@ -24,11 +24,11 @@ func follow(follower user: NewUser, followingId: String) async {
 func unfollow(follower user: NewUser, unfollowingId: String) async {
     do {
         var user = user
-        print("Unfollowing: \(unfollowingId)")
+//        print("Unfollowing: \(unfollowingId)")
         user.favoritesIds = user.favoritesIds.filter { $0 != unfollowingId }
         
         let savedUser = try await saveToDataStore(object: user)
-        print("saved user \(savedUser)")
+//        print("saved user \(savedUser)")
     } catch {
         print("Failed to unfollow user")
     }
