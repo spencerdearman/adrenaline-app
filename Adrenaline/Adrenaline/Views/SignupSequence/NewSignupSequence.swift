@@ -862,7 +862,7 @@ struct NewSignupSequence: View {
     
     func saveNewAthlete() async {
         do {
-            guard let user = savedUser else { return }
+            guard var user = savedUser else { return }
             print("Printing the saved User: \(user)")
             
             var springboard: Double? = nil
@@ -901,6 +901,10 @@ struct NewSignupSequence: View {
             
             // Save the athlete item
             let savedItem = try await Amplify.DataStore.save(athlete)
+            
+            user.setAthlete(savedItem)
+            user.newUserAthleteId = savedItem.id
+            savedUser = try await saveToDataStore(object: user)
             
             withAnimation(.openCard) {
                 athleteCreationSuccessful = true
