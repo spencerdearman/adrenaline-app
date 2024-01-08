@@ -91,7 +91,7 @@ struct RecruitingDashboardView: View {
                         }
                     }
                 case .divers:
-                    ExpandedDiversView()
+                    ExpandedDiversView(divers: $favorites)
                 case .results:
                     Text("")
                 case nil:
