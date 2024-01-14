@@ -26,7 +26,7 @@ struct ContentView: View {
     @AppStorage("email") var email: String = ""
     @AppStorage("authUserId") var authUserId: String = ""
     @State private var showAccount: Bool = false
-    @State private var newUser: NewUser? = nil
+//    @State private var newUser: NewUser? = nil
     @StateObject private var newUserViewModel: NewUserViewModel = NewUserViewModel()
     @State private var recentSearches: [SearchItem] = []
     @State private var uploadingPost: Post? = nil
@@ -138,14 +138,15 @@ struct ContentView: View {
                 return await getDataStoreData(numAttempts: numAttempts + 1)
             }
             
-            newUser = nil
-            newUser = user
+            newUserViewModel.newUser = user
+//            newUser = nil
+//            newUser = user
             
             // Adds device token to user's list of tokens for push notifications
             guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
             if !user.tokens.contains(token) {
                 user.tokens.append(token)
-                newUser = try await saveToDataStore(object: user)
+                newUserViewModel.newUser = try await saveToDataStore(object: user)
             }
         } catch {
             print("Sleep failed")
@@ -218,14 +219,14 @@ struct ContentView: View {
                     } else {
                         ZStack(alignment: .bottom) {
                             TabView {
-                                FeedBase(newUser: $newUser, showAccount: $showAccount,
+                                FeedBase(newUser: $newUserViewModel.newUser, showAccount: $showAccount,
                                          recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
                                 
-                                if let user = newUser, user.accountType != "Spectator" {
-                                    ChatView(newUser: $newUser, showAccount: $showAccount,
+                                if let user = newUserViewModel.newUser, user.accountType != "Spectator" {
+                                    ChatView(newUser: $newUserViewModel.newUser, showAccount: $showAccount,
                                              recentSearches: $recentSearches,
                                              deletedChatIds: $deletedChatIds)
                                     .tabItem {
@@ -233,7 +234,7 @@ struct ContentView: View {
                                     }
                                 }
                                 
-                                if let user = newUser, user.accountType == "Coach" {
+                                if let user = newUserViewModel.newUser, user.accountType == "Coach" {
                                     RecruitingDashboardView(newUserViewModel: newUserViewModel,
                                                             showAccount: $showAccount,
                                                             recentSearches: $recentSearches,
@@ -243,7 +244,7 @@ struct ContentView: View {
                                     }
                                 }
                                 
-                                RankingsView(newUser: $newUser, tabBarState: $tabBarState,
+                                RankingsView(newUser: $newUserViewModel.newUser, tabBarState: $tabBarState,
                                              showAccount: $showAccount, recentSearches: $recentSearches,
                                              uploadingPost: $uploadingPost)
                                 .tabItem {
@@ -269,14 +270,14 @@ struct ContentView: View {
                             NavigationView {
                                 // Need to use WrapperView here since we have to pass in state
                                 // and showAccount for popover profile
-                                if let user = newUser, user.accountType != "Spectator" {
-                                    AdrenalineProfileWrapperView(state: state, newUser: user,
+                                if let user = newUserViewModel.newUser, user.accountType != "Spectator" {
+                                    AdrenalineProfileWrapperView(state: state, newUser: $newUserViewModel.newUser,
                                                                  showAccount: $showAccount,
                                                                  recentSearches: $recentSearches,
                                                                  updateDataStoreData: $updateDataStoreData)
-                                } else if let _ = newUser {
-                                    SettingsView(state: state, 
-                                                 newUser: newUser,
+                                } else if let _ = newUserViewModel.newUser {
+                                    SettingsView(state: state,
+                                                 newUser: newUserViewModel.newUser,
                                                  showAccount: $showAccount,
                                                  updateDataStoreData: $updateDataStoreData)
                                 } else {
@@ -291,7 +292,7 @@ struct ContentView: View {
                             }
                         })
                         .onChange(of: uploadingPost) {
-                            if let user = newUser, let post = uploadingPost {
+                            if let user = newUserViewModel.newUser, let post = uploadingPost {
                                 Task {
                                     var videos: [Video] = []
                                     var images: [NewImage] = []
@@ -337,7 +338,7 @@ struct ContentView: View {
                                                                              maxWaitTimeSeconds: maxWaitTimeSeconds) {
                                                 
                                                 let (savedUser, _) = try await savePost(user: user, post: post)
-                                                newUser = savedUser
+                                                newUserViewModel.newUser = savedUser
                                             } else {
                                                 await handleUploadFailure(email: user.email,
                                                                           videos: videos,
@@ -388,8 +389,8 @@ struct ContentView: View {
                                     
                                     // Need to set to nil to show updated changes, should be
                                     // deprecated in favor of the view model
-                                    newUser = nil
-                                    newUser = currentUser
+//                                    newUser = nil
+//                                    newUser = currentUser
 //                                    print("Coach Order:", try await newUser?.coach?.favoritesOrder)
 //                                    print("View Model Order:", try await newUserViewModel.newUser?.coach?.favoritesOrder)
                                     appLogic.currentUserUpdated = false
