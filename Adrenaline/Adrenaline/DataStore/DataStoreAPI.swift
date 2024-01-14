@@ -214,6 +214,26 @@ func getAthleteUsersByFavoritesIds(ids: [String]) async throws -> [NewUser] {
         }
     }
     
-    let users = await queryAWSUsers(where: pred)
-    return users.filter { $0.accountType == "Athlete" }
+    // Query for users
+    let users = await queryAWSUsers(where: pred).filter { $0.accountType == "Athlete" }
+    let userIds = Set(users.map { $0.id })
+    
+    // Get resulting input ids to maintain request sort order
+    let finalInputIds = ids.filter({ userIds.contains($0) })
+    let idToIndex = finalInputIds.enumerated()
+        .reduce(into: [String: Int]()) { result, item in
+        let (index, id) = item
+        result[id] = index
+    }
+    
+    // Combine default sort index with NewUser object
+    var order: [(Int, NewUser)] = []
+    for user in users {
+        if let idx = idToIndex[user.id] {
+            order.append((idx, user))
+        }
+    }
+    
+    // Return sorted list of NewUser objects
+    return order.sorted { $0.0 < $1.0 }.map { $0.1 }
 }
