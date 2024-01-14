@@ -23,10 +23,15 @@ struct RecruitingDashboardView: View {
     @State private var showSheet: Bool = false
     @State private var selectedSheet: RecruitingSheet? = nil
     @State private var selectedUser: NewUser? = nil
-    @Binding var newUser: NewUser?
+//    @Binding var newUser: NewUser?
+    @ObservedObject var newUserViewModel: NewUserViewModel
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
     @Binding var uploadingPost: Post?
+    
+    private var newUser: NewUser? {
+        newUserViewModel.newUser
+    }
     
     private let screenWidth = UIScreen.main.bounds.width
     
@@ -103,7 +108,7 @@ struct RecruitingDashboardView: View {
         .overlay {
             if feedModel.showTab {
                 NavigationBar(title: "Recruiting",
-                              newUser: $newUser,
+                              newUser: $newUserViewModel.newUser,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
                               feedModel: $feedModel,
