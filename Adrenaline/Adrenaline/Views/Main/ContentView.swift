@@ -27,6 +27,7 @@ struct ContentView: View {
     @AppStorage("authUserId") var authUserId: String = ""
     @State private var showAccount: Bool = false
     @State private var newUser: NewUser? = nil
+    @StateObject private var newUserViewModel: NewUserViewModel = NewUserViewModel()
     @State private var recentSearches: [SearchItem] = []
     @State private var uploadingPost: Post? = nil
     @State private var uploadingProgress: Double = 0.0
@@ -233,7 +234,7 @@ struct ContentView: View {
                                 }
                                 
                                 if let user = newUser, user.accountType == "Coach" {
-                                    RecruitingDashboardView(newUser: $newUser, 
+                                    RecruitingDashboardView(newUserViewModel: newUserViewModel,
                                                             showAccount: $showAccount,
                                                             recentSearches: $recentSearches,
                                                             uploadingPost: $uploadingPost)
@@ -380,9 +381,15 @@ struct ContentView: View {
                         .onChange(of: appLogic.currentUserUpdated) {
                             if appLogic.currentUserUpdated {
                                 Task {
+                                    let currentUser = await getCurrentUser()
+                                    newUserViewModel.newUser = currentUser
+                                    
+                                    // Need to set to nil to show updated changes, should be
+                                    // deprecated in favor of the view model
                                     newUser = nil
-                                    newUser = await getCurrentUser()
-//                                    print("Coach:", try await newUser?.coach)
+                                    newUser = currentUser
+//                                    print("Coach Order:", try await newUser?.coach?.favoritesOrder)
+//                                    print("View Model Order:", try await newUserViewModel.newUser?.coach?.favoritesOrder)
                                     appLogic.currentUserUpdated = false
                                 }
                             }
