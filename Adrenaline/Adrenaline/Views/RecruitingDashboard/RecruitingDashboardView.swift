@@ -88,13 +88,12 @@ struct RecruitingDashboardView: View {
         }
         .overlay {
             if feedModel.showTab {
-                NavigationBar(title: "Recruiting",
+                RecruitingDashboardBar(title: "Recruiting",
                               newUser: $newUserViewModel.newUser,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
                               feedModel: $feedModel,
-                              recentSearches: $recentSearches,
-                              uploadingPost: $uploadingPost)
+                              recentSearches: $recentSearches)
                 .frame(width: screenWidth)
             }
         }
