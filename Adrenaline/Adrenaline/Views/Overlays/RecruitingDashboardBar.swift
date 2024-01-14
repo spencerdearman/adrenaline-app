@@ -1,39 +1,29 @@
 //
-//  NavigationBar.swift
+//  RecruitingDashboardBar.swift
 //  Adrenaline
 //
-//  Created by Spencer Dearman on 8/23/23.
+//  Created by Logan Sherwin on 1/14/24.
 //
 
 import SwiftUI
 import CachedAsyncImage
 
-struct NavigationBar: View {
+private enum RecruitingDashboardSheet {
+    case search
+    case compare
+}
+
+struct RecruitingDashboardBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
-    var showPlus: Bool = true
-    var showSearch: Bool = true
-    @State private var showSearchSheet = false
-    @State private var showPostSheet = false
-    @State private var isLogged = true
+    @State private var showSheet = false
+    @State private var selectedSheet: RecruitingDashboardSheet? = nil
     @Binding var newUser: NewUser?
     @Binding var showAccount: Bool
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
     @Binding var recentSearches: [SearchItem]
-    @Binding var uploadingPost: Post?
-    
-    // Using this function to swap sheet bools safely
-    private func showSheet(showingPost: Bool) {
-        if showingPost {
-            showSearchSheet = false
-            showPostSheet = true
-        } else {
-            showPostSheet = false
-            showSearchSheet = true
-        }
-    }
     
     var body: some View {
         ZStack {
@@ -43,7 +33,8 @@ struct NavigationBar: View {
                 .background(.ultraThinMaterial)
                 .ignoresSafeArea()
                 .frame(maxHeight: .infinity, alignment: .top)
-                .blur(radius: contentHasScrolled ? 20 : 0).ignoresSafeArea()
+                .blur(radius: contentHasScrolled ? 20 : 0)
+                .ignoresSafeArea()
                 .opacity(contentHasScrolled ? 0.4 : 0)
             
             Text(title)
@@ -55,36 +46,28 @@ struct NavigationBar: View {
                 .opacity(contentHasScrolled ? 0.7 : 1)
             
             HStack(spacing: 16) {
-                if showPlus {
-                    Button {
-                        showSheet(showingPost: true)
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .sheet(isPresented: $showPostSheet) {
-                        NewPostView(uploadingPost: $uploadingPost)
-                    }
+                Button {
+                    selectedSheet = .compare
+                    showSheet = true
+                } label: {
+                    Image(systemName: "arrow.left.arrow.right")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 
-                if showSearch {
-                    Button {
-                        showSheet(showingPost: false)
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .sheet(isPresented: $showSearchSheet) {
-                        NewSearchView(recentSearches: $recentSearches)
-                    }
+                Button {
+                    selectedSheet = .search
+                    showSheet = true
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 17, weight: .bold))
+                        .frame(width: 36, height: 36)
+                        .foregroundColor(.secondary)
+                        .background(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
                 
                 Button {
@@ -93,9 +76,9 @@ struct NavigationBar: View {
                     }
                 } label: {
                     Group {
-                        if let user = newUser, 
+                        if let user = newUser,
                             let diveMeetsID = user.diveMeetsID,
-                            diveMeetsID != "" {
+                           diveMeetsID != "" {
                             CachedAsyncImage(url: URL(string:
                                                         "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID).jpg?&x=511121484"),
                                              urlCache: .imageCache,
@@ -131,5 +114,20 @@ struct NavigationBar: View {
         .offset(y: feedModel.showNav ? 0 : -120)
         .accessibility(hidden: !feedModel.showNav)
         .offset(y: contentHasScrolled ? -16 : 0)
+        .sheet(isPresented: $showSheet) {
+            switch selectedSheet {
+                case .compare:
+                    Text("Compare Divers")
+                case .search:
+                    NewSearchView(recentSearches: $recentSearches)
+                default:
+                    EmptyView()
+            }
+        }
+        .onChange(of: showSheet) {
+            if !showSheet {
+                selectedSheet = nil
+            }
+        }
     }
 }
