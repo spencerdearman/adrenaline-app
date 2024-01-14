@@ -49,7 +49,7 @@ struct AdrenalineProfileWrapperView: View {
     
     var body: some View {
         ZStack {
-            if let user = user {
+            if let _ = user {
                 AdrenalineProfileView(newUser: $user)
             } else {
                 AdrenalineProfileView(authUserId: authUserId)
