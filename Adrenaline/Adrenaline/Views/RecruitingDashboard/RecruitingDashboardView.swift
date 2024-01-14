@@ -29,6 +29,7 @@ struct RecruitingDashboardView: View {
     // Added to satisfy PostProfileItem constructor, but none of these posts will be editable by
     // the coach
     @State private var shouldRefreshPosts: Bool = false
+    @State private var newResults: [String] = []
     @ObservedObject var newUserViewModel: NewUserViewModel
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
@@ -46,6 +47,9 @@ struct RecruitingDashboardView: View {
             ScrollView {
                 VStack {
                     trackedDiversView
+                        .padding(.bottom)
+                    
+                    newResultsView
                         .padding(.bottom)
                     
                     VStack {
@@ -229,6 +233,59 @@ struct RecruitingDashboardView: View {
                                 selectedUser = fav
                                 selectedSheet = .user
                             }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(20)
+        .background(.ultraThinMaterial)
+        .modifier(OutlineOverlay(cornerRadius: 30))
+        .backgroundStyle(cornerRadius: 30)
+    }
+    
+    var newResultsView: some View {
+        VStack {
+            HStack {
+                Text("New Results")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+                Spacer()
+                
+                if newResults.count > 0 {
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.secondary)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedSheet = .results
+                        }
+                }
+            }
+            
+            if newResults.count == 0 {
+                Text("There are no new results posted yet")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .padding(10)
+                    .multilineTextAlignment(.center)
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 0) {
+                        ForEach(newResults, id: \.self) { newResult in
+                            VStack {
+                                Text(newResult)
+                            }
+                            .padding(20)
+                            .background(.white)
+                            .modifier(OutlineOverlay(cornerRadius: 30))
+                            .backgroundStyle(cornerRadius: 30)
+                            .padding(10)
+                            .shadow(radius: 5)
+                            // TODO: Add tap gesture here for results
+//                            .onTapGesture {
+//                                selectedResult = fav
+//                                selectedSheet = .user
+//                            }
                         }
                     }
                 }
