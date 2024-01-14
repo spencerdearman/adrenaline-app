@@ -37,13 +37,16 @@ struct RecruitingDashboardView: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.primary)
                     Spacer()
-                    Image(systemName: "chevron.right")
-                        .foregroundColor(.secondary)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            selectedSheet = .divers
-                            showSheet = true
-                        }
+                    
+                    if favorites.count > 0 {
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.secondary)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedSheet = .divers
+                                showSheet = true
+                            }
+                    }
                 }
                 
                 if favorites.count == 0 {
@@ -112,17 +115,55 @@ struct RecruitingDashboardView: View {
         }
         .onChange(of: showSheet) {
             if !showSheet {
+                if selectedSheet == .divers {
+                    if var user = newUser {
+                        Task {
+                            // id -> index mapping
+                            let defaultOrder = user.favoritesIds.enumerated()
+                                .reduce(into: [String: Int](), { result, item in
+                                    let (index, id) = item
+                                    result[id] = index
+                                })
+                            
+                            let order = favorites.reduce(into: [Int](), { result, fav in
+                                if let val = defaultOrder[fav.id] {
+                                    result.append(val)
+                                }
+                            })
+                            
+                            guard var coach = try await user.coach else { print("Failed to load coach"); return }
+                            coach.favoritesOrder = order
+                            let savedCoach = try await saveToDataStore(object: coach)
+                            user.setCoach(savedCoach)
+                            
+                            let _ = try await saveToDataStore(object: user)
+                        }
+                    }
+                }
+                
                 selectedUser = nil
                 selectedSheet = nil
             }
         }
         .onChange(of: appLogic.currentUserUpdated, initial: true) {
-            if !appLogic.currentUserUpdated {
-                Task {
+            Task {
+                if !appLogic.currentUserUpdated {
                     guard let favsIds = newUser?.favoritesIds else { return }
                     let favUsers = try await getAthleteUsersByFavoritesIds(ids: favsIds)
-                    favorites = favUsers
-                    //                    print("Favorites:", favorites.map { $0.id })
+                    guard let order = try await newUser?.coach?.favoritesOrder else {
+                        print("Failed to get order")
+                        favorites = favUsers
+                        return
+                    }
+                    
+                    if favUsers.count != order.count {
+                        print("order mismatch")
+                        favorites = favUsers
+                    } else {
+                        favorites = order.map { favUsers[$0] }
+                    }
+                    
+                    print("Favorites:", favorites.map { $0.firstName })
                 }
             }
         }

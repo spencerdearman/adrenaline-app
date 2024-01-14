@@ -32,6 +32,7 @@ struct ExpandedDiversView: View {
             }
         }
         .scrollIndicators(.hidden)
+        .padding(.top)
     }
 }
 
