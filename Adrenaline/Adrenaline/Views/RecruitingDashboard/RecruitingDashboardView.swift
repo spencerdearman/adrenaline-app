@@ -16,6 +16,7 @@ enum RecruitingSheet {
 
 struct RecruitingDashboardView: View {
     @EnvironmentObject private var appLogic: AppLogic
+    @Namespace var namespace
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
     @State private var favorites: [NewUser] = []
@@ -23,7 +24,11 @@ struct RecruitingDashboardView: View {
     @State private var showSheet: Bool = false
     @State private var selectedSheet: RecruitingSheet? = nil
     @State private var selectedUser: NewUser? = nil
-//    @Binding var newUser: NewUser?
+    @State private var newPosts: [PostProfileItem] = []
+    @State private var selectedPost: String? = nil
+    // Added to satisfy PostProfileItem constructor, but none of these posts will be editable by
+    // the coach
+    @State private var shouldRefreshPosts: Bool = false
     @ObservedObject var newUserViewModel: NewUserViewModel
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
@@ -34,61 +39,33 @@ struct RecruitingDashboardView: View {
     }
     
     private let screenWidth = UIScreen.main.bounds.width
+    private let columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     
     var body: some View {
         ZStack {
-            VStack {
-                HStack {
-                    Text("Tracked Divers")
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-                    Spacer()
+            ScrollView {
+                VStack {
+                    trackedDiversView
+                        .padding(.bottom)
                     
-                    if favorites.count > 0 {
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.secondary)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedSheet = .divers
-                            }
-                    }
-                }
-                
-                if favorites.count == 0 {
-                    Text("You have not favorited any athletes yet")
-                        .fontWeight(.semibold)
-                        .foregroundColor(.secondary)
-                        .padding(10)
-                        .multilineTextAlignment(.center)
-                } else {
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 0) {
-                            ForEach(favorites, id: \.id) { fav in
-                                VStack {
-                                    Text(fav.firstName + " " + fav.lastName)
-                                }
-                                .padding(20)
-                                .background(.white)
-                                .modifier(OutlineOverlay(cornerRadius: 30))
-                                .backgroundStyle(cornerRadius: 30)
-                                .padding(10)
-                                .shadow(radius: 5)
-                                .onTapGesture {
-                                    selectedUser = fav
-                                    selectedSheet = .user
-                                }
-                            }
+                    VStack {
+                        HStack {
+                            Text("New Posts")
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
                         }
+
+                        newPostsView
                     }
                 }
             }
-            .padding(20)
-            .background(.ultraThinMaterial)
-            .modifier(OutlineOverlay(cornerRadius: 30))
-            .backgroundStyle(cornerRadius: 30)
-            .padding(20)
+            .scrollIndicators(.hidden)
         }
-        .offset(y: 200)
+        .offset(y: 80)
+        .padding([.leading, .trailing])
         .sheet(isPresented: $showSheet) {
             switch selectedSheet {
                 case .user:
@@ -184,5 +161,108 @@ struct RecruitingDashboardView: View {
                 }
             }
         }
+        .onAppear {
+            Task {
+                guard let users = newUser?.favoritesIds else { print("Failed to get favorites"); return }
+                let userPosts: [String: [Post]] = try await getPostsByUserIds(ids: users)
+                var profileItems: [(Temporal.DateTime, PostProfileItem)] = []
+                
+                for (userId, posts) in userPosts {
+                    // Get associated user for post
+                    guard let user = try await queryAWSUserById(id: userId) else { continue }
+                    
+                    // Create PostProfileItem for each post and associate its creation date for
+                    // future sorting
+                    for post in posts {
+                        let profileItem = try await PostProfileItem(user: user, post: post,
+                                                          namespace: namespace,
+                                                          postShowing: $selectedPost,
+                                                          shouldRefreshPosts: $shouldRefreshPosts)
+                        profileItems.append((post.creationDate, profileItem))
+                    }
+                }
+                
+                // Sort mixed post list in reverse chronological order
+                newPosts = profileItems.sorted { $0.0 > $1.0 }.map { $0.1 }
+            }
+        }
+    }
+    
+    var trackedDiversView: some View {
+        VStack {
+            HStack {
+                Text("Tracked Divers")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+                Spacer()
+                
+                if favorites.count > 0 {
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(.secondary)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedSheet = .divers
+                        }
+                }
+            }
+            
+            if favorites.count == 0 {
+                Text("You have not favorited any athletes yet")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .padding(10)
+                    .multilineTextAlignment(.center)
+            } else {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 0) {
+                        ForEach(favorites, id: \.id) { fav in
+                            VStack {
+                                Text(fav.firstName + " " + fav.lastName)
+                            }
+                            .padding(20)
+                            .background(.white)
+                            .modifier(OutlineOverlay(cornerRadius: 30))
+                            .backgroundStyle(cornerRadius: 30)
+                            .padding(10)
+                            .shadow(radius: 5)
+                            .onTapGesture {
+                                selectedUser = fav
+                                selectedSheet = .user
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(20)
+        .background(.ultraThinMaterial)
+        .modifier(OutlineOverlay(cornerRadius: 30))
+        .backgroundStyle(cornerRadius: 30)
+    }
+    
+    var newPostsView: some View {
+        ZStack {
+            if let selectedPost = selectedPost {
+                ForEach($newPosts) { post in
+                    if post.id == selectedPost {
+                        AnyView(post.expandedView.wrappedValue)
+                    }
+                }
+            }
+            
+            LazyVGrid(columns: columns, spacing: 15) {
+                ForEach($newPosts) { item in
+                    AnyView(item.collapsedView.wrappedValue)
+                }
+                
+                Text("You have seen all new posts")
+                    .foregroundColor(.secondary)
+                    .fontWeight(.semibold)
+                    .padding()
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding([.leading, .trailing])
+        .padding(.bottom, 100)
     }
 }
