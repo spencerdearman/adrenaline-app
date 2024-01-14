@@ -15,29 +15,40 @@ struct ExpandedDiversView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 5) {
+                    let numbering = Array(1...divers.count)
                     ForEach(Array(divers.enumerated()), id: \.element.id) { index, item in
                         NavigationLink {
                             AdrenalineProfileView(newUser: $divers[index].wrappedValue)
                         } label: {
-                            ItemView(index: index, item: $divers[index])
-                                .onDrag {
-                                    self.draggedItem = item
-                                    return NSItemProvider()
-                                }
-                                .onDrop(
-                                    of: [.text],
-                                    delegate: DropViewDelegate(
-                                        destinationItem: item,
-                                        items: $divers,
-                                        draggedItem: $draggedItem
+                            HStack {
+                                Text(String(numbering[index]) + ".")
+                                    .foregroundColor(.primary)
+                                    .fontWeight(.semibold)
+                                    .padding(.leading)
+                                
+                                Spacer()
+                                
+                                ItemView(index: index, item: $divers[index])
+                                    .onDrag {
+                                        self.draggedItem = item
+                                        return NSItemProvider()
+                                    }
+                                    .onDrop(
+                                        of: [.text],
+                                        delegate: DropViewDelegate(
+                                            destinationItem: item,
+                                            items: $divers,
+                                            draggedItem: $draggedItem
+                                        )
                                     )
-                                )
+                            }
                         }
                     }
                 }
             }
             .scrollIndicators(.hidden)
             .padding(.top)
+            .navigationTitle("Tracked Divers")
         }
     }
 }
