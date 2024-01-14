@@ -27,7 +27,8 @@ struct AdrenalineProfileWrapperView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
+    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, 
+         recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
         self.state = state
         self.authUserId = authUserId
         self.user = nil
@@ -36,7 +37,8 @@ struct AdrenalineProfileWrapperView: View {
         self._updateDataStoreData = updateDataStoreData
     }
     
-    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
+    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>, 
+         recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
         self.state = state
         self.authUserId = newUser.id
         self.user = newUser
@@ -159,12 +161,7 @@ struct AdrenalineProfileView: View {
         .onAppear {
             if user == nil {
                 Task {
-                    let pred = NewUser.keys.id == authUserId
-                    let users = await queryAWSUsers(where: pred)
-                    
-                    if users.count == 1 {
-                        user = users[0]
-                    }
+                    user = try await queryAWSUserById(id: authUserId)
                 }
             }
         }

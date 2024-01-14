@@ -10,4 +10,8 @@ import Amplify
 
 class NewUserViewModel: ObservableObject {
     @Published var newUser: NewUser?
+    
+    init(newUser: NewUser? = nil) {
+        self.newUser = newUser
+    }
 }
