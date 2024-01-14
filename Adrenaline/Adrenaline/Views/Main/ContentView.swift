@@ -64,17 +64,58 @@ struct ContentView: View {
         return window.safeAreaInsets.bottom + menuBarOffset - 5.0
     }
     
+    // Test if given NewUser has the associated Athlete model when accountType is Athlete
+    private func isAthleteWithAthleteModel(_ user: NewUser) async -> Bool {
+        do {
+            guard user.accountType == "Athlete", 
+                    let _ = try await user.athlete else { return false }
+            
+            return true
+        } catch {
+            print("Failed to check user for athlete model")
+            return false
+        }
+    }
+    
+    // Test if given NewUser has the associated Coach model when accountType is Coach
+    private func isCoachWithCoachModel(_ user: NewUser) async -> Bool {
+        do {
+            guard user.accountType == "Coach",
+                    let _ = try await user.coach else { return false }
+            
+            return true
+        } catch {
+            print("Failed to check user for coach model")
+            return false
+        }
+    }
+    
     private func getCurrentUser() async -> NewUser? {
-        if appLogic.currentUser != nil {
-            return appLogic.currentUser
+        // First attempt to set current user through AppLogic since it is most likely to be recent
+        if let user = appLogic.currentUser {
+            print("AppLogic not nil")
+            
+            if user.accountType == "Spectator" { print("User is spectator"); return appLogic.currentUser }
+            let athleteStatus = await isAthleteWithAthleteModel(user)
+            let coachStatus = await isCoachWithCoachModel(user)
+            if athleteStatus || coachStatus {
+                return appLogic.currentUser
+            } else {
+                print("Current user did not have associated athlete/coach model, querying...")
+            }
         }
         
-        let idPredicate = NewUser.keys.id == authUserId
-        let users = await queryAWSUsers(where: idPredicate)
-        if users.count == 1 {
-            return users[0]
-        } else {
-            print("Failed to get NewUser")
+        // Run a query if AppLogic is nil, or if the user is an Athlete or Coach without the
+        // corresponding model attached to it
+        do {
+            guard let user = try await queryAWSUserById(id: authUserId) else { return nil }
+            
+            if user.accountType == "Athlete" { print("Current user Athlete:", try await user.athlete) }
+            if user.accountType == "Coach" { print("Current user Coach:", try await user.coach) }
+            
+            return user
+        } catch {
+            print("Failed to get current user by id")
         }
         
         return nil
@@ -340,9 +381,12 @@ struct ContentView: View {
                         }
                         .onChange(of: appLogic.currentUserUpdated) {
                             if appLogic.currentUserUpdated {
-                                newUser = nil
-                                newUser = appLogic.currentUser
-                                appLogic.currentUserUpdated = false
+                                Task {
+                                    newUser = nil
+                                    newUser = await getCurrentUser()
+//                                    print("Coach:", try await newUser?.coach)
+                                    appLogic.currentUserUpdated = false
+                                }
                             }
                         }
                         .onAppear {
