@@ -12,27 +12,33 @@ struct ExpandedDiversView: View {
     @Binding var divers: [NewUser]
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 5) {
-                ForEach(Array(divers.enumerated()), id: \.element.id) { index, item in
-                    ItemView(index: index, item: $divers[index])
-                        .onDrag {
-                            self.draggedItem = item
-                            return NSItemProvider()
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 5) {
+                    ForEach(Array(divers.enumerated()), id: \.element.id) { index, item in
+                        NavigationLink {
+                            AdrenalineProfileView(newUser: $divers[index].wrappedValue)
+                        } label: {
+                            ItemView(index: index, item: $divers[index])
+                                .onDrag {
+                                    self.draggedItem = item
+                                    return NSItemProvider()
+                                }
+                                .onDrop(
+                                    of: [.text],
+                                    delegate: DropViewDelegate(
+                                        destinationItem: item,
+                                        items: $divers,
+                                        draggedItem: $draggedItem
+                                    )
+                                )
                         }
-                        .onDrop(
-                            of: [.text],
-                            delegate: DropViewDelegate(
-                                destinationItem: item,
-                                items: $divers,
-                                draggedItem: $draggedItem
-                            )
-                        )
+                    }
                 }
             }
+            .scrollIndicators(.hidden)
+            .padding(.top)
         }
-        .scrollIndicators(.hidden)
-        .padding(.top)
     }
 }
 
@@ -48,6 +54,7 @@ struct ItemView: View {
                 .disabled(true)
             Spacer()
         }
+        .foregroundColor(.primary)
         .padding(20)
         .background(.white)
         .modifier(OutlineOverlay(cornerRadius: 30))

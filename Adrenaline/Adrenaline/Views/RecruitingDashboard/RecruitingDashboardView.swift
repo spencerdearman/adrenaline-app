@@ -8,7 +8,7 @@
 import SwiftUI
 import Amplify
 
-private enum Sheet {
+enum RecruitingSheet {
     case user
     case divers
     case results
@@ -19,8 +19,9 @@ struct RecruitingDashboardView: View {
     @State private var contentHasScrolled: Bool = false
     @State private var feedModel: FeedModel = FeedModel()
     @State private var favorites: [NewUser] = []
+    // showSheet is updated with changes to selectedSheet and should not be set manually
     @State private var showSheet: Bool = false
-    @State private var selectedSheet: Sheet? = nil
+    @State private var selectedSheet: RecruitingSheet? = nil
     @State private var selectedUser: NewUser? = nil
     @Binding var newUser: NewUser?
     @Binding var showAccount: Bool
@@ -44,7 +45,6 @@ struct RecruitingDashboardView: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 selectedSheet = .divers
-                                showSheet = true
                             }
                     }
                 }
@@ -71,7 +71,6 @@ struct RecruitingDashboardView: View {
                                 .onTapGesture {
                                     selectedUser = fav
                                     selectedSheet = .user
-                                    showSheet = true
                                 }
                             }
                         }
@@ -111,6 +110,19 @@ struct RecruitingDashboardView: View {
                               recentSearches: $recentSearches,
                               uploadingPost: $uploadingPost)
                 .frame(width: screenWidth)
+            }
+        }
+        .onChange(of: selectedSheet) {
+            switch selectedSheet {
+                case .user:
+                    showSheet = true
+                    break
+                case .divers, .results:
+                    selectedUser = nil
+                    showSheet = true
+                    break
+                default:
+                    showSheet = false
             }
         }
         .onChange(of: showSheet) {
