@@ -237,3 +237,35 @@ func getAthleteUsersByFavoritesIds(ids: [String]) async throws -> [NewUser] {
     // Return sorted list of NewUser objects
     return order.sorted { $0.0 < $1.0 }.map { $0.1 }
 }
+
+// Returns posts in dictionary form, with key being the user id and list of posts in reverse
+// chronological order as value
+func getPostsByUserIds(ids: [String]) async throws -> [String: [Post]] {
+    var result: [String: [Post]] = [:]
+    var pred: QueryPredicateGroup
+    if ids.count == 0 { return [:] }
+    else if ids.count == 1 {
+        let pred = Post.keys.newuserID == ids[0]
+        let posts: [Post] = try await query(where: pred)
+        return [ids[0]: posts]
+    }
+    
+    pred = (Post.keys.newuserID == ids[0]).or(Post.keys.newuserID == ids[1])
+    
+    if ids.count > 2 {
+        for id in ids[2...] {
+            pred = pred.or(Post.keys.newuserID == id)
+        }
+    }
+    
+    let allPosts: [Post] = try await query(where: pred)
+    for id in ids {
+        let userPosts = allPosts.filter { $0.newuserID == id }.sorted {
+            $0.creationDate > $1.creationDate
+        }
+        
+        result[id] = userPosts
+    }
+    
+    return result
+}
