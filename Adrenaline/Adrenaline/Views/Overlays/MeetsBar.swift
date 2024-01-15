@@ -16,7 +16,6 @@ struct MeetsBar: View {
     var title = ""
     var diveMeetsID:  Binding<String>
     @State private var showSearchSheet = false
-    @State private var showPostSheet = false
     @State private var isLogged = true
     @Binding var selection: ViewType
     @Binding var showAccount: Bool
