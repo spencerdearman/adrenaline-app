@@ -94,16 +94,16 @@ struct ContentView: View {
     private func getCurrentUser() async -> NewUser? {
         // First attempt to set current user through AppLogic since it is most likely to be recent
         if let user = appLogic.currentUser {
-            print("AppLogic not nil")
+//            print("AppLogic not nil")
             
             if user.accountType == "Spectator" { print("User is spectator"); return appLogic.currentUser }
             let athleteStatus = await isAthleteWithAthleteModel(user)
             let coachStatus = await isCoachWithCoachModel(user)
             if athleteStatus || coachStatus {
                 return appLogic.currentUser
-            } else {
+            } /*else {
                 print("Current user did not have associated athlete/coach model, querying...")
-            }
+            }*/
         }
         
         // Run a query if AppLogic is nil, or if the user is an Athlete or Coach without the
@@ -111,8 +111,8 @@ struct ContentView: View {
         do {
             guard let user = try await queryAWSUserById(id: authUserId) else { return nil }
             
-            if user.accountType == "Athlete" { print("Current user Athlete:", try await user.athlete) }
-            if user.accountType == "Coach" { print("Current user Coach:", try await user.coach) }
+//            if user.accountType == "Athlete" { print("Current user Athlete:", try await user.athlete) }
+//            if user.accountType == "Coach" { print("Current user Coach:", try await user.coach) }
             
             return user
         } catch {
