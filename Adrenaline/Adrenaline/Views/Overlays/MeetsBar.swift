@@ -23,17 +23,6 @@ struct MeetsBar: View {
     @Binding var feedModel : FeedModel
     @Binding var recentSearches: [SearchItem]
     
-    // Using this function to swap sheet bools safely
-    private func showSheet(showingPost: Bool) {
-        if showingPost {
-            showSearchSheet = false
-            showPostSheet = true
-        } else {
-            showPostSheet = false
-            showSearchSheet = true
-        }
-    }
-    
     var body: some View {
         ZStack {
             Rectangle()
