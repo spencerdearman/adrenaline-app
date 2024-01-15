@@ -564,6 +564,7 @@ struct RankingsView: View {
                 .frame(width: screenWidth)
             )
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     var scrollDetection: some View {

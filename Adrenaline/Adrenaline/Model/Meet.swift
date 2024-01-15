@@ -8,16 +8,6 @@
 import Foundation
 import SwiftUI
 
-//struct Meet: Hashable {
-//
-//    var meetName: String
-//    var meetEvents: [String]
-//    var meetPlaces: [Int]
-//    var meetScores: [Double]
-//    var events: [Meet]?
-//    var isOpen: Bool = false
-//}
-
 struct MeetEvent: Hashable, Identifiable {
 
     let id = UUID()
@@ -30,4 +20,14 @@ struct MeetEvent: Hashable, Identifiable {
     var isChild: Bool = false
     var link: String?
     var firstNavigation: Bool = true
+}
+
+struct MeetBase: Hashable, Identifiable {
+    let id = UUID()
+    let name: String
+    var org: String?
+    var location: String?
+    var date: String?
+    var link: String?
+    var resultsLink: String?
 }

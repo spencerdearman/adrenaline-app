@@ -166,6 +166,7 @@ struct ChatView: View {
                 }
             }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         // Manually clearing these since Amplify bug doesn't do this through the observeQuery
         .onChange(of: deletedChatIds) {
             for id in deletedChatIds {

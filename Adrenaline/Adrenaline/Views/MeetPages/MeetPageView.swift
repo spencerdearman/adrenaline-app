@@ -36,6 +36,7 @@ struct MeetPageView: View {
     @State private var timedOut: Bool = false
     @ObservedObject private var mpp: MeetPageParser = MeetPageParser()
     private let getTextModel = GetTextAsyncModel()
+    private let screenHeight = UIScreen.main.bounds.height
     
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
     @ScaledMetric private var buttonHeightScaled: CGFloat = 37
@@ -53,6 +54,7 @@ struct MeetPageView: View {
     }
     
     var meetLink: String
+    var infoLink: String = ""
     
     private func tupleToList(data: MeetEventData) -> [[String]] {
         var result: [[String]] = []
@@ -155,22 +157,56 @@ struct MeetPageView: View {
                 meetInfoData = info
                 meetResultsData = results
             } else {
-                // Initialize meet parse from index page
-                let url = URL(string: meetLink)
-                
-                if let url = url {
-                    // This sets getTextModel's text field equal to the HTML from url
-                    await getTextModel.fetchText(url: url)
+                if infoLink != "" {
+                    // Initialize meet parse from index page
+                    let meetUrl = URL(string: meetLink)
+                    let infoUrl = URL(string: infoLink)
                     
-                    if let html = getTextModel.text {
-                        meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
-                        if let meetData = meetData {
-                            meetInfoData = await mpp.getMeetInfoData(data: meetData)
-                            meetResultsData = await mpp.getMeetResultsData(data: meetData)
-                            
-                            cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
-                        } else {
-                            print("Meet page failed to parse")
+                    if let url = meetUrl {
+                        // This sets getTextModel's text field equal to the HTML from url
+                        await getTextModel.fetchText(url: url)
+                        
+                        if let html = getTextModel.text {
+                            meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
+                            if let meetData = meetData {
+                                meetInfoData = await mpp.getMeetInfoData(data: meetData)
+                            } else {
+                                print("Meet page failed to parse")
+                            }
+                        }
+                    }
+                    if let url = infoUrl {
+                        // This sets getTextModel's text field equal to the HTML from url
+                        await getTextModel.fetchText(url: url)
+                        
+                        if let html = getTextModel.text {
+                            meetData = try await mpp.parseMeetPage(link: infoLink, html: html)
+                            if let meetData = meetData {
+                                meetResultsData = await mpp.getMeetResultsData(data: meetData)
+                                cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
+                            } else {
+                                print("Meet page failed to parse")
+                            }
+                        }
+                    }
+                } else {
+                    // Initialize meet parse from index page
+                    let url = URL(string: meetLink)
+                    
+                    if let url = url {
+                        // This sets getTextModel's text field equal to the HTML from url
+                        await getTextModel.fetchText(url: url)
+                        
+                        if let html = getTextModel.text {
+                            meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
+                            if let meetData = meetData {
+                                meetInfoData = await mpp.getMeetInfoData(data: meetData)
+                                meetResultsData = await mpp.getMeetResultsData(data: meetData)
+                                
+                                cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
+                            } else {
+                                print("Meet page failed to parse")
+                            }
                         }
                     }
                 }
@@ -201,29 +237,38 @@ struct MeetPageView: View {
     
     var body: some View {
         ZStack {
-            bgColor.ignoresSafeArea()
+            if let _ = meetInfoData {
+                bgColor.ignoresSafeArea()
+            }
             VStack {
                 if let meetInfoData = meetInfoData {
-                    MeetInfoPageView(meetInfoData: meetInfoData)
-                    Spacer()
-                } else if let meetResultsData = meetResultsData {
-                    MeetResultsPageView(meetResultsData: meetResultsData)
-                    Spacer()
-                } else if meetLink != "" && !timedOut {
-                    BackgroundBubble() {
-                        VStack {
-                            Text("Getting meet information...")
-                            ProgressView()
+                    if infoLink != "" {
+                        if let meetResultsData = meetResultsData {
+                            MeetInfoPageView(meetInfoData: meetInfoData,
+                                             meetResultsData: meetResultsData)
+                            Spacer()
                         }
-                        .padding()
+                    } else {
+                        MeetInfoPageView(meetInfoData: meetInfoData)
+                        Spacer()
                     }
+                } 
+                else if meetLink != "" && !timedOut {
+                    VStack {
+                        Text("Getting meet information...")
+                        ProgressView()
+                    }
+                    .offset(y: screenHeight * 0.2)
+                    .padding()
                 } else if timedOut {
                     Text("Unable to get meet page, network timed out")
+                        .offset(y: screenHeight * 0.2)
                 } else {
                     VStack {
                         Text("There is not a results page available yet")
                         Text("(Events may not have started yet)")
                     }
+                    .offset(y: screenHeight * 0.2)
                 }
             }
             .padding(.bottom, maxHeightOffset)
@@ -234,43 +279,18 @@ struct MeetPageView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
-                }
-            }
-            
-            if meetInfoData != nil || meetResultsData != nil {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ZStack {
-                        Circle()
-                            .foregroundColor(Custom.grayThinMaterial)
-                            .shadow(radius: 4)
-                            .frame(width: buttonHeight, height: buttonHeight)
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundColor(.primary)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                    }
-                    .onTapGesture {
-                        clearMeetDataCache()
-                        Task {
-                            try await getMeetData(info: meetInfoData, results: meetResultsData)
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
 struct MeetInfoPageView: View {
     var meetInfoData: MeetInfoJointData
+    var meetResultsData: MeetResultsData?
+    @StateObject private var viewModel = MapViewModel()
     @State private var meetDetailsExpanded: Bool = false
     @State private var warmupDetailsExpanded: Bool = false
     @State private var showingAlert: Bool = false
     @State private var alertText: String = ""
+    private let screenWidth = UIScreen.main.bounds.width
     
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -299,112 +319,6 @@ struct MeetInfoPageView: View {
             
             return data
         }
-    
-    var body: some View {
-        let info = meetInfoData.0
-        let time = meetInfoData.1
-        VStack(alignment: .leading, spacing: 10) {
-            Text(info["Name"]!)
-                .font(.title)
-                .fontWeight(.bold)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity, alignment: .center)
-            Text(info["Sponsor"]!)
-                .font(.title3)
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .lineLimit(2)
-                .multilineTextAlignment(.center)
-            Text(getDisplayDateString(start: info["Start Date"]!, end: info["End Date"]!))
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .multilineTextAlignment(.trailing)
-            
-            Divider()
-            
-            DisclosureGroup(
-                isExpanded: $meetDetailsExpanded,
-                content: {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack(alignment: .top) {
-                                Text("Signup Deadline: ")
-                                    .bold()
-                                Text(info["Online Signup Closes at"]!)
-                                    .multilineTextAlignment(.trailing)
-                            }
-                            keyToHStack(data: info, key: "Time Left Before Late Fee")
-                            keyToHStack(data: info, key: "Type")
-                            keyToHStack(data: info, key: "Rules")
-                            keyToHStack(data: info, key: "Pool")
-                            
-                            keyToHStack(data: info, key: "Fee per event")
-                            keyToHStack(data: info,
-                                        key: "USA Diving Per Event Insurance Surcharge Fee")
-                            keyToHStack(data: info, key: "Late Fee")
-                            keyToHStack(data: info, key: "Fee must be paid by")
-                                .multilineTextAlignment(.trailing)
-                            keyToHStack(data: info, key: "Warm up time prior to event")
-                        }
-                    }
-                    .frame(maxHeight: screenHeight * 0.5)
-                },
-                label: {
-                    Text("Meet Details")
-                        .font(.headline)
-                        .foregroundColor(Color.primary)
-                }
-            )
-            .padding([.leading, .trailing])
-            
-            Divider()
-            
-            DisclosureGroup(
-                isExpanded: $warmupDetailsExpanded,
-                content: {
-                    ScrollView(showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            ForEach(dateSorted(time), id: \.key) { key, value in
-                                Text(key)
-                                    .bold()
-                                VStack(alignment: .leading) {
-                                    keyToHStack(data: value, key: "Warmup Starts")
-                                    keyToHStack(data: value, key: "Warmup Ends")
-                                    keyToHStack(data: value, key: "Events Start")
-                                }
-                                .padding(.leading, 30)
-                            }
-                        }
-                    }
-                    .frame(maxHeight: screenHeight * 0.5)
-                },
-                label: {
-                    Text("Warmup Details")
-                        .font(.headline)
-                        .foregroundColor(Color.primary)
-                }
-            )
-            .padding([.leading, .trailing])
-            
-            Divider()
-            
-            if let meetEventData = meetInfoData.2 {
-                MeetEventListView(showingAlert: $showingAlert, alertText: $alertText,
-                                  meetEventData: meetEventData)
-                .alert(alertText, isPresented: $showingAlert) {
-                    Button("OK", role: .cancel) {
-                        showingAlert = false
-                        alertText = ""
-                    }
-                }
-            }
-        }
-        .padding()
-    }
-}
-
-struct MeetResultsPageView: View {
-    var meetResultsData: MeetResultsData
     
     private func fixDateFormatting(_ str: String) -> String? {
         do {
@@ -461,87 +375,196 @@ struct MeetResultsPageView: View {
     }
     
     var body: some View {
-        let name = meetResultsData.0
-        let date = meetResultsData.1
-        let dates = date.components(separatedBy: " to ")
-        let (startDate, endDate) = (fixDateFormatting(dates.first!) ?? "",
-                                    fixDateFormatting(dates.last!) ?? "")
-        let divers = meetResultsData.2
-        let events = meetResultsData.3
-        let liveResults = meetResultsData.4
+        let info = meetInfoData.0
+        let time = meetInfoData.1
+        let divers = meetInfoData.3
         
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 10) {
-                
-                Text(name)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.center)
+        VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .center, spacing: 16) {
+                Text("Meet Details")
+                    .font(.title2).bold()
+                    .foregroundColor(.primary)
                     .frame(maxWidth: .infinity, alignment: .center)
-                Text(startDate + " - " + endDate)
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .multilineTextAlignment(.trailing)
                 
                 Divider()
                 
-                if let liveResults = liveResults {
-                    DisclosureGroup(content: {
-                        ScalingScrollView(records: liveResultsToRecords(liveResults),
-                                          bgColor: .clear, shadowRadius: 3) { (elems) in
-                            LiveResultsListView(elements: elems)
-                        }
-                                          .frame(height: 300)
-                                          .padding(.top)
-                        
-                    }, label: {
-                        Text("Live Results")
-                            .font(.headline)
-                            .foregroundColor(Color.primary)
-                            .padding([.leading, .trailing])
-                    })
-                    Divider()
+                HStack(alignment: .top) {
+                    Text("Signup Deadline: ")
+                        .bold()
+                    Text(info["Online Signup Closes at"]!)
+                        .multilineTextAlignment(.trailing)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Time Left Before Late Fee")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Type")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Rules")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Pool")
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
-                if let events = events {
-                    DisclosureGroup(content: {
-                        ScalingScrollView(records: eventsToRecords(events), bgColor: .clear, 
-                                          shadowRadius: 3) { (elems) in
-                            EventResultsView(elements: elems)
-                        }
-                        .frame(height: 500)
-                        .padding(.top)
-                        
-                    }, label: {
-                        Text("Event Results")
-                            .font(.headline)
-                            .foregroundColor(Color.primary)
-                            .padding([.leading, .trailing])
-                    })
-                    Divider()
-                }
-                
-                if let divers = divers {
-                    DisclosureGroup(content: {
-                        ScalingScrollView(records: diversToRecords(divers), bgColor: .clear, 
-                                          rowSpacing: 10, shadowRadius: 3) { (elems) in
-                            DiverListView(elements: elems)
-                        }
-                        .frame(height: 500)
-                        .padding(.top)
-                        
-                    }, label: {
-                        Text("Divers Entered")
-                            .font(.headline)
-                            .foregroundColor(Color.primary)
-                            .padding([.leading, .trailing])
-                    })
-                    Divider()
-                }
-                Spacer()
+                keyToHStack(data: info, key: "Fee per event")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info,
+                            key: "USA Diving Per Event Insurance Surcharge Fee")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Late Fee")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Fee must be paid by")
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                keyToHStack(data: info, key: "Warm up time prior to event")
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding()
+            .padding(20)
+            .padding(.vertical, 10)
+            .background(
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .backgroundStyle(cornerRadius: 30)
+                    .frame(width: screenWidth * 0.9)
+            )
+            
+            if viewModel.showMap {
+                MapView(viewModel: viewModel, locationString: info["Pool"] ?? "")
+                    .backgroundStyle(cornerRadius: 30)
+                    .frame(width: screenWidth * 0.9, height: screenHeight * 0.25)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            
+            if let meetResultsData = meetResultsData {
+                // for results
+                let date = meetResultsData.1
+                let dates = date.components(separatedBy: " to ")
+                let events = meetResultsData.3
+                let liveResults = meetResultsData.4
+                
+                VStack(alignment: .center, spacing: 16) {
+                    Text("Live Results")
+                        .font(.title2).bold()
+                        .foregroundColor(.primary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    
+                    Divider()
+                    
+                    if let liveResults = liveResults {
+                        VStack(spacing: 12) {
+                            ForEach(liveResultsToRecords(liveResults), id: \.self) { record in
+                                LiveResultsListView(elements: record)
+                            }
+                        }
+                        .padding(.top)
+                    }
+                }
+                .padding(20)
+                .padding(.vertical, 10)
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 30)
+                        .frame(width: screenWidth * 0.9)
+                )
+                
+                VStack(alignment: .center, spacing: 16) {
+                    Text("Finished Event Results")
+                        .font(.title2).bold()
+                        .foregroundColor(.primary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    
+                    Divider()
+                    
+                    if let events = events {
+                        VStack(spacing: 12) {
+                            ForEach(eventsToRecords(events), id: \.self) { record in
+                                EventResultsView(elements: record)
+                            }
+                        }
+                        .padding(.top)
+                    }
+                }
+                .padding(20)
+                .padding(.vertical, 10)
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 30)
+                        .frame(width: screenWidth * 0.9)
+                )
+            }
+            
+            VStack(alignment: .center, spacing: 16) {
+                Text("Warmup Details")
+                    .font(.title2).bold()
+                    .foregroundColor(.primary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                
+                Divider()
+                
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(dateSorted(time), id: \.key) { key, value in
+                        Text(key)
+                            .bold()
+                        VStack(alignment: .leading) {
+                            keyToHStack(data: value, key: "Warmup Starts")
+                            keyToHStack(data: value, key: "Warmup Ends")
+                            keyToHStack(data: value, key: "Events Start")
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 30)
+                    }
+                }
+            }
+            .padding(20)
+            .padding(.vertical, 10)
+            .background(
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .backgroundStyle(cornerRadius: 30)
+                    .frame(width: screenWidth * 0.9)
+            )
+            
+            if let meetEventData = meetInfoData.2 {
+                MeetEventListView(showingAlert: $showingAlert, alertText: $alertText,
+                                  meetEventData: meetEventData)
+                .alert(alertText, isPresented: $showingAlert) {
+                    Button("OK", role: .cancel) {
+                        showingAlert = false
+                        alertText = ""
+                    }
+                }
+            }
+            if let divers = divers {
+                DisclosureGroup(content: {
+                    VStack(alignment: .center, spacing: 16) {
+                        VStack(spacing: 12) {
+                            ForEach(diversToRecords(divers), id: \.self) { record in
+                                DiverListView(elements: record)
+                            }
+                        }
+                        .padding(.top)
+                    }
+                    .padding(.vertical, 10)
+                }, label: {
+                    Text("Divers Entered")
+                        .font(.title2).bold()
+                        .foregroundColor(Color.primary)
+                        .padding([.leading, .trailing])
+                        .frame(height: 50)
+                })
+                .padding(.horizontal, 20)
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 30)
+                        .frame(width: screenWidth * 0.9)
+                )
+            }
+            Rectangle()
+                .fill(.clear)
+                .frame(height: 30)
         }
+        .padding()
     }
 }
 
@@ -556,36 +579,24 @@ struct EventResultsView: View {
     
     var body: some View {
         NavigationLink(destination: EventResultPage(meetLink: elements[1])) {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.darkGray)
-                    .cornerRadius(40)
-                VStack {
+            
+            GeometryReader { geometry in
+                ZStack {
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(Custom.darkGray)
+                        .shadow(radius: 5)
+                        .frame(width: geometry.size.width,
+                               height: geometry.size.height)
                     Text(elements[0]) // name
-                        .font(.title3)
-                        .bold()
                         .fixedSize(horizontal: false, vertical: true)
-                        .lineLimit(2)
+                        .lineLimit(1)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.primary)
-                        .frame(height: 50)
-                    Spacer()
-                    HStack {
-                        Text(elements[2] + " Entries") // entries
-                            .padding(.leading, 14)
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Text(elements[3]) // date
-                            .font(.subheadline)
-                            .padding(.trailing, 14)
-                            .scaledToFit()
-                            .minimumScaleFactor(0.5)
-                            .foregroundColor(.primary)
-                    }
+                        .padding(10)
                 }
-                .padding()
             }
+            .padding([.leading, .trailing])
+            .frame(height: 50)
         }
     }
 }
@@ -607,24 +618,26 @@ struct LiveResultsListView: View {
         NavigationLink(destination: isFinishedEvent(elements[1])
                        ? AnyView(FinishedLiveResultsView(link: elements[1]))
                        : AnyView(LiveResultsView(request: elements[1]))) {
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Custom.darkGray)
-                    .cornerRadius(40)
-                VStack {
+            GeometryReader { geometry in
+                ZStack {
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(Custom.darkGray)
+                        .shadow(radius: 5)
+                        .frame(width: geometry.size.width,
+                               height: geometry.size.height)
                     Text(elements[0]) // name
-                        .font(.title3)
-                        .bold()
-                        .fixedSize(horizontal: false, vertical: true)
-                        .lineLimit(2)
+                        .lineLimit(1)
                         .multilineTextAlignment(.center)
                         .foregroundColor(.primary)
+                        .padding(10)
                 }
-                .padding()
             }
+            .padding([.leading, .trailing])
+            .frame(height: 50)
         }
     }
 }
+
 
 struct DiverListView: View {
     @Environment(\.colorScheme) var currentMode
@@ -669,39 +682,35 @@ struct DiverListView: View {
     }
     
     var listBody: some View {
-        ZStack {
-            Rectangle()
-                .foregroundColor(Custom.darkGray)
-                .cornerRadius(40)
-            VStack(alignment: .leading) {
-                HStack() {
-                    Text(elements[0]) // name
-                        .font(.title3)
-                        .bold()
-                        .lineLimit(2)
-                        .foregroundColor(newUser == nil ? .primary : .accentColor)
-                        .multilineTextAlignment(.leading)
-                    
-                    Text(elements[1]) // org
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                    Spacer()
-                }
-                
-                HStack {
-                    ForEach(elements[3...], id: \.self) { event in
-                        Text(event) // each event
-                            .font(.subheadline)
-                            .foregroundColor(.primary)
+        GeometryReader { geometry in
+            ZStack {
+                RoundedRectangle(cornerRadius: 30)
+                    .fill(Custom.darkGray)
+                    .shadow(radius: 5)
+                    .frame(width: geometry.size.width,
+                           height: geometry.size.height)
+                VStack(alignment: .leading) {
+                    HStack() {
+                        Text(elements[0]) // name
+                            .bold()
+                            .lineLimit(2)
+                            .foregroundColor(newUser == nil ? .primary : .accentColor)
+                            .multilineTextAlignment(.leading)
+                        
+                        ForEach(elements[3...], id: \.self) { event in
+                            Text(event) // each event
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
                     }
-                    
                 }
             }
-            .padding()
         }
+        .padding([.leading, .trailing])
+        .frame(height: 50)
     }
 }
+
 
 struct MeetEventListView: View {
     @Environment(\.colorScheme) var currentMode
@@ -710,6 +719,7 @@ struct MeetEventListView: View {
     @Binding var alertText: String
     @ObservedObject private var mpp: MeetPageParser = MeetPageParser()
     var meetEventData: MeetEventData
+    private let screenWidth = UIScreen.main.bounds.width
     
     private func dateSorted(
         _ events: [String: MeetEventData]) -> [(key: String, value: MeetEventData)] {
@@ -722,7 +732,6 @@ struct MeetEventListView: View {
                 
                 return d1! < d2!
             })
-            
             return data
         }
     
@@ -743,62 +752,64 @@ struct MeetEventListView: View {
     
     var body: some View {
         let data = dateSorted(groupByDay(data: meetEventData))
-        
-        
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 10) {
-                ForEach(data, id: \.key) { key, value in
-                    Section {
-                        ForEach(value.indices, id: \.self) { index in
-                            GeometryReader { geometry in
-                                SwipeView {
-                                    NavigationLink(
-                                        destination: EntryPageView(entriesLink: value[index].4)) {
-                                            ZStack {
-                                                RoundedRectangle(cornerRadius: 30)
-                                                    .fill(Custom.darkGray)
-                                                    .shadow(radius: 5)
-                                                    .frame(width: geometry.size.width,
-                                                           height: geometry.size.height)
-                                                Text(value[index].2)
-                                                    .foregroundColor(value[index].4 == "" ?
-                                                                     Custom.secondaryColor
-                                                                     : .primary)
-                                                    .padding()
-                                            }
-                                            .foregroundColor(.primary)
-                                            .saturation(value[index].4 == "" ? 0.5 : 1.0)
+        VStack(spacing: 12) {
+            ForEach(data, id: \.key) { key, value in
+                Section {
+                    ForEach(value.indices, id: \.self) { index in
+                        GeometryReader { geometry in
+                            SwipeView {
+                                NavigationLink(
+                                    destination: EntryPageView(entriesLink: value[index].4)) {
+                                        ZStack {
+                                            RoundedRectangle(cornerRadius: 30)
+                                                .fill(Custom.darkGray)
+                                                .shadow(radius: 5)
+                                                .frame(width: geometry.size.width,
+                                                       height: geometry.size.height)
+                                            Text(value[index].2)
+                                                .foregroundColor(value[index].4 == "" ?
+                                                                 Custom.secondaryColor
+                                                                 : .primary)
+                                                .padding()
                                         }
-                                        .disabled(value[index].4 == "")
-                                } trailingActions: { context in
-                                    SwipeAction("Rule") {
-                                        Task {
-                                            if cachedEventRules.keys.contains(value[index].3) {
-                                                alertText = cachedEventRules[value[index].3]!
-                                            } else if let text =
-                                                        await mpp.getEventRule(link: value[index].3) {
-                                                alertText = text
-                                                cachedEventRules[value[index].3] = text
-                                            }
-                                            
-                                            showingAlert = true
-                                            context.state.wrappedValue = .closed
-                                        }
+                                        .foregroundColor(.primary)
+                                        .saturation(value[index].4 == "" ? 0.5 : 1.0)
                                     }
-                                    .background(currentMode == .light
-                                                ? Custom.lightBlue
-                                                : Custom.darkBlue)
+                                    .disabled(value[index].4 == "")
+                            } trailingActions: { context in
+                                SwipeAction("Rule") {
+                                    Task {
+                                        if cachedEventRules.keys.contains(value[index].3) {
+                                            alertText = cachedEventRules[value[index].3]!
+                                        } else if let text =
+                                                    await mpp.getEventRule(link: value[index].3) {
+                                            alertText = text
+                                            cachedEventRules[value[index].3] = text
+                                        }
+                                        
+                                        showingAlert = true
+                                        context.state.wrappedValue = .closed
+                                    }
                                 }
+                                .background(currentMode == .light
+                                            ? Custom.lightBlue
+                                            : Custom.darkBlue)
                             }
-                            .padding([.leading, .trailing])
-                            .frame(height: 50)
                         }
-                    } header: {
-                        Text(key)
-                            .font(.subheadline)
+                        .padding([.leading, .trailing])
+                        .frame(height: 50)
                     }
+                } header: {
+                    Text(key)
+                        .font(.title3).bold()
                 }
             }
         }
+        .padding(20)
+        .background(.ultraThinMaterial)
+        .backgroundStyle(cornerRadius: 30)
+        .modifier(OutlineOverlay(cornerRadius: 30))
+        .frame(width: screenWidth * 0.9)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 }

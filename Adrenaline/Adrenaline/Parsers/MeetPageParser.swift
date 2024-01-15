@@ -38,7 +38,7 @@ typealias MeetInfoData = [String: String]
 //                           [day   : [warmup/event start/end: time]]
 typealias MeetInfoTimeData = [String: [String: String]]
 
-typealias MeetInfoJointData = (MeetInfoData, MeetInfoTimeData, MeetEventData?)
+typealias MeetInfoJointData = (MeetInfoData, MeetInfoTimeData, MeetEventData?, MeetDiverData?)
 
 //                              [name  : link  ]
 typealias MeetLiveResultsData = [String: String]
@@ -411,6 +411,7 @@ class MeetPageParser: ObservableObject {
         var time: MeetInfoTimeData = [:]
         var curDay: String = ""
         var addToTime: Bool = false
+        var divers: MeetDiverData?
         
         if let info = data["info"] {
             do {
@@ -489,12 +490,16 @@ class MeetPageParser: ObservableObject {
                         infoResult[label] = value
                     }
                 }
+                if let diversList = getDiverListData(data: data) {
+                    divers = diversList
+                }
                 
-                return (infoResult, time, await getEventData(data: data))
+                return (infoResult, time, await getEventData(data: data), divers)
             } catch {
                 print("Getting meet info data failed, \(error) caught")
             }
         }
+        
         
         return nil
     }

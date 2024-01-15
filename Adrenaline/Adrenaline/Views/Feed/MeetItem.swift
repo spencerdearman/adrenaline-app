@@ -10,9 +10,9 @@ import UIKit
 import AVKit
 
 class MeetFeedItem: FeedItem {
-    var meet: MeetEvent
+    var meet: MeetBase
     
-    init(meet: MeetEvent, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
+    init(meet: MeetBase, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
         self.meet = meet
         super.init()
         self.collapsedView = MeetFeedItemCollapsedView(feedModel: feedModel, id: self.id,
@@ -30,7 +30,7 @@ struct MeetFeedItemCollapsedView: View {
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var meet: MeetBase
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -51,29 +51,20 @@ struct MeetFeedItemCollapsedView: View {
                         .foregroundColor(.primary)
                         .matchedGeometryEffect(id: "title\(id)", in: namespace)
                     
-                    Text("Meet Location - Date Range".uppercased())
+                    if meet.org != "" {
+                        Text(meet.org?.uppercased() ?? "")
+                            .font(.footnote).bold()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(.primary.opacity(0.7))
+                            .matchedGeometryEffect(id: "subtitle1\(id)", in: namespace)
+                    }
+                    
+                    Text((meet.location?.uppercased() ?? "") + " - " + (meet.date?.uppercased() ?? ""))
                         .font(.footnote).bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-                    
-                    Text("Basic Results are going to go here or something to lure the person in")
-                        .font(.footnote)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                    
-                    HStack {
-                        LogoView(imageName: "Spencer")
-                            .shadow(radius: 10)
-                        Text("You attended, check your results now")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
-                    .accessibilityElement(children: .combine)
+                        .accessibilityElement(children: .combine)
                 }
                 .padding(20)
                 .padding(.vertical, 10)
@@ -100,7 +91,7 @@ struct MeetFeedItemExpandedView: View {
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
-    var meet: MeetEvent
+    var meet: MeetBase
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -109,6 +100,13 @@ struct MeetFeedItemExpandedView: View {
         ZStack {
             ScrollView {
                 cover
+                
+                if meet.resultsLink == "" {
+                    MeetPageView(meetLink: meet.link ?? "")
+                } else {
+                    MeetPageView(meetLink: meet.link ?? "", infoLink: meet.resultsLink ?? "")
+                }
+                //MeetPageView(meetLink: meet.link ?? "")
             }
             .coordinateSpace(name: "scroll")
             .background(currentMode == .light ? Color.white : Color.black)
@@ -119,7 +117,6 @@ struct MeetFeedItemExpandedView: View {
             .background(.ultraThinMaterial)
             .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
-            
             CloseButtonWithFeedModel(feedModel: $feedModel)
         }
         .frame(maxWidth: screenWidth)
@@ -135,24 +132,51 @@ struct MeetFeedItemExpandedView: View {
     var cover: some View {
         GeometryReader { proxy in
             let scrollY = proxy.frame(in: .named("scroll")).minY
-            
             VStack {
-                Spacer()
+                VStack(alignment: .center, spacing: 16) {
+                    Text(meet.name)
+                        .font(.title).bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.center)
+                    
+                    if meet.org != "" {
+                        Text(meet.org ?? "")
+                            .font(.title3).fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.center)
+                    }
+                    
+                    Text(meet.date?.uppercased() ?? "")
+                        .font(.headline).bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.primary)
+                }
+                .padding(20)
+                .padding(.vertical, 10)
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .frame(maxHeight: .infinity, alignment: .bottom)
+                        .cornerRadius(30)
+                        .blur(radius: 30)
+                        .matchedGeometryEffect(id: "blur\(id)", in: namespace)
+                        .opacity(appear[0] ? 0 : 1)
+                )
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 30)
+                        .opacity(appear[0] ? 1 : 0)
+                )
+                .offset(y: -screenHeight * 0.2)
+                .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(20)
             }
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
-            .background(
-                ZStack {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .frame(width: screenWidth * 0.5, height: screenWidth * 0.5)
-                        .shadow(radius: 10)
-                    Image("PlatformImage")
-                        .frame(width: screenWidth * 0.3, height: screenWidth * 0.3)
-                        .scaleEffect(0.2)
-                }
-                    .offset(y: scrollY > 0 ? -scrollY - 45 : -45)
-            )
             .background(
                 Image("WaveBackground")
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
@@ -168,63 +192,8 @@ struct MeetFeedItemExpandedView: View {
                     .matchedGeometryEffect(id: "mask\(id)", in: namespace)
                     .offset(y: scrollY > 0 ? -scrollY : 0)
             )
-            .overlay(
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(meet.name)
-                        .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary)
-                        .matchedGeometryEffect(id: "title\(id)", in: namespace)
-                    
-                    Text("Meet Location - Date Range".uppercased())
-                        .font(.footnote).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-                    
-                    Text("Basic Results are going to go here or something to lure the person in")
-                        .font(.footnote)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                        .opacity(appear[1] ? 1 : 0)
-                    
-                    HStack {
-                        LogoView(imageName: "Spencer")
-                        Text("You attended, check your results now")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
-                    .opacity(appear[1] ? 1 : 0)
-                    .accessibilityElement(children: .combine)
-                }
-                    .padding(20)
-                    .padding(.vertical, 10)
-                    .background(
-                        Rectangle()
-                            .fill(.ultraThinMaterial)
-                            .frame(maxHeight: .infinity, alignment: .bottom)
-                            .cornerRadius(30)
-                            .blur(radius: 30)
-                            .matchedGeometryEffect(id: "blur\(id)", in: namespace)
-                            .opacity(appear[0] ? 0 : 1)
-                    )
-                    .background(
-                        Rectangle()
-                            .fill(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 30)
-                            .opacity(appear[0] ? 1 : 0)
-                    )
-                    .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .offset(y: 100)
-                    .padding(20)
-            )
         }
-        .frame(height: 500)
+        .frame(height: 350)
     }
     
     func close() {

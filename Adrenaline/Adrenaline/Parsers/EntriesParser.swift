@@ -91,7 +91,9 @@ class EntriesParser: ObservableObject {
                         }
                     }
                 }
-                
+                if result == nil {
+                    result = []
+                }
                 return result
             }
         } catch {
