@@ -64,8 +64,6 @@ extension MeetBase {
                             return nil
                         }
                         
-                        print("meetInfoData:", meetInfoData)
-                        
                         var location: String? = nil
                         let locationRef = Reference(Substring.self)
                         

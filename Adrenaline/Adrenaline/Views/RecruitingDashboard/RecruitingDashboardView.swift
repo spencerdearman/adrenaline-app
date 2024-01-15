@@ -30,7 +30,7 @@ struct RecruitingDashboardView: View {
     // the coach
     @State private var shouldRefreshPosts: Bool = false
     // MeetFeedItem and user ids that attended that meet
-    @State private var recentResults: [(MeetFeedItem, [String])] = []
+    @State private var recentResults: [(MeetFeedItem, [NewUser])] = []
     @State private var selectedResult: String? = nil
     @ObservedObject var newUserViewModel: NewUserViewModel
     @Binding var showAccount: Bool
@@ -72,9 +72,9 @@ struct RecruitingDashboardView: View {
         return nil
     }
     
-    private func getFavoritesRecentResults(ids: [String]) async throws -> [(MeetFeedItem, [String])] {
+    private func getFavoritesRecentResults(ids: [String]) async throws -> [(MeetFeedItem, [NewUser])] {
         // Main meet link -> [user ids]
-        var meetLinkToUsers: [String: [String]] = [:]
+        var meetLinkToUsers: [String: [NewUser]] = [:]
         // Main meet link -> MeetFeedItem
         var meetLinkToItem: [String: MeetFeedItem] = [:]
         
@@ -110,7 +110,7 @@ struct RecruitingDashboardView: View {
             if !meetLinkToUsers.keys.contains(link) {
                 meetLinkToUsers[link] = []
             }
-            meetLinkToUsers[link]!.append(user.id)
+            meetLinkToUsers[link]!.append(user)
         }
         
         // Combine MeetFeedItems and associated users
@@ -124,9 +124,7 @@ struct RecruitingDashboardView: View {
         }
         
         // Safe to force unwrap after existence checking above
-        let result = linkKeys.map { return (meetLinkToItem[$0]!, meetLinkToUsers[$0]!) }
-        print("results:", result)
-        return result
+        return linkKeys.map { return (meetLinkToItem[$0]!, meetLinkToUsers[$0]!) }
     }
     
     private func getFavoritesPosts(ids: [String]) async throws -> [PostProfileItem] {
@@ -149,6 +147,28 @@ struct RecruitingDashboardView: View {
         }
         
         return profileItems.sorted { $0.0 > $1.0 }.map { $0.1 }
+    }
+    
+    private func getAttendeesString(_ users: [NewUser]) -> String {
+        let names = users.map {
+            var name = $0.firstName
+            if let lastInitial = $0.lastName.first {
+                name += " \(lastInitial)"
+            }
+            
+            return name
+        }
+        var result = "Attended by "
+        if users.count == 0 { return "" }
+        else if users.count == 1 {
+            result += names[0]
+        } else if users.count == 2 {
+            result += names.joined(separator: " and ")
+        } else {
+            result += names[..<2].joined(separator: ", ") + ", and others"
+        }
+        
+        return result
     }
     
     var body: some View {
@@ -278,19 +298,9 @@ struct RecruitingDashboardView: View {
                         favorites = order.map { favUsers[$0] }
                     }
                     
-                    print("Favorites:", favorites.map { $0.firstName })
+                    recentResults = try await getFavoritesRecentResults(ids: favsIds)
+                    newPosts = try await getFavoritesPosts(ids: favsIds)
                 }
-            }
-        }
-        .onAppear {
-            Task {
-                guard let users = newUser?.favoritesIds else {
-                    print("Failed to get favorites")
-                    return
-                }
-                
-                recentResults = try await getFavoritesRecentResults(ids: users)
-                newPosts = try await getFavoritesPosts(ids: users)
             }
         }
     }
@@ -380,10 +390,15 @@ struct RecruitingDashboardView: View {
                                 AnyView(item.collapsedView)
                             }
                             .overlay {
-                                VStack {
+                                VStack(alignment: .leading) {
                                     Spacer()
-                                    Text("Hi")
+                                    Text(getAttendeesString(users).uppercased())
+                                        .font(.footnote).bold()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .foregroundColor(.primary.opacity(0.7))
                                 }
+                                .padding(.bottom, 10)
+                                .padding(.horizontal, 20)
                             }
                             .padding(.leading, 25)
                             .padding(.bottom, 25)
