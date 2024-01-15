@@ -10,7 +10,7 @@ import CachedAsyncImage
 
 private enum RecruitingDashboardSheet {
     case search
-    case compare
+    case preferences
 }
 
 struct RecruitingDashboardBar: View {
@@ -47,10 +47,10 @@ struct RecruitingDashboardBar: View {
             
             HStack(spacing: 16) {
                 Button {
-                    selectedSheet = .compare
+                    selectedSheet = .preferences
                     showSheet = true
                 } label: {
-                    Image(systemName: "arrow.left.arrow.right")
+                    Image(systemName: "slider.horizontal.3")
                         .font(.system(size: 17, weight: .bold))
                         .frame(width: 36, height: 36)
                         .foregroundColor(.secondary)
@@ -116,8 +116,8 @@ struct RecruitingDashboardBar: View {
         .offset(y: contentHasScrolled ? -16 : 0)
         .sheet(isPresented: $showSheet) {
             switch selectedSheet {
-                case .compare:
-                    Text("Compare Divers")
+                case .preferences:
+                    Text("Coach Preferences")
                 case .search:
                     NewSearchView(recentSearches: $recentSearches)
                 default:
