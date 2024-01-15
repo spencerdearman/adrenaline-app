@@ -14,6 +14,17 @@ enum RecruitingSheet {
     case results
 }
 
+typealias RecentResult = (MeetFeedItem, [NewUser])
+
+struct RecentResultObject: Identifiable, Equatable {
+    var id = UUID().uuidString
+    var recentResult: RecentResult
+    
+    public static func == (lhs: RecentResultObject, rhs: RecentResultObject) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct RecruitingDashboardView: View {
     @EnvironmentObject private var appLogic: AppLogic
     @Namespace var namespace
@@ -30,7 +41,7 @@ struct RecruitingDashboardView: View {
     // the coach
     @State private var shouldRefreshPosts: Bool = false
     // MeetFeedItem and user ids that attended that meet
-    @State private var recentResults: [(MeetFeedItem, [NewUser])] = []
+    @State private var recentResults: [RecentResultObject] = []
     @State private var selectedResult: String? = nil
     @ObservedObject var newUserViewModel: NewUserViewModel
     @Binding var showAccount: Bool
@@ -72,7 +83,7 @@ struct RecruitingDashboardView: View {
         return nil
     }
     
-    private func getFavoritesRecentResults(ids: [String]) async throws -> [(MeetFeedItem, [NewUser])] {
+    private func getFavoritesRecentResults(ids: [String]) async throws -> [RecentResultObject] {
         // Main meet link -> [user ids]
         var meetLinkToUsers: [String: [NewUser]] = [:]
         // Main meet link -> MeetFeedItem
@@ -124,7 +135,11 @@ struct RecruitingDashboardView: View {
         }
         
         // Safe to force unwrap after existence checking above
-        return linkKeys.map { return (meetLinkToItem[$0]!, meetLinkToUsers[$0]!) }
+        return linkKeys.map {
+            RecentResultObject(recentResult: (meetLinkToItem[$0]!, meetLinkToUsers[$0]!))
+        } .sorted {
+            $0.recentResult.0.meet.name < $1.recentResult.0.meet.name
+        }
     }
     
     private func getFavoritesPosts(ids: [String]) async throws -> [PostProfileItem] {
@@ -210,7 +225,7 @@ struct RecruitingDashboardView: View {
                 case .divers:
                     ExpandedDiversView(divers: $favorites)
                 case .results:
-                    ExpandedResultsView()
+                    ExpandedResultsView(results: $recentResults, feedModel: $feedModel)
                 case nil:
                     EmptyView()
             }
@@ -376,7 +391,7 @@ struct RecruitingDashboardView: View {
             }
             
             if recentResults.count == 0 {
-                Text("There are no new results posted yet")
+                Text("There are no recent results posted yet")
                     .fontWeight(.semibold)
                     .foregroundColor(.secondary)
                     .padding(10)
@@ -384,8 +399,8 @@ struct RecruitingDashboardView: View {
             } else {
                 ScrollView(.horizontal) {
                     HStack(spacing: 0) {
-                        ForEach(recentResults.indices, id: \.self) { index in
-                            let (item, users) = recentResults[index]
+                        ForEach($recentResults, id: \.id) { result in
+                            let (item, users) = result.recentResult.wrappedValue
                             VStack {
                                 AnyView(item.collapsedView)
                             }
@@ -397,7 +412,7 @@ struct RecruitingDashboardView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .foregroundColor(.primary.opacity(0.7))
                                 }
-                                .padding(.bottom, 10)
+                                .padding(.bottom, 20)
                                 .padding(.horizontal, 20)
                             }
                             .padding(.leading, 25)
