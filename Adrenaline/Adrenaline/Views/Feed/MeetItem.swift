@@ -62,19 +62,7 @@ struct MeetFeedItemCollapsedView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
                         .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-        
-                    // WORK ON LATER TO ADDRESS IF YOU WERE IN THE MEET OR NOT
-//                    Divider()
-//                        .foregroundColor(.secondary)
-//                    
-//                    HStack {
-//                        LogoView(imageName: "Spencer")
-//                            .shadow(radius: 10)
-//                        Text("You attended, check your results now")
-//                            .font(.footnote.weight(.medium))
-//                            .foregroundStyle(.secondary)
-//                    }
-                    .accessibilityElement(children: .combine)
+                        .accessibilityElement(children: .combine)
                 }
                 .padding(20)
                 .padding(.vertical, 10)
@@ -98,8 +86,6 @@ struct MeetFeedItemExpandedView: View {
     @State var viewState: CGSize = .zero
     @State var showSection = false
     @State var appear = [false, false, false]
-//    @State var selectedItem: String = ""
-//    @State var showSheet: Bool = false
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
@@ -113,7 +99,12 @@ struct MeetFeedItemExpandedView: View {
             ScrollView {
                 cover
                 
-                MeetPageView(meetLink: meet.link ?? "")
+                if meet.resultsLink == "" {
+                    MeetPageView(meetLink: meet.link ?? "")
+                } else {
+                    MeetPageView(meetLink: meet.link ?? "", infoLink: meet.resultsLink ?? "")
+                }
+                //MeetPageView(meetLink: meet.link ?? "")
             }
             .coordinateSpace(name: "scroll")
             .background(currentMode == .light ? Color.white : Color.black)
@@ -124,9 +115,6 @@ struct MeetFeedItemExpandedView: View {
             .background(.ultraThinMaterial)
             .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
-//            .sheet(isPresented: $showSheet) {
-//                EntryPageView(entriesLink: selectedItem)
-//            }
             CloseButtonWithFeedModel(feedModel: $feedModel)
         }
         .frame(maxWidth: screenWidth)
@@ -142,28 +130,49 @@ struct MeetFeedItemExpandedView: View {
     var cover: some View {
         GeometryReader { proxy in
             let scrollY = proxy.frame(in: .named("scroll")).minY
-            
             VStack {
-                Spacer()
+                VStack(alignment: .center, spacing: 16) {
+                    Text(meet.name)
+                        .font(.title).bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.center)
+                    
+                    Text(meet.org ?? "")
+                        .font(.title3).fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.center)
+                    
+                    Text(meet.date?.uppercased() ?? "")
+                        .font(.headline).bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundColor(.primary)
+                }
+                .padding(20)
+                .padding(.vertical, 10)
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .frame(maxHeight: .infinity, alignment: .bottom)
+                        .cornerRadius(30)
+                        .blur(radius: 30)
+                        .matchedGeometryEffect(id: "blur\(id)", in: namespace)
+                        .opacity(appear[0] ? 0 : 1)
+                )
+                .background(
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .backgroundStyle(cornerRadius: 30)
+                        .opacity(appear[0] ? 1 : 0)
+                )
+                .offset(y: -screenHeight * 0.2)
+                .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(20)
             }
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
-//            .background(AnimatedBlobView(
-//                colors: [.white, Custom.coolBlue])
-//                .frame(width: 400, height: 414)
-//                .offset(x: 200, y: 0)
-//                .scaleEffect(0.8))
-//            .background(AnimatedBlobView(
-//                colors: [.white, Custom.lightBlue, Custom.coolBlue])
-//                .frame(width: 400, height: 414)
-//                .offset(x: -50, y: 200)
-//                .scaleEffect(0.7))
-//            .background(AnimatedBlobView(
-//                colors: [.white, Custom.lightBlue, Custom.medBlue, Custom.coolBlue])
-//                .frame(width: 400, height: 414)
-//                .offset(x: -100, y: 20)
-//                .scaleEffect(1.6)
-//                .rotationEffect(Angle(degrees: 60)))
             .background(
                 Image("WaveBackground")
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
@@ -179,51 +188,8 @@ struct MeetFeedItemExpandedView: View {
                     .matchedGeometryEffect(id: "mask\(id)", in: namespace)
                     .offset(y: scrollY > 0 ? -scrollY : 0)
             )
-            .overlay(
-                VStack(alignment: .center, spacing: 16) {
-                    Text(meet.name)
-                        .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.center)
-                        .matchedGeometryEffect(id: "title\(id)", in: namespace)
-                    
-                    Text(meet.org ?? "")
-                        .font(.title3).fontWeight(.bold)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.center)
-                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-                    
-                    Text(meet.date?.uppercased() ?? "")
-                        .font(.headline).bold()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.primary)
-                        .matchedGeometryEffect(id: "subtitle1\(id)", in: namespace)
-                }
-                    .padding(20)
-                    .padding(.vertical, 10)
-                    .background(
-                        Rectangle()
-                            .fill(.ultraThinMaterial)
-                            .frame(maxHeight: .infinity, alignment: .bottom)
-                            .cornerRadius(30)
-                            .blur(radius: 30)
-                            .matchedGeometryEffect(id: "blur\(id)", in: namespace)
-                            .opacity(appear[0] ? 0 : 1)
-                    )
-                    .background(
-                        Rectangle()
-                            .fill(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 30)
-                            .opacity(appear[0] ? 1 : 0)
-                    )
-                    .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
-                    .frame(maxHeight: .infinity, alignment: .bottom)
-                    .padding(20)
-            )
         }
-        .frame(height: 500)
+        .frame(height: 350)
     }
     
     func close() {

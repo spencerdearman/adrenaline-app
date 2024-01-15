@@ -53,6 +53,7 @@ struct MeetPageView: View {
     }
     
     var meetLink: String
+    var infoLink: String = ""
     
     private func tupleToList(data: MeetEventData) -> [[String]] {
         var result: [[String]] = []
@@ -155,22 +156,56 @@ struct MeetPageView: View {
                 meetInfoData = info
                 meetResultsData = results
             } else {
-                // Initialize meet parse from index page
-                let url = URL(string: meetLink)
-                
-                if let url = url {
-                    // This sets getTextModel's text field equal to the HTML from url
-                    await getTextModel.fetchText(url: url)
+                if infoLink != "" {
+                    // Initialize meet parse from index page
+                    let meetUrl = URL(string: meetLink)
+                    let infoUrl = URL(string: infoLink)
                     
-                    if let html = getTextModel.text {
-                        meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
-                        if let meetData = meetData {
-                            meetInfoData = await mpp.getMeetInfoData(data: meetData)
-                            meetResultsData = await mpp.getMeetResultsData(data: meetData)
-                            
-                            cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
-                        } else {
-                            print("Meet page failed to parse")
+                    if let url = meetUrl {
+                        // This sets getTextModel's text field equal to the HTML from url
+                        await getTextModel.fetchText(url: url)
+                        
+                        if let html = getTextModel.text {
+                            meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
+                            if let meetData = meetData {
+                                meetInfoData = await mpp.getMeetInfoData(data: meetData)
+                            } else {
+                                print("Meet page failed to parse")
+                            }
+                        }
+                    }
+                    if let url = infoUrl {
+                        // This sets getTextModel's text field equal to the HTML from url
+                        await getTextModel.fetchText(url: url)
+                        
+                        if let html = getTextModel.text {
+                            meetData = try await mpp.parseMeetPage(link: infoLink, html: html)
+                            if let meetData = meetData {
+                                meetResultsData = await mpp.getMeetResultsData(data: meetData)
+                                cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
+                            } else {
+                                print("Meet page failed to parse")
+                            }
+                        }
+                    }
+                } else {
+                    // Initialize meet parse from index page
+                    let url = URL(string: meetLink)
+                    
+                    if let url = url {
+                        // This sets getTextModel's text field equal to the HTML from url
+                        await getTextModel.fetchText(url: url)
+                        
+                        if let html = getTextModel.text {
+                            meetData = try await mpp.parseMeetPage(link: meetLink, html: html)
+                            if let meetData = meetData {
+                                meetInfoData = await mpp.getMeetInfoData(data: meetData)
+                                meetResultsData = await mpp.getMeetResultsData(data: meetData)
+                                
+                                cachedMeetData[meetLink] = (meetInfoData, meetResultsData)
+                            } else {
+                                print("Meet page failed to parse")
+                            }
                         }
                     }
                 }
@@ -204,19 +239,25 @@ struct MeetPageView: View {
             bgColor.ignoresSafeArea()
             VStack {
                 if let meetInfoData = meetInfoData {
-                    MeetInfoPageView(meetInfoData: meetInfoData)
-                    Spacer()
-                } else if let meetResultsData = meetResultsData {
-                    MeetResultsPageView(meetResultsData: meetResultsData)
-                    Spacer()
+                    if infoLink != "" {
+                        if let meetResultsData = meetResultsData {
+                            MeetInfoPageView(meetInfoData: meetInfoData,
+                                             meetResultsData: meetResultsData)
+                            Spacer()
+                        }
+                    } else {
+                        MeetInfoPageView(meetInfoData: meetInfoData)
+                        Spacer()
+                    }
+//                } else if let meetResultsData = meetResultsData {
+//                    MeetResultsPageView(meetResultsData: meetResultsData)
+//                    Spacer()
                 } else if meetLink != "" && !timedOut {
-                    BackgroundBubble() {
                         VStack {
                             Text("Getting meet information...")
                             ProgressView()
                         }
                         .padding()
-                    }
                 } else if timedOut {
                     Text("Unable to get meet page, network timed out")
                 } else {
@@ -234,39 +275,12 @@ struct MeetPageView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-//        .toolbar {
-//            ToolbarItem(placement: .navigationBarLeading) {
-//                Button(action: { dismiss() }) {
-//                    NavigationViewBackButton()
-//                }
-//            }
-//            
-//            if meetInfoData != nil || meetResultsData != nil {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    ZStack {
-//                        Circle()
-//                            .foregroundColor(Custom.grayThinMaterial)
-//                            .shadow(radius: 4)
-//                            .frame(width: buttonHeight, height: buttonHeight)
-//                        Image(systemName: "arrow.clockwise")
-//                            .foregroundColor(.primary)
-//                            .font(.subheadline)
-//                            .fontWeight(.medium)
-//                    }
-//                    .onTapGesture {
-//                        clearMeetDataCache()
-//                        Task {
-//                            try await getMeetData(info: meetInfoData, results: meetResultsData)
-//                        }
-//                    }
-//                }
-//            }
-//        }
     }
 }
 
 struct MeetInfoPageView: View {
     var meetInfoData: MeetInfoJointData
+    var meetResultsData: MeetResultsData?
     @State private var meetDetailsExpanded: Bool = false
     @State private var warmupDetailsExpanded: Bool = false
     @State private var showingAlert: Bool = false
@@ -304,6 +318,11 @@ struct MeetInfoPageView: View {
     var body: some View {
         let info = meetInfoData.0
         let time = meetInfoData.1
+        
+        if let meetResultsData = meetResultsData {
+            MeetResultsPageView(meetResultsData: meetResultsData)
+                .frame(height: 500)
+        }
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .center, spacing: 16) {
                 Text("Meet Details")
