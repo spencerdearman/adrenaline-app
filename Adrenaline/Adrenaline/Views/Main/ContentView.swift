@@ -240,7 +240,7 @@ struct ContentView: View {
                                                             recentSearches: $recentSearches,
                                                             uploadingPost: $uploadingPost)
                                     .tabItem {
-                                        Label("Recruiting", systemImage: "octagon")
+                                        Label("Recruiting", systemImage: "atom")
                                     }
                                 }
                                 

@@ -84,7 +84,7 @@ final class VideoPlayerViewModel: ObservableObject {
     }
     
     private func replaceItem(with newResolution: Resolution) {
-        print("replacing \(self.selectedResolution.displayValue) with \(newResolution.displayValue)")
+//        print("replacing \(self.selectedResolution.displayValue) with \(newResolution.displayValue)")
         guard let stream = self.video.streams.first(where: { $0.resolution == newResolution }) else { return }
         let currentTime: CMTime
         if let currentItem = player.currentItem {
