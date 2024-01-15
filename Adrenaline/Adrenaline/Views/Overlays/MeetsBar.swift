@@ -23,7 +23,6 @@ struct MeetsBar: View {
     @Binding var contentHasScrolled: Bool
     @Binding var feedModel : FeedModel
     @Binding var recentSearches: [SearchItem]
-    @Binding var uploadingPost: Post?
     
     // Using this function to swap sheet bools safely
     private func showSheet(showingPost: Bool) {
