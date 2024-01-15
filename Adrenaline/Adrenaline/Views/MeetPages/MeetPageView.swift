@@ -732,7 +732,6 @@ struct MeetEventListView: View {
                 
                 return d1! < d2!
             })
-            print("Data: \(data)")
             return data
         }
     
