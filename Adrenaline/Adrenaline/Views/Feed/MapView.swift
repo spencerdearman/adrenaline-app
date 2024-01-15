@@ -11,6 +11,7 @@ import MapKit
 class MapViewModel: ObservableObject {
     @Published var region: MKCoordinateRegion
     @Published var locationCoordinate: CLLocationCoordinate2D?
+    @Published var showMap: Bool = true
 
     init() {
         // Initialize with a default location
@@ -20,23 +21,29 @@ class MapViewModel: ObservableObject {
     func findLocation(location: String) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(location) { [weak self] (placemarks, error) in
-            guard let self = self, let placemark = placemarks?.first, let locationCoordinate = placemark.location?.coordinate else { return }
+            guard let self = self, let placemark = placemarks?.first, let locationCoordinate = placemark.location?.coordinate else {
+                self?.showMap = false
+                return
+            }
             
             // Now set the locationCoordinate and region
             self.locationCoordinate = locationCoordinate
+            print(self.locationCoordinate)
+            
             self.region = MKCoordinateRegion(center: locationCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002))
+            showMap = true
         }
     }
 }
 
 struct MapView: View {
-    @StateObject private var viewModel = MapViewModel()
+    @ObservedObject var viewModel: MapViewModel
     let locationString: String
 
-    init(locationString: String) {
-        self.locationString = locationString
-        _viewModel = StateObject(wrappedValue: MapViewModel())
-    }
+//    init(locationString: String, viewMode: MapViewModel) {
+//        self.locationString = locationString
+//        _viewModel = ObservedObject(wrappedValue: MapViewModel())
+//    }
     
     private func openInMaps() {
             guard let coordinate = viewModel.locationCoordinate else { return }

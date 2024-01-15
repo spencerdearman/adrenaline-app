@@ -51,11 +51,13 @@ struct MeetFeedItemCollapsedView: View {
                         .foregroundColor(.primary)
                         .matchedGeometryEffect(id: "title\(id)", in: namespace)
                     
-                    Text(meet.org?.uppercased() ?? "")
-                        .font(.footnote).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "subtitle1\(id)", in: namespace)
+                    if meet.org != "" {
+                        Text(meet.org?.uppercased() ?? "")
+                            .font(.footnote).bold()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(.primary.opacity(0.7))
+                            .matchedGeometryEffect(id: "subtitle1\(id)", in: namespace)
+                    }
                     
                     Text((meet.location?.uppercased() ?? "") + " - " + (meet.date?.uppercased() ?? ""))
                         .font(.footnote).bold()
@@ -138,11 +140,13 @@ struct MeetFeedItemExpandedView: View {
                         .foregroundColor(.primary)
                         .multilineTextAlignment(.center)
                     
-                    Text(meet.org ?? "")
-                        .font(.title3).fontWeight(.bold)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.center)
+                    if meet.org != "" {
+                        Text(meet.org ?? "")
+                            .font(.title3).fontWeight(.bold)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.center)
+                    }
                     
                     Text(meet.date?.uppercased() ?? "")
                         .font(.headline).bold()

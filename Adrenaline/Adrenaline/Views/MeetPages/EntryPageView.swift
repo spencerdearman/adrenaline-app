@@ -47,7 +47,7 @@ struct EntryPageView: View {
     
     var body: some View {
         ZStack {
-            if let entries = entries {
+            if let entries = entries, !entries.isEmpty {
                 bgColor.ignoresSafeArea()
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 10) {
@@ -139,8 +139,16 @@ struct EntryPageView: View {
                     }
                     .padding(10)
                 }
-            }
-            else {
+            } else if let entries = entries {
+                VStack {
+                    Text("Event has already concluded, please check finished results")
+                } 
+                .padding(30)
+                .lineLimit(2)
+                .multilineTextAlignment(.center)
+                
+                
+            } else {
                 VStack {
                     Text("Getting event entries...")
                     ProgressView()
@@ -176,14 +184,6 @@ struct EntryPageView: View {
                             entryUsers[partner.link] = await getNewUser(link: partner.link)
                         }
                     }
-                }
-            }
-        }
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: { dismiss() }) {
-                    NavigationViewBackButton()
                 }
             }
         }
