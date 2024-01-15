@@ -61,7 +61,7 @@ struct MeetsBar: View {
                 }
                 
                 Button {
-                    showSheet(showingPost: false)
+                    showSearchSheet = true
                 } label: {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 17, weight: .bold))
