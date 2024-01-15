@@ -89,7 +89,7 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
 struct Home: View {
     @Namespace var namespace
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.dictToTuple) private var dictToTuple
+//    @Environment(\.dictToTuple) private var dictToTuple
     @Environment(\.networkIsConnected) private var networkIsConnected
     @StateObject var meetParser: MeetParser = MeetParser()
     @State private var meetsParsed: Bool = false
@@ -103,7 +103,10 @@ struct Home: View {
     @State private var showDetail: Bool = false
     @State private var upcomingFeedItems: [FeedItem] = []
     @State private var currentFeedItems: [FeedItem] = []
-    @Binding var diveMeetsID: String
+    @State private var diveMeetsID: String = ""
+    @State private var upcomingItemsLoaded: Bool = false
+    @State private var currentItemsLoaded: Bool = false
+    @Binding var newUser: NewUser?
     @Binding var tabBarState: Visibility
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
@@ -113,21 +116,15 @@ struct Home: View {
     private let textColor: Color = Color.primary
     private let grayValue: CGFloat = 0.90
     private let grayValueDark: CGFloat = 0.10
-    private var screenWidth = UIScreen.main.bounds.width
-    private var screenHeight = UIScreen.main.bounds.height
-    private var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
+    private let screenWidth = UIScreen.main.bounds.width
+    private let screenHeight = UIScreen.main.bounds.height
+    private let columns = Array(repeating: GridItem(.adaptive(minimum: 300), spacing: 20),
+                                count: UIDevice.current.userInterfaceIdiom == .pad ? 3 : 1)
+    
     @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
     @ScaledMetric private var typeBGWidthScaled: CGFloat = 40
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
-    
-    init(diveMeetsID: Binding<String>, tabBarState: Binding<Visibility>, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, uploadingPost: Binding<Post?>) {
-        self._diveMeetsID = diveMeetsID
-        self._tabBarState = tabBarState
-        self._showAccount = showAccount
-        self._recentSearches = recentSearches
-        self._uploadingPost = uploadingPost
-    }
     
     private var typeBubbleWidth: CGFloat {
         min(typeBubbleWidthScaled, 150)
@@ -188,6 +185,7 @@ struct Home: View {
                     upcomingFeedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3]), namespace: namespace, feedModel: $feedModel))
                 }
             }
+            upcomingItemsLoaded = true
         }
     }
     
@@ -198,6 +196,7 @@ struct Home: View {
             for elem in current {
                 currentFeedItems.append(MeetFeedItem(meet: MeetBase(name: elem[1], org: elem[2], location: elem[6] + ", " + elem[7], date: getDisplayDateString(start: elem[4], end: elem[5]), link: elem[3], resultsLink: elem[9]), namespace: namespace, feedModel: $feedModel))
             }
+            currentItemsLoaded = true
         }
     }
     
@@ -262,7 +261,7 @@ struct Home: View {
                                     .padding(.horizontal, 20)
                                     .offset(y: -100)
                                 } else {
-                                    if currentFeedItems != [] && !timedOut {
+                                    if currentFeedItems != [] && currentItemsLoaded {
                                         LazyVGrid(columns: columns, spacing: 15) {
                                             ForEach($currentFeedItems) { item in
                                                 AnyView(item.collapsedView.wrappedValue)
@@ -270,18 +269,18 @@ struct Home: View {
                                         }
                                         .padding(.horizontal, 20)
                                         .offset(y: -80)
-                                    } else if !timedOut {
+                                    } else if currentItemsLoaded && currentFeedItems == [] {
+                                        Text("Unable to get current meets, network timed out")
+                                            .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                            .padding()
+                                            .multilineTextAlignment(.center)
+                                            .frame(width: screenWidth * 0.9)
+                                    } else {
                                         VStack {
                                             Text("Getting current meets")
                                                 .dynamicTypeSize(.xSmall ... .xxxLarge)
                                             ProgressView()
                                         }
-                                    } else {
-                                        Text("Unable to get upcoming meets, network timed out")
-                                            .dynamicTypeSize(.xSmall ... .xxxLarge)
-                                            .padding()
-                                            .multilineTextAlignment(.center)
-                                            .frame(width: screenWidth * 0.9)
                                     }
                                 }
                             } else {
@@ -298,7 +297,7 @@ struct Home: View {
                                     .padding(.horizontal, 20)
                                     .offset(y: -100)
                                 } else {
-                                    if upcomingFeedItems != [] && !timedOut {
+                                    if upcomingFeedItems != [] {
                                         LazyVGrid(columns: columns, spacing: 15) {
                                             ForEach($upcomingFeedItems) { item in
                                                 AnyView(item.collapsedView.wrappedValue)
@@ -306,18 +305,18 @@ struct Home: View {
                                         }
                                         .padding(.horizontal, 20)
                                         .offset(y: -80)
-                                    } else if !timedOut {
-                                        VStack {
-                                            Text("Getting upcoming meets")
-                                                .dynamicTypeSize(.xSmall ... .xxxLarge)
-                                            ProgressView()
-                                        }
-                                    } else {
+                                    } else if upcomingItemsLoaded && upcomingFeedItems == [] {
                                         Text("Unable to get upcoming meets, network timed out")
                                             .dynamicTypeSize(.xSmall ... .xxxLarge)
                                             .padding()
                                             .multilineTextAlignment(.center)
                                             .frame(width: screenWidth * 0.9)
+                                    } else {
+                                        VStack {
+                                            Text("Getting upcoming meets")
+                                                .dynamicTypeSize(.xSmall ... .xxxLarge)
+                                            ProgressView()
+                                        }
                                     }
                                 }
                             }
@@ -326,18 +325,13 @@ struct Home: View {
                         NotConnectedView()
                     }
                 }
+                .onAppear {
+                    diveMeetsID = newUser?.diveMeetsID ?? ""
+                }
                 .overlay {
                     if feedModel.showTab {
                         MeetsBar(title: "Meets", diveMeetsID: $diveMeetsID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                             .frame(width: screenWidth)
-                    }
-                }
-                .onAppear {
-                    if upcomingFeedItems == [] {
-                        loadUpcomingMeets()
-                    }
-                    if currentFeedItems == [] {
-                        loadCurrentMeets()
                     }
                 }
                 .onChange(of: feedModel.showTile) {
@@ -354,6 +348,12 @@ struct Home: View {
             .onAppear {
                 Task {
                     await getPresentMeets()
+                    if upcomingFeedItems == [] {
+                        loadUpcomingMeets()
+                    }
+                    if currentFeedItems == [] {
+                        loadCurrentMeets()
+                    }
                 }
             }
         } else {

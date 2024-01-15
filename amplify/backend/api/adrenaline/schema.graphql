@@ -78,6 +78,8 @@ type CoachUser @model @auth(rules: [{allow: private}]) {
   id: ID!
   user: NewUser @belongsTo
   team: NewTeam @belongsTo
+  college: College @belongsTo
+  favoritesOrder: [Int!]!
 }
 
 type NewTeam @model @auth(rules: [{allow: private}]) {
@@ -92,6 +94,7 @@ type College @model @auth(rules: [{allow: private}]) {
   name: String!
   imageLink: AWSURL!
   athletes: [NewAthlete!]! @hasMany(indexName: "byCollege", fields: ["id"])
+  coach: CoachUser @hasOne
 }
 
 type NewMeet @model @auth(rules: [{allow: private}]) {

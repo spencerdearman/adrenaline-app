@@ -194,7 +194,7 @@ struct ContentView: View {
                                     Label("Rankings", systemImage: "trophy")
                                 }
                                 
-                                Home(diveMeetsID: $diveMeetsID, tabBarState: $tabBarState,
+                                Home(newUser: $newUser, tabBarState: $tabBarState,
                                      showAccount: $showAccount, recentSearches: $recentSearches,
                                      uploadingPost: $uploadingPost)
                                     .tabItem {
