@@ -44,7 +44,7 @@ struct RecruitingDashboardView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     
-    private func getLatestMeetForUser(data: EventHTMLDiverData, user: NewUser) throws -> [MeetEvent] {
+    private func getLatestMeetForUser(data: EventHTMLDiverData, user: NewUser) throws -> MeetEvent? {
         var mainMeetLink: String = ""
         
         if data.count < 1 {
@@ -52,7 +52,6 @@ struct RecruitingDashboardView: View {
             throw NSError()
         }
         
-        var meets = [MeetEvent]()
         var currentMeetEvents: [MeetEvent]? = []
         
         //Starting at 1 because the first meet in the dictionary has a key of 1
@@ -66,15 +65,11 @@ struct RecruitingDashboardView: View {
                                                         score: score, isChild: true, link: link))
                 }
                 
-                let meet = MeetEvent(name: name, children: currentMeetEvents, link: mainMeetLink)
-                
-                meets.append(meet)
-                currentMeetEvents = []
+                return MeetEvent(name: name, children: currentMeetEvents, link: mainMeetLink)
             }
         }
         
-        print("latest meets:", meets)
-        return meets
+        return nil
     }
     
     private func getFavoritesRecentResults(ids: [String]) async throws -> [(MeetFeedItem, [String])] {
@@ -100,23 +95,22 @@ struct RecruitingDashboardView: View {
             
             // Get meets for each user from parser data
             let data = parser.myData
-            let userMeet = try getLatestMeetForUser(data: data, user: user)
+            guard let userMeet = try getLatestMeetForUser(data: data, user: user) else { continue }
             
             // Create MeetFeedItem and associate users with meet for all the user's meets
-            for meet in userMeet {
-                print("loop")
-                guard let link = meet.link else { print("Failed to get link"); throw NSError() }
-                // Add MeetFeedItem to dict
+            guard let link = userMeet.link else { print("Failed to get link"); throw NSError() }
+            // Add MeetFeedItem to dict
+            if let meet = await MeetBase.from(meetEvent: userMeet) {
                 meetLinkToItem[link] = MeetFeedItem(meet: meet,
                                                     namespace: namespace,
                                                     feedModel: $feedModel)
-                
-                // Add user id to list of associated users to the meet link
-                if !meetLinkToUsers.keys.contains(link) {
-                    meetLinkToUsers[link] = []
-                }
-                meetLinkToUsers[link]!.append(user.id)
             }
+            
+            // Add user id to list of associated users to the meet link
+            if !meetLinkToUsers.keys.contains(link) {
+                meetLinkToUsers[link] = []
+            }
+            meetLinkToUsers[link]!.append(user.id)
         }
         
         // Combine MeetFeedItems and associated users
