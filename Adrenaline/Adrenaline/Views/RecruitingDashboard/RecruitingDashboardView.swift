@@ -29,7 +29,7 @@ struct RecruitingDashboardView: View {
     @EnvironmentObject private var appLogic: AppLogic
     @Namespace var namespace
     @State private var contentHasScrolled: Bool = false
-    @State private var feedModel: FeedModel = FeedModel()
+    @State private var resultsFeedModel: FeedModel = FeedModel()
     @State private var favorites: [NewUser] = []
     // showSheet is updated with changes to selectedSheet and should not be set manually
     @State private var showSheet: Bool = false
@@ -114,7 +114,7 @@ struct RecruitingDashboardView: View {
             if let meet = await MeetBase.from(meetEvent: userMeet) {
                 meetLinkToItem[link] = MeetFeedItem(meet: meet,
                                                     namespace: namespace,
-                                                    feedModel: $feedModel)
+                                                    feedModel: $resultsFeedModel)
             }
             
             // Add user id to list of associated users to the meet link
@@ -225,18 +225,26 @@ struct RecruitingDashboardView: View {
                 case .divers:
                     ExpandedDiversView(divers: $favorites)
                 case .results:
-                    ExpandedResultsView(results: $recentResults, feedModel: $feedModel)
+                    ExpandedResultsView(results: $recentResults)
                 case nil:
                     EmptyView()
             }
         }
         .overlay {
-            if feedModel.showTab {
+            if resultsFeedModel.showTile {
+                ForEach($recentResults) { result in
+                    if result.recentResult.0.id == resultsFeedModel.selectedItem {
+                        AnyView(result.recentResult.0.expandedView.wrappedValue)
+                    }
+                }
+            }
+            
+            if resultsFeedModel.showTab {
                 RecruitingDashboardBar(title: "Recruiting",
                               newUser: $newUserViewModel.newUser,
                               showAccount: $showAccount,
                               contentHasScrolled: $contentHasScrolled,
-                              feedModel: $feedModel,
+                              feedModel: $resultsFeedModel,
                               recentSearches: $recentSearches)
                 .frame(width: screenWidth)
             }
@@ -399,15 +407,14 @@ struct RecruitingDashboardView: View {
             } else {
                 ScrollView(.horizontal) {
                     HStack(spacing: 0) {
-                        ForEach($recentResults, id: \.id) { result in
-                            let (item, users) = result.recentResult.wrappedValue
+                        ForEach($recentResults) { result in
                             VStack {
-                                AnyView(item.collapsedView)
+                                AnyView(result.recentResult.0.collapsedView.wrappedValue)
                             }
                             .overlay {
                                 VStack(alignment: .leading) {
                                     Spacer()
-                                    Text(getAttendeesString(users).uppercased())
+                                    Text(getAttendeesString(result.recentResult.1.wrappedValue).uppercased())
                                         .font(.footnote).bold()
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .foregroundColor(.primary.opacity(0.7))
@@ -418,10 +425,6 @@ struct RecruitingDashboardView: View {
                             .padding(.leading, 25)
                             .padding(.bottom, 25)
                             .scaleEffect(0.85)
-                            // TODO: Add tap gesture here for results
-                            .onTapGesture {
-                                selectedResult = item.id
-                            }
                         }
                     }
                 }
