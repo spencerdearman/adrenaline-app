@@ -50,3 +50,6 @@ amplifytools.xcconfig
 
 media-convert/venv
 **/__pycache__/
+
+# Include React amplifyconfiguration since it is manually updated
+!react-app/src/amplifyconfiguration.json
