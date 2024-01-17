@@ -272,6 +272,7 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     }
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -279,6 +280,7 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     posts {
@@ -339,6 +341,7 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     }
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -346,6 +349,7 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     posts {
@@ -406,6 +410,7 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     }
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -413,6 +418,7 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     posts {
@@ -482,6 +488,7 @@ subscription OnCreateNewAthlete(
       _version
       _deleted
       _lastChangedAt
+      collegeCoachId
       __typename
     }
     heightFeet
@@ -557,6 +564,7 @@ subscription OnUpdateNewAthlete(
       _version
       _deleted
       _lastChangedAt
+      collegeCoachId
       __typename
     }
     heightFeet
@@ -632,6 +640,7 @@ subscription OnDeleteNewAthlete(
       _version
       _deleted
       _lastChangedAt
+      collegeCoachId
       __typename
     }
     heightFeet
@@ -741,6 +750,19 @@ subscription OnCreateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       newTeamCoachId
       __typename
     }
+    college {
+      id
+      name
+      imageLink
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      collegeCoachId
+      __typename
+    }
+    favoritesOrder
     createdAt
     updatedAt
     _version
@@ -748,6 +770,7 @@ subscription OnCreateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
     _lastChangedAt
     coachUserUserId
     coachUserTeamId
+    coachUserCollegeId
     __typename
   }
 }
@@ -785,6 +808,19 @@ subscription OnUpdateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       newTeamCoachId
       __typename
     }
+    college {
+      id
+      name
+      imageLink
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      collegeCoachId
+      __typename
+    }
+    favoritesOrder
     createdAt
     updatedAt
     _version
@@ -792,6 +828,7 @@ subscription OnUpdateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
     _lastChangedAt
     coachUserUserId
     coachUserTeamId
+    coachUserCollegeId
     __typename
   }
 }
@@ -829,6 +866,19 @@ subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       newTeamCoachId
       __typename
     }
+    college {
+      id
+      name
+      imageLink
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      collegeCoachId
+      __typename
+    }
+    favoritesOrder
     createdAt
     updatedAt
     _version
@@ -836,6 +886,7 @@ subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
     _lastChangedAt
     coachUserUserId
     coachUserTeamId
+    coachUserCollegeId
     __typename
   }
 }
@@ -846,6 +897,7 @@ subscription OnCreateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     name
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -853,6 +905,7 @@ subscription OnCreateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     athletes {
@@ -876,6 +929,7 @@ subscription OnUpdateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     name
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -883,6 +937,7 @@ subscription OnUpdateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     athletes {
@@ -906,6 +961,7 @@ subscription OnDeleteNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     name
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -913,6 +969,7 @@ subscription OnDeleteNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     athletes {
@@ -940,11 +997,25 @@ subscription OnCreateCollege($filter: ModelSubscriptionCollegeFilterInput) {
       startedAt
       __typename
     }
+    coach {
+      id
+      favoritesOrder
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserUserId
+      coachUserTeamId
+      coachUserCollegeId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    collegeCoachId
     __typename
   }
 }
@@ -959,11 +1030,25 @@ subscription OnUpdateCollege($filter: ModelSubscriptionCollegeFilterInput) {
       startedAt
       __typename
     }
+    coach {
+      id
+      favoritesOrder
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserUserId
+      coachUserTeamId
+      coachUserCollegeId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    collegeCoachId
     __typename
   }
 }
@@ -978,11 +1063,25 @@ subscription OnDeleteCollege($filter: ModelSubscriptionCollegeFilterInput) {
       startedAt
       __typename
     }
+    coach {
+      id
+      favoritesOrder
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserUserId
+      coachUserTeamId
+      coachUserCollegeId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    collegeCoachId
     __typename
   }
 }

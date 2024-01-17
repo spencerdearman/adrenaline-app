@@ -517,6 +517,7 @@ query GetNewUser($id: ID!) {
     }
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -524,6 +525,7 @@ query GetNewUser($id: ID!) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     posts {
@@ -659,6 +661,7 @@ query GetNewAthlete($id: ID!) {
       _version
       _deleted
       _lastChangedAt
+      collegeCoachId
       __typename
     }
     heightFeet
@@ -990,6 +993,19 @@ query GetCoachUser($id: ID!) {
       newTeamCoachId
       __typename
     }
+    college {
+      id
+      name
+      imageLink
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      collegeCoachId
+      __typename
+    }
+    favoritesOrder
     createdAt
     updatedAt
     _version
@@ -997,6 +1013,7 @@ query GetCoachUser($id: ID!) {
     _lastChangedAt
     coachUserUserId
     coachUserTeamId
+    coachUserCollegeId
     __typename
   }
 }
@@ -1009,6 +1026,7 @@ query ListCoachUsers(
   listCoachUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -1016,6 +1034,7 @@ query ListCoachUsers(
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     nextToken
@@ -1038,6 +1057,7 @@ query SyncCoachUsers(
   ) {
     items {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -1045,6 +1065,7 @@ query SyncCoachUsers(
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     nextToken
@@ -1059,6 +1080,7 @@ query GetNewTeam($id: ID!) {
     name
     coach {
       id
+      favoritesOrder
       createdAt
       updatedAt
       _version
@@ -1066,6 +1088,7 @@ query GetNewTeam($id: ID!) {
       _lastChangedAt
       coachUserUserId
       coachUserTeamId
+      coachUserCollegeId
       __typename
     }
     athletes {
@@ -1145,11 +1168,25 @@ query GetCollege($id: ID!) {
       startedAt
       __typename
     }
+    coach {
+      id
+      favoritesOrder
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserUserId
+      coachUserTeamId
+      coachUserCollegeId
+      __typename
+    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    collegeCoachId
     __typename
   }
 }
@@ -1169,6 +1206,7 @@ query ListColleges(
       _version
       _deleted
       _lastChangedAt
+      collegeCoachId
       __typename
     }
     nextToken
@@ -1198,6 +1236,7 @@ query SyncColleges(
       _version
       _deleted
       _lastChangedAt
+      collegeCoachId
       __typename
     }
     nextToken
