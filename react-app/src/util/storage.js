@@ -1,6 +1,6 @@
 import { getUrl } from 'aws-amplify/storage';
 
-export async function getImageUrl (key) {
+export async function getImageUrl(key) {
   const urlResponse = await getUrl({
     key
   });
