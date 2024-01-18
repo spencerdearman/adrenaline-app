@@ -1,12 +1,14 @@
 import React from 'react';
+import { Amplify } from 'aws-amplify';
+import { DataStore } from 'aws-amplify/datastore';
+import { Hub } from 'aws-amplify/utils';
 import ReactDOM from 'react-dom/client';
-import './index.css';
+
+import amplifyconfig from './amplifyconfiguration.json';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Amplify } from 'aws-amplify';
-import { Hub } from 'aws-amplify/utils';
-import { DataStore } from "aws-amplify/datastore";
-import amplifyconfig from "./amplifyconfiguration.json";
+
+import './index.css';
 
 Amplify.configure(amplifyconfig);
 
