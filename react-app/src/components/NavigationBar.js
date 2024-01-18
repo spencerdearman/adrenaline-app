@@ -8,20 +8,20 @@ import NavigationButton from './NavigationButton';
 
 function CustomNavigationBar ({ children }) {
   return (
-        <Wrapper>
-            <ButtonsWrapper>
-                {children}
-            </ButtonsWrapper>
-        </Wrapper>
+    <Wrapper>
+      <ButtonsWrapper>
+        {children}
+      </ButtonsWrapper>
+    </Wrapper>
   );
 };
 
 const NavigationBar = () => {
   return (
-        <CustomNavigationBar>
-            <NavigationButton imageSrc={homeIcon} title="Home" href="/" />
-            <NavigationButton imageSrc={personIcon} title="Profile 123" href="/profile/123" />
-        </CustomNavigationBar>
+    <CustomNavigationBar>
+      <NavigationButton imageSrc={homeIcon} title="Home" href="/" />
+      <NavigationButton imageSrc={personIcon} title="Profile 123" href="/profile/123" />
+    </CustomNavigationBar>
   );
 };
 

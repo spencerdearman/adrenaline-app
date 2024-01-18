@@ -6,11 +6,11 @@ import NavigationBar from '../components/NavigationBar';
 // Wrapping elements in <Page> tags will add the NavigationBar to the top
 export default function Page ({ children }) {
   return (
-        <Wrapper>
-            <NavigationBar />
+    <Wrapper>
+      <NavigationBar />
 
-            {children}
-        </Wrapper>
+      {children}
+    </Wrapper>
   );
 };
 

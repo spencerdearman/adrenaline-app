@@ -6,13 +6,13 @@ import Page from '../Page';
 
 const Profile = (props) => {
   return (
-        <Page>
-            <Card>
-                <Heading level={1}>Profile</Heading>
-            </Card>
+    <Page>
+      <Card>
+        <Heading level={1}>Profile</Heading>
+      </Card>
 
-            <Button onClick={props.signOut}>Sign Out</Button>
-        </Page>
+      <Button onClick={props.signOut}>Sign Out</Button>
+    </Page>
   );
 };
 

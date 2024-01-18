@@ -29,6 +29,10 @@
             2,
             "always"
         ],
+        "indent": [
+            "error",
+            2
+        ],
         "simple-import-sort/imports": [
             "error",
             {

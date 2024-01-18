@@ -4,12 +4,12 @@ import styled from 'styled-components';
 
 const NavigationButton = (props) => {
   return (
-        <Link to={props.href}>
-            <Wrapper>
-                <Image src={props.imageSrc} alt="" />
-                <Title>{props.title}</Title>
-            </Wrapper>
-        </Link>
+    <Link to={props.href}>
+      <Wrapper>
+        <Image src={props.imageSrc} alt="" />
+        <Title>{props.title}</Title>
+      </Wrapper>
+    </Link>
   );
 };
 
