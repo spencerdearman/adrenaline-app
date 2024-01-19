@@ -1,13 +1,13 @@
 import { getUrl } from 'aws-amplify/storage';
 
 export async function getImageUrl(key) {
-    const urlResponse = await getUrl({
-        key: key
-    });
+  const urlResponse = await getUrl({
+    key
+  });
 
-    if (urlResponse !== undefined) {
-        return urlResponse.url.href;
-    }
+  if (urlResponse !== undefined) {
+    return urlResponse.url.href;
+  }
 
-    return undefined;
+  return undefined;
 }
