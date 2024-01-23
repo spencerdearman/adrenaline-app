@@ -1,7 +1,7 @@
 import os
+import uuid
 from process_ids import process_ids
 import boto3
-import uuid
 from cloudwatch import init_cloudwatch_logs
 
 
@@ -15,7 +15,7 @@ def run(filename, log_group_name=None, isLocal=False):
         init_cloudwatch_logs(logs_client, log_group_name, log_stream_name)
 
     os.environ["bucket_name"] = "adrenalinexxxxx153503-main"
-    with open(filename, "r") as f:
+    with open(filename, "r", encoding="UTF-8") as f:
         csv = f.read().splitlines()
         process_ids(csv, logs_client, log_group_name, log_stream_name, isLocal)
 

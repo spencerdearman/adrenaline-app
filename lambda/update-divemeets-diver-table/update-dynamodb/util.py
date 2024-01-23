@@ -1,11 +1,10 @@
 from typing import Optional
-from datetime import datetime, timedelta
-from cloudwatch import send_output, send_log_event
+from datetime import datetime
 import time
 import json
 import requests
 import simplejson
-
+from cloudwatch import send_output, send_log_event
 
 # Gets TTL 7 days and 1hr ahead of initial creation, which means that
 # if a DiveMeets ID is not updated week-to-week, it will reach the TTL and be
@@ -161,6 +160,7 @@ class GraphqlClient:
     def serialization_helper(o):
         if isinstance(o, datetime):
             return o.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        return ""
 
     # This can throw an exception if the request fails, so calls to this need to
     # handle exceptions gracefully
@@ -416,7 +416,7 @@ query listDiveMeetsDivers(
 
         try:
             get_result = self.getDiveMeetsDiverById(diver.id)
-        except Exception as exc:
+        except requests.HTTPError as exc:
             send_output(
                 isLocal,
                 send_log_event,
@@ -450,7 +450,7 @@ query listDiveMeetsDivers(
             # Attempt to create the record
             try:
                 result = self.createDiveMeetsDiver(diver)
-            except Exception as exc:
+            except requests.HTTPError as exc:
                 send_output(
                     isLocal,
                     send_log_event,
@@ -474,7 +474,7 @@ query listDiveMeetsDivers(
             # Attempt to update the existing record
             try:
                 result = self.updateDiveMeetsDiver(diver, get_result)
-            except Exception as exc:
+            except requests.HTTPError as exc:
                 send_output(
                     isLocal,
                     send_log_event,

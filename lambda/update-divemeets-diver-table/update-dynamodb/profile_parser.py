@@ -62,11 +62,11 @@ class ProfileParser:
 
         return ""
 
-    def __assignInfoKeys(self, dict: dict[str, str]) -> Optional[ProfileInfoData]:
+    def __assignInfoKeys(self, dct: dict[str, str]) -> Optional[ProfileInfoData]:
         result = ProfileInfoData()
         foundErrors = False
 
-        for key, value in dict.items():
+        for key, value in dct.items():
             if "Name:" in key:
                 nameComps = value.split(" ")
                 result.first = " ".join(nameComps[:-1])
@@ -143,7 +143,7 @@ class ProfileParser:
                 self.cloudwatch_client,
                 self.log_group_name,
                 self.log_stream_name,
-                f"parseInfo: body not found",
+                "parseInfo: body not found",
             )
             return None
 
@@ -176,7 +176,7 @@ class ProfileParser:
                         self.cloudwatch_client,
                         self.log_group_name,
                         self.log_stream_name,
-                        f"parseDiveStatistics: length of subrows is less than 6",
+                        "parseDiveStatistics: length of subrows is less than 6",
                     )
                     return None
 
@@ -244,7 +244,7 @@ class ProfileParser:
                 self.cloudwatch_client,
                 self.log_group_name,
                 self.log_stream_name,
-                f"Failed to parse dive statistics",
+                "Failed to parse dive statistics",
             )
 
         return None
@@ -288,7 +288,7 @@ class ProfileParser:
                     self.cloudwatch_client,
                     self.log_group_name,
                     self.log_stream_name,
-                    f"parseProfile: tables list is empty",
+                    "parseProfile: tables list is empty",
                 )
                 return False
 
@@ -314,7 +314,7 @@ class ProfileParser:
                         self.cloudwatch_client,
                         self.log_group_name,
                         self.log_stream_name,
-                        f"parseProfile: Info page body not found",
+                        "parseProfile: Info page body not found",
                     )
                     return False
 

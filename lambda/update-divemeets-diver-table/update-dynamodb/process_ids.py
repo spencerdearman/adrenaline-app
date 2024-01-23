@@ -1,7 +1,7 @@
-from profile_parser import ProfileParser
-from skill_rating import SkillRating
 import time
 from concurrent.futures import as_completed
+from profile_parser import ProfileParser
+from skill_rating import SkillRating
 from requests_futures.sessions import FuturesSession
 from cloudwatch import send_output, send_log_event
 from util import DiveMeetsDiver, GraphqlClient
@@ -80,7 +80,7 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
         )
 
         # Filtering loses ordering of list, but this is not relevant to updating
-        ids = sorted(filter_adrenaline_profiles(ids), key=lambda x: int(x))
+        ids = sorted(filter_adrenaline_profiles(ids), key=int)
 
         send_output(
             isLocal,
