@@ -7,9 +7,15 @@ import requests
 import simplejson
 
 
-def get_two_weeks_ahead_ttl():
-    twoWeeksAhead = datetime.utcnow() + timedelta(days=14)
-    return int(time.mktime(twoWeeksAhead.timetuple()))
+# Gets TTL 7 days and 1hr ahead of initial creation, which means that
+# if a DiveMeets ID is not updated week-to-week, it will reach the TTL and be
+# deleted
+# Note: TTL is 1hr ahead of 7 days since the DB update script takes ~25min to
+#       run after getting the DiveMeets IDs, and we want to leave room for
+#       potentially longer future runs
+# def get_time_ahead_ttl():
+#     timeAhead = datetime.utcnow() + timedelta(days=7, hours=1)
+#     return int(time.mktime(timeAhead.timetuple()))
 
 
 class DiveMeetsDiver:
@@ -25,6 +31,7 @@ class DiveMeetsDiver:
         platform,
         total,
         ttl=None,
+        version=1,
     ):
         self.id = id
         self.firstName = first
@@ -36,11 +43,11 @@ class DiveMeetsDiver:
         self.platformRating = platform
         self.totalRating = total
         # ttl is stored in Unix Timestamp seconds
-        if ttl is None:
-            twoWeeksAhead = datetime.utcnow() + timedelta(days=14)
-            self._ttl = get_two_weeks_ahead_ttl()
-        else:
-            self._ttl = int(ttl)
+        # if ttl is None:
+        #     self._ttl = get_time_ahead_ttl()
+        # else:
+        #     self._ttl = int(ttl)
+        self._ttl = ttl
 
         # Need below fields for DataStore compatibility
         self.createdAt = datetime.now().isoformat()
@@ -49,7 +56,7 @@ class DiveMeetsDiver:
         # lastChangedAt is stored in Unix Timestamp milliseconds
         self._lastChangedAt = int(time.time() * 1000.0)
         self._deleted = False
-        self._version = 1
+        self._version = version
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -212,7 +219,7 @@ mutation createDiveMeetsDiver($createDiveMeetsDiverInput: CreateDiveMeetsDiverIn
                 "springboardRating": diveMeetsDiver.springboardRating,
                 "platformRating": diveMeetsDiver.platformRating,
                 "totalRating": diveMeetsDiver.totalRating,
-                "_ttl": get_two_weeks_ahead_ttl(),
+                "_ttl": None,
             }
         }
 
@@ -318,6 +325,84 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
             variables=update_vars,
         )
 
+    # This can throw an exception if execute() fails, so this needs to be caught
+    def deleteDiveMeetsDiver(self, diveMeetsDiver: DiveMeetsDiver):
+        delete = """
+mutation deleteDiveMeetsDiver(
+  $deleteDiveMeetsDiverInput: DeleteDiveMeetsDiverInput!
+  $condition: ModelDiveMeetsDiverConditionInput
+) {
+  deleteDiveMeetsDiver(input: $deleteDiveMeetsDiverInput, condition: $condition) {
+    id
+    firstName
+    lastName
+    gender
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    _ttl
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+"""
+        delete_vars = {
+            "deleteDiveMeetsDiverInput": {
+                "id": diveMeetsDiver.id,
+                "_version": diveMeetsDiver._version,
+            },
+        }
+
+        return self.execute(
+            query=delete,
+            operation_name="deleteDiveMeetsDiver",
+            variables=delete_vars,
+        )
+
+    def listDiveMeetsDivers(self):
+        query = """
+query listDiveMeetsDivers(
+  $filter: ModelDiveMeetsDiverFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDiveMeetsDivers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      firstName
+      lastName
+      gender
+      finaAge
+      hsGradYear
+      springboardRating
+      platformRating
+      totalRating
+      _ttl
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+"""
+
+        return self.execute(
+            query=query,
+            operation_name="listDiveMeetsDivers",
+        )
+
     def update_dynamodb(
         self,
         diver: DiveMeetsDiver,
@@ -340,6 +425,15 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
                 log_stream_name,
                 f"Exception caught while trying to get DiveMeetsDiver by ID {diver.id} - {repr(exc)}",
             )
+            return
+
+        # Get request succeeded, but found a deleted record that has not yet
+        # been removed by DynamoDB, so skip
+        if (
+            get_result is not None
+            and get_result["data"]["getDiveMeetsDiver"]["_deleted"]
+        ):
+            print("diver is deleted, breaking...")
             return
 
         # Get request succeeded, but did not find an existing record

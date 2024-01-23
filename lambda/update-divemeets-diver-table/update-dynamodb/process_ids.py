@@ -52,6 +52,16 @@ def filter_adrenaline_profiles(ids):
     return list(set(ids).difference(adrenalineIds))
 
 
+def get_graphql_list_items(data):
+    if data is None:
+        return []
+
+    try:
+        return data["data"]["listDiveMeetsDivers"]["items"]
+    except KeyError:
+        return []
+
+
 def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
     time1 = time.time()
     try:
@@ -80,6 +90,51 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             log_stream_name,
             f"process_ids: Post-filter ID count: {len(ids)}",
         )
+
+        # Gets ids in the DynamoDB table that were not found from scraping
+        # DiveMeets
+        ids_set = set(ids)
+        missing_items = list(
+            filter(
+                lambda x: x["id"] not in ids_set,
+                get_graphql_list_items(gq_client.listDiveMeetsDivers()),
+            )
+        )
+
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"process_ids: Missing Item IDs: {list(map(lambda x: x['id'], missing_items))}",
+        )
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"process_ids: Missing Item count: {len(missing_items)}",
+        )
+
+        # Removes objects that were not present in most recent scrape
+        for item in missing_items:
+            gq_client.deleteDiveMeetsDiver(
+                DiveMeetsDiver(
+                    item["id"],
+                    item["firstName"],
+                    item["lastName"],
+                    item["gender"],
+                    item["finaAge"],
+                    item["hsGradYear"],
+                    item["springboardRating"],
+                    item["platformRating"],
+                    item["totalRating"],
+                    None,
+                    item["_version"],
+                )
+            )
 
         totalRows = len(ids)
         session = FuturesSession()
