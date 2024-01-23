@@ -133,6 +133,7 @@ struct SettingsView: View {
                                 await state.signOut()
                                 
                                 showDeleteAccountAlert = false
+                                dismiss()
                             }
                         }
                     }

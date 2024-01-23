@@ -8,10 +8,16 @@
 import SwiftUI
 import Authenticator
 
+private enum Sheet {
+    case tools
+    case search
+}
+
 struct ProfileBar: View {
     @ObservedObject var state: SignedInState
     @State private var newAthlete: NewAthlete? = nil
-    @State private var showSheet = false
+    @State private var showSheet: Bool = false
+    @State private var selectedSheet: Sheet? = nil
     @State private var isLogged = true
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
@@ -41,7 +47,8 @@ struct ProfileBar: View {
                 Spacer()
                 
                 Button {
-                    showSheet.toggle()
+                    selectedSheet = .tools
+                    showSheet = true
                 } label: {
                     Image(systemName: "wrench.and.screwdriver.fill")
                         .font(.system(size: 17, weight: .bold))
@@ -50,12 +57,10 @@ struct ProfileBar: View {
                         .background(.ultraThinMaterial)
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
                 }
-                .sheet(isPresented: $showSheet) {
-                    ToolsMenu()
-                }
                 
                 Button {
-                    showSheet.toggle()
+                    selectedSheet = .search
+                    showSheet = true
                 } label: {
                     Image(systemName: "magnifyingglass")
                         .font(.system(size: 17, weight: .bold))
@@ -63,9 +68,6 @@ struct ProfileBar: View {
                         .foregroundColor(.secondary)
                         .background(.ultraThinMaterial)
                         .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                }
-                .sheet(isPresented: $showSheet) {
-                    NewSearchView(recentSearches: $recentSearches)
                 }
                 
                 NavigationLink {
@@ -85,6 +87,21 @@ struct ProfileBar: View {
             }
             .frame(maxWidth: .infinity, maxHeight: screenHeight, alignment: .topTrailing)
             .padding()
+        }
+        .sheet(isPresented: $showSheet) {
+            switch selectedSheet {
+                case .tools:
+                    ToolsMenu()
+                case .search:
+                    NewSearchView(recentSearches: $recentSearches)
+                default:
+                    EmptyView()
+            }
+        }
+        .onChange(of: showSheet) {
+            if !showSheet {
+                selectedSheet = nil
+            }
         }
     }
 }

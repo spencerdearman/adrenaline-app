@@ -174,7 +174,7 @@ struct NewSignupSequence: View {
     // Saves new user with stored State data, and handles CoachUser creation if needed
     private func saveNewUser() async -> Bool {
         do {
-            let user = createNewUser()
+            var user = createNewUser()
             savedUser = try await saveToDataStore(object: user)
             print("Saved New User")
             
@@ -182,7 +182,12 @@ struct NewSignupSequence: View {
                 let coach = CoachUser(user: savedUser)
                 let savedCoach = try await Amplify.DataStore.save(coach)
                 print("Saved Coach Profile \(savedCoach)")
+                user.setCoach(savedCoach)
+                user.newUserCoachId = savedCoach.id
             }
+            
+            savedUser = try await saveToDataStore(object: user)
+            print("Updated New User")
             
             return true
         } catch {
@@ -862,7 +867,7 @@ struct NewSignupSequence: View {
     
     func saveNewAthlete() async {
         do {
-            guard let user = savedUser else { return }
+            guard var user = savedUser else { return }
             print("Printing the saved User: \(user)")
             
             var springboard: Double? = nil
@@ -901,6 +906,10 @@ struct NewSignupSequence: View {
             
             // Save the athlete item
             let savedItem = try await Amplify.DataStore.save(athlete)
+            
+            user.setAthlete(savedItem)
+            user.newUserAthleteId = savedItem.id
+            savedUser = try await saveToDataStore(object: user)
             
             withAnimation(.openCard) {
                 athleteCreationSuccessful = true

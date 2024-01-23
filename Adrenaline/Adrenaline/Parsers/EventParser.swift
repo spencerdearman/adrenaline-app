@@ -8,8 +8,10 @@
 import SwiftUI
 import SwiftSoup
 
+typealias EventHTMLDiverData = [Int:[String:[String:(String, Double, String, String)]]]
+
 final class EventHTMLParser: ObservableObject {
-    @Published var myData = [Int:[String:[String:(String, Double, String, String)]]]()
+    @Published var myData = EventHTMLDiverData()
     @Published var diveTableData = [Int: (String, String, String, Double, Double, Double, String)]()
     @Published var eventData: (String, String, String, Double, Double, Double, String) =
     ("","", "", 0.0, 0.0, 0.0, "")
