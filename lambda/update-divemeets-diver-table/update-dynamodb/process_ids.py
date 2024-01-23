@@ -52,14 +52,14 @@ def filter_adrenaline_profiles(ids):
     return list(set(ids).difference(adrenalineIds))
 
 
+# Throws a KeyError if line 60 is reached but a key is missing. This is to be
+# caught when the function is called so logs can be properly routed to
+# CloudWatch
 def get_graphql_list_items(data):
     if data is None:
         return []
 
-    try:
-        return data["data"]["listDiveMeetsDivers"]["items"]
-    except KeyError:
-        return []
+    return data["data"]["listDiveMeetsDivers"]["items"]
 
 
 def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
@@ -94,12 +94,24 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
         # Gets ids in the DynamoDB table that were not found from scraping
         # DiveMeets
         ids_set = set(ids)
-        missing_items = list(
-            filter(
-                lambda x: x["id"] not in ids_set,
-                get_graphql_list_items(gq_client.listDiveMeetsDivers()),
+
+        try:
+            missing_items = list(
+                filter(
+                    lambda x: x["id"] not in ids_set,
+                    get_graphql_list_items(gq_client.listDiveMeetsDivers()),
+                )
             )
-        )
+        except KeyError as exc:
+            send_output(
+                isLocal,
+                send_log_event,
+                cloudwatch_client,
+                log_group_name,
+                log_stream_name,
+                f"process_ids: Failed to get missing items - {repr(exc)}",
+            )
+            missing_items = []
 
         send_output(
             isLocal,
