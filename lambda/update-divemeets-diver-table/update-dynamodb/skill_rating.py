@@ -1,13 +1,13 @@
-from util import DiveStatistic
-from profile_parser import ProfileParser
 from typing import Optional, Callable
 import json
+from util import DiveStatistic
+from profile_parser import ProfileParser
 
 
 # {num: {"name": str, "dd": {[height]: float}}}
 def getDiveTableData():
     try:
-        with open("diveTable.json", "r") as f:
+        with open("diveTable.json", "r", encoding="UTF-8") as f:
             return json.load(f)
     except Exception as exc:
         print(f"getDiveTableData: {repr(exc)}")
@@ -289,7 +289,7 @@ class SkillRating:
         return 1.01 - (1.0 / float(num))
 
     def __computeMetric1(self, dives: list[DiveStatistic]) -> float:
-        sum: float = 0
+        total: float = 0
         if self.diveTableData is None:
             diveTableData = dict()
         else:
@@ -300,9 +300,11 @@ class SkillRating:
             if dd is None:
                 dd = 0.0
 
-            sum += dive.avgScore * dd * self.__invertedNumberOfTimes(dive.numberOfTimes)
+            total += (
+                dive.avgScore * dd * self.__invertedNumberOfTimes(dive.numberOfTimes)
+            )
 
-        return sum
+        return total
 
     # Returns a triple of springboard rating, platform rating, and total rating
     def getSkillRatingFromDiveMeetsIDWithMetric(
@@ -315,7 +317,9 @@ class SkillRating:
             print("Failed getting stats")
             return (0.0, 0.0, 0.0)
 
-        return self.getSkillRating(p.profileData.diveStatistics, metric)
+        return self.getSkillRatingWithStatsAndMetric(
+            p.profileData.diveStatistics, metric
+        )
 
     # Returns a triple of springboard rating, platform rating, and total rating using the default
     # computeMetric1 function
@@ -331,8 +335,8 @@ class SkillRating:
             print("Failed getting stats")
             return (None, None, None)
 
-        return self.getSkillRating(
-            self, p.profileData.diveStatistics, self.__computeMetric1
+        return self.getSkillRatingWithStatsAndMetric(
+            p.profileData.diveStatistics, self.__computeMetric1
         )
 
     # Convenience function to avoid rerunning profile parsing when it is already set in init
