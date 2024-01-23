@@ -6,16 +6,6 @@ import requests
 import simplejson
 from cloudwatch import send_output, send_log_event
 
-# Gets TTL 7 days and 1hr ahead of initial creation, which means that
-# if a DiveMeets ID is not updated week-to-week, it will reach the TTL and be
-# deleted
-# Note: TTL is 1hr ahead of 7 days since the DB update script takes ~25min to
-#       run after getting the DiveMeets IDs, and we want to leave room for
-#       potentially longer future runs
-# def get_time_ahead_ttl():
-#     timeAhead = datetime.utcnow() + timedelta(days=7, hours=1)
-#     return int(time.mktime(timeAhead.timetuple()))
-
 
 class DiveMeetsDiver:
     def __init__(
@@ -41,11 +31,6 @@ class DiveMeetsDiver:
         self.springboardRating = springboard
         self.platformRating = platform
         self.totalRating = total
-        # ttl is stored in Unix Timestamp seconds
-        # if ttl is None:
-        #     self._ttl = get_time_ahead_ttl()
-        # else:
-        #     self._ttl = int(ttl)
         self._ttl = ttl
 
         # Need below fields for DataStore compatibility
