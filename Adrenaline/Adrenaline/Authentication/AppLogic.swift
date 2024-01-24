@@ -18,6 +18,7 @@ import AWSPinpointAnalyticsPlugin
 
 //Creating App Logic Structure for Authentication
 class AppLogic: ObservableObject {
+    @AppStorage("authUserId") private var authUserId: String = ""
     @Published var isSignedIn: Bool = false
     @Published var initialized: Bool = false
     @Published var users: [NewUser] = []
@@ -25,6 +26,8 @@ class AppLogic: ObservableObject {
     @Published var teams: [NewTeam] = []
     @Published var colleges: [College] = []
     @Published var dataStoreReady: Bool = false
+    @Published var currentUser: NewUser? = nil
+    @Published var currentUserUpdated: Bool = false
     
     func configureAmplify() {
         do {
@@ -223,6 +226,13 @@ extension AppLogic {
                 for try await snapshot in userSubscription {
                     await MainActor.run {
                         self.users = snapshot.items.filter { $0.accountType != "Spectator" }
+                        let currentUsers = snapshot.items.filter { $0.id == authUserId }
+                        if currentUsers.count == 1 {
+                            self.currentUser = currentUsers[0]
+                        } else {
+                            self.currentUser = nil
+                        }
+                        currentUserUpdated = true
                         print("updated users")
                     }
                 }

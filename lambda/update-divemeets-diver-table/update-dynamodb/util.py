@@ -1,15 +1,10 @@
 from typing import Optional
-from datetime import datetime, timedelta
-from cloudwatch import send_output, send_log_event
+from datetime import datetime
 import time
 import json
 import requests
 import simplejson
-
-
-def get_two_weeks_ahead_ttl():
-    twoWeeksAhead = datetime.utcnow() + timedelta(days=14)
-    return int(time.mktime(twoWeeksAhead.timetuple()))
+from cloudwatch import send_output, send_log_event
 
 
 class DiveMeetsDiver:
@@ -25,6 +20,7 @@ class DiveMeetsDiver:
         platform,
         total,
         ttl=None,
+        version=1,
     ):
         self.id = id
         self.firstName = first
@@ -35,12 +31,7 @@ class DiveMeetsDiver:
         self.springboardRating = springboard
         self.platformRating = platform
         self.totalRating = total
-        # ttl is stored in Unix Timestamp seconds
-        if ttl is None:
-            twoWeeksAhead = datetime.utcnow() + timedelta(days=14)
-            self._ttl = get_two_weeks_ahead_ttl()
-        else:
-            self._ttl = int(ttl)
+        self._ttl = ttl
 
         # Need below fields for DataStore compatibility
         self.createdAt = datetime.now().isoformat()
@@ -49,7 +40,7 @@ class DiveMeetsDiver:
         # lastChangedAt is stored in Unix Timestamp milliseconds
         self._lastChangedAt = int(time.time() * 1000.0)
         self._deleted = False
-        self._version = 1
+        self._version = version
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -154,6 +145,7 @@ class GraphqlClient:
     def serialization_helper(o):
         if isinstance(o, datetime):
             return o.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        return ""
 
     # This can throw an exception if the request fails, so calls to this need to
     # handle exceptions gracefully
@@ -212,7 +204,7 @@ mutation createDiveMeetsDiver($createDiveMeetsDiverInput: CreateDiveMeetsDiverIn
                 "springboardRating": diveMeetsDiver.springboardRating,
                 "platformRating": diveMeetsDiver.platformRating,
                 "totalRating": diveMeetsDiver.totalRating,
-                "_ttl": get_two_weeks_ahead_ttl(),
+                "_ttl": None,
             }
         }
 
@@ -318,6 +310,84 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
             variables=update_vars,
         )
 
+    # This can throw an exception if execute() fails, so this needs to be caught
+    def deleteDiveMeetsDiver(self, diveMeetsDiver: DiveMeetsDiver):
+        delete = """
+mutation deleteDiveMeetsDiver(
+  $deleteDiveMeetsDiverInput: DeleteDiveMeetsDiverInput!
+  $condition: ModelDiveMeetsDiverConditionInput
+) {
+  deleteDiveMeetsDiver(input: $deleteDiveMeetsDiverInput, condition: $condition) {
+    id
+    firstName
+    lastName
+    gender
+    finaAge
+    hsGradYear
+    springboardRating
+    platformRating
+    totalRating
+    _ttl
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    __typename
+  }
+}
+"""
+        delete_vars = {
+            "deleteDiveMeetsDiverInput": {
+                "id": diveMeetsDiver.id,
+                "_version": diveMeetsDiver._version,
+            },
+        }
+
+        return self.execute(
+            query=delete,
+            operation_name="deleteDiveMeetsDiver",
+            variables=delete_vars,
+        )
+
+    def listDiveMeetsDivers(self):
+        query = """
+query listDiveMeetsDivers(
+  $filter: ModelDiveMeetsDiverFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDiveMeetsDivers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      firstName
+      lastName
+      gender
+      finaAge
+      hsGradYear
+      springboardRating
+      platformRating
+      totalRating
+      _ttl
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+"""
+
+        return self.execute(
+            query=query,
+            operation_name="listDiveMeetsDivers",
+        )
+
     def update_dynamodb(
         self,
         diver: DiveMeetsDiver,
@@ -331,7 +401,7 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
 
         try:
             get_result = self.getDiveMeetsDiverById(diver.id)
-        except Exception as exc:
+        except requests.HTTPError as exc:
             send_output(
                 isLocal,
                 send_log_event,
@@ -340,6 +410,15 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
                 log_stream_name,
                 f"Exception caught while trying to get DiveMeetsDiver by ID {diver.id} - {repr(exc)}",
             )
+            return
+
+        # Get request succeeded, but found a deleted record that has not yet
+        # been removed by DynamoDB, so skip
+        if (
+            get_result is not None
+            and get_result["data"]["getDiveMeetsDiver"]["_deleted"]
+        ):
+            print("diver is deleted, breaking...")
             return
 
         # Get request succeeded, but did not find an existing record
@@ -356,7 +435,7 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
             # Attempt to create the record
             try:
                 result = self.createDiveMeetsDiver(diver)
-            except Exception as exc:
+            except requests.HTTPError as exc:
                 send_output(
                     isLocal,
                     send_log_event,
@@ -380,7 +459,7 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
             # Attempt to update the existing record
             try:
                 result = self.updateDiveMeetsDiver(diver, get_result)
-            except Exception as exc:
+            except requests.HTTPError as exc:
                 send_output(
                     isLocal,
                     send_log_event,

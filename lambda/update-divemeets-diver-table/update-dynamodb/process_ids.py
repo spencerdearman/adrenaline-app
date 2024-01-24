@@ -1,7 +1,7 @@
-from profile_parser import ProfileParser
-from skill_rating import SkillRating
 import time
 from concurrent.futures import as_completed
+from profile_parser import ProfileParser
+from skill_rating import SkillRating
 from requests_futures.sessions import FuturesSession
 from cloudwatch import send_output, send_log_event
 from util import DiveMeetsDiver, GraphqlClient
@@ -52,6 +52,16 @@ def filter_adrenaline_profiles(ids):
     return list(set(ids).difference(adrenalineIds))
 
 
+# Throws a KeyError if line 60 is reached but a key is missing. This is to be
+# caught when the function is called so logs can be properly routed to
+# CloudWatch
+def get_graphql_list_items(data):
+    if data is None:
+        return []
+
+    return data["data"]["listDiveMeetsDivers"]["items"]
+
+
 def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
     time1 = time.time()
     try:
@@ -70,7 +80,7 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
         )
 
         # Filtering loses ordering of list, but this is not relevant to updating
-        ids = sorted(filter_adrenaline_profiles(ids), key=lambda x: int(x))
+        ids = sorted(filter_adrenaline_profiles(ids), key=int)
 
         send_output(
             isLocal,
@@ -80,6 +90,63 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             log_stream_name,
             f"process_ids: Post-filter ID count: {len(ids)}",
         )
+
+        # Gets ids in the DynamoDB table that were not found from scraping
+        # DiveMeets
+        ids_set = set(ids)
+
+        try:
+            missing_items = list(
+                filter(
+                    lambda x: x["id"] not in ids_set,
+                    get_graphql_list_items(gq_client.listDiveMeetsDivers()),
+                )
+            )
+        except KeyError as exc:
+            send_output(
+                isLocal,
+                send_log_event,
+                cloudwatch_client,
+                log_group_name,
+                log_stream_name,
+                f"process_ids: Failed to get missing items - {repr(exc)}",
+            )
+            missing_items = []
+
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"process_ids: Missing Item IDs: {list(map(lambda x: x['id'], missing_items))}",
+        )
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"process_ids: Missing Item count: {len(missing_items)}",
+        )
+
+        # Removes objects that were not present in most recent scrape
+        for item in missing_items:
+            gq_client.deleteDiveMeetsDiver(
+                DiveMeetsDiver(
+                    item["id"],
+                    item["firstName"],
+                    item["lastName"],
+                    item["gender"],
+                    item["finaAge"],
+                    item["hsGradYear"],
+                    item["springboardRating"],
+                    item["platformRating"],
+                    item["totalRating"],
+                    None,
+                    item["_version"],
+                )
+            )
 
         totalRows = len(ids)
         session = FuturesSession()

@@ -28,7 +28,6 @@ class MapViewModel: ObservableObject {
             
             // Now set the locationCoordinate and region
             self.locationCoordinate = locationCoordinate
-            print(self.locationCoordinate)
             
             self.region = MKCoordinateRegion(center: locationCoordinate, span: MKCoordinateSpan(latitudeDelta: 0.002, longitudeDelta: 0.002))
             showMap = true
@@ -39,11 +38,6 @@ class MapViewModel: ObservableObject {
 struct MapView: View {
     @ObservedObject var viewModel: MapViewModel
     let locationString: String
-
-//    init(locationString: String, viewMode: MapViewModel) {
-//        self.locationString = locationString
-//        _viewModel = ObservedObject(wrappedValue: MapViewModel())
-//    }
     
     private func openInMaps() {
             guard let coordinate = viewModel.locationCoordinate else { return }

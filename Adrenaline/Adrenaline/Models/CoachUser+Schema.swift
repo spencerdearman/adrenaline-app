@@ -8,6 +8,8 @@ extension CoachUser {
     case id
     case user
     case team
+    case college
+    case favoritesOrder
     case createdAt
     case updatedAt
   }
@@ -33,6 +35,8 @@ extension CoachUser {
       .field(coachUser.id, is: .required, ofType: .string),
       .belongsTo(coachUser.user, is: .optional, ofType: NewUser.self, targetNames: ["coachUserUserId"]),
       .belongsTo(coachUser.team, is: .optional, ofType: NewTeam.self, targetNames: ["coachUserTeamId"]),
+      .belongsTo(coachUser.college, is: .optional, ofType: College.self, targetNames: ["coachUserCollegeId"]),
+      .field(coachUser.favoritesOrder, is: .required, ofType: .embeddedCollection(of: Int.self)),
       .field(coachUser.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(coachUser.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
@@ -55,6 +59,12 @@ extension ModelPath where ModelType == CoachUser {
     }
   public var team: ModelPath<NewTeam>   {
       NewTeam.Path(name: "team", parent: self) 
+    }
+  public var college: ModelPath<College>   {
+      College.Path(name: "college", parent: self) 
+    }
+  public var favoritesOrder: FieldPath<Int>   {
+      int("favoritesOrder") 
     }
   public var createdAt: FieldPath<Temporal.DateTime>   {
       datetime("createdAt") 

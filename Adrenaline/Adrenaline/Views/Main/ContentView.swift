@@ -26,7 +26,8 @@ struct ContentView: View {
     @AppStorage("email") var email: String = ""
     @AppStorage("authUserId") var authUserId: String = ""
     @State private var showAccount: Bool = false
-    @State private var newUser: NewUser? = nil
+//    @State private var newUser: NewUser? = nil
+    @StateObject private var newUserViewModel: NewUserViewModel = NewUserViewModel()
     @State private var recentSearches: [SearchItem] = []
     @State private var uploadingPost: Post? = nil
     @State private var uploadingProgress: Double = 0.0
@@ -64,13 +65,58 @@ struct ContentView: View {
         return window.safeAreaInsets.bottom + menuBarOffset - 5.0
     }
     
+    // Test if given NewUser has the associated Athlete model when accountType is Athlete
+    private func isAthleteWithAthleteModel(_ user: NewUser) async -> Bool {
+        do {
+            guard user.accountType == "Athlete", 
+                    let _ = try await user.athlete else { return false }
+            
+            return true
+        } catch {
+            print("Failed to check user for athlete model")
+            return false
+        }
+    }
+    
+    // Test if given NewUser has the associated Coach model when accountType is Coach
+    private func isCoachWithCoachModel(_ user: NewUser) async -> Bool {
+        do {
+            guard user.accountType == "Coach",
+                    let _ = try await user.coach else { return false }
+            
+            return true
+        } catch {
+            print("Failed to check user for coach model")
+            return false
+        }
+    }
+    
     private func getCurrentUser() async -> NewUser? {
-        let idPredicate = NewUser.keys.id == authUserId
-        let users = await queryAWSUsers(where: idPredicate)
-        if users.count == 1 {
-            return users[0]
-        } else {
-            print("Failed to get NewUser")
+        // First attempt to set current user through AppLogic since it is most likely to be recent
+        if let user = appLogic.currentUser {
+//            print("AppLogic not nil")
+            
+            if user.accountType == "Spectator" { print("User is spectator"); return appLogic.currentUser }
+            let athleteStatus = await isAthleteWithAthleteModel(user)
+            let coachStatus = await isCoachWithCoachModel(user)
+            if athleteStatus || coachStatus {
+                return appLogic.currentUser
+            } /*else {
+                print("Current user did not have associated athlete/coach model, querying...")
+            }*/
+        }
+        
+        // Run a query if AppLogic is nil, or if the user is an Athlete or Coach without the
+        // corresponding model attached to it
+        do {
+            guard let user = try await queryAWSUserById(id: authUserId) else { return nil }
+            
+//            if user.accountType == "Athlete" { print("Current user Athlete:", try await user.athlete) }
+//            if user.accountType == "Coach" { print("Current user Coach:", try await user.coach) }
+            
+            return user
+        } catch {
+            print("Failed to get current user by id")
         }
         
         return nil
@@ -92,14 +138,15 @@ struct ContentView: View {
                 return await getDataStoreData(numAttempts: numAttempts + 1)
             }
             
-            newUser = nil
-            newUser = user
+            newUserViewModel.newUser = user
+//            newUser = nil
+//            newUser = user
             
             // Adds device token to user's list of tokens for push notifications
             guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
             if !user.tokens.contains(token) {
                 user.tokens.append(token)
-                newUser = try await saveToDataStore(object: user)
+                newUserViewModel.newUser = try await saveToDataStore(object: user)
             }
         } catch {
             print("Sleep failed")
@@ -172,14 +219,14 @@ struct ContentView: View {
                     } else {
                         ZStack(alignment: .bottom) {
                             TabView {
-                                FeedBase(newUser: $newUser, showAccount: $showAccount,
+                                FeedBase(newUser: $newUserViewModel.newUser, showAccount: $showAccount,
                                          recentSearches: $recentSearches, uploadingPost: $uploadingPost)
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
                                 
-                                if let user = newUser, user.accountType != "Spectator" {
-                                    ChatView(newUser: $newUser, showAccount: $showAccount,
+                                if let user = newUserViewModel.newUser, user.accountType != "Spectator" {
+                                    ChatView(newUser: $newUserViewModel.newUser, showAccount: $showAccount,
                                              recentSearches: $recentSearches,
                                              deletedChatIds: $deletedChatIds)
                                     .tabItem {
@@ -187,14 +234,24 @@ struct ContentView: View {
                                     }
                                 }
                                 
-                                RankingsView(newUser: $newUser, tabBarState: $tabBarState,
+                                if let user = newUserViewModel.newUser, user.accountType == "Coach" {
+                                    RecruitingDashboardView(newUserViewModel: newUserViewModel,
+                                                            showAccount: $showAccount,
+                                                            recentSearches: $recentSearches,
+                                                            uploadingPost: $uploadingPost)
+                                    .tabItem {
+                                        Label("Recruiting", systemImage: "atom")
+                                    }
+                                }
+                                
+                                RankingsView(newUser: $newUserViewModel.newUser, tabBarState: $tabBarState,
                                              showAccount: $showAccount, recentSearches: $recentSearches,
                                              uploadingPost: $uploadingPost)
                                 .tabItem {
                                     Label("Rankings", systemImage: "trophy")
                                 }
                                 
-                                Home(newUser: $newUser, tabBarState: $tabBarState,
+                                Home(newUser: $newUserViewModel.newUser, tabBarState: $tabBarState,
                                      showAccount: $showAccount, recentSearches: $recentSearches,
                                      uploadingPost: $uploadingPost)
                                     .tabItem {
@@ -213,14 +270,14 @@ struct ContentView: View {
                             NavigationView {
                                 // Need to use WrapperView here since we have to pass in state
                                 // and showAccount for popover profile
-                                if let user = newUser, user.accountType != "Spectator" {
-                                    AdrenalineProfileWrapperView(state: state, newUser: user,
+                                if let user = newUserViewModel.newUser, user.accountType != "Spectator" {
+                                    AdrenalineProfileWrapperView(state: state, newUser: $newUserViewModel.newUser,
                                                                  showAccount: $showAccount,
                                                                  recentSearches: $recentSearches,
                                                                  updateDataStoreData: $updateDataStoreData)
-                                } else if let _ = newUser {
-                                    SettingsView(state: state, 
-                                                 newUser: newUser,
+                                } else if let _ = newUserViewModel.newUser {
+                                    SettingsView(state: state,
+                                                 newUser: newUserViewModel.newUser,
                                                  showAccount: $showAccount,
                                                  updateDataStoreData: $updateDataStoreData)
                                 } else {
@@ -235,7 +292,7 @@ struct ContentView: View {
                             }
                         })
                         .onChange(of: uploadingPost) {
-                            if let user = newUser, let post = uploadingPost {
+                            if let user = newUserViewModel.newUser, let post = uploadingPost {
                                 Task {
                                     var videos: [Video] = []
                                     var images: [NewImage] = []
@@ -281,7 +338,7 @@ struct ContentView: View {
                                                                              maxWaitTimeSeconds: maxWaitTimeSeconds) {
                                                 
                                                 let (savedUser, _) = try await savePost(user: user, post: post)
-                                                newUser = savedUser
+                                                newUserViewModel.newUser = savedUser
                                             } else {
                                                 await handleUploadFailure(email: user.email,
                                                                           videos: videos,
@@ -321,6 +378,22 @@ struct ContentView: View {
                                 Task {
                                     await getDataStoreData()
                                     updateDataStoreData = false
+                                }
+                            }
+                        }
+                        .onChange(of: appLogic.currentUserUpdated) {
+                            if appLogic.currentUserUpdated {
+                                Task {
+                                    let currentUser = await getCurrentUser()
+                                    newUserViewModel.newUser = currentUser
+                                    
+                                    // Need to set to nil to show updated changes, should be
+                                    // deprecated in favor of the view model
+//                                    newUser = nil
+//                                    newUser = currentUser
+//                                    print("Coach Order:", try await newUser?.coach?.favoritesOrder)
+//                                    print("View Model Order:", try await newUserViewModel.newUser?.coach?.favoritesOrder)
+                                    appLogic.currentUserUpdated = false
                                 }
                             }
                         }

@@ -20,26 +20,28 @@ struct AdrenalineProfileWrapperView: View {
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
     @Binding var updateDataStoreData: Bool
+    @Binding var user: NewUser?
     
-    var user: NewUser?
     var authUserId: String
     
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
+    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, 
+         recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
         self.state = state
         self.authUserId = authUserId
-        self.user = nil
+        self._user = .constant(nil)
         self._showAccount = showAccount
         self._recentSearches = recentSearches
         self._updateDataStoreData = updateDataStoreData
     }
     
-    init(state: SignedInState, newUser: NewUser, showAccount: Binding<Bool>, recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
+    init(state: SignedInState, newUser: Binding<NewUser?>, showAccount: Binding<Bool>,
+         recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
         self.state = state
-        self.authUserId = newUser.id
-        self.user = newUser
+        self.authUserId = newUser.wrappedValue?.id ?? ""
+        self._user = newUser
         self._showAccount = showAccount
         self._recentSearches = recentSearches
         self._updateDataStoreData = updateDataStoreData
@@ -47,8 +49,8 @@ struct AdrenalineProfileWrapperView: View {
     
     var body: some View {
         ZStack {
-            if let user = user {
-                AdrenalineProfileView(newUser: user)
+            if let _ = user {
+                AdrenalineProfileView(newUser: $user)
             } else {
                 AdrenalineProfileView(authUserId: authUserId)
             }
@@ -66,7 +68,7 @@ struct AdrenalineProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var offset: CGFloat = 0
     @State private var swiped: Bool = false
-    @State private var user: NewUser? = nil
+    @Binding private var user: NewUser?
     
     var authUserId: String
     
@@ -75,11 +77,17 @@ struct AdrenalineProfileView: View {
     
     init(authUserId: String) {
         self.authUserId = authUserId
+        self._user = .constant(nil)
     }
     
     init(newUser: NewUser) {
         self.authUserId = newUser.id
-        user = newUser
+        self._user = .constant(newUser)
+    }
+    
+    init(newUser: Binding<NewUser?>) {
+        self.authUserId = newUser.wrappedValue?.id ?? ""
+        self._user = newUser
     }
     
     private var bgColor: Color {
@@ -159,12 +167,7 @@ struct AdrenalineProfileView: View {
         .onAppear {
             if user == nil {
                 Task {
-                    let pred = NewUser.keys.id == authUserId
-                    let users = await queryAWSUsers(where: pred)
-                    
-                    if users.count == 1 {
-                        user = users[0]
-                    }
+                    user = try await queryAWSUserById(id: authUserId)
                 }
             }
         }
