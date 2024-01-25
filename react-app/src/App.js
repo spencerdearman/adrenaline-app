@@ -6,9 +6,11 @@ import {
   withAuthenticator
 } from '@aws-amplify/ui-react';
 
+import Chat from './pages/Chat/Chat';
 import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile/Profile';
+import Rankings from './pages/Rankings/Rankings';
 
 // import { getUserById } from './util/dataStore'
 // import { getImageUrl } from './util/storage'
@@ -43,6 +45,8 @@ function App({ signOut, user }) {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/rankings" element={<Rankings />} />
           <Route path="/profile/:profileId" element={<Profile signOut={signOut} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
