@@ -10,11 +10,9 @@ import NavigationButton from './NavigationButton';
 
 function CustomNavigationBar ({ children }) {
   return (
-    <Wrapper>
-      <ButtonsWrapper>
-        {children}
-      </ButtonsWrapper>
-    </Wrapper>
+    <ButtonsWrapper>
+      {children}
+    </ButtonsWrapper>
   );
 };
 
@@ -31,12 +29,9 @@ const NavigationBar = () => {
 
 export default NavigationBar;
 
-const Wrapper = styled.div`
-    margin: 0 auto;
-`;
-
 const ButtonsWrapper = styled.div`
     display: flex;
     justify-items: space-between;
     justify-content: center;
+    margin: 0 auto;
 `;
