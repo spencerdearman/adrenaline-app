@@ -6,9 +6,9 @@ import {
   withAuthenticator
 } from '@aws-amplify/ui-react';
 
-import Home from './pages/home/Home';
+import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound';
-import Profile from './pages/profile/Profile';
+import Profile from './pages/Profile/Profile';
 
 // import { getUserById } from './util/dataStore'
 // import { getImageUrl } from './util/storage'

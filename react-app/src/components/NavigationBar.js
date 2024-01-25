@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import homeIcon from '../assets/home.svg';
-import personIcon from '../assets/person.svg';
+import homeIcon from '../assets/images/home.svg';
+import personIcon from '../assets/images/person.svg';
 
 import NavigationButton from './NavigationButton';
 
