@@ -71,6 +71,6 @@ const Title = styled.p`
 
 const HoverButton = styled.div`
     :hover {
-      box-shadow: 0px 20px 40px rgba(31, 47, 71, 0.25), 0px 1px 5px rgba(0, 0, 0, 0.1), inset 0 0 0 0.5px rgba(255, 255, 255, 0.4);
+      box-shadow: 0px 20px 20px rgba(31, 47, 71, 0.25), 0px 1px 5px rgba(0, 0, 0, 0.1), inset 0 0 0 0.5px rgba(255, 255, 255, 0.4);
     }
 `;
