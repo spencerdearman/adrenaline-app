@@ -2,7 +2,22 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
+import personIcon from '../../assets/images/person.svg';
+
 const NavigationButton = (props) => {
+  const hasProfilePic = props.imageSrc !== personIcon;
+  const isProfileImage = props.title === 'Profile';
+  const Image = styled.img`
+    width: auto;
+    width: 24px;
+    height: 100%;
+    height: 24px;
+    margin: 0 auto;
+    object-fit: cover;
+    border: ${hasProfilePic && isProfileImage ? '1px solid #ddd' : 'none'};
+    border-radius: 50%;
+  `;
+
   return (
     <Link to={props.href}>
       <HoverButton>
@@ -44,13 +59,6 @@ const Wrapper = styled.div`
     justify-content: center;
     pointer-events: none;
     cursor: pointer;
-`;
-
-const Image = styled.img`
-    margin: auto;
-    height: 24px;
-    width: 24px;
-    object-fit: cover;
 `;
 
 const Title = styled.p`
