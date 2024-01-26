@@ -6,6 +6,7 @@ import {
   withAuthenticator
 } from '@aws-amplify/ui-react';
 
+import NavigationBar from './components/Navigation/NavigationBar';
 import Chat from './pages/Chat/Chat';
 import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound';
@@ -32,6 +33,8 @@ function App({ signOut, user }) {
     <CurrentUserContext.Provider value={user}>
       <Wrapper>
         <Router>
+          <NavigationBar />
+
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/chat" element={<Chat />} />
@@ -48,7 +51,7 @@ function App({ signOut, user }) {
 export default withAuthenticator(App);
 
 const Wrapper = styled.div`
-    padding: 50px;
+    padding: 20px;
     margin: 0 auto;
     text-align: center;
 `;

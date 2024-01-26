@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { Button, Card, Heading } from '@aws-amplify/ui-react';
 
 import { getUserById } from '../../utils/dataStore';
-import Page from '../Page';
 
 async function getUserFullName (username) {
   const user = await getUserById(username);
@@ -22,14 +21,12 @@ const Profile = (props) => {
   }, [profileId]);
 
   return (
-    <Page>
-      <Card>
-        <Heading level={1}>Profile</Heading>
-        <Heading level={2}>{name}</Heading>
-      </Card>
+    <Card>
+      <Heading level={1}>Profile</Heading>
+      <Heading level={2}>{name}</Heading>
 
       <Button onClick={props.signOut}>Sign Out</Button>
-    </Page>
+    </Card>
   );
 };
 
