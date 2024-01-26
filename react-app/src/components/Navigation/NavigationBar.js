@@ -8,6 +8,7 @@ import personIcon from '../../assets/images/person.svg';
 import trophyIcon from '../../assets/images/trophy.svg';
 import { getUserById } from '../../utils/dataStore';
 import { getProfilePicUrl } from '../ProfilePic/ProfilePic';
+import SearchBar from '../SearchBar/SearchBar';
 
 import NavigationButton from './NavigationButton';
 
@@ -40,6 +41,7 @@ const NavigationBar = () => {
       <NavigationButton imageSrc={homeIcon} title="Home" href="/" />
       <NavigationButton imageSrc={chatIcon} title="Chat" href="/chat" />
       <NavigationButton imageSrc={trophyIcon} title="Rankings" href="/rankings" />
+      <SearchBar />
       <NavigationButton imageSrc={profileIconSrc} title="Profile" href={profileUrl} />
     </CustomNavigationBar>
   );
@@ -52,4 +54,6 @@ const ButtonsWrapper = styled.div`
     justify-items: space-between;
     justify-content: center;
     margin: 0 auto;
+    align-items: center;
+    margin-bottom: 20px;
 `;
