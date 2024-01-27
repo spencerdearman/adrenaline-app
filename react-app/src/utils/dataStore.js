@@ -6,6 +6,10 @@ export async function getUserById(id) {
   return await DataStore.query(models.NewUser, id);
 }
 
+export async function getAthleteForUser(user) {
+  return await user.athlete;
+}
+
 export async function getSearchData() {
   return {
     users: await DataStore.query(models.NewUser),

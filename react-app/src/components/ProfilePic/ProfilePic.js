@@ -13,10 +13,7 @@ export function ProfilePic ({ id }) {
 
 const Image = styled.img`
     width: auto;
-    width: 300px;
     height: 100%;
-    height: 300px;
-    margin: 0 auto;
     object-fit: cover;
     border: 8px solid #ddd;
     border-radius: 50%;

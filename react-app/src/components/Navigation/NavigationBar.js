@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { CurrentUserContext } from '../../App';
 import chatIcon from '../../assets/images/chat.svg';
 import homeIcon from '../../assets/images/home.svg';
-import personIcon from '../../assets/images/person.svg';
+import personIcon from '../../assets/images/personCircle.svg';
 import trophyIcon from '../../assets/images/trophy.svg';
 import { getSearchData, getUserById } from '../../utils/dataStore';
 import { getProfilePicUrl } from '../ProfilePic/ProfilePic';
@@ -54,7 +54,6 @@ const NavigationBar = () => {
         setSearchData(processSearchData(data));
       });
   }, []);
-  console.log(searchData);
 
   const profileUrl = `/profile/${userContext.userId}`;
   const profileIconSrc = diveMeetsID === undefined ? personIcon : getProfilePicUrl(diveMeetsID);
