@@ -2,16 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Button, Card, Divider, Heading } from '@aws-amplify/ui-react';
+import { Button, Card, Heading } from '@aws-amplify/ui-react';
 
 import mapPinIcon from '../../assets/images/mapPin.svg';
 import personIcon from '../../assets/images/person.svg';
+import { CustomDivider } from '../../components/CustomDivider/CustomDivider';
 import { ProfilePic } from '../../components/ProfilePic/ProfilePic';
 import { getAthleteForUser, getUserById } from '../../utils/dataStore';
+
+import { Favorites } from './Tabs/Favorites';
+import { Posts } from './Tabs/Posts';
+import { Recruiting } from './Tabs/Recruiting';
+import { Results } from './Tabs/Results';
+import { Saved } from './Tabs/Saved';
+import { ProfileTabSelector } from './ProfileTabSelector';
 
 import '../../assets/css/index.css';
 
 const grayColor = '#777';
+// TODO: Make this dynamic based on viewer of profile
+const profileTabs = ['Posts', 'Results', 'Recruiting', 'Saved', 'Favorites'];
+
+const PROFILE_TAB_OBJECTS = {
+  posts: <Posts />,
+  results: <Results />,
+  recruiting: <Recruiting />,
+  saved: <Saved />,
+  favorites: <Favorites />,
+  default: <div />
+};
 
 const Profile = (props) => {
   const { profileId } = useParams();
@@ -19,6 +38,7 @@ const Profile = (props) => {
   const [athlete, setAthlete] = useState();
   const [name, setName] = useState();
   const [diveMeetsID, setDiveMeetsID] = useState();
+  const [tabSelection, setTabSelection] = useState('posts');
 
   // Set user and DiveMeets ID
   useEffect(() => {
@@ -83,7 +103,12 @@ const Profile = (props) => {
         </RowItems>
       </BasicInfo>
 
-      <Divider className='custom-divider' />
+      <CustomDivider marginTop={25} />
+
+      <ProfileTabSelector tabs={profileTabs} tabSelection={tabSelection} setTabSelection={setTabSelection} />
+      {tabSelection && PROFILE_TAB_OBJECTS[tabSelection]}
+
+      <CustomDivider />
 
       <Button onClick={props.signOut}>Sign Out</Button>
     </Card>
