@@ -7,23 +7,17 @@ import personIcon from '../../assets/images/person.svg';
 const NavigationButton = (props) => {
   const hasProfilePic = props.imageSrc !== personIcon;
   const isProfileImage = props.title === 'Profile';
-  const Image = styled.img`
-    width: auto;
-    width: 24px;
-    height: 100%;
-    height: 24px;
-    margin: 0 auto;
-    object-fit: cover;
-    border: ${hasProfilePic && isProfileImage ? '1px solid #ddd' : 'none'};
-    border-radius: 50%;
-  `;
 
   return (
     <Link to={props.href}>
       <HoverButton>
         <ButtonWrapper>
           <Wrapper>
-            <Image src={props.imageSrc} alt="" />
+            <Image
+              src={props.imageSrc}
+              alt=""
+              hasprofilepic={hasProfilePic.toString()}
+              isprofileimage={isProfileImage.toString()} />
             <Title>{props.title}</Title>
           </Wrapper>
         </ButtonWrapper>
@@ -33,6 +27,17 @@ const NavigationButton = (props) => {
 };
 
 export default NavigationButton;
+
+const Image = styled.img`
+    width: auto;
+    width: 24px;
+    height: 100%;
+    height: 24px;
+    margin: 0 auto;
+    object-fit: cover;
+    border: ${props => props.hasprofilepic && props.isprofileimage ? '1px solid #ddd' : 'none'};
+    border-radius: 50%;
+  `;
 
 const ButtonWrapper = styled.button`
     display: flex;
