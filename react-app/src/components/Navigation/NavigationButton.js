@@ -9,7 +9,7 @@ const NavigationButton = (props) => {
   const isProfileImage = props.title === 'Profile';
 
   return (
-    <Link to={props.href}>
+    <Link to={props.href} style={{ textDecoration: 'none' }}>
       <HoverButton>
         <ButtonWrapper>
           <Wrapper>
