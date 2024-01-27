@@ -3,12 +3,12 @@ import styled from 'styled-components';
 
 import { SearchResult } from './SearchResult';
 
-export const SearchResultsList = ({ results, focused }) => {
+export const SearchResultsList = ({ setInput, results, setResults, focused }) => {
   return (
     <ResultsList resultslength={results.length} hasfocus={focused.toString()}>
       {
         results.map((result, id) => {
-          return <SearchResult result={result} key={id} />;
+          return <SearchResult setInput={setInput} result={result} setResults={setResults} key={id} />;
         })
       }
     </ResultsList>

@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-export const SearchInputBar = ({ setResults, onFocus, onBlur }) => {
-  const [input, setInput] = useState('');
-  //   fetch data on backend, just filter search on frontend
-  const fetchData = (value) => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then((response) => response.json())
-      .then((json) => {
-        const results = json.filter((user) => {
-          return (
-            value &&
-              user &&
-              user.name &&
-              user.name.toLowerCase().includes(value.toLowerCase())
-          );
-        });
-        setResults(results);
-      });
+export const SearchInputBar = ({ input, setInput, searchData, setResults, onFocus, onBlur }) => {
+  const filterData = (value) => {
+    if (searchData === undefined) {
+      console.log('Failed to retrieve search data from parent');
+      return;
+    }
+
+    const results = searchData.filter((item) => {
+      return (
+        value &&
+          item &&
+          item.title &&
+          item.title.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    setResults(results);
+    console.log(results);
   };
 
   const handleChange = (value) => {
     setInput(value);
-    fetchData(value);
+    filterData(value);
   };
 
   return (

@@ -4,7 +4,8 @@ import styled from 'styled-components';
 import { SearchInputBar } from './SearchInputBar';
 import { SearchResultsList } from './SearchResultsList';
 
-function SearchBar() {
+function SearchBar({ searchData }) {
+  const [input, setInput] = useState('');
   const [results, setResults] = useState([]);
   const [focused, setFocused] = useState(false);
   const onFocus = () => setFocused(true);
@@ -12,8 +13,8 @@ function SearchBar() {
 
   return (
     <SearchContainer>
-      <SearchInputBar setResults={setResults} onFocus={onFocus} onBlur={onBlur} />
-      <SearchResultsList results={results} focused={focused} />
+      <SearchInputBar input={input} setInput={setInput} searchData={searchData} setResults={setResults} onFocus={onFocus} onBlur={onBlur} />
+      <SearchResultsList setInput={setInput} results={results} setResults={setResults} focused={focused} />
     </SearchContainer>
   );
 }

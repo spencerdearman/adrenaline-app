@@ -35,7 +35,7 @@ const Image = styled.img`
     height: 24px;
     margin: 0 auto;
     object-fit: cover;
-    border: ${props => props.hasprofilepic && props.isprofileimage ? '1px solid #ddd' : 'none'};
+    border: ${props => props.hasprofilepic === 'true' && props.isprofileimage === 'true' ? '1px solid #ddd' : 'none'};
     border-radius: 50%;
   `;
 
