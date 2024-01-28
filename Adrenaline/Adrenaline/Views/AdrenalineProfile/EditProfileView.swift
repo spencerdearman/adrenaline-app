@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Amplify
+import PhotosUI
 
 struct EditProfileView: View {
     @Environment(\.dismiss) private var dismiss
@@ -21,6 +22,9 @@ struct EditProfileView: View {
     @State var hometown: String = ""
     @State private var saveButtonPressed: Bool = false
     @State private var showAthleteError: Bool = false
+    @State private var showSheet: Bool = false
+    @State private var selectedImage: PhotosPickerItem? = nil
+    @State private var profilePic: Image? = nil
     @Binding var updateDataStoreData: Bool
     @FocusState private var focusedField: SignupInfoField?
     
@@ -82,14 +86,48 @@ struct EditProfileView: View {
         }
     }
     
+    func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
+        return imageSelection.loadTransferable(type: Image.self) { result in
+            DispatchQueue.main.async {
+                guard selectedImage == self.selectedImage else { return }
+                switch result {
+                    case .success(let image?):
+                        // Handle the success case with the image.
+                        profilePic = image
+                    case .success(nil):
+                        // Handle the success case with an empty value.
+                        profilePic = nil
+                    case .failure(let error):
+                        // Handle the failure case with the provided error.
+                        print("Failed to get image from picker: \(error)")
+                        profilePic = nil
+                }
+            }
+        }
+    }
+    
     var body: some View {
         VStack {
             if let user = newUser {
-                Button {  } label: {
+                PhotosPicker(selection: $selectedImage, matching: .images) {
                     ZStack(alignment: .bottomTrailing) {
-                        ProfileImage(diverID: (user.diveMeetsID ?? ""))
-                            .frame(width: 200, height: 130)
-                            .scaleEffect(0.9)
+                        if let profilePic = profilePic {
+                            profilePic
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width:170, height:300)
+                                .clipShape(Circle())
+                                .overlay {
+                                    Circle().stroke(.ultraThinMaterial, lineWidth: 15)
+                                }
+                                .shadow(radius: 7)
+                                .frame(width: 200, height: 130)
+                                .scaleEffect(0.9)
+                        } else {
+                            ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                                .frame(width: 200, height: 130)
+                                .scaleEffect(0.9)
+                        }
                         
                         Image(systemName: "plus")
                             .frame(width: 30, height: 30)
@@ -219,6 +257,10 @@ struct EditProfileView: View {
         }
         .padding()
         .navigationTitle("Edit Profile")
+        .onChange(of: selectedImage) {
+            guard let selectedImage = selectedImage else { return }
+            let _ = loadTransferable(from: selectedImage)
+        }
         .onAppear {
             Task {
                 if let user = newUser {
