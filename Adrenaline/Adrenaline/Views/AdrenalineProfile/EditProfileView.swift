@@ -85,151 +85,138 @@ struct EditProfileView: View {
     var body: some View {
         VStack {
             if let user = newUser {
-                ProfileImage(diverID: (user.diveMeetsID ?? ""))
-                    .frame(width: 200, height: 130)
-                    .scaleEffect(0.9)
-                    .padding(.top, 50)
+                Button {  } label: {
+                    ZStack(alignment: .bottomTrailing) {
+                        ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                            .frame(width: 200, height: 130)
+                            .scaleEffect(0.9)
+                        
+                        Image(systemName: "plus")
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
+                            .background(.gray)
+                            .clipShape(Circle())
+                            .offset(x: -25, y: 15)
+                    }
                     .padding(.bottom, 30)
+                }
             }
             
-            if let athlete = athlete {
-                Group {
-                    HStack {
-                        TextField("Height (ft)", value: $heightFeet, formatter: .heightFtFormatter)
-                            .keyboardType(.numberPad)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                        iconColor: saveButtonPressed && heightFeet == 0
-                                                        ? Custom.error
-                                                        : nil))
-                            .focused($focusedField, equals: .heightFeet)
-                            .onChange(of: heightFeet) {
-                                heightFeet = heightFeet
-                            }
-                        
-                        TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
-                            .keyboardType(.numberPad)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                        iconColor: saveButtonPressed && heightInches == 0
-                                                        ? Custom.error
-                                                        : nil))
-                            .focused($focusedField, equals: .heightInches)
-                            .onChange(of: heightInches) {
-                                heightInches = heightInches
-                            }
-                    }
-                    
-                    HStack {
-                        TextField("Weight", value: $weight, formatter: .weightFormatter)
-                            .keyboardType(.numberPad)
-                            .autocapitalization(.none)
-                            .disableAutocorrection(true)
-                            .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                        iconColor: saveButtonPressed && weight == 0
-                                                        ? Custom.error
-                                                        : nil))
-                            .focused($focusedField, equals: .weight)
-                        
-                        BubbleSelectView(selection: $weightUnit)
-                            .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
-                            .scaleEffect(1.08)
-                            .onChange(of: weightUnit) {
-                                weightUnitString = weightUnit.rawValue
-                            }
-                    }
-                    
-//                    HStack {
-//                        let age = athlete.age
-//                        Text(String(age))
-//                            .foregroundColor(.secondary)
-//                            .modifier(TextFieldModifier(icon: "hexagon.fill",
-//                                                        iconColor: saveButtonPressed && age == 0
-//                                                        ? Custom.error
-//                                                        : nil))
-                        
-                        //                        BubbleSelectView(selection: $gender)
-                        //                            .frame(width: textFieldWidth / 2)
-                        //                            .scaleEffect(1.05)
-                        //                            .onAppear {
-                        //                                genderString = gender.rawValue
-                        //                            }
-                        //                            .onChange(of: gender) {
-                        //                                genderString = gender.rawValue
-                        //                            }
-//                    }
-//                    
-                    TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
+            Group {
+                HStack {
+                    TextField("Height (ft)", value: $heightFeet, formatter: .heightFtFormatter)
                         .keyboardType(.numberPad)
+                        .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                    iconColor: saveButtonPressed && gradYear == 0
+                                                    iconColor: saveButtonPressed && heightFeet == 0
                                                     ? Custom.error
                                                     : nil))
-                        .focused($focusedField, equals: .gradYear)
-                        .onChange(of: gradYear) {
-                            gradYear = gradYear
+                        .focused($focusedField, equals: .heightFeet)
+                        .onChange(of: heightFeet) {
+                            heightFeet = heightFeet
                         }
-//                    
-                    TextField("High School", text: $highSchool)
+                    
+                    TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
+                        .keyboardType(.numberPad)
+                        .autocapitalization(.none)
                         .disableAutocorrection(true)
                         .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                    iconColor: saveButtonPressed && highSchool.isEmpty
+                                                    iconColor: saveButtonPressed && heightInches == 0
                                                     ? Custom.error
                                                     : nil))
-                        .focused($focusedField, equals: .highSchool)
-                        .onChange(of: highSchool) {
-                            highSchool = highSchool
-                        }
-                    
-                    TextField("Hometown", text: $hometown)
-                        .disableAutocorrection(true)
-                        .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                    iconColor: saveButtonPressed && hometown.isEmpty
-                                                    ? Custom.error
-                                                    : nil))
-                        .focused($focusedField, equals: .hometown)
-                        .onChange(of: hometown) {
-                            hometown = hometown
-                        }
-                    
-                    Divider()
-                    
-                    
-                    Button {
-                        withAnimation(.closeCard) {
-                            showAthleteError = false
-                        }
-                        Task {
-                            await saveNewAthlete()
-                            updateDataStoreData = true
-                            dismiss()
-                        }
-                    } label: {
-                        ColorfulButton(title: "Save")
-                    }
-                    
-                    if showAthleteError {
-                        Text("Error creating athlete profile, please check information")
-                            .foregroundColor(.primary).fontWeight(.semibold)
-                    }
-                    
-                    Text("**Cancel**")
-                        .font(.footnote)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .accentColor(.primary.opacity(0.7))
-                        .onTapGesture {
-                            dismiss()
+                        .focused($focusedField, equals: .heightInches)
+                        .onChange(of: heightInches) {
+                            heightInches = heightInches
                         }
                 }
+                
+                HStack {
+                    TextField("Weight", value: $weight, formatter: .weightFormatter)
+                        .keyboardType(.numberPad)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                    iconColor: saveButtonPressed && weight == 0
+                                                    ? Custom.error
+                                                    : nil))
+                        .focused($focusedField, equals: .weight)
+                    
+                    BubbleSelectView(selection: $weightUnit)
+                        .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
+                        .scaleEffect(1.08)
+                        .onChange(of: weightUnit) {
+                            weightUnitString = weightUnit.rawValue
+                        }
+                }
+                
+                TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
+                    .keyboardType(.numberPad)
+                    .disableAutocorrection(true)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: saveButtonPressed && gradYear == 0
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .gradYear)
+                    .onChange(of: gradYear) {
+                        gradYear = gradYear
+                    }
+                
+                TextField("High School", text: $highSchool)
+                    .disableAutocorrection(true)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: saveButtonPressed && highSchool.isEmpty
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .highSchool)
+                    .onChange(of: highSchool) {
+                        highSchool = highSchool
+                    }
+                
+                TextField("Hometown", text: $hometown)
+                    .disableAutocorrection(true)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: saveButtonPressed && hometown.isEmpty
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .hometown)
+                    .onChange(of: hometown) {
+                        hometown = hometown
+                    }
+                
+                Divider()
+                
+                
+                Button {
+                    withAnimation(.closeCard) {
+                        showAthleteError = false
+                    }
+                    Task {
+                        await saveNewAthlete()
+                        updateDataStoreData = true
+                        dismiss()
+                    }
+                } label: {
+                    ColorfulButton(title: "Save")
+                }
+                
+                if showAthleteError {
+                    Text("Error creating athlete profile, please check information")
+                        .foregroundColor(.primary).fontWeight(.semibold)
+                }
+                
+                Text("**Cancel**")
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        dismiss()
+                    }
             }
             
             Spacer()
         }
-        .offset(y: -screenHeight * 0.04)
         .padding()
         .navigationTitle("Edit Profile")
         .onAppear {
