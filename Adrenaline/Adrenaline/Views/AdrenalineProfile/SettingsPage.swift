@@ -88,12 +88,22 @@ struct SettingsView: View {
             Section {
                 NavigationLink {
                     if let user = newUser {
-                        NavigationLink {
-                            CommittedCollegeView(selectedCollege: $selectedCollege,
-                                                 updateDataStoreData: $updateDataStoreData,
-                                                 newUser: user)
-                        } label: {
-                            Text("Change Commited College")
+                        VStack {
+                            NavigationLink {
+                                EditProfileView(updateDataStoreData: $updateDataStoreData,
+                                                newUser: newUser)
+                            } label: {
+                                Text("Edit Profile")
+                            }
+                            .navigationTitle("Profile")
+                            
+                            NavigationLink {
+                                CommittedCollegeView(selectedCollege: $selectedCollege,
+                                                     updateDataStoreData: $updateDataStoreData,
+                                                     newUser: user)
+                            } label: {
+                                Text("Change Commited College")
+                            }
                         }
                     }
                 } label: {
