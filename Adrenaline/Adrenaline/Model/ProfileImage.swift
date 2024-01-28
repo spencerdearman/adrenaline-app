@@ -9,12 +9,19 @@ import SwiftUI
 import CachedAsyncImage
 
 struct ProfileImage: View {
-    @Environment(\.colorScheme) var currentMode
-    let diverID: String
+    @Environment(\.colorScheme) private var currentMode
+    let imageUrlString: String
+    
+    init(diverID: String) {
+        imageUrlString = "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+    }
+    
+    init(profilePicKey: String) {
+        imageUrlString = "https://google.com"
+    }
 
     var body: some View {
-        let imageUrlString =
-        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+        
         if let imageUrl = URL(string: imageUrlString) {
             CachedAsyncImage(url: imageUrl, urlCache: .imageCache) { phase in
                 if let image = phase.image {
