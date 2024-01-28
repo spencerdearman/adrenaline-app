@@ -16,14 +16,14 @@ struct ProfileImage: View {
         imageUrlString = "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
     }
     
-    init(profilePicKey: String) {
-        imageUrlString = "https://google.com"
+    init(profilePicURL: String) {
+        imageUrlString = profilePicURL
     }
 
     var body: some View {
         
         if let imageUrl = URL(string: imageUrlString) {
-            CachedAsyncImage(url: imageUrl, urlCache: .imageCache) { phase in
+            AsyncImage(url: imageUrl) { phase in
                 if let image = phase.image {
                     image
                         .resizable()

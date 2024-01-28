@@ -85,6 +85,7 @@ extension UINavigationController {
 
 let CLOUDFRONT_STREAM_BASE_URL = "https://d3mgzcs3lrwvom.cloudfront.net/"
 let CLOUDFRONT_IMAGE_BASE_URL = "https://dc666cmbq88s6.cloudfront.net/"
+let CLOUDFRONT_PROFILE_PICS_BASE_URL = "https://dh68pb7jazk5m.cloudfront.net"
 let MAIN_BUCKET = "adrenalinexxxxx153503-main"
 let STREAMS_BUCKET = "adrenaline-main-video-streams"
 

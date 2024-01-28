@@ -25,6 +25,8 @@ struct EditProfileView: View {
     @State private var showSheet: Bool = false
     @State private var selectedImage: PhotosPickerItem? = nil
     @State private var profilePic: Image? = nil
+    @State private var profilePicData: Data? = nil
+    @State private var profilePicURL: String = ""
     @Binding var updateDataStoreData: Bool
     @FocusState private var focusedField: SignupInfoField?
     
@@ -78,10 +80,10 @@ struct EditProfileView: View {
         }
         withAnimation(.openCard) {
             if athleteAllFieldsFilled {
+                saveButtonPressed = true
+            } else {
                 saveButtonPressed = false
                 showAthleteError = true
-            } else {
-                saveButtonPressed = true
             }
         }
     }
@@ -124,7 +126,7 @@ struct EditProfileView: View {
                                 .frame(width: 200, height: 130)
                                 .scaleEffect(0.9)
                         } else {
-                            ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                            ProfileImage(profilePicURL: profilePicURL)
                                 .frame(width: 200, height: 130)
                                 .scaleEffect(0.9)
                         }
@@ -231,6 +233,10 @@ struct EditProfileView: View {
                     }
                     Task {
                         await saveNewAthlete()
+                        if let data = profilePicData, let id = newUser?.id {
+                            try await uploadProfilePicture(data: data, userId: id)
+                        }
+                        
                         updateDataStoreData = true
                         dismiss()
                     }
@@ -258,13 +264,30 @@ struct EditProfileView: View {
         .padding()
         .navigationTitle("Edit Profile")
         .onChange(of: selectedImage) {
-            guard let selectedImage = selectedImage else { return }
-            let _ = loadTransferable(from: selectedImage)
+            Task {
+                guard let selectedImage = selectedImage else { return }
+                
+                // Load Picker image into Image
+                let _ = loadTransferable(from: selectedImage)
+                
+                // Load Picker image into Data
+                if let data = try? await selectedImage.loadTransferable(type: Data.self) {
+                    print(data)
+                    profilePicData = data
+                }
+            }
         }
         .onAppear {
             Task {
+                profilePic = nil
+                
                 if let user = newUser {
                     athlete = try await user.athlete
+                    
+                    if await hasProfilePicture(userId: user.id) {
+                        profilePicURL = getProfilePictureURL(userId: user.id)
+                        print(profilePicURL)
+                    }
                 }
                 
                 if let athlete = athlete {
