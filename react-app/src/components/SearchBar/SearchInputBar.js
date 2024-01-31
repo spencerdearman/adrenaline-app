@@ -17,7 +17,6 @@ export const SearchInputBar = ({ input, setInput, searchData, setResults, onFocu
       );
     });
     setResults(results);
-    console.log(results);
   };
 
   const handleChange = (value) => {

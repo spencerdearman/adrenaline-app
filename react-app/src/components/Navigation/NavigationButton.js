@@ -2,14 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import personIcon from '../../assets/images/person.svg';
+import personIcon from '../../assets/images/personCircle.svg';
 
 const NavigationButton = (props) => {
   const hasProfilePic = props.imageSrc !== personIcon;
   const isProfileImage = props.title === 'Profile';
 
   return (
-    <Link to={props.href}>
+    <Link to={props.href} style={{ textDecoration: 'none' }}>
       <HoverButton>
         <ButtonWrapper>
           <Wrapper>

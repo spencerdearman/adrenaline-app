@@ -5,7 +5,6 @@ import styled from 'styled-components';
 export const SearchResult = ({ setInput, result, setResults }) => {
   const navigate = useNavigate();
   const onClick = (e) => {
-    console.log(e.title);
     switch (e.subtitle) {
     case 'User':
       navigate(`/profile/${e.id}`);
