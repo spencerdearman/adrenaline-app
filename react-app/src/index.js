@@ -8,7 +8,7 @@ import amplifyconfig from './amplifyconfiguration.json';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-import './index.css';
+import './assets/css/index.css';
 
 Amplify.configure(amplifyconfig);
 

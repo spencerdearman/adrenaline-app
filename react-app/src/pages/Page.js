@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import NavigationBar from '../components/NavigationBar';
+import NavigationBar from '../components/Navigation/NavigationBar';
 
 // Wrapping elements in <Page> tags will add the NavigationBar to the top
 export default function Page ({ children }) {

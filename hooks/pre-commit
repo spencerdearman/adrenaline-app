@@ -1,0 +1,3 @@
+#!/bin/sh
+cd react-app
+npm run lint || { echo "Linting failed. Please run 'npm run lint-fix' from within react-app directory."; exit 1; }

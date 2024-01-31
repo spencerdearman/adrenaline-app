@@ -2,12 +2,12 @@ import React from 'react';
 
 import { Card, Heading } from '@aws-amplify/ui-react';
 
-const Home = () => {
+const Rankings = () => {
   return (
     <Card>
-      <Heading level={1}>Home</Heading>
+      <Heading level={1}>Rankings</Heading>
     </Card>
   );
 };
 
-export default Home;
+export default Rankings;
