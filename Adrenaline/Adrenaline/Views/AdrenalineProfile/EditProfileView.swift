@@ -27,6 +27,7 @@ struct EditProfileView: View {
     @State private var profilePic: Image? = nil
     @State private var profilePicData: Data? = nil
     @State private var profilePicURL: String = ""
+    @State private var showAlert: Bool = false
     @Binding var updateDataStoreData: Bool
     @FocusState private var focusedField: SignupInfoField?
     
@@ -234,6 +235,7 @@ struct EditProfileView: View {
                     Task {
                         await saveNewAthlete()
                         if let data = profilePicData, let id = newUser?.id {
+                            showAlert = true
                             try await uploadProfilePicture(data: data, userId: id)
                         }
                         
@@ -263,6 +265,11 @@ struct EditProfileView: View {
         }
         .padding()
         .navigationTitle("Edit Profile")
+        .alert("It may take up to 60 seconds for your profile picture to update", isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                showAlert = false
+            }
+        }
         .onChange(of: selectedImage) {
             Task {
                 guard let selectedImage = selectedImage else { return }
