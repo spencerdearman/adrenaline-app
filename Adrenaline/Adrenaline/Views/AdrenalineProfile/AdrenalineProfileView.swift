@@ -119,7 +119,7 @@ struct AdrenalineProfileView: View {
             
             if let user = user {
                 VStack {
-                    ProfileImage(diverID: (user.diveMeetsID ?? ""))
+                    ProfileImage(profilePicURL: getProfilePictureURL(userId: user.id))
                         .frame(width: 200, height: 130)
                         .scaleEffect(0.9)
                         .padding(.top, 50)

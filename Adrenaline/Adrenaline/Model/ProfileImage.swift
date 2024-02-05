@@ -6,17 +6,23 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
 
 struct ProfileImage: View {
-    @Environment(\.colorScheme) var currentMode
-    let diverID: String
+    @Environment(\.colorScheme) private var currentMode
+    let imageUrlString: String
+    
+    init(diverID: String) {
+        imageUrlString = "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+    }
+    
+    init(profilePicURL: String) {
+        imageUrlString = profilePicURL
+    }
 
     var body: some View {
-        let imageUrlString =
-        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+        
         if let imageUrl = URL(string: imageUrlString) {
-            CachedAsyncImage(url: imageUrl, urlCache: .imageCache) { phase in
+            AsyncImage(url: imageUrl) { phase in
                 if let image = phase.image {
                     image
                         .resizable()
@@ -37,26 +43,45 @@ struct ProfileImage: View {
                             Circle().stroke(.white, lineWidth: 4)
                         }
                         .shadow(radius: 7)
-                    
                 } else {
                     ProgressView()
                 }
             }
+        } else {
+            Image("defaultImage")
+                .resizable()
+                .scaledToFit()
+                .frame(width:200, height:300)
+                .clipShape(Circle())
+                .overlay {
+                    Circle().stroke(.white, lineWidth: 4)
+                }
+                .shadow(radius: 7)
         }
     }
 }
 
 struct MiniProfileImage: View {
     @Environment(\.colorScheme) var currentMode
-    let diverID: String
-    var width: CGFloat = 100
-    var height: CGFloat = 150
+    let imageUrlString: String
+    var width: CGFloat
+    var height: CGFloat
+    
+    init(diverID: String, width: CGFloat = 100, height: CGFloat = 150) {
+        imageUrlString = "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+        self.width = width
+        self.height = height
+    }
+    
+    init(profilePicURL: String, width: CGFloat = 100, height: CGFloat = 150) {
+        imageUrlString = profilePicURL
+        self.width = width
+        self.height = height
+    }
     
     var body: some View {
-        let imageUrlString =
-        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
         let imageUrl = URL(string: imageUrlString)
-        CachedAsyncImage(url: imageUrl!, urlCache: .imageCache) { phase in
+        AsyncImage(url: imageUrl) { phase in
             if let image = phase.image {
                 image
                     .resizable()

@@ -181,6 +181,11 @@ private func deleteDataStoreFavorites(user: NewUser) async throws {
     }
 }
 
+// Remove profile picture from S3
+private func deleteProfilePicture(user: NewUser) async throws {
+    try await Amplify.Storage.remove(key: "profile-pictures/\(user.id).jpg")
+}
+
 // Removes all data in DataStore and S3 associated with a NewUser given authUserId
 private func deleteAccountDataStoreData(authUserId: String) async throws {
     // Get user object from authUserId
@@ -194,6 +199,7 @@ private func deleteAccountDataStoreData(authUserId: String) async throws {
     try await deleteDataStorePosts(user: user)
     try await deleteDataStoreMessages(user: user)
     try await deleteDataStoreFavorites(user: user)
+    try await deleteProfilePicture(user: user)
     
     // Delete user object itself
     try await deleteFromDataStore(object: user)
