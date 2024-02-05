@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Amplify
-import CachedAsyncImage
 
 struct MessagingBar: View {
     @EnvironmentObject var appLogic: AppLogic
@@ -65,7 +64,7 @@ struct MessagingBar: View {
                     }
                 } label: {
                     Group {
-                        if let user = newUser, 
+                        if let user = newUser,
                             let url = URL(string: getProfilePictureURL(userId: user.id)) {
                             AsyncImage(url: url, transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {

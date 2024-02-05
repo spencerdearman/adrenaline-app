@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
 
 private enum RecruitingDashboardSheet {
     case search

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Amplify
-import CachedAsyncImage
 
 
 struct MeetsBar: View {
