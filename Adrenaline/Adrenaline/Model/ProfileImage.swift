@@ -43,11 +43,20 @@ struct ProfileImage: View {
                             Circle().stroke(.white, lineWidth: 4)
                         }
                         .shadow(radius: 7)
-                    
                 } else {
                     ProgressView()
                 }
             }
+        } else {
+            Image("defaultImage")
+                .resizable()
+                .scaledToFit()
+                .frame(width:200, height:300)
+                .clipShape(Circle())
+                .overlay {
+                    Circle().stroke(.white, lineWidth: 4)
+                }
+                .shadow(radius: 7)
         }
     }
 }

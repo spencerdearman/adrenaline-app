@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Amplify
+import PhotosUI
 
 extension Formatter {
     static let heightFtFormatter: NumberFormatter = {
@@ -52,6 +53,15 @@ struct ButtonInfo: Identifiable {
     var selected: Bool = false
 }
 
+enum PageIndex: Int, CaseIterable {
+    case accountType = 0
+    case basicInfo = 1
+    case diveMeetsLink = 2
+    case athleteInfo = 3
+    case profilePic = 4
+    case welcome = 5
+}
+
 struct NewSignupSequence: View {
     @EnvironmentObject private var appLogic: AppLogic
     @Environment(\.colorScheme) private var currentMode
@@ -69,7 +79,7 @@ struct NewSignupSequence: View {
     
     // General States
     @State var buttonPressed: Bool = false
-    @State var pageIndex: Int = 0
+    @State var pageIndex: PageIndex = .accountType
     @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
@@ -112,6 +122,11 @@ struct NewSignupSequence: View {
     @State var hometown: String = ""
     @State var athleteCreationSuccessful: Bool = false
     @State var showAthleteError: Bool = false
+    
+    // Variables for Profile Picture Upload
+    @State private var selectedImage: PhotosPickerItem? = nil
+    @State private var profilePic: Image? = nil
+    @State private var profilePicData: Data? = nil
     
     // Measurement Variables
     private let screenWidth = UIScreen.main.bounds.width
@@ -208,7 +223,7 @@ struct NewSignupSequence: View {
             
             Group {
                 switch pageIndex {
-                    case 0:
+                    case .accountType:
                         VStack(alignment: .leading, spacing: 20) {
                             Text("Account Type")
                                 .font(.largeTitle).bold()
@@ -219,7 +234,7 @@ struct NewSignupSequence: View {
                         }
                         .frame(height: screenHeight * 0.6)
                         .matchedGeometryEffect(id: "form1", in: namespace)
-                    case 1:
+                    case .basicInfo:
                         VStack(alignment: .leading, spacing: 20) {
                             Text("Basic Info")
                                 .font(.largeTitle).bold()
@@ -229,7 +244,7 @@ struct NewSignupSequence: View {
                             basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
                         }
                         .matchedGeometryEffect(id: "form1", in: namespace)
-                    case 2:
+                    case .diveMeetsLink:
                         Group {
                             if searchSubmitted && !personTimedOut && !linksParsed {
                                 ZStack {
@@ -271,7 +286,7 @@ struct NewSignupSequence: View {
                             dmSearchSubmitted = false
                             linksParsed = false
                         }
-                    case 3:
+                    case .athleteInfo:
                         VStack(alignment: .leading, spacing: 20) {
                             Text("Recruiting Info")
                                 .font(.largeTitle).bold()
@@ -281,7 +296,17 @@ struct NewSignupSequence: View {
                             athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
                         }
                         .matchedGeometryEffect(id: "form", in: namespace)
-                    case 4:
+                    case .profilePic:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Profile Picture")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            profilePicUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    case .welcome:
                         VStack(alignment: .leading, spacing: 20) {
                             if let savedUser = savedUser {
                                 Text("Welcome to Adrenaline \(savedUser.firstName)!")
@@ -293,15 +318,6 @@ struct NewSignupSequence: View {
                             welcomeForm.slideFadeIn(show: appear[2], offset: 10)
                         }
                         .matchedGeometryEffect(id: "form", in: namespace)
-                    default:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Basic Information")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
                 }
             }
             .padding(20)
@@ -405,7 +421,7 @@ struct NewSignupSequence: View {
             Button {
                 if accountAllFieldsFilled {
                     buttonPressed = false
-                    pageIndex = 1
+                    pageIndex = .basicInfo
                 } else {
                     buttonPressed = true
                 }
@@ -460,7 +476,7 @@ struct NewSignupSequence: View {
                     buttonPressed = false
                     if accountType != "Spectator" {
                         withAnimation(.openCard) {
-                            pageIndex = 2
+                            pageIndex = .diveMeetsLink
                         }
                     } else {
                         Task {
@@ -468,12 +484,10 @@ struct NewSignupSequence: View {
                             
                             if userCreationSuccessful {
                                 withAnimation(.openCard) {
-                                    pageIndex = 4
+                                    pageIndex = .welcome
                                 }
                             }
                         }
-                        
-                        
                     }
                 } else {
                     buttonPressed = true
@@ -586,9 +600,9 @@ struct NewSignupSequence: View {
                                 withAnimation {
                                     print("Selected Next")
                                     if accountType == "Athlete" {
-                                        pageIndex = 3
+                                        pageIndex = .athleteInfo
                                     } else {
-                                        pageIndex = 4
+                                        pageIndex = .profilePic
                                     }
                                 }
                             }
@@ -614,7 +628,7 @@ struct NewSignupSequence: View {
                             .accentColor(.primary.opacity(0.7))
                             .onTapGesture {
                                 withAnimation(.openCard) {
-                                    pageIndex = 1
+                                    pageIndex = .basicInfo
                                     
                                     // Reset the DiveMeets ID Search
                                     searchSubmitted = false
@@ -647,9 +661,11 @@ struct NewSignupSequence: View {
                                         if userCreationSuccessful {
                                             withAnimation(.openCard) {
                                                 if accountType == "Athlete" {
-                                                    pageIndex = 3
+                                                    pageIndex = .athleteInfo
+                                                } else if accountType != "Spectator" {
+                                                    pageIndex = .profilePic
                                                 } else {
-                                                    pageIndex = 4
+                                                    pageIndex = .welcome
                                                 }
                                             }
                                         }
@@ -822,9 +838,92 @@ struct NewSignupSequence: View {
                 .accentColor(.primary.opacity(0.7))
                 .onTapGesture {
                     withAnimation(.openCard) {
-                        pageIndex = 2
+                        pageIndex = .diveMeetsLink
                     }
                 }
+        }
+    }
+    
+    var profilePicUploadForm: some View {
+        Group {
+            VStack {
+                PhotosPicker(selection: $selectedImage, matching: .images) {
+                    ZStack(alignment: .bottomTrailing) {
+                        if let profilePic = profilePic {
+                            profilePic
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width:170, height:300)
+                                .clipShape(Circle())
+                                .overlay {
+                                    Circle().stroke(.ultraThinMaterial, lineWidth: 15)
+                                }
+                                .shadow(radius: 7)
+                                .frame(width: 200, height: 130)
+                                .scaleEffect(0.9)
+                        } else {
+                            ProfileImage(profilePicURL: "")
+                                .frame(width: 200, height: 130)
+                                .scaleEffect(0.9)
+                        }
+                        
+                        Image(systemName: "plus")
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(.white)
+                            .background(.gray)
+                            .clipShape(Circle())
+                            .offset(x: -20, y: 20)
+                    }
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 45)
+                
+                Divider()
+                
+                Button {
+                    Task {
+                        if let data = profilePicData, let id = savedUser?.id {
+                            try await uploadProfilePicture(data: data, userId: id)
+                        }
+                        
+                        withAnimation(.openCard) {
+                            pageIndex = .welcome
+                        }
+                    }
+                } label: {
+                    ColorfulButton(title: "Continue")
+                }
+                .disabled(profilePicData == nil)
+                
+                Text("**Previous**")
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        withAnimation(.openCard) {
+                            if accountType == "Athlete" {
+                                pageIndex = .athleteInfo
+                            } else {
+                                pageIndex = .diveMeetsLink
+                            }
+                        }
+                    }
+            }
+            .onChange(of: selectedImage) {
+                Task {
+                    guard let selectedImage = selectedImage else { return }
+                    
+                    // Load Picker image into Image
+                    let _ = loadTransferable(from: selectedImage)
+                    
+                    // Load Picker image into Data
+                    if let data = try? await selectedImage.loadTransferable(type: Data.self) {
+                        print("")
+                        profilePicData = data
+                    }
+                }
+            }
         }
     }
     
@@ -844,6 +943,26 @@ struct NewSignupSequence: View {
         newUsers.reduce(into: Set<String>()) { (result, user) in
             if let id = user.diveMeetsID {
                 result.insert(id)
+            }
+        }
+    }
+    
+    private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
+        return imageSelection.loadTransferable(type: Image.self) { result in
+            DispatchQueue.main.async {
+                guard selectedImage == self.selectedImage else { return }
+                switch result {
+                    case .success(let image?):
+                        // Handle the success case with the image.
+                        profilePic = image
+                    case .success(nil):
+                        // Handle the success case with an empty value.
+                        profilePic = nil
+                    case .failure(let error):
+                        // Handle the failure case with the provided error.
+                        print("Failed to get image from picker: \(error)")
+                        profilePic = nil
+                }
             }
         }
     }
@@ -930,7 +1049,7 @@ struct NewSignupSequence: View {
             if athleteAllFieldsFilled {
                 if athleteCreationSuccessful {
                     buttonPressed = false
-                    pageIndex = 4
+                    pageIndex = .profilePic
                 } else {
                     showAthleteError = true
                 }
