@@ -18,7 +18,6 @@ const Profile = (props) => {
   const [user, setUser] = useState();
   const [athlete, setAthlete] = useState();
   const [name, setName] = useState();
-  const [diveMeetsID, setDiveMeetsID] = useState();
 
   // Set user and DiveMeets ID
   useEffect(() => {
@@ -27,7 +26,6 @@ const Profile = (props) => {
         if (data !== undefined) {
           setUser(data);
           setName(data.firstName + ' ' + data.lastName);
-          setDiveMeetsID(data.diveMeetsID);
         }
       });
   }, [profileId]);
@@ -45,9 +43,7 @@ const Profile = (props) => {
       <BasicInfo>
         <RowItems style={{ paddingBottom: 0 }}>
           <Column>
-            {diveMeetsID !== undefined &&
-                <ProfilePic id={diveMeetsID} />
-            }
+            <ProfilePic id={profileId} />
           </Column>
 
           <Column>
