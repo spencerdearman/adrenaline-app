@@ -691,7 +691,7 @@ struct LastDiverView: View
     
     var miniProfileImage: some View {
         MiniProfileImage(
-            diverID: String(lastInfo.1.components(separatedBy: "=").last ?? "")
+            profilePicURL: getProfilePictureURL(userId: newUser == nil ? "" : newUser!.id)
         )
         .scaledToFit()
     }
@@ -752,7 +752,7 @@ struct NextDiverView: View
                     Spacer().frame(width: 35)
                     
                     let img = MiniProfileImage(
-                        diverID: String(nextInfo.1.components(separatedBy: "=").last ?? "")
+                        profilePicURL: getProfilePictureURL(userId: newUser == nil ? "" : newUser!.id)
                     )
                         .scaledToFit()
                     

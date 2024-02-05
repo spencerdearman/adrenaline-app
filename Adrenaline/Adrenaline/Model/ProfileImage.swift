@@ -54,15 +54,25 @@ struct ProfileImage: View {
 
 struct MiniProfileImage: View {
     @Environment(\.colorScheme) var currentMode
-    let diverID: String
-    var width: CGFloat = 100
-    var height: CGFloat = 150
+    let imageUrlString: String
+    var width: CGFloat
+    var height: CGFloat
+    
+    init(diverID: String, width: CGFloat = 100, height: CGFloat = 150) {
+        imageUrlString = "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
+        self.width = width
+        self.height = height
+    }
+    
+    init(profilePicURL: String, width: CGFloat = 100, height: CGFloat = 150) {
+        imageUrlString = profilePicURL
+        self.width = width
+        self.height = height
+    }
     
     var body: some View {
-        let imageUrlString =
-        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diverID).jpg"
         let imageUrl = URL(string: imageUrlString)
-        AsyncImage(url: imageUrl!) { phase in
+        AsyncImage(url: imageUrl) { phase in
             if let image = phase.image {
                 image
                     .resizable()

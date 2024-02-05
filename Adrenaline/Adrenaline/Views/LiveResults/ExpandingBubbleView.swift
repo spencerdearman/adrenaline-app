@@ -316,9 +316,7 @@ struct OpenTileView: View {
     }
     
     var miniProfileImage: some View {
-        MiniProfileImage(diverID: abBoardEvent
-                         ? String(bubbleData[4].components(separatedBy: "=").last ?? "")
-                         : String(bubbleData[7].components(separatedBy: "=").last ?? ""),
+        MiniProfileImage(profilePicURL: getProfilePictureURL(userId: diver == nil ? "" : diver!.id),
                          width: 150, height: 200)
         .scaledToFit()
         .padding(.horizontal)
