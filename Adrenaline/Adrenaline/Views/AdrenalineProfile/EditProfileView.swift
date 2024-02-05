@@ -110,7 +110,7 @@ struct EditProfileView: View {
     
     var body: some View {
         VStack {
-            if let user = newUser {
+            if let _ = newUser {
                 PhotosPicker(selection: $selectedImage, matching: .images) {
                     ZStack(alignment: .bottomTrailing) {
                         if let profilePic = profilePic {
@@ -272,7 +272,6 @@ struct EditProfileView: View {
                 
                 // Load Picker image into Data
                 if let data = try? await selectedImage.loadTransferable(type: Data.self) {
-                    print(data)
                     profilePicData = data
                 }
             }
