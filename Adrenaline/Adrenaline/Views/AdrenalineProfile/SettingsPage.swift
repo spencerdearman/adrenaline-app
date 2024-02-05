@@ -250,14 +250,11 @@ struct SettingsView: View {
         .navigationTitle("Account")
         .onAppear {
             Task {
-                print("appeared")
                 if let user = newUser, user.accountType != "Spectator" {
-                    print("user not nil")
                     let college: College?
                     switch user.accountType {
                         case "Athlete":
                             guard let athlete = try await user.athlete else { return }
-                            print("athlete: \(athlete.id)")
                             college = try await athlete.college
                         case "Coach":
                             // TODO: implement for coaches to associate with a college
@@ -268,10 +265,7 @@ struct SettingsView: View {
                     }
                     
                     if let college = college {
-                        print("setting college to \(college.name)")
                         selectedCollege = college.name
-                    } else {
-                        print("college is nil")
                     }
                 }
             }
