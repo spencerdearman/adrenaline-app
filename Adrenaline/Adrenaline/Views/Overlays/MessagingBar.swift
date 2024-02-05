@@ -66,12 +66,8 @@ struct MessagingBar: View {
                 } label: {
                     Group {
                         if let user = newUser, 
-                        let diveMeetsID = user.diveMeetsID, 
-                        diveMeetsID != "" {
-                            CachedAsyncImage(url: URL(string:
-                                                        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID).jpg?&x=511121484"),
-                                             urlCache: .imageCache,
-                                             transaction: .init(animation: .easeOut)) { phase in
+                            let url = URL(string: getProfilePictureURL(userId: user.id)) {
+                            AsyncImage(url: url, transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {
                                     case .empty:
                                         Color.white

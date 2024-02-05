@@ -15,22 +15,21 @@ struct ProfileRow: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
+            let url = URL(string: getProfilePictureURL(userId: user.id))
             AnyView(
-                user.diveMeetsID != nil
-                ? AnyView(CachedAsyncImage(url: URL(string: "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(user.diveMeetsID!).jpg?&x=511121484"),
-                                           urlCache: .imageCache, 
-                                           transaction: .init(animation: .easeOut)) { phase in
-                                         switch phase {
-                                             case .empty:
-                                                 Color.white
-                                             case .success(let image):
-                                                 image.resizable()
-                                             case .failure(_):
-                                                Image("defaultImage").resizable()
-                                             @unknown default:
-                                                Image("defaultImage").resizable()
-                                         }
-                                     })
+                url != nil
+                ? AnyView(AsyncImage(url: url, transaction: .init(animation: .easeOut)) { phase in
+                    switch phase {
+                        case .empty:
+                            Color.white
+                        case .success(let image):
+                            image.resizable()
+                        case .failure(_):
+                            Image("defaultImage").resizable()
+                        @unknown default:
+                            Image("defaultImage").resizable()
+                    }
+                })
                 : AnyView(Image("defaultImage").resizable())
             )
             .frame(width: 36, height: 36)

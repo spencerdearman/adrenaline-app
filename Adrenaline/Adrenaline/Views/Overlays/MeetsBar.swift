@@ -14,7 +14,7 @@ struct MeetsBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
-    var diveMeetsID:  Binding<String>
+    var userID:  Binding<String>
     @State private var showSearchSheet = false
     @State private var isLogged = true
     @Binding var selection: ViewType
@@ -80,11 +80,8 @@ struct MeetsBar: View {
                     }
                 } label: {
                     Group {
-                        if diveMeetsID.wrappedValue != "" {
-                            CachedAsyncImage(url: URL(string:
-                                                        "https://secure.meetcontrol.com/divemeets/system/profilephotos/\(diveMeetsID.wrappedValue).jpg?&x=511121484"),
-                                             urlCache: .imageCache,
-                                             transaction: .init(animation: .easeOut)) { phase in
+                        if let url = URL(string: getProfilePictureURL(userId: userID.wrappedValue)) {
+                            AsyncImage(url: url, transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {
                                     case .empty:
                                         Color.white
