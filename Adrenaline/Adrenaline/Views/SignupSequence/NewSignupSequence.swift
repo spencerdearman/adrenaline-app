@@ -58,8 +58,9 @@ enum PageIndex: Int, CaseIterable {
     case basicInfo = 1
     case diveMeetsLink = 2
     case athleteInfo = 3
-    case profilePic = 4
-    case welcome = 5
+    case photoId = 4
+    case profilePic = 5
+    case welcome = 6
 }
 
 struct NewSignupSequence: View {
@@ -123,8 +124,13 @@ struct NewSignupSequence: View {
     @State var athleteCreationSuccessful: Bool = false
     @State var showAthleteError: Bool = false
     
+    // Variables for Photo ID Upload
+    @State private var selectedPhotoIdImage: PhotosPickerItem? = nil
+    @State private var photoId: Image? = nil
+    @State private var photoIdData: Data? = nil
+    
     // Variables for Profile Picture Upload
-    @State private var selectedImage: PhotosPickerItem? = nil
+    @State private var selectedProfilePicImage: PhotosPickerItem? = nil
     @State private var profilePic: Image? = nil
     @State private var profilePicData: Data? = nil
     
@@ -296,6 +302,16 @@ struct NewSignupSequence: View {
                             athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
                         }
                         .matchedGeometryEffect(id: "form", in: namespace)
+                    case .photoId:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Photo ID")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            photoIdUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
                     case .profilePic:
                         VStack(alignment: .leading, spacing: 20) {
                             Text("Profile Picture")
@@ -421,7 +437,10 @@ struct NewSignupSequence: View {
             Button {
                 if accountAllFieldsFilled {
                     buttonPressed = false
-                    pageIndex = .basicInfo
+                    
+                    withAnimation(.openCard) {
+                        pageIndex = .basicInfo
+                    }
                 } else {
                     buttonPressed = true
                 }
@@ -602,7 +621,7 @@ struct NewSignupSequence: View {
                                     if accountType == "Athlete" {
                                         pageIndex = .athleteInfo
                                     } else {
-                                        pageIndex = .profilePic
+                                        pageIndex = .photoId
                                     }
                                 }
                             }
@@ -844,10 +863,96 @@ struct NewSignupSequence: View {
         }
     }
     
+    var photoIdUploadForm: some View {
+        Group {
+            VStack {
+                PhotosPicker(selection: $selectedPhotoIdImage, matching: .images) {
+                    ZStack {
+                        if let photoId = photoId {
+                            photoId
+                                .resizable()
+                                .scaledToFit()
+                                .padding()
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .shadow(radius: 7)
+                        } else {
+                            VStack {
+                                Image(systemName: "photo.on.rectangle")
+                                    .font(.system(size: 48, weight: .bold))
+                                
+                                Text("Upload a Photo ID to verify your identity")
+                                    .padding(.top)
+                            }
+                            .padding()
+                            .foregroundColor(.secondary)
+                            .background(.ultraThinMaterial)
+                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+                        }
+                    }
+                }
+                .padding(.top, 20)
+                .padding(.bottom, 45)
+                
+                Divider()
+                
+                Button {
+                    Task {
+                        buttonPressed = true
+                        
+                        if let data = photoIdData, let id = savedUser?.id {
+                            try await uploadPhotoId(data: data, userId: id)
+                        }
+                        
+                        withAnimation(.openCard) {
+                            pageIndex = .profilePic
+                        }
+                        
+                        buttonPressed = false
+                    }
+                } label: {
+                    ColorfulButton(title: "Continue")
+                }
+                .disabled(photoIdData == nil)
+                .padding(.bottom)
+                
+                Text("**Previous**")
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        withAnimation(.openCard) {
+                            if accountType == "Athlete" {
+                                pageIndex = .athleteInfo
+                            } else {
+                                pageIndex = .diveMeetsLink
+                            }
+                        }
+                    }
+            }
+            .onChange(of: selectedPhotoIdImage) {
+                Task {
+                    guard let selectedImage = selectedPhotoIdImage else { return }
+                    
+                    // Load Picker image into Image
+                    let _ = loadPhotoIdTransferable(from: selectedImage)
+                    
+                    // Load Picker image into Data
+                    if let data = try? await selectedImage.loadTransferable(type: Data.self) {
+                        photoIdData = data
+                    }
+                }
+            }
+            .onAppear {
+                buttonPressed = false
+            }
+        }
+    }
+    
     var profilePicUploadForm: some View {
         Group {
             VStack {
-                PhotosPicker(selection: $selectedImage, matching: .images) {
+                PhotosPicker(selection: $selectedProfilePicImage, matching: .images) {
                     ZStack(alignment: .bottomTrailing) {
                         if let profilePic = profilePic {
                             profilePic
@@ -882,6 +987,8 @@ struct NewSignupSequence: View {
                 
                 Button {
                     Task {
+                        buttonPressed = true
+                        
                         if let data = profilePicData, let id = savedUser?.id {
                             try await uploadProfilePicture(data: data, userId: id)
                         }
@@ -889,11 +996,14 @@ struct NewSignupSequence: View {
                         withAnimation(.openCard) {
                             pageIndex = .welcome
                         }
+                        
+                        buttonPressed = false
                     }
                 } label: {
                     ColorfulButton(title: "Continue")
                 }
-                .disabled(profilePicData == nil)
+                .disabled(profilePicData == nil || buttonPressed)
+                .padding(.bottom)
                 
                 Text("**Previous**")
                     .font(.footnote)
@@ -902,27 +1012,25 @@ struct NewSignupSequence: View {
                     .accentColor(.primary.opacity(0.7))
                     .onTapGesture {
                         withAnimation(.openCard) {
-                            if accountType == "Athlete" {
-                                pageIndex = .athleteInfo
-                            } else {
-                                pageIndex = .diveMeetsLink
-                            }
+                            pageIndex = .photoId
                         }
                     }
             }
-            .onChange(of: selectedImage) {
+            .onChange(of: selectedProfilePicImage) {
                 Task {
-                    guard let selectedImage = selectedImage else { return }
+                    guard let selectedImage = selectedProfilePicImage else { return }
                     
                     // Load Picker image into Image
-                    let _ = loadTransferable(from: selectedImage)
+                    let _ = loadProfilePicTransferable(from: selectedImage)
                     
                     // Load Picker image into Data
                     if let data = try? await selectedImage.loadTransferable(type: Data.self) {
-                        print("")
                         profilePicData = data
                     }
                 }
+            }
+            .onAppear {
+                buttonPressed = false
             }
         }
     }
@@ -947,10 +1055,30 @@ struct NewSignupSequence: View {
         }
     }
     
-    private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
+    private func loadPhotoIdTransferable(from imageSelection: PhotosPickerItem) -> Progress {
         return imageSelection.loadTransferable(type: Image.self) { result in
             DispatchQueue.main.async {
-                guard selectedImage == self.selectedImage else { return }
+                guard selectedPhotoIdImage == self.selectedPhotoIdImage else { return }
+                switch result {
+                    case .success(let image?):
+                        // Handle the success case with the image.
+                        photoId = image
+                    case .success(nil):
+                        // Handle the success case with an empty value.
+                        photoId = nil
+                    case .failure(let error):
+                        // Handle the failure case with the provided error.
+                        print("Failed to get image from picker: \(error)")
+                        photoId = nil
+                }
+            }
+        }
+    }
+    
+    private func loadProfilePicTransferable(from imageSelection: PhotosPickerItem) -> Progress {
+        return imageSelection.loadTransferable(type: Image.self) { result in
+            DispatchQueue.main.async {
+                guard selectedProfilePicImage == self.selectedProfilePicImage else { return }
                 switch result {
                     case .success(let image?):
                         // Handle the success case with the image.
@@ -1049,7 +1177,7 @@ struct NewSignupSequence: View {
             if athleteAllFieldsFilled {
                 if athleteCreationSuccessful {
                     buttonPressed = false
-                    pageIndex = .profilePic
+                    pageIndex = .photoId
                 } else {
                     showAthleteError = true
                 }
