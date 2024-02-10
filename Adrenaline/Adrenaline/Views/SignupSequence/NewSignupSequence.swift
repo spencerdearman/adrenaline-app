@@ -133,6 +133,7 @@ struct NewSignupSequence: View {
     @State private var selectedProfilePicImage: PhotosPickerItem? = nil
     @State private var profilePic: Image? = nil
     @State private var profilePicData: Data? = nil
+    @State private var identityVerificationFailed: Bool = false
     
     // Measurement Variables
     private let screenWidth = UIScreen.main.bounds.width
@@ -983,18 +984,38 @@ struct NewSignupSequence: View {
                 .padding(.top, 20)
                 .padding(.bottom, 45)
                 
+                if identityVerificationFailed {
+                    Text("Failed to verify your identity. Make sure your face is visible in your profile picture and matches your photo ID")
+                        .foregroundColor(.red)
+                        .padding()
+                        .multilineTextAlignment(.center)
+                } else if buttonPressed {
+                    VStack {
+                        Text("Verifying your identity")
+                            .foregroundColor(.primary)
+                        ProgressView()
+                    }
+                    .padding()
+                }
+                
                 Divider()
                 
                 Button {
                     Task {
                         buttonPressed = true
+                        identityVerificationFailed = false
                         
                         if let data = profilePicData, let id = savedUser?.id {
-                            try await uploadProfilePicture(data: data, userId: id)
+                            try await uploadProfilePictureForReview(data: data, userId: id)
+                            try await Task.sleep(seconds: 10)
                         }
                         
-                        withAnimation(.openCard) {
-                            pageIndex = .welcome
+                        if let id = savedUser?.id, await hasProfilePicture(userId: id) {
+                            withAnimation(.openCard) {
+                                pageIndex = .welcome
+                            }
+                        } else {
+                            identityVerificationFailed = true
                         }
                         
                         buttonPressed = false

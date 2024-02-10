@@ -13,6 +13,10 @@ func getPhotoIdKey(userId: String) -> String {
     return "id-cards/\(userId).jpg"
 }
 
+func getProfilePictureReviewKey(userId: String) -> String {
+    return "profile-pics-under-review/\(userId).jpg"
+}
+
 func getProfilePictureKey(userId: String) -> String {
     return "profile-pictures/\(userId).jpg"
 }
@@ -28,6 +32,22 @@ func uploadPhotoId(data: Data, userId: String) async throws {
     
     let _ = try await task.value
     print("Photo ID for \(userId) uploaded")
+}
+
+// Upload profile picture to S3 to be reviewed for identity verification
+func uploadProfilePictureForReview(data: Data, userId: String) async throws {
+    let key = getProfilePictureReviewKey(userId: userId)
+    let task = Amplify.Storage.uploadData(key: key, data: data)
+    
+    let _ = try await task.value
+    print("Profile picture for \(userId) uploaded for review")
+}
+
+// Delete profile picture under review from S3
+func deleteProfilePictureInReview(userId: String) async throws {
+    let key = getProfilePictureReviewKey(userId: userId)
+    try await Amplify.Storage.remove(key: key)
+    print("Profile picture for \(userId) removed from review")
 }
 
 // Upload profile picture to S3
