@@ -8,14 +8,10 @@ COLLECTION_ID = "UserFaces"
 def lambda_handler(event, context):
     s3 = boto3.client(
         "s3",
-        aws_access_key_id=AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
     rek = boto3.client(
         "rekognition",
         region_name="us-east-1",
-        aws_access_key_id=AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
 
     print(event)
@@ -34,7 +30,7 @@ def lambda_handler(event, context):
         has_profilepic_image = file_exists(bucket, profilepic_s3_key)
         if not has_id_image and not has_profilepic_image:
             print("No pictures exist to compare")
-            return
+            continue
 
         if not has_id_image:
             print("Handling existing user...")
@@ -57,9 +53,23 @@ def lambda_handler(event, context):
             )
 
         if response:
-            print("Successfully verified user's identity")
+            print("Successfully verified user's identity, copying to parent folder")
+            move_to_main_folder(s3, bucket, profilepic_s3_key)
         else:
             print("Failed to verify user's identity")
+
+
+# https://medium.com/plusteam/move-and-rename-objects-within-an-s3-bucket-using-boto-3-58b164790b78
+def move_to_main_folder(s3, bucket, key):
+    comps = key.split("/")
+    comps[-2] = "profile-pictures"
+    new_key = "/".join(comps)
+    print(f"Moving from {key} to {new_key}")
+
+    s3_resource = boto3.resource("s3")
+    s3_resource.Object(bucket, new_key).copy_from(CopySource=f"{bucket}/{key}")
+
+    s3.delete_object(Bucket=bucket, Key=key)
 
 
 def handle_existing_user(rek, profilepic_s3_bucket, profilepic_s3_key, user_id):
@@ -75,8 +85,14 @@ def handle_existing_user(rek, profilepic_s3_bucket, profilepic_s3_key, user_id):
         return False
     print(f"UserMatches: {response['UserMatches']}")
 
-    if user_id not in set(map(lambda x: x["User"]["UserId"], response["UserMatches"])):
-        print("ERROR: User not found with matching face")
+    try:
+        if user_id not in set(
+            map(lambda x: x["User"]["UserId"], response["UserMatches"])
+        ):
+            print("ERROR: User not found with matching face")
+            return False
+    except KeyError as e:
+        print(f"{e}")
         return False
 
     response = add_faces_to_user(
@@ -190,15 +206,17 @@ def add_faces_to_collection(rek, bucket, key):
         print("ERROR: Response did not have FaceRecords key")
         return False
 
-    return list(map(lambda x: x["Face"]["FaceId"], response["FaceRecords"]))
+    try:
+        return list(map(lambda x: x["Face"]["FaceId"], response["FaceRecords"]))
+    except KeyError as e:
+        print(f"{e}")
+        return []
 
 
 # https://stackoverflow.com/a/33843019
 def file_exists(bucket, key):
     s3 = boto3.resource(
         "s3",
-        aws_access_key_id=AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
     )
 
     try:
@@ -223,9 +241,14 @@ def compare_faces(rek, source_bucket, source_key, target_bucket, target_key):
         QualityFilter="HIGH",
     )
 
-    for i, faces in enumerate(response["FaceMatches"]):
-        print(f"Profile Pic to ID Face #{i+1} Similarity: {faces['Similarity']:.6f}")
-        print(f"\tQuality: {faces['Face']['Quality']}")
+    try:
+        for i, faces in enumerate(response["FaceMatches"]):
+            print(
+                f"Profile Pic to ID Face #{i+1} Similarity: {faces['Similarity']:.6f}"
+            )
+            print(f"\tQuality: {faces['Face']['Quality']}")
+    except KeyError as e:
+        print(f"{e}")
 
     return response["FaceMatches"]
 
@@ -260,9 +283,11 @@ def check_for_seen_face(rek, bucket, key):
         QualityFilter="LOW",
     )
 
-    for i, faces in enumerate(response["FaceMatches"]):
-        print(f"Face #{i+1} Similarity: {faces['Similarity']:.6f}")
-        print(f"\tFaceId: {faces['Face']['FaceId']}")
-        print(f"\tExternalImageId: {faces['Face']['ExternalImageId']}")
+    try:
+        for i, faces in enumerate(response["FaceMatches"]):
+            print(f"Face #{i+1} Similarity: {faces['Similarity']:.6f}")
+            print(f"\tFaceId: {faces['Face']['FaceId']}")
+    except KeyError as e:
+        print(f"{e}")
 
     return response["FaceMatches"]
