@@ -224,14 +224,17 @@ struct SettingsView: View {
                     
                     // Remove current device token from user
                     if var user = newUser {
-                        guard let token = UserDefaults.standard.string(forKey: "userToken") else { print("Token not found"); return }
-                        user.tokens = user.tokens.filter { $0 != token }
-                        
-                        let _ = try await saveToDataStore(object: user)
-                        
-                        // Sleep for one second to allow DataStore to sync before signing out
-                        // and losing authorization
-                        try await Task.sleep(seconds: 1)
+                        if let token = UserDefaults.standard.string(forKey: "userToken") {
+                            user.tokens = user.tokens.filter { $0 != token }
+                            
+                            let _ = try await saveToDataStore(object: user)
+                            
+                            // Sleep for one second to allow DataStore to sync before signing out
+                            // and losing authorization
+                            try await Task.sleep(seconds: 1)
+                        } else {
+                            print("Token not found")
+                        }
                     } else {
                         print("user not found")
                     }
