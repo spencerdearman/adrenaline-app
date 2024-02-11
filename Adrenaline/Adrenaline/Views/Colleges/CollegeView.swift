@@ -44,7 +44,11 @@ struct CollegeView: View {
                         .padding(.top)
                     
                     if let coachUser = coachUser {
-                        CollegeBubbleView(user: coachUser)
+                        NavigationLink {
+                            AdrenalineProfileView(newUser: coachUser)
+                        } label: {
+                            CollegeBubbleView(user: coachUser)
+                        }
                     } else {
                         VStack {
                             Text("There is no coach associated with this college")
@@ -64,7 +68,11 @@ struct CollegeView: View {
                     ForEach(athletes.sorted(by: {
                         $0.key.firstName + " " + $0.key.lastName < $1.key.firstName + " " + $1.key.lastName
                     }), id: \.key) { user, athlete in
-                        CollegeBubbleView(user: user)
+                        NavigationLink {
+                            AdrenalineProfileView(newUser: user)
+                        } label: {
+                            CollegeBubbleView(user: user)
+                        }
                     }
                 }
             }
@@ -108,6 +116,7 @@ struct CollegeBubbleView: View {
                     .scaleEffect(0.3)
                 HStack(alignment: .firstTextBaseline) {
                     Text((user.firstName) + " " + (user.lastName))
+                        .foregroundColor(.primary)
                         .padding()
                     Spacer()
                 }
