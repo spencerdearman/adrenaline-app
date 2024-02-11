@@ -230,7 +230,7 @@ struct NewSearchView: View {
                   let selected = selectedItem,
                   college.id == selected.id {
             return ZStack {
-                Text(college.name)
+                CollegeView(college: college)
                 
                 closeButton
             }
