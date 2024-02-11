@@ -922,11 +922,21 @@ struct NewSignupSequence: View {
                     .foregroundColor(.primary.opacity(0.7))
                     .accentColor(.primary.opacity(0.7))
                     .onTapGesture {
-                        withAnimation(.openCard) {
-                            if accountType == "Athlete" {
-                                pageIndex = .athleteInfo
-                            } else {
-                                pageIndex = .diveMeetsLink
+                        Task {
+                            if let id = savedUser?.id {
+                                do {
+                                    try await deletePhotoId(userId: id)
+                                } catch {
+                                    print("Failed to delete photo ID")
+                                }
+                            }
+                            
+                            withAnimation(.openCard) {
+                                if accountType == "Athlete" {
+                                    pageIndex = .athleteInfo
+                                } else {
+                                    pageIndex = .diveMeetsLink
+                                }
                             }
                         }
                     }

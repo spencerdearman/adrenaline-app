@@ -96,3 +96,8 @@ func hasProfilePicture(userId: String) async -> Bool {
     
     return false
 }
+
+func deletePhotoId(userId: String) async throws {
+    let key = getPhotoIdKey(userId: userId)
+    try await Amplify.Storage.remove(key: key)
+}
