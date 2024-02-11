@@ -262,16 +262,18 @@ struct EditProfileView: View {
                 } label: {
                     ColorfulButton(title: "Save")
                 }
+                .disabled(isSavingChanges)
                 
                 Text("**Cancel**")
                     .font(.footnote)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.bottom)
-                    .foregroundColor(.primary.opacity(0.7))
-                    .accentColor(.primary.opacity(0.7))
+                    .foregroundColor(isSavingChanges ? .secondary.opacity(0.5) : .primary.opacity(0.7))
+                    .accentColor(isSavingChanges ? .secondary.opacity(0.5) : .primary.opacity(0.7))
                     .onTapGesture {
                         dismiss()
                     }
+                    .disabled(isSavingChanges)
                 
                 if profilePicUploadFailed {
                     Text("Failed to verify identity. Make sure your face is visible and matches the photo ID you uploaded when you signed up")
