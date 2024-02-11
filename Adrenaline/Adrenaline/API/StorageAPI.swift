@@ -59,6 +59,25 @@ func uploadProfilePicture(data: Data, userId: String) async throws {
     print("Profile picture for \(userId) uploaded")
 }
 
+func hasProfilePictureInReview(userId: String) async -> Bool {
+    do {
+        let _ = try await Amplify.Storage.getURL(
+            key: getProfilePictureReviewKey(userId: userId),
+            options: .init(
+                pluginOptions: AWSStorageGetURLOptions(
+                    validateObjectExistence: true
+                )
+            )
+        )
+        
+        return true
+    } catch {
+        print("User does not have profile picture")
+    }
+    
+    return false
+}
+
 func hasProfilePicture(userId: String) async -> Bool {
     do {
         let _ = try await Amplify.Storage.getURL(
