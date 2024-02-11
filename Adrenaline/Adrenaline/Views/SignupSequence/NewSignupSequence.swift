@@ -134,6 +134,7 @@ struct NewSignupSequence: View {
     @State private var profilePic: Image? = nil
     @State private var profilePicData: Data? = nil
     @State private var identityVerificationFailed: Bool = false
+    @State private var devSkipProfilePic: Bool = false
     
     // Measurement Variables
     private let screenWidth = UIScreen.main.bounds.width
@@ -618,9 +619,10 @@ struct NewSignupSequence: View {
                             // Advance to next stage
                             if userCreationSuccessful {
                                 withAnimation {
-                                    print("Selected Next")
                                     if accountType == "Athlete" {
                                         pageIndex = .athleteInfo
+                                    } else if devSkipProfilePic {
+                                        pageIndex = .welcome
                                     } else {
                                         pageIndex = .photoId
                                     }
@@ -1224,7 +1226,11 @@ struct NewSignupSequence: View {
             if athleteAllFieldsFilled {
                 if athleteCreationSuccessful {
                     buttonPressed = false
-                    pageIndex = .photoId
+                    if devSkipProfilePic {
+                        pageIndex = .welcome
+                    } else {
+                        pageIndex = .photoId
+                    }
                 } else {
                     showAthleteError = true
                 }
