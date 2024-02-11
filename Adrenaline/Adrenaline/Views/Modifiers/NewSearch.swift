@@ -231,6 +231,7 @@ struct NewSearchView: View {
                   college.id == selected.id {
             return ZStack {
                 CollegeView(college: college)
+                    .padding(.top, 40)
                 
                 closeButton
             }

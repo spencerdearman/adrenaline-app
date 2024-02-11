@@ -17,7 +17,7 @@ struct CollegeView: View {
     private let cornerRadius: CGFloat = 30
     
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack {
             VStack {
                 Image(getCollegeImageFilename(name: college.name))
                     .resizable()
@@ -73,7 +73,6 @@ struct CollegeView: View {
             Spacer()
         }
         .padding()
-        .padding(.top, 40)
         .onAppear {
             Task {
                 let coach = try await college.coach

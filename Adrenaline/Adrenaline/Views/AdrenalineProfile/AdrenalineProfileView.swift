@@ -178,6 +178,7 @@ struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var athlete: NewAthlete? = nil
+    @State private var collegeModel: College? = nil
     @State var selectedCollege: String = ""
     @State private var starred: Bool = false
     @State private var currentUser: NewUser? = nil
@@ -215,14 +216,18 @@ struct PersonalInfoView: View {
                     .mask(RoundedRectangle(cornerRadius: 40))
                     .shadow(radius: 10)
                 HStack {
-                    if selectedCollege != "" {
-                        Image(getCollegeImageFilename(name: selectedCollege))
-                            .resizable()
-                            .clipShape(Circle())
-                            .aspectRatio(contentMode: .fit)
-                            .padding(.leading, collegeIconPadding)
-                            .frame(width: screenWidth * 0.15,
-                                   height: screenWidth * 0.15)
+                    if selectedCollege != "", let college = collegeModel {
+                        NavigationLink {
+                            CollegeView(college: college)
+                        } label: {
+                            Image(getCollegeImageFilename(name: selectedCollege))
+                                .resizable()
+                                .clipShape(Circle())
+                                .aspectRatio(contentMode: .fit)
+                                .padding(.leading, collegeIconPadding)
+                                .frame(width: screenWidth * 0.15,
+                                       height: screenWidth * 0.15)
+                        }
                     }
                     
                     VStack {
@@ -296,6 +301,7 @@ struct PersonalInfoView: View {
             Task {
                 if user.accountType == "Athlete" {
                     athlete = try await user.athlete
+                    collegeModel = try await athlete?.college
                     selectedCollege = try await athlete?.college?.name ?? ""
                 }
                 
