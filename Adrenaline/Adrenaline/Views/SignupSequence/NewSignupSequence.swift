@@ -857,8 +857,17 @@ struct NewSignupSequence: View {
                 .foregroundColor(.primary.opacity(0.7))
                 .accentColor(.primary.opacity(0.7))
                 .onTapGesture {
-                    withAnimation(.openCard) {
-                        pageIndex = .diveMeetsLink
+                    Task {
+                        // If returning to DiveMeetsLink stage, clear the user's DiveMeets ID
+                        // so the search succeeds
+                        if var user = savedUser {
+                            user.diveMeetsID = nil
+                            savedUser = try await saveToDataStore(object: user)
+                        }
+                        
+                        withAnimation(.openCard) {
+                            pageIndex = .diveMeetsLink
+                        }
                     }
                 }
         }
@@ -929,6 +938,13 @@ struct NewSignupSequence: View {
                                 } catch {
                                     print("Failed to delete photo ID")
                                 }
+                            }
+                            
+                            // If returning to DiveMeetsLink stage, clear the user's DiveMeets ID
+                            // so the search succeeds
+                            if accountType != "Athlete", var user = savedUser {
+                                user.diveMeetsID = nil
+                                savedUser = try await saveToDataStore(object: user)
                             }
                             
                             withAnimation(.openCard) {
