@@ -230,9 +230,12 @@ struct NewSearchView: View {
                   let selected = selectedItem,
                   college.id == selected.id {
             return ZStack {
-                Text(college.name)
-                
-                closeButton
+                NavigationView {
+                    CollegeView(college: college)
+                        .padding(.top, 40)
+                    
+                    closeButton
+                }
             }
         } else {
             return EmptyView()

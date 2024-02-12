@@ -67,6 +67,7 @@
 		00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */; };
 		00CD87542B660D4E001D64C3 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD87532B660D4E001D64C3 /* EditProfileView.swift */; };
 		00CD87582B662846001D64C3 /* StorageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD87572B662846001D64C3 /* StorageAPI.swift */; };
+		00CD875F2B7881A2001D64C3 /* CollegeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD875E2B7881A2001D64C3 /* CollegeView.swift */; };
 		00CEDFD42ABFC71500F079CE /* PostsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CEDFD32ABFC71500F079CE /* PostsAPI.swift */; };
 		00CEDFD62ABFE08200F079CE /* NewPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CEDFD52ABFE08200F079CE /* NewPostView.swift */; };
 		00CEDFD82AC11F2A00F079CE /* PostMediaItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CEDFD72AC11F2A00F079CE /* PostMediaItem.swift */; };
@@ -258,6 +259,7 @@
 		00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		00CD87532B660D4E001D64C3 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		00CD87572B662846001D64C3 /* StorageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAPI.swift; sourceTree = "<group>"; };
+		00CD875E2B7881A2001D64C3 /* CollegeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollegeView.swift; sourceTree = "<group>"; };
 		00CEDFD32ABFC71500F079CE /* PostsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsAPI.swift; sourceTree = "<group>"; };
 		00CEDFD52ABFE08200F079CE /* NewPostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPostView.swift; sourceTree = "<group>"; };
 		00CEDFD72AC11F2A00F079CE /* PostMediaItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMediaItem.swift; sourceTree = "<group>"; };
@@ -471,6 +473,14 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
+		00CD875D2B78818D001D64C3 /* Colleges */ = {
+			isa = PBXGroup;
+			children = (
+				00CD875E2B7881A2001D64C3 /* CollegeView.swift */,
+			);
+			path = Colleges;
+			sourceTree = "<group>";
+		};
 		00DAFEE32A90240D00497917 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
@@ -662,6 +672,7 @@
 				4DB1DC782A67112B0016EE14 /* AdrenalineProfile */,
 				4D1A31CE2A97258000128F81 /* Buttons */,
 				4DA481CB2AA789C4003DFA3B /* Chat */,
+				00CD875D2B78818D001D64C3 /* Colleges */,
 				4D8B9C1529F89A81002B53AD /* CustomStructures */,
 				4D502E662AA194CE00D25B7B /* Enums */,
 				4D1A31B12A96AF9300128F81 /* Feed */,
@@ -1084,6 +1095,7 @@
 				008CB5672A61B3EE00935537 /* ProfileParser.swift in Sources */,
 				00B400FA2B537585004CC0CF /* NewUserViewModel.swift in Sources */,
 				4DF9F80F2A85EFF50049CCD3 /* UserBadge.swift in Sources */,
+				00CD875F2B7881A2001D64C3 /* CollegeView.swift in Sources */,
 				0050AE8D2AABA56600697021 /* Video+Schema.swift in Sources */,
 				4DA482F62AA98BE8003DFA3B /* Message+Schema.swift in Sources */,
 				00CD87582B662846001D64C3 /* StorageAPI.swift in Sources */,
