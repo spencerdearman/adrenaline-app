@@ -86,7 +86,7 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
     return result
 }
 
-struct Home: View {
+struct MeetsView: View {
     @Namespace var namespace
     @Environment(\.colorScheme) var currentMode
 //    @Environment(\.dictToTuple) private var dictToTuple
@@ -103,7 +103,7 @@ struct Home: View {
     @State private var showDetail: Bool = false
     @State private var upcomingFeedItems: [FeedItem] = []
     @State private var currentFeedItems: [FeedItem] = []
-    @State private var diveMeetsID: String = ""
+    @State private var userID: String = ""
     @State private var upcomingItemsLoaded: Bool = false
     @State private var currentItemsLoaded: Bool = false
     @Binding var newUser: NewUser?
@@ -326,11 +326,11 @@ struct Home: View {
                     }
                 }
                 .onAppear {
-                    diveMeetsID = newUser?.diveMeetsID ?? ""
+                    userID = newUser?.id ?? ""
                 }
                 .overlay {
                     if feedModel.showTab {
-                        MeetsBar(title: "Meets", diveMeetsID: $diveMeetsID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches)
+                        MeetsBar(title: "Meets", userID: $userID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches)
                             .frame(width: screenWidth)
                     }
                 }

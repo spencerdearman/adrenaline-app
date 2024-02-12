@@ -88,12 +88,22 @@ struct SettingsView: View {
             Section {
                 NavigationLink {
                     if let user = newUser {
-                        NavigationLink {
-                            CommittedCollegeView(selectedCollege: $selectedCollege,
-                                                 updateDataStoreData: $updateDataStoreData,
-                                                 newUser: user)
-                        } label: {
-                            Text("Change Commited College")
+                        VStack {
+                            NavigationLink {
+                                EditProfileView(updateDataStoreData: $updateDataStoreData,
+                                                newUser: newUser)
+                            } label: {
+                                Text("Edit Profile")
+                            }
+                            .navigationTitle("Profile")
+                            
+                            NavigationLink {
+                                CommittedCollegeView(selectedCollege: $selectedCollege,
+                                                     updateDataStoreData: $updateDataStoreData,
+                                                     newUser: user)
+                            } label: {
+                                Text("Change Commited College")
+                            }
                         }
                     }
                 } label: {
@@ -214,14 +224,17 @@ struct SettingsView: View {
                     
                     // Remove current device token from user
                     if var user = newUser {
-                        guard let token = UserDefaults.standard.string(forKey: "userToken") else { print("Token not found"); return }
-                        user.tokens = user.tokens.filter { $0 != token }
-                        
-                        let _ = try await saveToDataStore(object: user)
-                        
-                        // Sleep for one second to allow DataStore to sync before signing out
-                        // and losing authorization
-                        try await Task.sleep(seconds: 1)
+                        if let token = UserDefaults.standard.string(forKey: "userToken") {
+                            user.tokens = user.tokens.filter { $0 != token }
+                            
+                            let _ = try await saveToDataStore(object: user)
+                            
+                            // Sleep for one second to allow DataStore to sync before signing out
+                            // and losing authorization
+                            try await Task.sleep(seconds: 1)
+                        } else {
+                            print("Token not found")
+                        }
                     } else {
                         print("user not found")
                     }
@@ -240,14 +253,11 @@ struct SettingsView: View {
         .navigationTitle("Account")
         .onAppear {
             Task {
-                print("appeared")
                 if let user = newUser, user.accountType != "Spectator" {
-                    print("user not nil")
                     let college: College?
                     switch user.accountType {
                         case "Athlete":
                             guard let athlete = try await user.athlete else { return }
-                            print("athlete: \(athlete.id)")
                             college = try await athlete.college
                         case "Coach":
                             // TODO: implement for coaches to associate with a college
@@ -258,10 +268,7 @@ struct SettingsView: View {
                     }
                     
                     if let college = college {
-                        print("setting college to \(college.name)")
                         selectedCollege = college.name
-                    } else {
-                        print("college is nil")
                     }
                 }
             }

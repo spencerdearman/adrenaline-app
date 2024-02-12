@@ -41,7 +41,7 @@ struct FavoritesView: View {
                                     .fill(Custom.specialGray)
                                     .shadow(radius: 5)
                                 HStack(alignment: .center) {
-                                    ProfileImage(diverID: favorite.diveMeetsID ?? "")
+                                    ProfileImage(profilePicURL: getProfilePictureURL(userId: favorite.id))
                                         .frame(width: 100, height: 100)
                                         .scaleEffect(0.3)
                                     HStack(alignment: .firstTextBaseline) {

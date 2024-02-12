@@ -197,9 +197,7 @@ struct PostProfileExpandedView: View {
                 ScrollView(.horizontal) {
                     LazyHStack(spacing: 0) {
                         ForEach(mediaItems) { item in
-                            AnyView(item.view)
-                                .clipShape(RoundedRectangle(cornerRadius: 25))
-                                .matchedGeometryEffect(id: "body" + id, in: namespace)
+                            PostMediaItemView(item: item, id: id, namespace: namespace)
                                 .containerRelativeFrame(.horizontal)
                                 .scrollTransition(.animated, axis: .horizontal) {
                                     content, phase in
@@ -466,5 +464,17 @@ struct CloseButtonWithPostShowing: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(25)
         .ignoresSafeArea()
+    }
+}
+
+struct PostMediaItemView: View {
+    var item: PostMediaItem
+    var id: String
+    var namespace: Namespace.ID
+    
+    var body: some View {
+        AnyView(item.view)
+//            .clipShape(RoundedRectangle(cornerRadius: 25))
+            .matchedGeometryEffect(id: "body" + id, in: namespace)
     }
 }

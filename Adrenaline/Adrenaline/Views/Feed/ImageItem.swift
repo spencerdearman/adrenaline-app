@@ -49,7 +49,7 @@ struct ImageFeedItemCollapsedView: View {
                 VStack(alignment: .center, spacing: 16) {
                     
                     HStack {
-                        LogoView(imageName: "Spencer")
+                        LogoView(imageUrl: "")
                             .shadow(radius: 10)
                         Text("username...")
                             .font(.footnote.weight(.medium))
@@ -171,7 +171,7 @@ struct ImageFeedItemExpandedView: View {
             .overlay(
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
-                        LogoView(imageName: "Spencer")
+                        LogoView(imageUrl: "")
                         Text("You attended, check your results now")
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(.secondary)

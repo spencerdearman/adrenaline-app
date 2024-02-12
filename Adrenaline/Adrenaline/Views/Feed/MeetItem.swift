@@ -88,20 +88,26 @@ struct MeetFeedItemExpandedView: View {
     @State var viewState: CGSize = .zero
     @State var showSection = false
     @State var appear = [false, false, false]
+    @State private var titleSize: CGSize = .zero
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
     var meet: MeetBase
     
+    var titleBaseHeight: CGFloat {
+        (meet.resultsLink == nil || meet.resultsLink == "") ? 250 : 175
+    }
+    
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    private let outerTitlePadding: CGFloat = 20
     
     var body: some View {
         ZStack {
             ScrollView {
                 cover
                 
-                if meet.resultsLink == "" {
+                if (meet.resultsLink == nil || meet.resultsLink == "") {
                     MeetPageView(meetLink: meet.link ?? "")
                 } else {
                     MeetPageView(meetLink: meet.link ?? "", infoLink: meet.resultsLink ?? "")
@@ -117,7 +123,6 @@ struct MeetFeedItemExpandedView: View {
             .background(.ultraThinMaterial)
             .gesture(feedModel.isAnimated ? drag : nil)
             .ignoresSafeArea()
-            CloseButtonWithFeedModel(feedModel: $feedModel)
         }
         .frame(maxWidth: screenWidth)
         .zIndex(1)
@@ -133,47 +138,58 @@ struct MeetFeedItemExpandedView: View {
         GeometryReader { proxy in
             let scrollY = proxy.frame(in: .named("scroll")).minY
             VStack {
-                VStack(alignment: .center, spacing: 16) {
-                    Text(meet.name)
-                        .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.center)
-                    
-                    if meet.org != "" {
-                        Text(meet.org ?? "")
-                            .font(.title3).fontWeight(.bold)
+                CloseButtonWithFeedModel(feedModel: $feedModel)
+                    .offset(y: scrollY > 0 ? -scrollY : 0)
+                
+                ChildSizeReader(size: $titleSize) {
+                    VStack(alignment: .center, spacing: 16) {
+                        Text(meet.name)
+                            .font(.title).bold()
                             .frame(maxWidth: .infinity, alignment: .center)
                             .foregroundColor(.primary)
                             .multilineTextAlignment(.center)
+                        
+                        if meet.org != "" {
+                            Text(meet.org ?? "")
+                                .font(.title3).fontWeight(.bold)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .foregroundColor(.primary)
+                                .multilineTextAlignment(.center)
+                        }
+                        
+                        Text(meet.date?.uppercased() ?? "")
+                            .font(.headline).bold()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundColor(.primary)
                     }
-                    
-                    Text(meet.date?.uppercased() ?? "")
-                        .font(.headline).bold()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .foregroundColor(.primary)
+                    .padding(20)
+                    .padding(.vertical, 10)
+                    .background(
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .frame(maxHeight: .infinity, alignment: .bottom)
+                            .cornerRadius(30)
+                            .blur(radius: 30)
+                            .matchedGeometryEffect(id: "blur\(id)", in: namespace)
+                            .opacity(appear[0] ? 0 : 1)
+                    )
+                    .background(
+                        Rectangle()
+                            .fill(.ultraThinMaterial)
+                            .backgroundStyle(cornerRadius: 30)
+                            .opacity(appear[0] ? 1 : 0)
+                    )
+                    .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
+                    .frame(maxHeight: .infinity, alignment: .center)
+                    .frame(minHeight: titleBaseHeight, maxHeight: 350)
+                    .padding(outerTitlePadding)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(20)
-                .padding(.vertical, 10)
-                .background(
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .cornerRadius(30)
-                        .blur(radius: 30)
-                        .matchedGeometryEffect(id: "blur\(id)", in: namespace)
-                        .opacity(appear[0] ? 0 : 1)
-                )
-                .background(
-                    Rectangle()
-                        .fill(.ultraThinMaterial)
-                        .backgroundStyle(cornerRadius: 30)
-                        .opacity(appear[0] ? 1 : 0)
-                )
-                .offset(y: -screenHeight * 0.2)
-                .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
-                .frame(maxHeight: .infinity, alignment: .bottom)
-                .padding(20)
+                .border(Color.black, width: 2)
+                .offset(y: ((meet.resultsLink == nil || meet.resultsLink == "")
+                            ? screenHeight * -0.1
+                            : screenHeight * -0.182)
+                        + (titleSize.height - titleBaseHeight - outerTitlePadding * 2))
             }
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
@@ -193,7 +209,7 @@ struct MeetFeedItemExpandedView: View {
                     .offset(y: scrollY > 0 ? -scrollY : 0)
             )
         }
-        .frame(height: 350)
+        .frame(height: 109 + titleSize.height)
     }
     
     func close() {
