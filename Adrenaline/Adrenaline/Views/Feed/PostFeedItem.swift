@@ -1,36 +1,78 @@
 //
-//  MediaFeedItem.swift
+//  PostFeedItem.swift
 //  Adrenaline
 //
-//  Created by Spencer Dearman on 8/24/23.
+//  Created by Logan Sherwin on 2/11/24.
 //
 
 import SwiftUI
-import UIKit
-import AVKit
+import Amplify
+import CachedAsyncImage
 
-class MediaFeedItem: FeedItem {
-    var media: Media
+class PostFeedItem: FeedItem {
+    var user: NewUser
+    var post: Post
+    var mediaItems: [PostMediaItem] = []
     
-    init(media: Media, namespace: Namespace.ID, feedModel: Binding<FeedModel>) {
-        self.media = media
+    init(user: NewUser, post: Post, namespace: Namespace.ID, feedModel: Binding<FeedModel>) async throws {
+        self.user = user
+        self.post = post
         super.init()
-        self.collapsedView = MediaFeedItemCollapsedView(feedModel: feedModel, id: self.id,
-                                                        namespace: namespace,
-                                                        media: media)
-        self.expandedView = MediaFeedItemExpandedView(feedModel: feedModel, id: self.id,
-                                                      namespace: namespace,
-                                                      media: media)
+        self.mediaItems = try await getMediaItems()
+        self.collapsedView = PostFeedItemCollapsedView(feedModel: feedModel, id: self.id,
+                                                       namespace: namespace,
+                                                       user: user, post: post,
+                                                       mediaItem: mediaItems.first)
+    }
+    
+    private func getMediaItems() async throws -> [PostMediaItem] {
+        let videos = self.post.videos
+        let images = self.post.images
+        try await videos?.fetch()
+        try await images?.fetch()
+        
+        var aggregateItems: [(Temporal.DateTime, PostMediaItem)] = []
+        
+        if let videos = videos {
+            for video in videos.elements {
+                aggregateItems.append((video.uploadDate,
+                                       PostMediaItem(id: video.id, data: PostMedia.video(
+                                        VideoPlayerViewModel(
+                                            video: VideoItem(email: user.email, videoId: video.id),
+                                            initialResolution: .p1080)), playVideoOnAppear: true,
+                                                     videoIsLooping: true)))
+            }
+        }
+        
+        if let images = images {
+            for image in images.elements {
+                guard let url = URL(
+                    string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(user.email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg") else { continue }
+                aggregateItems.append((image.uploadDate,
+                                       PostMediaItem(id: image.id, data: PostMedia.asyncImage(
+                                        CachedAsyncImage(url: url, urlCache: .imageCache) { phase in
+                                            phase.image != nil
+                                            ? AnyView(phase.image!
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit))
+                                            : AnyView(ProgressView())}))))
+            }
+        }
+        
+        // Returns a list of PostMediaItems sorted ascending by upload date
+        return aggregateItems.sorted(by: { $0.0 < $1.0 }).map { $0.1 }
     }
 }
 
-struct MediaFeedItemCollapsedView: View {
+struct PostFeedItemCollapsedView: View {
     @Environment(\.colorScheme) var currentMode
     @State var appear = [false, false, false]
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
-    var media: Media
+    var user: NewUser
+    var post: Post
+    var mediaItem: PostMediaItem?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -43,62 +85,43 @@ struct MediaFeedItemCollapsedView: View {
                         radius: 15, x: 0, y: 30)
                 .matchedGeometryEffect(id: "background\(id)", in: namespace)
             VStack {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .center, spacing: 16) {
+                    
                     HStack {
-                        LogoView(imageUrl: "")
+                        LogoView(imageUrl: getProfilePictureURL(userId: user.id))
                             .shadow(radius: 10)
-                        Text("Spencer Dearman Uploaded a Video")
+                        Text(user.firstName + " " + user.lastName)
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityElement(children: .combine)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
                     
-                    Divider()
-                        .foregroundColor(.secondary)
-                    
-                    Group {
-                        if case .video(let videoPlayer) = media {
-                            videoPlayer
-                                .padding()
-                                .matchedGeometryEffect(id: "body" + id, in: namespace)
-                        }
+                    if let item = mediaItem {
+                        PostMediaItemView(item: item, id: self.id, namespace: namespace)
+                    } else {
+                        RoundedRectangle(cornerRadius: 25)
+                            .background(.grayThinMaterial)
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
                     
-                    Text("VIDEO NAME")
-                        .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary)
-                        .matchedGeometryEffect(id: "title\(id)", in: namespace)
-                    
-                    Text("Meet Location - Date Range".uppercased())
-                        .font(.footnote).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-                    
-                    Text("Comments/Caption for the Video")
+                    Text(post.caption ?? "")
                         .font(.footnote)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
+                        .matchedGeometryEffect(id: "caption\(id)", in: namespace)
+                        .padding(.horizontal, 20)
                 }
-                .padding(20)
                 .padding(.vertical, 10)
             }
         }
-        .onTapGesture {
-            withAnimation(.openCard) {
-                feedModel.showTile = true
-                feedModel.selectedItem = id
-            }
-        }
-        .frame(width: screenWidth * 0.9, height: screenHeight * 0.6)
-        .fixedSize(horizontal: true, vertical: true)
+        .frame(width: screenWidth * 0.9)
+        .frame(minHeight: screenHeight * 0.4, maxHeight: screenHeight * 0.9)
     }
 }
 
-struct MediaFeedItemExpandedView: View {
+struct PostFeedItemExpandedView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
     @Environment(\.presentationMode) var presentationMode
@@ -108,18 +131,11 @@ struct MediaFeedItemExpandedView: View {
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
-    var media: Media
-    
+    var user: NewUser
+    var post: Post
+    var mediaItems: [PostMediaItem]
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
-    
-    private var isVideo: Bool {
-        if case .video(_) = media {
-            return true
-        } else {
-            return false
-        }
-    }
     
     var body: some View {
         ZStack {
@@ -158,7 +174,27 @@ struct MediaFeedItemExpandedView: View {
             .frame(maxWidth: .infinity)
             .frame(height: scrollY > 0 ? 500 + scrollY : 500)
             .background(
-                Image("VideoBackground")
+                ScrollView(.horizontal) {
+                    LazyHStack(spacing: 0) {
+                        ForEach(mediaItems) { item in
+                            PostMediaItemView(item: item, id: self.id, namespace: namespace)
+                                .containerRelativeFrame(.horizontal)
+                                .scrollTransition(.animated, axis: .horizontal) {
+                                    content, phase in
+                                    content
+                                        .opacity(phase.isIdentity ? 1.0 : 0.8)
+                                        .scaleEffect(phase.isIdentity ? 1.0 : 0.8)
+                                }
+                        }
+                    }
+                    .frame(height: 450)
+                    
+                }
+                    .scrollTargetBehavior(.paging)
+            )
+            .background(
+                Rectangle()
+                    .fill(.ultraThinMaterial)
                     .matchedGeometryEffect(id: "background\(id)", in: namespace)
                     .mask(RoundedRectangle(cornerRadius: 30))
                     .offset(y: scrollY > 0 ? -scrollY : 0)
@@ -174,45 +210,30 @@ struct MediaFeedItemExpandedView: View {
             )
             .overlay(
                 VStack(alignment: .leading, spacing: 16) {
-                    if case .video(let videoPlayer) = media {
-                        videoPlayer
-                            .padding()
-                            .matchedGeometryEffect(id: "body" + id, in: namespace)
-                    } else if case .text(let string) = media {
-                        Text(string)
-                            .matchedGeometryEffect(id: "body" + id, in: namespace)
-                    }
-                    Text("VIDEO NAME")
-                        .font(.title).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary)
-                        .matchedGeometryEffect(id: "title\(id)", in: namespace)
-                    
-                    Text("Meet Location - Date Range".uppercased())
-                        .font(.footnote).bold()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
-                    
-                    Text("Comments/Caption for the Video")
-                        .font(.footnote)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "description\(id)", in: namespace)
-                    
-                    Divider()
-                        .foregroundColor(.secondary)
-                        .opacity(appear[1] ? 1 : 0)
-                    
                     HStack {
-                        LogoView(imageUrl: "")
-                        LogoView(imageUrl: "")
-                        Text("Viewed (Or Shared) with Beck and Jeff...")
+                        LogoView(imageUrl: getProfilePictureURL(userId: user.id))
+                        Text(user.firstName + " " + user.lastName)
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
                     .opacity(appear[1] ? 1 : 0)
                     .accessibilityElement(children: .combine)
+                    
+                    Divider()
+                        .foregroundColor(.secondary)
+                        .opacity(appear[1] ? 1 : 0)
+                    
+                    Text("Location / Competition".uppercased())
+                        .font(.footnote).bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .matchedGeometryEffect(id: "subtitle\(id)", in: namespace)
+                    
+                    Text(post.caption ?? "")
+                        .font(.footnote)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(.primary.opacity(0.7))
+                        .matchedGeometryEffect(id: "caption\(id)", in: namespace)
                 }
                     .padding(20)
                     .padding(.vertical, 10)
@@ -233,11 +254,11 @@ struct MediaFeedItemExpandedView: View {
                     )
                     .offset(y: scrollY > 0 ? -scrollY * 1.8 : 0)
                     .frame(maxHeight: .infinity, alignment: .bottom)
-                    .offset(y: 100)
+                    .offset(y: screenHeight * 0.28)
                     .padding(20)
             )
         }
-        .frame(height: 500)
+        .frame(height: screenHeight)
     }
     
     func close() {
