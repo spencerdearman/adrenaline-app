@@ -36,15 +36,13 @@ function processSearchData ({ users, meets, teams, colleges }) {
 
 const NavigationBar = () => {
   const userContext = useContext(CurrentUserContext);
-  const [, setUser] = useState();
-  const [diveMeetsID, setDiveMeetsID] = useState();
+  const [user, setUser] = useState();
   const [searchData, setSearchData] = useState();
 
   useEffect(() => {
     getUserById(userContext.userId)
       .then(data => {
         setUser(data);
-        setDiveMeetsID(data.diveMeetsID);
       });
   }, [userContext]);
 
@@ -56,7 +54,7 @@ const NavigationBar = () => {
   }, []);
 
   const profileUrl = `/profile/${userContext.userId}`;
-  const profileIconSrc = diveMeetsID === undefined ? personIcon : getProfilePicUrl(diveMeetsID);
+  const profileIconSrc = user === undefined ? personIcon : getProfilePicUrl(user.id);
 
   return (
     <CustomNavigationBar>
