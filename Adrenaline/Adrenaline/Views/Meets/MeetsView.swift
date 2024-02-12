@@ -86,7 +86,7 @@ func tupleToList(tuples: CurrentMeetRecords) -> [[String]] {
     return result
 }
 
-struct Home: View {
+struct MeetsView: View {
     @Namespace var namespace
     @Environment(\.colorScheme) var currentMode
 //    @Environment(\.dictToTuple) private var dictToTuple

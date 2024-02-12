@@ -251,7 +251,7 @@ struct ContentView: View {
                                     Label("Rankings", systemImage: "trophy")
                                 }
                                 
-                                Home(newUser: $newUserViewModel.newUser, tabBarState: $tabBarState,
+                                MeetsView(newUser: $newUserViewModel.newUser, tabBarState: $tabBarState,
                                      showAccount: $showAccount, recentSearches: $recentSearches,
                                      uploadingPost: $uploadingPost)
                                     .tabItem {
