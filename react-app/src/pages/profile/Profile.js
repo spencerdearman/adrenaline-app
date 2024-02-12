@@ -37,6 +37,7 @@ const Profile = (props) => {
   const [user, setUser] = useState();
   const [athlete, setAthlete] = useState();
   const [name, setName] = useState();
+  const [diveMeetsID, setDiveMeetsID] = useState();
   const [tabSelection, setTabSelection] = useState('posts');
 
   // Set user and DiveMeets ID
@@ -46,6 +47,7 @@ const Profile = (props) => {
         if (data !== undefined) {
           setUser(data);
           setName(data.firstName + ' ' + data.lastName);
+          setDiveMeetsID(data.diveMeetsID);
         }
       });
   }, [profileId]);
@@ -63,7 +65,9 @@ const Profile = (props) => {
       <BasicInfo>
         <RowItems style={{ paddingBottom: 0 }}>
           <Column>
-            <ProfilePic id={profileId} />
+            {diveMeetsID !== undefined &&
+                <ProfilePic id={diveMeetsID} />
+            }
           </Column>
 
           <Column>
