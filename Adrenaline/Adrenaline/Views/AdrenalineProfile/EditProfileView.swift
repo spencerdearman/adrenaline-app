@@ -28,6 +28,8 @@ struct EditProfileView: View {
     @State private var profilePicData: Data? = nil
     @State private var profilePicURL: String = ""
     @State private var showAlert: Bool = false
+    @State private var isSavingChanges: Bool = false
+    @State private var profilePicUploadFailed: Bool = false
     @Binding var updateDataStoreData: Bool
     @FocusState private var focusedField: SignupInfoField?
     
@@ -233,32 +235,60 @@ struct EditProfileView: View {
                         showAthleteError = false
                     }
                     Task {
-                        await saveNewAthlete()
+                        isSavingChanges = true
+                        profilePicUploadFailed = false
+                        
                         if let data = profilePicData, let id = newUser?.id {
+                            try await uploadProfilePictureForReview(data: data, userId: id)
+                            try await Task.sleep(seconds: 10)
+                            
+                            // If identity verification fails, no changes are saved
+                            if await hasProfilePictureInReview(userId: id) {
+                                profilePicUploadFailed = true
+                                isSavingChanges = false
+                                return
+                            }
+                            
                             showAlert = true
-                            try await uploadProfilePicture(data: data, userId: id)
                         }
                         
+                        await saveNewAthlete()
+                        
                         updateDataStoreData = true
+                        profilePicUploadFailed = false
+                        isSavingChanges = false
                         dismiss()
                     }
                 } label: {
                     ColorfulButton(title: "Save")
                 }
-                
-                if showAthleteError {
-                    Text("Error creating athlete profile, please check information")
-                        .foregroundColor(.primary).fontWeight(.semibold)
-                }
+                .disabled(isSavingChanges)
                 
                 Text("**Cancel**")
                     .font(.footnote)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .foregroundColor(.primary.opacity(0.7))
-                    .accentColor(.primary.opacity(0.7))
+                    .padding(.bottom)
+                    .foregroundColor(isSavingChanges ? .secondary.opacity(0.5) : .primary.opacity(0.7))
+                    .accentColor(isSavingChanges ? .secondary.opacity(0.5) : .primary.opacity(0.7))
                     .onTapGesture {
                         dismiss()
                     }
+                    .disabled(isSavingChanges)
+                
+                if profilePicUploadFailed {
+                    Text("Failed to verify identity. Make sure your face is visible and matches the photo ID you uploaded when you signed up")
+                        .foregroundColor(.red)
+                        .padding()
+                        .multilineTextAlignment(.center)
+                } else if showAthleteError {
+                    Text("Error creating athlete profile, please check information")
+                        .foregroundColor(.primary).fontWeight(.semibold)
+                } else if isSavingChanges {
+                    VStack {
+                        Text("Saving changes")
+                        ProgressView()
+                    }
+                }
             }
             
             Spacer()
@@ -268,6 +298,7 @@ struct EditProfileView: View {
         .alert("It may take up to 60 seconds for your profile picture to update", isPresented: $showAlert) {
             Button("OK", role: .cancel) {
                 showAlert = false
+                dismiss()
             }
         }
         .onChange(of: selectedImage) {
@@ -286,6 +317,8 @@ struct EditProfileView: View {
         .onAppear {
             Task {
                 profilePic = nil
+                isSavingChanges = false
+                profilePicUploadFailed = false
                 
                 if let user = newUser {
                     athlete = try await user.athlete
