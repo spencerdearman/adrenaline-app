@@ -212,6 +212,7 @@ public struct SwiftUIWheelPicker<Content: View, Item>: View {
     }
 }
 
+// https://stackoverflow.com/a/60861575
 public struct ChildSizeReader<Content: View>: View {
     var size: Binding<CGSize>
     let content: () -> Content

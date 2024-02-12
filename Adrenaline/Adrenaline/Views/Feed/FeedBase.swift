@@ -92,26 +92,36 @@ struct FeedBase: View {
             .dynamicTypeSize(.xSmall ... .xxLarge)
             .coordinateSpace(name: "scroll")
         }
-        .onAppear {
-            feedItems = [
-                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-                             namespace: namespace, feedModel: $feedModel),
-                ImageFeedItem(image: Image("Spencer"), namespace: namespace, feedModel: $feedModel),
-                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-                             namespace: namespace, feedModel: $feedModel),
-                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-                             namespace: namespace, feedModel: $feedModel),
-                ImageFeedItem(image: Image("Logan"), namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-                              namespace: namespace, feedModel: $feedModel),
-                MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-                             namespace: namespace, feedModel: $feedModel),
-                ImageFeedItem(image: Image("Beck"), namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-                              namespace: namespace, feedModel: $feedModel),
-                MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-                              namespace: namespace, feedModel: $feedModel)
-            ]
+        .onChange(of: newUser, initial: true) {
+            Task {
+                if let user = newUser {
+                    try await user.posts?.fetch()
+                    guard let posts = user.posts?.elements else { return }
+                    
+                    feedItems = try await posts.concurrentMap { post in
+                        try await PostFeedItem(user: user, post: post, namespace: namespace, feedModel: $feedModel)
+                    }
+                }
+//                feedItems = [
+//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
+//                                 namespace: namespace, feedModel: $feedModel),
+//                    ImageFeedItem(image: Image("Spencer"), namespace: namespace, feedModel: $feedModel),
+//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
+//                                 namespace: namespace, feedModel: $feedModel),
+//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
+//                                 namespace: namespace, feedModel: $feedModel),
+//                    ImageFeedItem(image: Image("Logan"), namespace: namespace, feedModel: $feedModel),
+//                    MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+//                                  namespace: namespace, feedModel: $feedModel),
+//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
+//                                 namespace: namespace, feedModel: $feedModel),
+//                    ImageFeedItem(image: Image("Beck"), namespace: namespace, feedModel: $feedModel),
+//                    MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+//                                  namespace: namespace, feedModel: $feedModel),
+//                    MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
+//                                  namespace: namespace, feedModel: $feedModel)
+//                ]
+            }
         }
         
         .onChange(of: feedModel.showTile) {
@@ -121,7 +131,7 @@ struct FeedBase: View {
                 showStatusBar.toggle()
             }
         }
-        .overlay{
+        .overlay {
             if feedModel.showTab {
                 NavigationBar(title: "Adrenaline", newUser: $newUser,
                               showAccount: $showAccount, contentHasScrolled: $contentHasScrolled,
@@ -149,7 +159,8 @@ struct CloseButtonWithFeedModel: View {
             CloseButton()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-        .padding(25)
+        .padding(20)
+        .padding(.top, 60)
         .ignoresSafeArea()
     }
 }
@@ -158,5 +169,34 @@ struct ScrollPreferenceKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
+    }
+}
+
+// https://www.swiftbysundell.com/articles/async-and-concurrent-forEach-and-map/
+extension Sequence {
+    func asyncMap<T>(
+        _ transform: (Element) async throws -> T
+    ) async rethrows -> [T] {
+        var values = [T]()
+        
+        for element in self {
+            try await values.append(transform(element))
+        }
+        
+        return values
+    }
+    
+    func concurrentMap<T>(
+        _ transform: @escaping (Element) async throws -> T
+    ) async throws -> [T] {
+        let tasks = map { element in
+            Task {
+                try await transform(element)
+            }
+        }
+        
+        return try await tasks.asyncMap { task in
+            try await task.value
+        }
     }
 }
