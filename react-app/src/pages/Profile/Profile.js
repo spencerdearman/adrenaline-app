@@ -52,10 +52,12 @@ const Profile = (props) => {
 
   // Get and set athlete
   useEffect(() => {
-    getAthleteForUser(user)
-      .then(data => {
-        setAthlete(data);
-      });
+    if (user !== undefined) {
+      getAthleteForUser(user)
+        .then(data => {
+          setAthlete(data);
+        });
+    }
   }, [user]);
 
   return (
