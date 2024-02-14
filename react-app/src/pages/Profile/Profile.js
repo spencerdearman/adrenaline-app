@@ -23,13 +23,15 @@ const grayColor = '#777';
 // TODO: Make this dynamic based on viewer of profile
 const profileTabs = ['Posts', 'Results', 'Recruiting', 'Saved', 'Favorites'];
 
-const PROFILE_TAB_OBJECTS = {
-  posts: <Posts />,
-  results: <Results />,
-  recruiting: <Recruiting />,
-  saved: <Saved />,
-  favorites: <Favorites />,
-  default: <div />
+const PROFILE_TAB_OBJECTS = (userId) => {
+  return {
+    posts: <Posts userId={userId} />,
+    results: <Results />,
+    recruiting: <Recruiting />,
+    saved: <Saved />,
+    favorites: <Favorites />,
+    default: <div />
+  };
 };
 
 const Profile = (props) => {
@@ -96,7 +98,8 @@ const Profile = (props) => {
                   <Heading level={4} fontWeight={'normal'}>{athlete.age}</Heading>
                 </Age>
               </BottomLineItem>
-            </RowItems> }
+            </RowItems>
+            }
           </Column>
         </RowItems>
       </BasicInfo>
@@ -104,7 +107,7 @@ const Profile = (props) => {
       <CustomDivider marginTop={25} />
 
       <ProfileTabSelector tabs={profileTabs} tabSelection={tabSelection} setTabSelection={setTabSelection} />
-      {tabSelection && PROFILE_TAB_OBJECTS[tabSelection]}
+      {tabSelection && PROFILE_TAB_OBJECTS(profileId)[tabSelection]}
 
       <CustomDivider />
 
