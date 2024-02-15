@@ -18,3 +18,11 @@ export async function getSearchData() {
     colleges: await DataStore.query(models.College)
   };
 }
+
+export async function getPostById(postId) {
+  return await DataStore.query(models.Post, postId);
+}
+
+export async function getPostsByUserId(userId) {
+  return await DataStore.query(models.Post, models.Post.newuserID === userId);
+}
