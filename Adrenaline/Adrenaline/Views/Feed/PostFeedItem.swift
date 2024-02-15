@@ -67,7 +67,7 @@ class PostFeedItem: FeedItem {
 struct PostFeedItemCollapsedView: View {
     @Environment(\.colorScheme) var currentMode
     @State var appear = [false, false, false]
-    @State private var offset: CGFloat = 0
+    @State private var currentTab: String = ""
     @Binding var feedModel: FeedModel
     var id: String
     var namespace: Namespace.ID
@@ -78,20 +78,10 @@ struct PostFeedItemCollapsedView: View {
     private let screenHeight = UIScreen.main.bounds.height
     
     // Indicator animation: https://www.youtube.com/watch?v=uo8gj7RT3H8
-    private let indicatorSpacing: CGFloat = 15
-    private let indicatorLargeWidth: CGFloat = 20
-    private let indicatorWidth: CGFloat = 7
-    private let capsuleColor: Color = .white
-    
-    private func getIndex() -> Int {
-        print(Int(round(Double(offset / screenWidth))), offset, screenWidth)
-        return Int(round(Double(offset / screenWidth)))
-    }
-    
-    private func getOffset() -> CGFloat {
-        let progress = offset / screenWidth
-        return (indicatorSpacing + indicatorWidth) * progress
-    }
+    private let indicatorSpacing: CGFloat = 5
+    private let indicatorSize: CGFloat = 7
+    private let selectedColor: Color = .accentColor
+    private let dotColor: Color = Color.init(.init(gray: 0.7, alpha: 0.5))
     
     var body: some View {
         ZStack {
@@ -116,58 +106,36 @@ struct PostFeedItemCollapsedView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 10)
                     
-                    TabView {
-                        ForEach(mediaItems.indices, id: \.self) { index in
-                            let item = mediaItems[index]
-                            if index == 0 {
-                                AnyView(item.view)
-                                    .overlay(
-                                        GeometryReader { proxy -> Color in
-                                            let minX = proxy.frame(in: .global).minX - screenWidth * 0.05
-                                            
-                                            DispatchQueue.main.async {
-                                                withAnimation(.default) {
-                                                    self.offset = -minX
-                                                }
-                                            }
-                                            
-                                            return Color.clear
-                                        }
-                                        .frame(width: 0, height: 0)
-                                        , alignment: .leading
-                                    )
-                                
-                            } else {
-                                AnyView(item.view)
-                            }
+                    TabView(selection: $currentTab) {
+                        ForEach(mediaItems, id: \.id) { item in
+                            AnyView(item.view)
+                                .tag(item.id)
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     .ignoresSafeArea()
-                    .overlay(
-                        HStack(spacing: indicatorSpacing) {
-                            ForEach(mediaItems.indices, id: \.self) { index in
-                                Capsule()
-                                    .fill(capsuleColor)
-                                    .frame(width: getIndex() == index 
-                                                  ? indicatorLargeWidth
-                                                  : indicatorWidth,
-                                           height: indicatorWidth)
-                                    .shadow(radius: 3)
-                                
-                            }
-                        }
-                        .overlay(
-                            Capsule()
-                                .fill(capsuleColor)
-                                .frame(width: indicatorLargeWidth, height: indicatorWidth)
-                                .offset(x: getOffset())
-                            , alignment: .leading
-                        )
-                        .padding(.bottom, 20)
-                        , alignment: .bottom
-                        )
+//                    .overlay(
+//                        ZStack {
+//                            Capsule()
+//                                .fill(.white)
+//                                .frame(maxWidth: screenWidth * 0.2,
+//                                       maxHeight: screenWidth * 0.05)
+//                                .shadow(radius: 3)
+//                            
+//                            
+//                        }
+//                        .padding(.bottom, 20)
+//                        , alignment: .bottom)
                     .frame(width: screenWidth * 0.9, height: screenHeight * 0.75)
+                    
+                    HStack(spacing: indicatorSpacing) {
+                        ForEach(mediaItems, id: \.id) { item in
+                            Circle()
+                                .fill(currentTab == item.id ? selectedColor : dotColor)
+                                .frame(width: indicatorSize,
+                                       height: indicatorSize)
+                        }
+                    }
                     
                     Text(post.caption ?? "")
                         .font(.footnote)
@@ -181,6 +149,11 @@ struct PostFeedItemCollapsedView: View {
         }
         .frame(width: screenWidth * 0.9)
         .frame(minHeight: screenHeight * 0.4, maxHeight: screenHeight * 0.9)
+        .onAppear {
+            if !mediaItems.isEmpty {
+                currentTab = mediaItems[0].id
+            }
+        }
     }
 }
 
