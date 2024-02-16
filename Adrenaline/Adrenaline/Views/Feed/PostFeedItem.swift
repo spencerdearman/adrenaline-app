@@ -81,7 +81,7 @@ struct PostFeedItemCollapsedView: View {
     private let indicatorSpacing: CGFloat = 5
     private let indicatorSize: CGFloat = 7
     private let selectedColor: Color = .accentColor
-    private let dotColor: Color = Color.init(.init(gray: 0.7, alpha: 0.5))
+    private let dotColor: Color = Color.init(.init(gray: 0.7, alpha: 0.7))
     
     var body: some View {
         ZStack {
@@ -114,18 +114,6 @@ struct PostFeedItemCollapsedView: View {
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     .ignoresSafeArea()
-//                    .overlay(
-//                        ZStack {
-//                            Capsule()
-//                                .fill(.white)
-//                                .frame(maxWidth: screenWidth * 0.2,
-//                                       maxHeight: screenWidth * 0.05)
-//                                .shadow(radius: 3)
-//                            
-//                            
-//                        }
-//                        .padding(.bottom, 20)
-//                        , alignment: .bottom)
                     .frame(width: screenWidth * 0.9, height: screenHeight * 0.75)
                     
                     HStack(spacing: indicatorSpacing) {
