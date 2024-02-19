@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button, Card, Heading } from '@aws-amplify/ui-react';
 
+import { CurrentUserContext } from '../../App';
 import mapPinIcon from '../../assets/images/mapPin.svg';
 import personIcon from '../../assets/images/person.svg';
 import { CustomDivider } from '../../components/CustomDivider/CustomDivider';
@@ -20,8 +21,14 @@ import { ProfileTabSelector } from './ProfileTabSelector';
 import '../../assets/css/index.css';
 
 const grayColor = '#777';
-// TODO: Make this dynamic based on viewer of profile
-const profileTabs = ['Posts', 'Results', 'Recruiting', 'Saved', 'Favorites'];
+const profileTabs = (userId, profileId) => {
+  let tabs = ['Posts', 'Results', 'Recruiting'];
+  if (userId === profileId) {
+    tabs += ['Saved', 'Favorites'];
+  }
+
+  return tabs;
+};
 
 const PROFILE_TAB_OBJECTS = (userId) => {
   return {
@@ -35,6 +42,7 @@ const PROFILE_TAB_OBJECTS = (userId) => {
 };
 
 const Profile = (props) => {
+  const userContext = useContext(CurrentUserContext);
   const { profileId } = useParams();
   const [user, setUser] = useState();
   const [athlete, setAthlete] = useState();
@@ -106,7 +114,10 @@ const Profile = (props) => {
 
       <CustomDivider marginTop={25} />
 
-      <ProfileTabSelector tabs={profileTabs} tabSelection={tabSelection} setTabSelection={setTabSelection} />
+      <ProfileTabSelector
+        tabs={profileTabs(userContext === undefined ? '' : userContext.id, profileId)}
+        tabSelection={tabSelection}
+        setTabSelection={setTabSelection} />
       {tabSelection && PROFILE_TAB_OBJECTS(profileId)[tabSelection]}
 
       <CustomDivider />
