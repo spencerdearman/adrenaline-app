@@ -31,7 +31,7 @@ function App({ signOut, user }) {
             <Route path="/chat" element={<Chat />} />
             <Route path="/rankings" element={<Rankings />} />
             <Route path="/profile/:profileId" element={<Profile signOut={signOut} />} />
-            <Route path="/post/:postId" element={<UserPost />} />
+            <Route path="/post/:userId/:postId" element={<UserPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

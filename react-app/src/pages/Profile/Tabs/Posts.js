@@ -28,7 +28,7 @@ export const Posts = ({ userId }) => {
           {
             posts.map((post, id) => {
               return (
-                <Button onClick={() => navigate(`/post/${post.id}`)} key={id}>{post.id}</Button>
+                <Button onClick={() => navigate(`/post/${userId}/${post.id}`)} key={id}>{post.id}</Button>
               );
             })
           }

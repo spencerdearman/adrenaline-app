@@ -25,7 +25,7 @@ async function getMediaItems(post) {
 }
 
 export const UserPost = () => {
-  const { postId } = useParams();
+  const { userId, postId } = useParams();
   const [post, setPost] = useState();
   const [mediaItems, setMediaItems] = useState([]);
 
@@ -45,6 +45,7 @@ export const UserPost = () => {
 
   return (
     <div>
+      <Heading level={2}>{userId}</Heading>
       <Heading level={2}>{postId}</Heading>
 
       {
