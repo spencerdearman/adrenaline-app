@@ -3,7 +3,13 @@ import { DataStore } from 'aws-amplify/datastore';
 import * as models from '../models';
 
 export async function getUserById(id) {
-  return await DataStore.query(models.NewUser, id);
+  // Query returns a list, so verifying it only returns one item
+  const result = await DataStore.query(models.NewUser, (u) => u.id.eq(id));
+  if (result.length === 1) {
+    return result[0];
+  }
+
+  return undefined;
 }
 
 export async function getAthleteForUser(user) {
@@ -20,9 +26,15 @@ export async function getSearchData() {
 }
 
 export async function getPostById(postId) {
-  return await DataStore.query(models.Post, postId);
+  // Query returns a list, so verifying it only returns one item
+  const result = await DataStore.query(models.Post, (p) => p.id.eq(postId));
+  if (result.length === 1) {
+    return result[0];
+  }
+
+  return undefined;
 }
 
 export async function getPostsByUserId(userId) {
-  return await DataStore.query(models.Post, models.Post.newuserID === userId);
+  return await DataStore.query(models.Post, (p) => p.newuserID.eq(userId));
 }
