@@ -27,7 +27,7 @@ const PROFILE_TAB_OBJECTS = (userId) => {
   return {
     posts: <Posts userId={userId} />,
     results: <Results />,
-    recruiting: <Recruiting />,
+    recruiting: <Recruiting userId={userId} />,
     saved: <Saved />,
     favorites: <Favorites />,
     default: <div />
@@ -41,7 +41,7 @@ const Profile = (props) => {
   const [name, setName] = useState();
   const [tabSelection, setTabSelection] = useState('posts');
 
-  // Set user and DiveMeets ID
+  // Set user
   useEffect(() => {
     getUserById(profileId)
       .then(data => {
