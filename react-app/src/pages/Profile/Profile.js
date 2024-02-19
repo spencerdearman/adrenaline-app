@@ -22,9 +22,9 @@ import '../../assets/css/index.css';
 
 const grayColor = '#777';
 const profileTabs = (userId, profileId) => {
-  let tabs = ['Posts', 'Results', 'Recruiting'];
+  const tabs = ['Posts', 'Results', 'Recruiting'];
   if (userId === profileId) {
-    tabs += ['Saved', 'Favorites'];
+    return tabs.concat(['Saved', 'Favorites']);
   }
 
   return tabs;
@@ -115,7 +115,7 @@ const Profile = (props) => {
       <CustomDivider marginTop={25} />
 
       <ProfileTabSelector
-        tabs={profileTabs(userContext === undefined ? '' : userContext.id, profileId)}
+        tabs={profileTabs(userContext.userId === undefined ? '' : userContext.userId, profileId)}
         tabSelection={tabSelection}
         setTabSelection={setTabSelection} />
       {tabSelection && PROFILE_TAB_OBJECTS(profileId)[tabSelection]}
