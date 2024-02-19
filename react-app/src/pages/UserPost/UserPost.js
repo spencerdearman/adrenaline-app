@@ -11,23 +11,20 @@ import { getImageURL, getVideoHLSURL } from '../../utils/storage';
 async function getMediaItems(post) {
   const userId = post.newuserID;
   const user = await getUserById(userId);
-  const images = await post.images;
-  const videos = await post.videos;
 
   const linksAndDates = [];
-  if (images !== undefined) {
+  if (post && user && post.images && post.videos) {
+    console.log('post and user are defined');
     try {
-      for (const image of images) {
+      for await (const image of post.images) {
         linksAndDates.push((image.uploadDate, getImageURL(user, image.id)));
       }
     } catch (error) {
       console.log(`getMediaItems: Failed to iterate through images, ${error}`);
     }
-  }
 
-  if (videos !== undefined) {
     try {
-      for (const video of videos) {
+      for await (const video of post.videos) {
         linksAndDates.push((video.uploadDate, getVideoHLSURL(user, video.id)));
       }
     } catch (error) {
@@ -43,13 +40,14 @@ export const UserPost = () => {
   const { userId, postId } = useParams();
   const [mediaItems, setMediaItems] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [post, setPost] = useState();
   const [mediaItemIndex, setMediaItemIndex] = useState(0);
   const [postIndex, setPostIndex] = useState(0);
 
   // Gets all posts for the given user to allow outer left/right arrows to
   // switch posts
   useEffect(() => {
+    setMediaItemIndex(0);
+
     if (userId !== undefined) {
       getPostsByUserId(userId)
         .then(data => {
@@ -60,6 +58,7 @@ export const UserPost = () => {
           for (let i = 0; i < data.length; i++) {
             if (data[i].id === postId) {
               setPostIndex(i);
+              break;
             }
           }
         });
@@ -70,22 +69,20 @@ export const UserPost = () => {
   useEffect(() => {
     getPostById(postId)
       .then(data => {
-        setPost(data);
+        if (data !== undefined) {
+          getMediaItems(data)
+            .then(data => {
+              setMediaItems(data);
+              console.log(data);
+            });
+        }
       });
-
-    if (post !== undefined) {
-      getMediaItems(post)
-        .then(data => {
-          setMediaItems(data);
-        });
-    }
   }, [postId]);
 
   return (
     <Wrapper>
       <Heading level={2}>{userId}</Heading>
       <Heading level={2}>{postId}</Heading>
-      <Heading level={3}>{mediaItemIndex}</Heading>
       <DimmedWrapper />
 
       <OuterContent>
@@ -105,7 +102,7 @@ export const UserPost = () => {
           {/* TODO: HLS Stream or image goes here */}
           <p style={{ padding: 20 }}>
             {mediaItems[mediaItemIndex] !== undefined
-              ? mediaItems[mediaItemIndex].id
+              ? mediaItems[mediaItemIndex]
               : 'undefined'}
           </p>
 
