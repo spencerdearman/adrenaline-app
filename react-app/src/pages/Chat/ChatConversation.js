@@ -1,32 +1,34 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-// import { DataStore } from '@aws-amplify/datastore';
+import { DataStore } from '@aws-amplify/datastore';
 import { Card, Heading } from '@aws-amplify/ui-react';
 
 import { CurrentUserContext } from '../../App';
+import { Message, MessageNewUser } from '../../models';
 import { getUserById } from '../../utils/dataStore';
 // import { Message, MessageNewUser, NewUser } from '../models';
 
-const Chat = () => {
+const ChatConversation = () => {
   const userContext = useContext(CurrentUserContext);
-  const { profileId, recipientId } = useParams();
+  const { senderId, recipientId } = useParams();
   const [user, setUser] = useState();
-  const [, setRecipient] = useState();
-  const [messages] = useState([]);
-  // const [observedMessageIDs, setObservedMessageIDs] = useState(new Set());
+  const [recipient, setRecipient] = useState();
+  const [, setMessages] = useState([]);
+  const [seenMNU, setSeenMNU] = useState(new Set());
+  const navigate = useNavigate();
 
   // Set user and check for matching ID
   useEffect(() => {
     getUserById(userContext.userId)
       .then(data => {
-        if (data !== undefined && data.id !== profileId) {
-          this.props.history.push('/chat/404');
+        if (data !== undefined && data.id !== senderId) {
+          navigate('/chat/404');
         } else if (data !== undefined) {
           setUser(data);
         }
       });
-  }, [userContext, profileId]);
+  }, [userContext, senderId]);
 
   // Set recipient ID
   useEffect(() => {
@@ -36,15 +38,65 @@ const Chat = () => {
       });
   }, [recipientId]);
 
+  DataStore.observeQuery(MessageNewUser, mnu => mnu.or(mnu => [
+    mnu.newuserID.eq(senderId), mnu.newuserID.eq(recipientId)
+  ])).subscribe(
+    async snapshot => {
+      if (!user || !recipient) {
+        return;
+      }
+      const { items } = snapshot;
+      const senderMessageIds = new Set();
+      const recipientMessageIds = new Set();
+      const senderDict = {};
+      for (const mnu of items) {
+        if (seenMNU.has(mnu.id)) {
+          continue;
+        }
+        if (mnu.newuserID === senderId) {
+          senderMessageIds.add(mnu.messageID);
+        } else if (mnu.newuserID === recipientId) {
+          recipientMessageIds.add(mnu.messageID);
+        }
+        if (mnu.isSender) {
+          senderDict[mnu.messageID] = mnu.newuserID;
+        }
+        setSeenMNU(prevMNU => new Set([...prevMNU, mnu.id]));
+      }
+      const intersection = new Set();
+      for (const i of senderMessageIds) {
+        if (recipientMessageIds.has(i)) {
+          intersection.add(i);
+        }
+      }
+      if (intersection.size === 0) { return; }
+      const messages = await DataStore.query(Message, (m) => m.or((m) =>
+        [...intersection].reduce((m, id) => m.id.eq(id), m)));
+
+      const result = [];
+      for (const message of messages) {
+        const senderStatus = senderDict[message.id] === senderId;
+        const messageTuple = [message, senderStatus];
+        result.push(messageTuple);
+      }
+
+      setMessages(result.sort((a, b) => {
+        return new Date(a.creationDate) < new Date(b.creationDate);
+      }));
+    }
+  );
+
   return (
     <Card>
-      <Heading level={1}>Chat with {user?.firstName} {user?.lastName}</Heading>
-      {/* Render messages or chat interface here */}
-      {messages.map(message => (
+      <button onClick={() => console.log(seenMNU.size)}>
+        text
+      </button>
+      <Heading key={recipient?.id} level={1}>Chat with {recipient?.firstName} {recipient?.lastName}</Heading>
+      {/* {messages && messages.length > 0 && messages.map(message => (
         <div key={message.id}>{message.body}</div>
-      ))}
+      ))} */}
     </Card>
   );
 };
 
-export default Chat;
+export default ChatConversation;
