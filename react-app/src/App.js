@@ -8,6 +8,7 @@ import {
 
 import NavigationBar from './components/Navigation/NavigationBar';
 import Chat from './pages/Chat/Chat';
+import { ChatProvider } from './pages/Chat/ChatContext';
 import ChatConversation from './pages/Chat/ChatConversation';
 import NoChatFound from './pages/Chat/NoChatFound';
 import Home from './pages/Home/Home';
@@ -24,22 +25,23 @@ export const CurrentUserContext = React.createContext();
 function App({ signOut, user }) {
   return (
     <CurrentUserContext.Provider value={user}>
-      <Wrapper>
-        <Router>
-          <NavigationBar />
-
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/chat/:senderId/:recipientId" element={<ChatConversation />} />
-            <Route path="/chat/404" element={<NoChatFound />} />
-            <Route path="/rankings" element={<Rankings />} />
-            <Route path="/profile/:profileId" element={<Profile signOut={signOut} />} />
-            <Route path="/post/:userId/:postId" element={<UserPost />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Router>
-      </Wrapper>
+      <ChatProvider>
+        <Wrapper>
+          <Router>
+            <NavigationBar />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/chat" element={<Chat />} />
+              <Route path="/chat/:senderId/:recipientId" element={<ChatConversation />} />
+              <Route path="/chat/404" element={<NoChatFound />} />
+              <Route path="/rankings" element={<Rankings />} />
+              <Route path="/profile/:profileId" element={<Profile signOut={signOut} />} />
+              <Route path="/post/:userId/:postId" element={<UserPost />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Router>
+        </Wrapper>
+      </ChatProvider>
     </CurrentUserContext.Provider>
   );
 };
