@@ -8,6 +8,8 @@ import {
 
 import NavigationBar from './components/Navigation/NavigationBar';
 import Chat from './pages/Chat/Chat';
+import ChatConversation from './pages/Chat/ChatConversation';
+import NoChatFound from './pages/Chat/NoChatFound';
 import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile/Profile';
@@ -29,6 +31,8 @@ function App({ signOut, user }) {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/chat/:senderId/:recipientId" element={<ChatConversation />} />
+            <Route path="/chat/404" element={<NoChatFound />} />
             <Route path="/rankings" element={<Rankings />} />
             <Route path="/profile/:profileId" element={<Profile signOut={signOut} />} />
             <Route path="/post/:userId/:postId" element={<UserPost />} />

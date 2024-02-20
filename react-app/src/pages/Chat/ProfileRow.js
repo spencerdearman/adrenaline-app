@@ -1,44 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ProfilePic } from '../../components/ProfilePic/ProfilePic';
-import { getUserById } from '../../utils/dataStore';
 
-const ProfileRow = ({ newMessages }) => {
-  const { profileId } = useParams();
-  const [user, setUser] = useState(null);
+const ProfileRow = ({ currentUserId, recipient, messages }) => {
+  const navigate = useNavigate();
   // add newMessagesBool back in eventually
   //   const [, setNewMessagesBool] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const userData = await getUserById(profileId);
-      if (userData) {
-        setUser(userData);
-        // Check if there are new messages for this user
-        // setNewMessagesBool(newMessages.has(userData.id));
-      }
-    };
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       const recipientData = await getUserById(profileId);
+  //       if (recipientData) {
+  //         setUser(recipientData);
+  //         // Check if there are new messages for this recipient
+  //         // setNewMessagesBool(newMessages.has(recipientData.id));
+  //       }
+  //     };
 
-    fetchData();
-  }, [profileId, newMessages]);
+  //     fetchData();
+  //   }, [profileId, newMessages]);
 
-  if (!user) {
+  if (!recipient) {
     return <div>Loading...</div>; // or any other loading indicator
   }
 
   return (
-    <Row>
+    <Row onClick={() => navigate(`/chat/${currentUserId}/${recipient.id}`)}>
       <ProfilePicWrapper>
-        <ProfilePic id={profileId} />
+        <ProfilePic id={recipient.id} />
       </ProfilePicWrapper>
       <UserInfo>
-        <AccountType>{user.accountType}</AccountType>
-        <UserName>{user.firstName} {user.lastName}</UserName>
-        {/* Here you could add more user info or indicators */}
+        <AccountType>{recipient.accountType}</AccountType>
+        <UserName>{recipient.firstName} {recipient.lastName}</UserName>
       </UserInfo>
-      {/* Optionally, include the new messages indicator or circular progress view here */}
     </Row>
   );
 };
@@ -47,18 +43,18 @@ export default ProfileRow;
 
 const Row = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
   padding: 12px;
+  cursor: pointer;
+  width: fit-content;
+  margin: auto;
 `;
 
 const ProfilePicWrapper = styled.div`
-  position: relative;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  overflow: hidden;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.3); /* Adjust based on your theme */
+  display: flex;
+  width: 100px;
+  aspect-ratio: 1;
 `;
 
 const UserInfo = styled.div`
