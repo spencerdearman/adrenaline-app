@@ -12,23 +12,14 @@ import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile/Profile';
 import Rankings from './pages/Rankings/Rankings';
+import { UserPost } from './pages/UserPost/UserPost';
 
-// import { getImageUrl } from './util/storage'
 import './App.css';
 import '@aws-amplify/ui-react/styles.css';
 
 export const CurrentUserContext = React.createContext();
 
 function App({ signOut, user }) {
-  // const [url, setUrl] = useState()
-
-  // useEffect(() => {
-  //   getImageUrl('images/dearmanspencer@gmail.com/3FBA6014-083B-4DD8-818E-B1496762AC5B.jpg')
-  //     .then(data =>
-  //       setUrl(data)
-  //     )
-  // })
-
   return (
     <CurrentUserContext.Provider value={user}>
       <Wrapper>
@@ -40,6 +31,7 @@ function App({ signOut, user }) {
             <Route path="/chat" element={<Chat />} />
             <Route path="/rankings" element={<Rankings />} />
             <Route path="/profile/:profileId" element={<Profile signOut={signOut} />} />
+            <Route path="/post/:userId/:postId" element={<UserPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

@@ -40,7 +40,7 @@ const NavigationBar = () => {
   const [searchData, setSearchData] = useState();
 
   useEffect(() => {
-    getUserById(userContext.userId)
+    getUserById(userContext === undefined ? '' : userContext.userId)
       .then(data => {
         setUser(data);
       });
@@ -53,7 +53,7 @@ const NavigationBar = () => {
       });
   }, []);
 
-  const profileUrl = `/profile/${userContext.userId}`;
+  const profileUrl = `/profile/${userContext === undefined ? '' : userContext.userId}`;
   const profileIconSrc = user === undefined ? personIcon : getProfilePicUrl(user.id);
 
   return (

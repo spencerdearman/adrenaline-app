@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Button, Card, Heading } from '@aws-amplify/ui-react';
 
+import { CurrentUserContext } from '../../App';
 import mapPinIcon from '../../assets/images/mapPin.svg';
 import personIcon from '../../assets/images/person.svg';
 import { CustomDivider } from '../../components/CustomDivider/CustomDivider';
@@ -20,26 +21,35 @@ import { ProfileTabSelector } from './ProfileTabSelector';
 import '../../assets/css/index.css';
 
 const grayColor = '#777';
-// TODO: Make this dynamic based on viewer of profile
-const profileTabs = ['Posts', 'Results', 'Recruiting', 'Saved', 'Favorites'];
+const profileTabs = (userId, profileId) => {
+  const tabs = ['Posts', 'Results', 'Recruiting'];
+  if (userId === profileId) {
+    return tabs.concat(['Saved', 'Favorites']);
+  }
 
-const PROFILE_TAB_OBJECTS = {
-  posts: <Posts />,
-  results: <Results />,
-  recruiting: <Recruiting />,
-  saved: <Saved />,
-  favorites: <Favorites />,
-  default: <div />
+  return tabs;
+};
+
+const PROFILE_TAB_OBJECTS = (userId) => {
+  return {
+    posts: <Posts userId={userId} />,
+    results: <Results />,
+    recruiting: <Recruiting userId={userId} />,
+    saved: <Saved />,
+    favorites: <Favorites />,
+    default: <div />
+  };
 };
 
 const Profile = (props) => {
+  const userContext = useContext(CurrentUserContext);
   const { profileId } = useParams();
   const [user, setUser] = useState();
   const [athlete, setAthlete] = useState();
   const [name, setName] = useState();
   const [tabSelection, setTabSelection] = useState('posts');
 
-  // Set user and DiveMeets ID
+  // Set user
   useEffect(() => {
     getUserById(profileId)
       .then(data => {
@@ -52,10 +62,12 @@ const Profile = (props) => {
 
   // Get and set athlete
   useEffect(() => {
-    getAthleteForUser(user)
-      .then(data => {
-        setAthlete(data);
-      });
+    if (user !== undefined) {
+      getAthleteForUser(user)
+        .then(data => {
+          setAthlete(data);
+        });
+    }
   }, [user]);
 
   return (
@@ -94,15 +106,19 @@ const Profile = (props) => {
                   <Heading level={4} fontWeight={'normal'}>{athlete.age}</Heading>
                 </Age>
               </BottomLineItem>
-            </RowItems> }
+            </RowItems>
+            }
           </Column>
         </RowItems>
       </BasicInfo>
 
       <CustomDivider marginTop={25} />
 
-      <ProfileTabSelector tabs={profileTabs} tabSelection={tabSelection} setTabSelection={setTabSelection} />
-      {tabSelection && PROFILE_TAB_OBJECTS[tabSelection]}
+      <ProfileTabSelector
+        tabs={profileTabs(userContext.userId === undefined ? '' : userContext.userId, profileId)}
+        tabSelection={tabSelection}
+        setTabSelection={setTabSelection} />
+      {tabSelection && PROFILE_TAB_OBJECTS(profileId)[tabSelection]}
 
       <CustomDivider />
 

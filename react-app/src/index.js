@@ -5,10 +5,13 @@ import { Hub } from 'aws-amplify/utils';
 import ReactDOM from 'react-dom/client';
 
 import amplifyconfig from './amplifyconfiguration.json';
+import App from './App';
 import ComingSoonApp from './ComingSoonApp';
 import reportWebVitals from './reportWebVitals';
 
 import './assets/css/index.css';
+
+const devMode = false;
 
 Amplify.configure(amplifyconfig);
 
@@ -45,8 +48,7 @@ Hub.listen('auth', async ({ payload }) => {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    {/* Need to change to App for dev */}
-    <ComingSoonApp />
+    { devMode ? <App /> : <ComingSoonApp />}
   </React.StrictMode>
 );
 

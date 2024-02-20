@@ -25,7 +25,7 @@ const Wrapper = styled.div`
   margin: auto;
   padding: 0 50px;
   padding-bottom: 10px;
-  justify-content: space-between;
+  justify-content: space-evenly;
 `;
 
 const Button = styled.button`
