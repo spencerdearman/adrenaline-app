@@ -7,14 +7,15 @@ import { Card, Heading } from '@aws-amplify/ui-react';
 import { CurrentUserContext } from '../../App';
 import { Message, MessageNewUser } from '../../models';
 import { getUserById } from '../../utils/dataStore';
-// import { Message, MessageNewUser, NewUser } from '../models';
+
+import MessageRow from './MessageRow';
 
 const ChatConversation = () => {
   const userContext = useContext(CurrentUserContext);
   const { senderId, recipientId } = useParams();
   const [user, setUser] = useState();
   const [recipient, setRecipient] = useState();
-  const [, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [seenMNU, setSeenMNU] = useState(new Set());
   const navigate = useNavigate();
 
@@ -70,8 +71,7 @@ const ChatConversation = () => {
         }
       }
       if (intersection.size === 0) { return; }
-      const messages = await DataStore.query(Message, (m) => m.or((m) =>
-        [...intersection].reduce((m, id) => m.id.eq(id), m)));
+      const messages = await DataStore.query(Message, m => m.or((m) => [...intersection].map(id => m.id.eq(id))));
 
       const result = [];
       for (const message of messages) {
@@ -88,13 +88,13 @@ const ChatConversation = () => {
 
   return (
     <Card>
-      <button onClick={() => console.log(seenMNU.size)}>
-        text
-      </button>
-      <Heading key={recipient?.id} level={1}>Chat with {recipient?.firstName} {recipient?.lastName}</Heading>
-      {/* {messages && messages.length > 0 && messages.map(message => (
-        <div key={message.id}>{message.body}</div>
-      ))} */}
+      <Heading level={1}>Chat with {recipient?.firstName} {recipient?.lastName}</Heading>
+      {messages.map((message, id) => (
+        <MessageRow
+          message={message[0]}
+          currentUserIsSender={message[1]}
+          key={id}/>
+      ))}
     </Card>
   );
 };
