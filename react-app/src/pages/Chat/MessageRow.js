@@ -13,6 +13,11 @@ function MessageRow({ message, currentUserIsSender }) {
     wordWrap: 'break-word'
   };
 
+  // Adjusting p tag style to reduce top and bottom margins
+  const paragraphStyle = {
+    margin: '0' // Removes the default top and bottom margins from the p tag
+  };
+
   const containerStyle = {
     display: 'flex',
     flexDirection: 'column',
@@ -22,7 +27,7 @@ function MessageRow({ message, currentUserIsSender }) {
   return (
     <div style={containerStyle}>
       <div style={messageStyle}>
-        <p>{message.body}</p>
+        <p style={paragraphStyle}>{message.body}</p>
       </div>
     </div>
   );
