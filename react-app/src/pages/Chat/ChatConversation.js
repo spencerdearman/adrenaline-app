@@ -10,6 +10,42 @@ import { getUserById } from '../../utils/dataStore';
 
 import MessageRow from './MessageRow';
 
+async function didTapSend(messageText, sender, recipient) {
+  try {
+    // Create the message instance
+    const message = new Message({
+      body: messageText,
+      creationDate: new Date().toISOString() // Adjust according to your model's date format
+    });
+
+    // Save the message to DataStore
+    const savedMessage = await DataStore.save(message);
+    console.log(savedMessage);
+
+    // Create and save the sender association
+    const tempSender = new MessageNewUser({
+      isSender: true,
+      newuserID: sender.id,
+      messageID: savedMessage.id
+    });
+    const tmpSender = await DataStore.save(tempSender);
+    console.log(tmpSender);
+
+    // Create and save the recipient association
+    const tempRecipient = new MessageNewUser({
+      isSender: false,
+      newuserID: recipient.id,
+      messageID: savedMessage.id
+    });
+    const tmpRecipient = await DataStore.save(tempRecipient);
+    console.log(tmpRecipient);
+
+    console.log('Message and associations saved successfully!');
+  } catch (error) {
+    console.error('Error saving message or associations:', error);
+  }
+}
+
 const ChatConversation = () => {
   const userContext = useContext(CurrentUserContext);
   const { senderId, recipientId } = useParams();
@@ -18,8 +54,6 @@ const ChatConversation = () => {
   const [messages, setMessages] = useState([]);
   const [seenMNU, setSeenMNU] = useState(new Set());
   const [messageText, setMessageText] = useState('');
-  // add back in sendMessage when it actually is being used -- its a bool
-  const [, setSendMessage] = useState(false);
   const navigate = useNavigate();
 
   // Set user and check for matching ID
@@ -98,11 +132,15 @@ const ChatConversation = () => {
     if (messageText.trim() === '') return; // Prevent sending empty messages
 
     // Here you would add the logic to send the messageText to your backend or data store
+    try {
+      didTapSend(messageText, user, recipient);
+    } catch (error) {
+      console.log(error);
+    }
     console.log('Sending message:', messageText);
 
     // Optionally reset the message text and toggle sendMessage state
     setMessageText('');
-    setSendMessage(prev => !prev); // Toggle to trigger actions or use as a flag
   };
 
   return (
