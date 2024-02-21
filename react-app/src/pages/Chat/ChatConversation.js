@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { DataStore } from '@aws-amplify/datastore';
-import { Card, Heading } from '@aws-amplify/ui-react';
+import { Button, Card, Flex, Heading, TextField } from '@aws-amplify/ui-react'; // Assuming you're using Amplify UI React components
 
 import { CurrentUserContext } from '../../App';
 import { Message, MessageNewUser } from '../../models';
@@ -17,6 +17,9 @@ const ChatConversation = () => {
   const [recipient, setRecipient] = useState();
   const [messages, setMessages] = useState([]);
   const [seenMNU, setSeenMNU] = useState(new Set());
+  const [messageText, setMessageText] = useState('');
+  // add back in sendMessage when it actually is being used -- its a bool
+  const [, setSendMessage] = useState(false);
   const navigate = useNavigate();
 
   // Set user and check for matching ID
@@ -86,15 +89,43 @@ const ChatConversation = () => {
     }
   );
 
+  const handleMessageChange = (e) => {
+    setMessageText(e.target.value);
+  };
+
+  // Function to handle send message action
+  const handleSendMessage = () => {
+    if (messageText.trim() === '') return; // Prevent sending empty messages
+
+    // Here you would add the logic to send the messageText to your backend or data store
+    console.log('Sending message:', messageText);
+
+    // Optionally reset the message text and toggle sendMessage state
+    setMessageText('');
+    setSendMessage(prev => !prev); // Toggle to trigger actions or use as a flag
+  };
+
   return (
     <Card>
       <Heading level={1}>Chat with {recipient?.firstName} {recipient?.lastName}</Heading>
-      {messages.map((message, id) => (
-        <MessageRow
-          message={message[0]}
-          currentUserIsSender={message[1]}
-          key={id}/>
-      ))}
+      <div style={{ overflowY: 'scroll', maxHeight: '500px' }}> {/* Adjust max height as needed */}
+        {messages.map((message, id) => (
+          <MessageRow
+            message={message[0]}
+            currentUserIsSender={message[1]}
+            key={id}/>
+        ))}
+      </div>
+      <Flex direction="row" alignItems="center" justifyContent="space-between" padding="10px">
+        <TextField
+          placeholder="Type a message..."
+          value={messageText}
+          onChange={handleMessageChange}
+          flexGrow={1}
+          marginRight="10px"
+        />
+        <Button onClick={handleSendMessage}>Send</Button> {/* Replace with an icon or custom button if preferred */}
+      </Flex>
     </Card>
   );
 };

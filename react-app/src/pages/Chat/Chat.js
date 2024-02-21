@@ -28,7 +28,7 @@ const Chat = () => {
   return (
     <Card>
       <Heading level={1}>Messaging</Heading>
-      {users.length > 0
+      {users.length > 0 && user
         ? (
           users.map((recipient, index) => (
             <ProfileRow
