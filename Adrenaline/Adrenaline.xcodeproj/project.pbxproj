@@ -1250,6 +1250,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Adrenaline/Info.plist;
+				INFOPLIST_KEY_NSContactsUsageDescription = "This will allow us to provide user recommendations based on people you may know.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We are using Face ID to authenticate users when logging into their account, allowing for a more secure and efficient login process.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1284,6 +1285,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Adrenaline/Info.plist;
+				INFOPLIST_KEY_NSContactsUsageDescription = "This will allow us to provide user recommendations based on people you may know.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We are using Face ID to authenticate users when logging into their account, allowing for a more secure and efficient login process.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

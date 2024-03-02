@@ -8,7 +8,7 @@
 import SwiftUI
 import UIKit
 import AVKit
-
+import Contacts
 
 struct FeedBase: View {
     @Environment(\.colorScheme) var currentMode
@@ -24,6 +24,7 @@ struct FeedBase: View {
     @State private var feedItems: [FeedItem] = []
     @State private var feedItemsLoaded: Bool = false
     @State private var tabBarState: Visibility = .visible
+    @State private var contacts: [CNContact] = []
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
@@ -88,6 +89,9 @@ struct FeedBase: View {
         .onChange(of: newUser, initial: true) {
             Task {
                 if let user = newUser {
+                    DispatchQueue.global(qos: .userInteractive).async {
+                        getContactList()
+                    }
                     try await user.posts?.fetch()
                     guard let posts = user.posts?.elements else { return }
                     
@@ -105,6 +109,39 @@ struct FeedBase: View {
             .frame(width: screenWidth)
         }
         .statusBar(hidden: !showStatusBar)
+    }
+    
+    private func getContactList() {
+        let CNStore = CNContactStore()
+        switch CNContactStore.authorizationStatus (for: .contacts) {
+            case .authorized:
+                do {
+                    let keys = [CNContactGivenNameKey as CNKeyDescriptor, 
+                                CNContactFamilyNameKey as CNKeyDescriptor]
+                    let request = CNContactFetchRequest (keysToFetch: keys)
+                    try CNStore.enumerateContacts(with: request, usingBlock: { contact, _ in
+                        contacts.append(contact)
+                    })
+                } catch {
+                    print("Error on contact fetching \(error)")
+                }
+            case .denied:
+                print("denied")
+            case .notDetermined:
+                print("notDetermined")
+                CNStore.requestAccess(for: .contacts) { granted, error in
+                    if granted {
+                        getContactList()
+                    } else if let error = error {
+                        print("Error requesting contact access: \(error)")
+                    }
+                }
+            case .restricted:
+                print("restricted")
+            @unknown default:
+                print("")
+        }
+        print("Contacts: \(contacts)")
     }
 }
 
