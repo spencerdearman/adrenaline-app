@@ -212,7 +212,13 @@ struct FeedBase: View {
     private func getSuggestedUsers(contacts: [CNContact]) async throws -> [NewUser] {
         var result: [NewUser] = []
         var seenIds = Set<String>()
-        let newUsers: [NewUser] = try await query()
+        
+        // Filter out current user and users that are already favorited by the current user
+        guard let currentUser = newUser else { return [] }
+        var currentUserFavorites = Set(currentUser.favoritesIds)
+        currentUserFavorites.insert(currentUser.id)
+        let newUsers: [NewUser] = try await query().filter { !currentUserFavorites.contains($0.id) }
+        
         var emails: [String: NewUser] = [:]
         var names: [String: NewUser] = [:]
         var phoneNumbers: [String: NewUser] = [:]
