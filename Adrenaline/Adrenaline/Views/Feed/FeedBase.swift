@@ -17,15 +17,12 @@ struct FeedBase: View {
     @Binding var showAccount: Bool
     @Binding var recentSearches: [SearchItem]
     @Binding var uploadingPost: Post?
+    // Only used to satisfy NavigationBar binding, otherwise unused
     @State private var feedModel: FeedModel = FeedModel()
-    @State private var showDetail: Bool = false
-    @State private var showTab: Bool = true
-    @State private var showNav: Bool = true
-    @State private var show = false
     @State private var showStatusBar = true
-    @State private var showCourse = false
     @State private var contentHasScrolled = false
     @State private var feedItems: [FeedItem] = []
+    @State private var feedItemsLoaded: Bool = false
     @State private var tabBarState: Visibility = .visible
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -36,14 +33,6 @@ struct FeedBase: View {
             (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
             Image(currentMode == .light ? "FeedBackgroundLight" : "FeedBackgroundDark")
                 .offset(x: screenWidth * 0.27, y: -screenHeight * 0.02)
-            
-            if feedModel.showTile {
-                ForEach($feedItems) { item in
-                    if item.id == feedModel.selectedItem {
-                        AnyView(item.expandedView.wrappedValue)
-                    }
-                }
-            }
             
             ScrollView {
                 // Scrolling Detection
@@ -67,19 +56,7 @@ struct FeedBase: View {
                     .frame(width: 100, height: screenHeight * 0.15)
                     .opacity(0)
                 
-                if showDetail {
-                    LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach($feedItems) { _ in
-                            Rectangle()
-                                .fill(.white)
-                                .cornerRadius(30)
-                                .shadow(radius: 20)
-                                .opacity(0.3)
-                        }
-                    }
-                    .padding(.horizontal, 20)
-                    .offset(y: -100)
-                } else {
+                if feedItemsLoaded {
                     LazyVGrid(columns: columns, spacing: 15) {
                         ForEach($feedItems) { item in
                             AnyView(item.collapsedView.wrappedValue)
@@ -87,6 +64,22 @@ struct FeedBase: View {
                     }
                     .padding(.horizontal, 20)
                     .offset(y: -80)
+                } else {
+                    VStack {
+                        Text("Getting new posts")
+                            .foregroundColor(.secondary)
+                            .font(.title3)
+                            .fontWeight(.semibold)
+                            .multilineTextAlignment(.center)
+                        ProgressView()
+                    }
+                    .padding(20)
+                    .background(.ultraThinMaterial)
+                    .modifier(OutlineOverlay(cornerRadius: 30))
+                    .backgroundStyle(cornerRadius: 30)
+                    .padding(20)
+                    .padding(.vertical, 80)
+                    .offset(y: 50)
                 }
             }
             .dynamicTypeSize(.xSmall ... .xxLarge)
@@ -101,43 +94,15 @@ struct FeedBase: View {
                     feedItems = try await posts.concurrentMap { post in
                         try await PostFeedItem(user: user, post: post, namespace: namespace)
                     }
+                    feedItemsLoaded = true
                 }
-//                feedItems = [
-//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-//                                 namespace: namespace, feedModel: $feedModel),
-//                    ImageFeedItem(image: Image("Spencer"), namespace: namespace, feedModel: $feedModel),
-//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-//                                 namespace: namespace, feedModel: $feedModel),
-//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-//                                 namespace: namespace, feedModel: $feedModel),
-//                    ImageFeedItem(image: Image("Logan"), namespace: namespace, feedModel: $feedModel),
-//                    MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-//                                  namespace: namespace, feedModel: $feedModel),
-//                    MeetFeedItem(meet: MeetBase(name: "Test Meet", link: "Body body body"),
-//                                 namespace: namespace, feedModel: $feedModel),
-//                    ImageFeedItem(image: Image("Beck"), namespace: namespace, feedModel: $feedModel),
-//                    MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-//                                  namespace: namespace, feedModel: $feedModel),
-//                    MediaFeedItem(media: Media.video(VideoPlayer(player: nil)),
-//                                  namespace: namespace, feedModel: $feedModel)
-//                ]
-            }
-        }
-        
-        .onChange(of: feedModel.showTile) {
-            withAnimation {
-                feedModel.showTab.toggle()
-                showNav.toggle()
-                showStatusBar.toggle()
             }
         }
         .overlay {
-            if feedModel.showTab {
-                NavigationBar(title: "Adrenaline", newUser: $newUser,
-                              showAccount: $showAccount, contentHasScrolled: $contentHasScrolled,
-                              feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
-                    .frame(width: screenWidth)
-            }
+            NavigationBar(title: "Adrenaline", newUser: $newUser,
+                          showAccount: $showAccount, contentHasScrolled: $contentHasScrolled,
+                          feedModel: $feedModel, recentSearches: $recentSearches, uploadingPost: $uploadingPost)
+            .frame(width: screenWidth)
         }
         .statusBar(hidden: !showStatusBar)
     }
