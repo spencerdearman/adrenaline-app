@@ -115,12 +115,14 @@ struct PostFeedItemCollapsedView: View {
                     .ignoresSafeArea()
                     .frame(width: screenWidth * 0.9, height: screenHeight * 0.75)
                     
-                    HStack(spacing: indicatorSpacing) {
-                        ForEach(mediaItems, id: \.id) { item in
-                            Circle()
-                                .fill(currentTab == item.id ? selectedColor : dotColor)
-                                .frame(width: indicatorSize,
-                                       height: indicatorSize)
+                    if mediaItems.count > 1 {
+                        HStack(spacing: indicatorSpacing) {
+                            ForEach(mediaItems, id: \.id) { item in
+                                Circle()
+                                    .fill(currentTab == item.id ? selectedColor : dotColor)
+                                    .frame(width: indicatorSize,
+                                           height: indicatorSize)
+                            }
                         }
                     }
                     
