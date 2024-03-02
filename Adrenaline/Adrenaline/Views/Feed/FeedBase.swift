@@ -103,6 +103,11 @@ struct FeedBase: View {
         .onChange(of: newUser, initial: true) {
             Task {
                 if let user = newUser {
+                    // Get contact list of current device
+                    DispatchQueue.global(qos: .userInteractive).async {
+                        getContactList()
+                    }
+                    
                     // Gets current user's favorites' posts
                     let favorites = user.favoritesIds
                     let posts = try await getFeedPostsByUserIds(ids: favorites)
@@ -124,11 +129,6 @@ struct FeedBase: View {
                 suggestedUsers = try await getSuggestedUsers(contacts: contacts)
             }
         }
-        .onAppear {
-            DispatchQueue.global(qos: .userInteractive).async {
-                getContactList()
-            }
-        }
         .statusBar(hidden: !showStatusBar)
     }
     
@@ -143,19 +143,22 @@ struct FeedBase: View {
             .padding(.horizontal)
             
             ScrollView(.horizontal) {
-                HStack(spacing: 0) {
+                HStack(spacing: 10) {
                     ForEach(suggestedUsers, id: \.id) { user in
                         NavigationLink {
                             AdrenalineProfileView(newUser: user)
                         } label: {
                             VStack {
-                                MiniProfileImage(profilePicURL: getProfilePictureURL(userId: user.id))
+                                MiniProfileImage(profilePicURL: getProfilePictureURL(userId: user.id),
+                                                 width: 80, height: 80)
                                 Text(user.firstName + " " + user.lastName)
                                     .foregroundColor(.primary)
                                     .lineLimit(2)
                                     .multilineTextAlignment(.center)
+                                    .padding(.top, 5)
                             }
                             .padding(20)
+                            .frame(width: 150, height: 185)
                             .background(.white)
                             .modifier(OutlineOverlay(cornerRadius: 30))
                             .backgroundStyle(cornerRadius: 30)
@@ -218,11 +221,19 @@ struct FeedBase: View {
         var currentUserFavorites = Set(currentUser.favoritesIds)
         currentUserFavorites.insert(currentUser.id)
         let newUsers: [NewUser] = try await query().filter { !currentUserFavorites.contains($0.id) }
+            .sorted {
+                if let first = $0.updatedAt, let second = $1.updatedAt {
+                    return first > second
+                } else {
+                    return false
+                }
+            }
         
         var emails: [String: NewUser] = [:]
         var names: [String: NewUser] = [:]
         var phoneNumbers: [String: NewUser] = [:]
         
+        // Builds dictionaries to pull users from
         for user in newUsers {
             emails[user.email] = user
             let nameKey = (user.firstName + user.lastName).replacingOccurrences(of: " ", with: "")
@@ -241,6 +252,7 @@ struct FeedBase: View {
             let matchingEmails = Set(contactEmails).intersection(emails.keys)
             let matchingPhoneNumbers = Set(contactPhoneNumbers).intersection(phoneNumbers.keys)
             
+            // Appends users based on matching emails
             if matchingEmails.count > 0 {
                 result += matchingEmails.reduce(into: [NewUser]()) { acc, email in
                     if let user = emails[email], !seenIds.contains(user.id) {
@@ -250,6 +262,7 @@ struct FeedBase: View {
                 }
             }
             
+            // Appends users based on similar names
             for key in names.keys {
                 // Succeeds if names are 70% the same
                 if contactNameKey.levenshteinDistance(to: key) <= maxEditDistance,
@@ -259,6 +272,7 @@ struct FeedBase: View {
                 }
             }
             
+            // Appends users based on matching phone numbers
             if matchingPhoneNumbers.count > 0 {
                 result += matchingPhoneNumbers.reduce(into: [NewUser]()) { acc, phoneNumber in
                     if let user = phoneNumbers[phoneNumber], !seenIds.contains(user.id) {
@@ -266,6 +280,21 @@ struct FeedBase: View {
                         seenIds.insert(user.id)
                     }
                 }
+            }
+        }
+        
+        // Appends up to five most recently updated users to suggest active users
+        var count = 0
+        let appendActiveUsers = 5
+        for user in newUsers {
+            if !seenIds.contains(user.id) {
+                result.append(user)
+                seenIds.insert(user.id)
+                count += 1
+            }
+            
+            if count == appendActiveUsers {
+                break
             }
         }
         
