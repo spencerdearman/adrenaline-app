@@ -99,7 +99,7 @@ struct FeedBase: View {
                     guard let posts = user.posts?.elements else { return }
                     
                     feedItems = try await posts.concurrentMap { post in
-                        try await PostFeedItem(user: user, post: post, namespace: namespace, feedModel: $feedModel)
+                        try await PostFeedItem(user: user, post: post, namespace: namespace)
                     }
                 }
 //                feedItems = [
