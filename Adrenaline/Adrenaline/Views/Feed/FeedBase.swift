@@ -28,6 +28,8 @@ struct FeedBase: View {
     @State private var suggestedUsers: [NewUser] = []
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
+    // Insert suggested users tile after below number of posts have been shown
+    private let insertSuggestedUsersSlot = 10
     var columns = [GridItem(.adaptive(minimum: 300), spacing: 20)]
     
     var body: some View {
@@ -61,12 +63,22 @@ struct FeedBase: View {
                     
                     if feedItemsLoaded {
                         LazyVGrid(columns: columns, spacing: 15) {
-                            ForEach($feedItems) { item in
-                                AnyView(item.collapsedView.wrappedValue)
-                            }
-                            
-                            if suggestedUsers.count > 0 {
+                            // Show suggested users at the top if feed items is empty
+                            if feedItems.count == 0, suggestedUsers.count > 0 {
                                 suggestedUsersView
+                            } else {
+                                // Show feed items and insert suggested users at the bottom or after
+                                // the insertSuggestedUsersSlot-th post is shown
+                                ForEach($feedItems) { item in
+                                    AnyView(item.collapsedView.wrappedValue)
+                                    
+                                    // Check if should show suggested users under this post
+                                    if suggestedUsers.count > 0 &&
+                                        shouldShowSuggestedUsers(items: feedItems,
+                                                                 currentItem: item.wrappedValue) {
+                                        suggestedUsersView
+                                    }
+                                }
                             }
                         }
                         .padding(.horizontal, 20)
@@ -152,6 +164,7 @@ struct FeedBase: View {
                                 MiniProfileImage(profilePicURL: getProfilePictureURL(userId: user.id),
                                                  width: 80, height: 80)
                                 Text(user.firstName + " " + user.lastName)
+                                    .fontWeight(.medium)
                                     .foregroundColor(.primary)
                                     .lineLimit(2)
                                     .multilineTextAlignment(.center)
@@ -175,6 +188,26 @@ struct FeedBase: View {
         .background(.ultraThinMaterial)
         .modifier(OutlineOverlay(cornerRadius: 30))
         .backgroundStyle(cornerRadius: 30)
+    }
+    
+    // Returns true if the view should show the suggested users tile below the current item
+    private func shouldShowSuggestedUsers(items: [FeedItem], currentItem: FeedItem) -> Bool {
+        // If list has the same or more items than the suggested slot and the current item being
+        // rendered is in that slot, then append suggested users
+        if items.count >= insertSuggestedUsersSlot &&
+            currentItem == items[insertSuggestedUsersSlot - 1] {
+            return true
+            // If list has the same or more items than the suggested slot, but the current item is
+            // not in that slot, don't append suggested users
+        } else if items.count >= insertSuggestedUsersSlot {
+            return false
+            // If the list has less items than the suggested slot, but it is rendering the last
+            // item, append suggested users
+        } else if currentItem == items[items.count - 1] {
+            return true
+        }
+        
+        return false
     }
     
     // https://medium.com/@sarankumaresh1/fetch-contact-list-view-in-swiftui-6f72fb6e6146
