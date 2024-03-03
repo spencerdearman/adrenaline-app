@@ -123,11 +123,10 @@ struct FeedBase: View {
                     // Gets current user's favorites' posts
                     let favorites = user.favoritesIds
                     let posts = try await getFeedPostsByUserIds(ids: favorites)
-                    //                    print("Posts", posts)
                     
                     // Gets current user's posts (DEV)
-                    //                    try await user.posts?.fetch()
-                    //                    guard let posts = user.posts?.elements else { return }
+//                    try await user.posts?.fetch()
+//                    guard let posts = user.posts?.elements else { return }
                     
                     feedItems = try await posts.concurrentMap { post in
                         try await PostFeedItem(user: user, post: post, namespace: namespace)
