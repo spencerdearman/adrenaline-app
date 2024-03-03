@@ -26,6 +26,7 @@ struct FeedBase: View {
     @State private var tabBarState: Visibility = .visible
     @State private var contacts: [CNContact] = []
     @State private var suggestedUsers: [NewUser] = []
+    @State private var contactsRefreshed: Bool = false
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     // Insert suggested users tile after below number of posts have been shown
@@ -135,9 +136,12 @@ struct FeedBase: View {
                 }
             }
         }
-        .onChange(of: contacts) {
-            Task {
-                suggestedUsers = try await getSuggestedUsers(contacts: contacts)
+        .onChange(of: contactsRefreshed) {
+            if contactsRefreshed {
+                Task {
+                    suggestedUsers = try await getSuggestedUsers(contacts: contacts)
+                    contactsRefreshed = false
+                }
             }
         }
         .statusBar(hidden: !showStatusBar)
@@ -242,6 +246,8 @@ struct FeedBase: View {
             @unknown default:
                 print("")
         }
+        
+        contactsRefreshed = true
     }
     
     private func getSuggestedUsers(contacts: [CNContact]) async throws -> [NewUser] {
