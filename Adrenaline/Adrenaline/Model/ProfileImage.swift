@@ -40,7 +40,7 @@ struct ProfileImage: View {
                         .frame(width:200, height:300)
                         .clipShape(Circle())
                         .overlay {
-                            Circle().stroke(.white, lineWidth: 4)
+                            Circle().stroke(.ultraThinMaterial, lineWidth: 4)
                         }
                         .shadow(radius: 7)
                 } else {
@@ -54,7 +54,7 @@ struct ProfileImage: View {
                 .frame(width:200, height:300)
                 .clipShape(Circle())
                 .overlay {
-                    Circle().stroke(.white, lineWidth: 4)
+                    Circle().stroke(.ultraThinMaterial, lineWidth: 4)
                 }
                 .shadow(radius: 7)
         }
@@ -89,7 +89,7 @@ struct MiniProfileImage: View {
                     .frame(width: width, height: height)
                     .clipShape(Circle())
                     .overlay {
-                        Circle().stroke(.white, lineWidth: 4)
+                        Circle().stroke(.ultraThinMaterial, lineWidth: 4)
                     }
                     .shadow(radius: 7)
             } else if phase.error != nil {
@@ -99,7 +99,7 @@ struct MiniProfileImage: View {
                     .frame(width: width, height: height)
                     .clipShape(Circle())
                     .overlay {
-                        Circle().stroke(.white, lineWidth: 4)
+                        Circle().stroke(.ultraThinMaterial, lineWidth: 4)
                     }
                     .shadow(radius: 7)
                 
