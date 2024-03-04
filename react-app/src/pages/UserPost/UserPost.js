@@ -18,7 +18,10 @@ async function getMediaItems(post) {
   if (post && user && post.images && post.videos) {
     try {
       for await (const image of post.images) {
-        linksAndDates.push((image.uploadDate, getImageURL(user, image.id)));
+        linksAndDates.push({
+          uploadDate: image.uploadDate,
+          url: getImageURL(user, image.id)
+        });
       }
     } catch (error) {
       console.log(`getMediaItems: Failed to iterate through images, ${error}`);
@@ -26,14 +29,20 @@ async function getMediaItems(post) {
 
     try {
       for await (const video of post.videos) {
-        linksAndDates.push((video.uploadDate, getVideoHLSURL(user, video.id)));
+        linksAndDates.push({
+          uploadDate: video.uploadDate,
+          url: getVideoHLSURL(user, video.id)
+        });
       }
     } catch (error) {
       console.log(`getMediaItems: Failed to iterate through videos, ${error}`);
     }
   }
 
-  return linksAndDates.sort((a, b) => a < b);
+  return linksAndDates.sort((a, b) => {
+    // Sort ascending by upload date
+    return Date.parse(a.uploadDate) - Date.parse(b.uploadDate);
+  });
 }
 
 export const UserPost = ({ userId }) => {
@@ -60,7 +69,10 @@ export const UserPost = ({ userId }) => {
     if (userId !== undefined) {
       getPostsByUserId(userId)
         .then(data => {
-          const sorted = data.sort((a, b) => a.creationDate > b.creationDate);
+          const sorted = data.sort((a, b) => {
+            // Sort descending by creation date
+            return Date.parse(b.creationDate) - Date.parse(a.creationDate);
+          });
           setPosts(sorted);
 
           for (let i = 0; i < sorted.length; i++) {
@@ -82,7 +94,7 @@ export const UserPost = ({ userId }) => {
           if (data !== undefined) {
             getMediaItems(data)
               .then(data => {
-                setMediaItems(data);
+                setMediaItems(data.map((a) => a.url));
               });
           }
         });

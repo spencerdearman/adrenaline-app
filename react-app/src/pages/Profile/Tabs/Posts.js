@@ -32,7 +32,8 @@ async function getPostDisplay(user, post) {
   }
 
   return result.sort((a, b) => {
-    return a.uploadDate > b.uploadDate;
+    // Sort ascending by upload date
+    return Date.parse(a.uploadDate) - Date.parse(b.uploadDate);
   })[0];
 };
 
@@ -59,7 +60,10 @@ export const Posts = ({ userId }) => {
     if (userId !== undefined) {
       getPostsByUserId(userId)
         .then(data => {
-          return data.sort((a, b) => a.creationDate > b.creationDate);
+          return data.sort((a, b) => {
+            // Sort descending by creation date
+            return Date.parse(b.creationDate) - Date.parse(a.creationDate);
+          });
         })
         .then(posts => {
           getUserById(userId)
