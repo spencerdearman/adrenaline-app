@@ -12,7 +12,6 @@ import Home from './pages/Home/Home';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile/Profile';
 import Rankings from './pages/Rankings/Rankings';
-import { UserPost } from './pages/UserPost/UserPost';
 
 import './App.css';
 import '@aws-amplify/ui-react/styles.css';
@@ -31,7 +30,6 @@ function App({ signOut, user }) {
             <Route path="/chat" element={<Chat />} />
             <Route path="/rankings" element={<Rankings />} />
             <Route path="/profile/:profileId" element={<Profile signOut={signOut} />} />
-            <Route path="/post/:userId/:postId" element={<UserPost />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

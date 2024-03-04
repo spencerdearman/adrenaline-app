@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Grid } from '@aws-amplify/ui-react';
 
 import { getPostsByUserId, getUserById } from '../../../utils/dataStore';
 import { getImageURL, getVideoThumbnailURL } from '../../../utils/storage';
+import { UserPost } from '../../UserPost/UserPost';
 
 async function getPostDisplay(user, post) {
   const result = [];
@@ -38,7 +39,6 @@ async function getPostDisplay(user, post) {
 async function getPostDisplays(user, posts) {
   const result = [];
   for (const post of posts) {
-    console.log('post', JSON.stringify(post));
     result.push(await getPostDisplay(user, post));
   }
 
@@ -47,8 +47,13 @@ async function getPostDisplays(user, posts) {
 
 export const Posts = ({ userId }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const [postDisplays, setPostDisplays] = useState([]);
   const gridSpacing = 5;
+
+  const postId = queryParams.get('postId');
+  const mediaIndex = parseInt(queryParams.get('mediaIndex'));
 
   useEffect(() => {
     if (userId !== undefined) {
@@ -68,6 +73,17 @@ export const Posts = ({ userId }) => {
     }
   }, [userId]);
 
+  // Locks scrolling when a post is selected
+  // https://stackoverflow.com/a/74637170/22068672
+  useEffect(() => {
+    if (postId !== null && mediaIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = 'scroll';
+    };
+  }, [postId, mediaIndex]);
+
   return (
     <Wrapper>
       <GridWrapper>
@@ -80,13 +96,23 @@ export const Posts = ({ userId }) => {
               return (
                 <Image
                   src={postDisplay.thumbnailURL}
-                  onClick={() => navigate(`/post/${userId}/${postDisplay.id}`)}
+                  onClick={() => {
+                    queryParams.set('postId', postDisplay.id);
+                    queryParams.set('mediaIndex', 0);
+                    const newSearch = `?${queryParams.toString()}`;
+                    navigate({ search: newSearch });
+                  }}
                   key={id}/>
               );
             })
           }
         </Grid>
       </GridWrapper>
+
+      { postId !== null && mediaIndex !== null &&
+        <UserPost userId={userId} />
+      }
+
     </Wrapper>
   );
 };

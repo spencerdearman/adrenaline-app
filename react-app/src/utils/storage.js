@@ -6,9 +6,7 @@ export function getImageURL(user, imageId) {
 }
 
 export function getVideoHLSURL(user, videoId) {
-  // TODO: adjust resolution in browser
-  const resolution = '720p';
-  return CLOUDFRONT_STREAM_BASE_URL + `${user.email.replace('@', '%40')}/${videoId}/output/HLS/${videoId}_${resolution}.m3u8`;
+  return CLOUDFRONT_STREAM_BASE_URL + `${user.email.replace('@', '%40')}/${videoId}/output/HLS/${videoId}.m3u8`;
 }
 
 export function getVideoThumbnailURL(user, videoId) {

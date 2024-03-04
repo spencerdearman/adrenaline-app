@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
-import { Heading } from '@aws-amplify/ui-react';
 
 import { getPostById, getPostsByUserId, getUserById } from '../../utils/dataStore';
 import { getImageURL, getVideoHLSURL } from '../../utils/storage';
+
+import { MediaItem } from './MediaItem';
 
 // Returns an array of CloudFront links that host the relevant media item
 async function getMediaItems(post) {
@@ -14,7 +14,6 @@ async function getMediaItems(post) {
 
   const linksAndDates = [];
   if (post && user && post.images && post.videos) {
-    console.log('post and user are defined');
     try {
       for await (const image of post.images) {
         linksAndDates.push((image.uploadDate, getImageURL(user, image.id)));
@@ -35,28 +34,35 @@ async function getMediaItems(post) {
   return linksAndDates.sort((a, b) => a < b);
 }
 
-export const UserPost = () => {
+export const UserPost = ({ userId }) => {
   const navigate = useNavigate();
-  const { userId, postId } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const [mediaItems, setMediaItems] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [mediaItemIndex, setMediaItemIndex] = useState(0);
   const [postIndex, setPostIndex] = useState(0);
+
+  const postId = queryParams.get('postId');
+  const mediaIndex = parseInt(queryParams.get('mediaIndex'));
+
+  const closeOverlay = (e) => {
+    queryParams.delete('postId');
+    queryParams.delete('mediaIndex');
+    const newSearch = `?${queryParams.toString()}`;
+    navigate({ search: newSearch });
+  };
 
   // Gets all posts for the given user to allow outer left/right arrows to
   // switch posts
   useEffect(() => {
-    setMediaItemIndex(0);
-
     if (userId !== undefined) {
       getPostsByUserId(userId)
         .then(data => {
           const sorted = data.sort((a, b) => a.creationDate > b.creationDate);
-          console.log(sorted);
           setPosts(sorted);
 
           for (let i = 0; i < data.length; i++) {
-            if (data[i].id === postId) {
+            if (postId !== null && data[i].id === postId) {
               setPostIndex(i);
               break;
             }
@@ -67,94 +73,133 @@ export const UserPost = () => {
 
   // Gets the post currently being viewed
   useEffect(() => {
-    getPostById(postId)
-      .then(data => {
-        if (data !== undefined) {
-          getMediaItems(data)
-            .then(data => {
-              setMediaItems(data);
-              console.log(data);
-            });
-        }
-      });
+    if (postId !== null) {
+      getPostById(postId)
+        .then(data => {
+          if (data !== undefined) {
+            getMediaItems(data)
+              .then(data => {
+                setMediaItems(data);
+              });
+          }
+        });
+    }
   }, [postId]);
 
   return (
-    <Wrapper>
-      <Heading level={2}>{userId}</Heading>
-      <Heading level={2}>{postId}</Heading>
-      <DimmedWrapper />
-
-      <OuterContent>
-        <LeftArrowButton
-          onClick={() => navigate(`/post/${userId}/${posts[postIndex - 1].id}`)}
-          itemindex={postIndex}>
-          {'<'}
-        </LeftArrowButton>
-
-        <InnerContent>
+    <Overlay onClick={closeOverlay}>
+      <Wrapper>
+        <OuterContent>
           <LeftArrowButton
-            onClick={() => setMediaItemIndex(mediaItemIndex - 1)}
-            itemindex={mediaItemIndex}>
+            onClick={() => {
+              queryParams.set('postId', posts[postIndex - 1].id);
+              queryParams.set('mediaIndex', 0);
+              const newSearch = `?${queryParams.toString()}`;
+              navigate({ search: newSearch });
+            }}
+            itemindex={postIndex}>
             {'<'}
           </LeftArrowButton>
 
-          {/* TODO: HLS Stream or image goes here */}
-          <p style={{ padding: 20 }}>
-            {mediaItems[mediaItemIndex] !== undefined
-              ? mediaItems[mediaItemIndex]
-              : 'undefined'}
-          </p>
+          <InnerContent>
+            <LeftArrowButton
+              onClick={(e) => {
+                e.stopPropagation();
+                queryParams.set('mediaIndex', mediaIndex - 1);
+                const newSearch = `?${queryParams.toString()}`;
+                navigate({ search: newSearch });
+              }}
+              itemindex={mediaIndex}>
+              {'<'}
+            </LeftArrowButton>
+
+            {mediaItems[mediaIndex] !== undefined &&
+            <MediaWrapper onClick={(e) => e.stopPropagation()}>
+              <MediaItem mediaURL={mediaItems[mediaIndex]} />
+            </MediaWrapper>
+            }
+
+            <RightArrowButton
+              onClick={(e) => {
+                e.stopPropagation();
+                queryParams.set('mediaIndex', mediaIndex + 1);
+                const newSearch = `?${queryParams.toString()}`;
+                navigate({ search: newSearch });
+              }}
+              itemindex={mediaIndex}
+              itemslength={mediaItems.length}>
+              {'>'}
+            </RightArrowButton>
+          </InnerContent>
 
           <RightArrowButton
-            onClick={() => setMediaItemIndex(mediaItemIndex + 1)}
-            itemindex={mediaItemIndex}
-            itemslength={mediaItems.length}>
+            onClick={(e) => {
+              e.stopPropagation();
+              queryParams.set('postId', posts[postIndex + 1].id);
+              queryParams.set('mediaIndex', 0);
+              const newSearch = `?${queryParams.toString()}`;
+              navigate({ search: newSearch });
+            }}
+            itemindex={postIndex}
+            itemslength={posts.length}>
             {'>'}
           </RightArrowButton>
-        </InnerContent>
-
-        <RightArrowButton
-          onClick={() => navigate(`/post/${userId}/${posts[postIndex + 1].id}`)}
-          itemindex={postIndex}
-          itemslength={posts.length}>
-          {'>'}
-        </RightArrowButton>
-      </OuterContent>
-    </Wrapper>
+        </OuterContent>
+      </Wrapper>
+    </Overlay>
   );
 };
 
 const Wrapper = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-`;
-
-const DimmedWrapper = styled.div`
-    fill: black;
-    fill-opacity: 0.1;
-    width: 100%;
-    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
 `;
 
 const OuterContent = styled.div`
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    width: 98vw;
+    height: 98vh;
 `;
 
 const InnerContent = styled.div`
     display: flex;
     justify-content: space-evenly;
-    padding: 20px;
+    align-items: center;
 `;
 
 const LeftArrowButton = styled.button`
     visibility: ${props => props.itemindex === 0 ? 'hidden' : 'visible'};
     cursor: pointer;
+    margin-right: 10px;
 `;
 
 const RightArrowButton = styled.button`
     visibility: ${props => props.itemindex === props.itemslength - 1 ? 'hidden' : 'visible'};
     cursor: pointer;
+    margin-left: 10px;
+`;
+
+const Overlay = styled.div`
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+`;
+
+const MediaWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 85vw;
+  max-height: 85vh;
 `;
