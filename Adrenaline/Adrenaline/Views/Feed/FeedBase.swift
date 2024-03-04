@@ -175,7 +175,7 @@ struct FeedBase: View {
                             }
                             .padding(20)
                             .frame(width: 150, height: 185)
-                            .background(.white)
+                            .background(currentMode == .light ? .white : .black)
                             .modifier(OutlineOverlay(cornerRadius: 30))
                             .backgroundStyle(cornerRadius: 30)
                             .padding(.vertical, 10)
