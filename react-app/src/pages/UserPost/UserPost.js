@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { Text } from '@aws-amplify/ui-react';
+
 import { getPostById, getPostsByUserId, getUserById } from '../../utils/dataStore';
 import { getImageURL, getVideoHLSURL } from '../../utils/storage';
 
@@ -61,8 +63,9 @@ export const UserPost = ({ userId }) => {
           const sorted = data.sort((a, b) => a.creationDate > b.creationDate);
           setPosts(sorted);
 
-          for (let i = 0; i < data.length; i++) {
-            if (postId !== null && data[i].id === postId) {
+          for (let i = 0; i < sorted.length; i++) {
+            const post = sorted[i];
+            if (postId !== null && post.id === postId) {
               setPostIndex(i);
               break;
             }
@@ -91,7 +94,8 @@ export const UserPost = ({ userId }) => {
       <Wrapper>
         <OuterContent>
           <LeftArrowButton
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               queryParams.set('postId', posts[postIndex - 1].id);
               queryParams.set('mediaIndex', 0);
               const newSearch = `?${queryParams.toString()}`;
@@ -114,9 +118,16 @@ export const UserPost = ({ userId }) => {
             </LeftArrowButton>
 
             {mediaItems[mediaIndex] !== undefined &&
-            <MediaWrapper onClick={(e) => e.stopPropagation()}>
-              <MediaItem mediaURL={mediaItems[mediaIndex]} />
-            </MediaWrapper>
+              <MediaWrapper onClick={(e) => e.stopPropagation()}>
+                <MediaItem mediaURL={mediaItems[mediaIndex]} />
+                {posts[postIndex] &&
+                posts[postIndex].caption &&
+                posts[postIndex].caption.length > 0 &&
+                <TextWrapper>
+                  <Text textAlign={'start'}>{posts[postIndex]?.caption}</Text>
+                </TextWrapper>
+                }
+              </MediaWrapper>
             }
 
             <RightArrowButton
@@ -198,8 +209,19 @@ const Overlay = styled.div`
 
 const MediaWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  max-width: 85vw;
-  max-height: 85vh;
+  align-items: start;
+  width: 80vw;
+  max-height: 90vh;
+  background-color: rgba(200, 200, 200);
+`;
+
+const TextWrapper = styled.div`
+  display: flex;
+  justify-content: start;
+  padding: 15px;
+  overflow: scroll;
+  overflow-x: hidden;
+  width: 100%;
 `;
