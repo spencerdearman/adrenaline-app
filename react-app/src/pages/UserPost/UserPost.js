@@ -217,14 +217,18 @@ const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 10;
 `;
 
 const MediaWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: start;
-  width: 80vw;
+  align-items: center;
+  text-align: start;
+  width: fit-content;
+  min-width: 40vw;
+  max-width: 80vw;
   max-height: 90vh;
   background-color: rgba(200, 200, 200);
 `;

@@ -24,7 +24,7 @@ export const MediaItem = ({ mediaURL }) => {
 };
 
 const Image = styled.img`
-  width: 100%;
+  width: auto;
   max-height: 75vh;
   aspect-ratio: 1;
 `;
