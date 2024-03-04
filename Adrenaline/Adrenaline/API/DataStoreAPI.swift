@@ -247,7 +247,9 @@ func getPostsByUserIds(ids: [String]) async throws -> [String: [Post]] {
     else if ids.count == 1 {
         let pred = Post.keys.newuserID == ids[0]
         let posts: [Post] = try await query(where: pred)
-        return [ids[0]: posts]
+        return [ids[0]: posts.sorted {
+            $0.creationDate > $1.creationDate
+        }]
     }
     
     pred = (Post.keys.newuserID == ids[0]).or(Post.keys.newuserID == ids[1])
@@ -268,4 +270,32 @@ func getPostsByUserIds(ids: [String]) async throws -> [String: [Post]] {
     }
     
     return result
+}
+
+// Returns posts in array form with posts in reverse chronological order. This is meant for the
+// feed page, where the owning user does not matter when listing the posts
+func getFeedPostsByUserIds(ids: [String]) async throws -> [Post] {
+    var pred: QueryPredicateGroup
+    if ids.count == 0 { return [] }
+    else if ids.count == 1 {
+        let pred = Post.keys.newuserID == ids[0]
+        let posts: [Post] = try await query(where: pred)
+        return posts.sorted {
+            $0.creationDate > $1.creationDate
+        }
+    }
+    
+    pred = (Post.keys.newuserID == ids[0]).or(Post.keys.newuserID == ids[1])
+    
+    if ids.count > 2 {
+        for id in ids[2...] {
+            pred = pred.or(Post.keys.newuserID == id)
+        }
+    }
+    
+    let allPosts: [Post] = try await query(where: pred)
+    
+    return allPosts.sorted {
+        $0.creationDate > $1.creationDate
+    }
 }
