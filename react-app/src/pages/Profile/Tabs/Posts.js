@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { Grid } from '@aws-amplify/ui-react';
 
+import { UserPost } from '../../../components/UserPost/UserPost';
 import { getPostsByUserId, getUserById } from '../../../utils/dataStore';
 import { getImageURL, getVideoThumbnailURL } from '../../../utils/storage';
-import { UserPost } from '../../UserPost/UserPost';
 
 async function getPostDisplay(user, post) {
   const result = [];
