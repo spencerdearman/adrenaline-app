@@ -22,6 +22,7 @@ const Image = styled.img`
     width: auto;
     max-width: 200px;
     height: 100%;
+    aspect-ratio: 1;
     object-fit: cover;
     border: 8px solid #ddd;
     border-radius: 50%;
