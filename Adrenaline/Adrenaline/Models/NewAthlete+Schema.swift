@@ -15,8 +15,6 @@ extension NewAthlete {
     case weight
     case weightUnit
     case gender
-    case age
-    case dateOfBirth
     case graduationYear
     case highSchool
     case hometown
@@ -60,8 +58,6 @@ extension NewAthlete {
       .field(newAthlete.weight, is: .required, ofType: .int),
       .field(newAthlete.weightUnit, is: .required, ofType: .string),
       .field(newAthlete.gender, is: .required, ofType: .string),
-      .field(newAthlete.age, is: .required, ofType: .int),
-      .field(newAthlete.dateOfBirth, is: .required, ofType: .date),
       .field(newAthlete.graduationYear, is: .required, ofType: .int),
       .field(newAthlete.highSchool, is: .required, ofType: .string),
       .field(newAthlete.hometown, is: .required, ofType: .string),
@@ -113,12 +109,6 @@ extension ModelPath where ModelType == NewAthlete {
     }
   public var gender: FieldPath<String>   {
       string("gender") 
-    }
-  public var age: FieldPath<Int>   {
-      int("age") 
-    }
-  public var dateOfBirth: FieldPath<Temporal.Date>   {
-      date("dateOfBirth") 
     }
   public var graduationYear: FieldPath<Int>   {
       int("graduationYear") 

@@ -12,6 +12,7 @@ extension NewUser {
     case phone
     case diveMeetsID
     case accountType
+    case dateOfBirth
     case athlete
     case coach
     case posts
@@ -50,6 +51,7 @@ extension NewUser {
       .field(newUser.phone, is: .optional, ofType: .string),
       .field(newUser.diveMeetsID, is: .optional, ofType: .string),
       .field(newUser.accountType, is: .required, ofType: .string),
+      .field(newUser.dateOfBirth, is: .required, ofType: .date),
       .hasOne(newUser.athlete, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.user, targetNames: ["newUserAthleteId"]),
       .hasOne(newUser.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.user, targetNames: ["newUserCoachId"]),
       .hasMany(newUser.posts, is: .optional, ofType: Post.self, associatedWith: Post.keys.newuserID),
@@ -92,6 +94,9 @@ extension ModelPath where ModelType == NewUser {
     }
   public var accountType: FieldPath<String>   {
       string("accountType") 
+    }
+  public var dateOfBirth: FieldPath<Temporal.Date>   {
+      date("dateOfBirth") 
     }
   public var athlete: ModelPath<NewAthlete>   {
       NewAthlete.Path(name: "athlete", parent: self) 

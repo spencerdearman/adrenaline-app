@@ -10,6 +10,7 @@ public struct NewUser: Model {
   public var phone: String?
   public var diveMeetsID: String?
   public var accountType: String
+  public var dateOfBirth: Temporal.Date
   internal var _athlete: LazyReference<NewAthlete>
   public var athlete: NewAthlete?   {
       get async throws { 
@@ -38,6 +39,7 @@ public struct NewUser: Model {
       phone: String? = nil,
       diveMeetsID: String? = nil,
       accountType: String,
+      dateOfBirth: Temporal.Date,
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       posts: List<Post>? = [],
@@ -53,6 +55,7 @@ public struct NewUser: Model {
       phone: phone,
       diveMeetsID: diveMeetsID,
       accountType: accountType,
+      dateOfBirth: dateOfBirth,
       athlete: athlete,
       coach: coach,
       posts: posts,
@@ -71,6 +74,7 @@ public struct NewUser: Model {
       phone: String? = nil,
       diveMeetsID: String? = nil,
       accountType: String,
+      dateOfBirth: Temporal.Date,
       athlete: NewAthlete? = nil,
       coach: CoachUser? = nil,
       posts: List<Post>? = [],
@@ -88,6 +92,7 @@ public struct NewUser: Model {
       self.phone = phone
       self.diveMeetsID = diveMeetsID
       self.accountType = accountType
+      self.dateOfBirth = dateOfBirth
       self._athlete = LazyReference(athlete)
       self._coach = LazyReference(coach)
       self.posts = posts
@@ -114,6 +119,7 @@ public struct NewUser: Model {
       phone = try? values.decode(String?.self, forKey: .phone)
       diveMeetsID = try? values.decode(String?.self, forKey: .diveMeetsID)
       accountType = try values.decode(String.self, forKey: .accountType)
+      dateOfBirth = try values.decode(Temporal.Date.self, forKey: .dateOfBirth)
       _athlete = try values.decodeIfPresent(LazyReference<NewAthlete>.self, forKey: .athlete) ?? LazyReference(identifiers: nil)
       _coach = try values.decodeIfPresent(LazyReference<CoachUser>.self, forKey: .coach) ?? LazyReference(identifiers: nil)
       posts = try values.decodeIfPresent(List<Post>?.self, forKey: .posts) ?? .init()
@@ -134,6 +140,7 @@ public struct NewUser: Model {
       try container.encode(phone, forKey: .phone)
       try container.encode(diveMeetsID, forKey: .diveMeetsID)
       try container.encode(accountType, forKey: .accountType)
+      try container.encode(dateOfBirth, forKey: .dateOfBirth)
       try container.encode(_athlete, forKey: .athlete)
       try container.encode(_coach, forKey: .coach)
       try container.encode(posts, forKey: .posts)
