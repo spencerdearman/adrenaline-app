@@ -55,12 +55,15 @@ struct EditProfileView: View {
             // Create the athlete item using the saved user, team, and college
             let athlete = NewAthlete(id: newAthlete.id,
                                      user: user,
+                                     // TODO: save academics field
                                      heightFeet: heightFeet,
                                      heightInches: Int(heightInches),
                                      weight: weight,
                                      weightUnit: weightUnitString,
                                      gender: newAthlete.gender,
                                      age: newAthlete.age,
+                                     // TODO: add date of birth in YYYY-MM-dd format
+                                     dateOfBirth: try Temporal.Date(iso8601String: ""),
                                      graduationYear: gradYear,
                                      highSchool: highSchool,
                                      hometown: hometown,

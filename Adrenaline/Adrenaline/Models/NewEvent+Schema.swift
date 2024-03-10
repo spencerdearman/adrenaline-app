@@ -24,7 +24,8 @@ extension NewEvent {
     let newEvent = NewEvent.keys
     
     model.authRules = [
-      rule(allow: .private, operations: [.create, .update, .delete, .read])
+      rule(allow: .private, operations: [.create, .update, .delete, .read]),
+      rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
     
     model.listPluralName = "NewEvents"
