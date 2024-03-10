@@ -133,10 +133,10 @@ struct NewSignupSequence: View {
     
     // Variables for Profile Picture Upload
     @State private var selectedProfilePicImage: PhotosPickerItem? = nil
+    @State private var pickedImage: UIImage? = nil
     @State private var showImageCropper: Bool = false
     @State private var profilePic: Image? = nil
     @State private var profilePicData: Data? = nil
-    @State private var croppedImage: UIImage?
     @State private var identityVerificationFailed: Bool = false
     @State private var devSkipProfilePic: Bool = false
     
@@ -204,16 +204,10 @@ struct NewSignupSequence: View {
         return formatter.string(from: date)
     }
     
-    private func loadImageForCropping() async {
-        guard let selectedImageItem = selectedProfilePicImage else { return }
-        
-        // Load the image from the PhotosPickerItem
-        if let imageData = try? await selectedImageItem.loadTransferable(type: Data.self), let image = UIImage(data: imageData) {
-            self.croppedImage = image
-            self.showImageCropper = true
+    func loadImage(_ item: PhotosPickerItem) async {
+            guard let data = try? await item.loadTransferable(type: Data.self) else { return }
+            pickedImage = UIImage(data: data)
         }
-    }
-    
     
     // Saves new user with stored State data, and handles CoachUser creation if needed
     private func saveNewUser() async -> Bool {
@@ -1048,27 +1042,19 @@ struct NewSignupSequence: View {
                             .offset(x: -20, y: 20)
                     }
                 }
-                .onChange(of: selectedProfilePicImage) {
-                    Task {
-                        // Load the image for cropping
-                        await loadImageForCropping()
-                    }
-                }
-                .fullScreenCover(isPresented: $showImageCropper) {
-                    if let selectedImage = croppedImage {
-                        SwiftyCropView(
-                            imageToCrop: selectedImage,
-                            maskShape: .circle // or .square based on your requirement
-                        ) { croppedImage in
-                            // Handle the cropped image
-                            self.croppedImage = croppedImage
-                            // Convert UIImage to Data for upload
-                            self.profilePicData = croppedImage?.jpegData(compressionQuality: 0.8)
+                .padding(.top, 20)
+                .padding(.bottom, 35)
+                
+                Text("**Crop Image**")
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        withAnimation(.openCard) {
+                            showImageCropper.toggle()
                         }
                     }
-                }
-                .padding(.top, 20)
-                .padding(.bottom, 45)
                 
                 if identityVerificationFailed {
                     Text("Failed to verify your identity. Make sure your face is visible in your profile picture and matches your photo ID")
@@ -1123,16 +1109,36 @@ struct NewSignupSequence: View {
                         }
                     }
             }
+            .fullScreenCover(isPresented: $showImageCropper) {
+                        if let pickedImage = pickedImage {
+                            SwiftyCropView(
+                                imageToCrop: pickedImage,
+                                maskShape: .circle
+                            ) { croppedImage in
+                                if let croppedImage = croppedImage {
+                                    if let imageData = croppedImage.jpegData(compressionQuality: 0.8) {
+                                        profilePicData = imageData
+                                    } else {
+                                        print("Failed to convert UIImage to JPEG data.")
+                                    }
+                                    profilePic = Image(uiImage: croppedImage)
+                                }
+                            }
+                        }
+                }
+            
             .onChange(of: selectedProfilePicImage) {
                 Task {
-                    guard let selectedImage = selectedProfilePicImage else { return }
-                    
-                    // Load Picker image into Image
-                    let _ = loadProfilePicTransferable(from: selectedImage)
-                    
-                    // Load Picker image into Data
-                    if let data = try? await selectedImage.loadTransferable(type: Data.self) {
-                        profilePicData = data
+                    if let selectedImage = selectedProfilePicImage {
+                        await loadImage(selectedImage)
+                    }
+                    if let pickedImage = pickedImage {
+                        if let imageData = pickedImage.jpegData(compressionQuality: 0.8) {
+                            profilePicData = imageData
+                        } else {
+                            print("Failed to convert UIImage to JPEG data.")
+                        }
+                        profilePic = Image(uiImage: pickedImage)
                     }
                 }
             }

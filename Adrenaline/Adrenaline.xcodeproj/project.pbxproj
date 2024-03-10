@@ -137,6 +137,7 @@
 		4D76438E2A71A4D1000F35CB /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D76438D2A71A4D1000F35CB /* Account.swift */; };
 		4D8B9C1929F8D395002B53AD /* MeetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B9C1829F8D395002B53AD /* MeetsView.swift */; };
 		4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9DD0992A058EF700F6D31C /* Event.swift */; };
+		4DA154F22B9D8EE0008108C2 /* SwiftyCrop in Frameworks */ = {isa = PBXBuildFile; productRef = 4DA154F12B9D8EE0008108C2 /* SwiftyCrop */; };
 		4DA4816D2AA266E5003DFA3B /* ConfirmSignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */; };
 		4DA4816F2AA266FF003DFA3B /* SignUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816E2AA266FF003DFA3B /* SignUp.swift */; };
 		4DA481712AA27B4A003DFA3B /* ForgotPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA481702AA27B4A003DFA3B /* ForgotPassword.swift */; };
@@ -392,6 +393,7 @@
 				4D76438C2A70F733000F35CB /* SwiftUIGIF in Frameworks */,
 				4DB80A632AE2FA68000DD1FC /* AWSLocationGeoPlugin in Frameworks */,
 				4DB80A5B2AE2FA68000DD1FC /* AWSAPIPlugin in Frameworks */,
+				4DA154F22B9D8EE0008108C2 /* SwiftyCrop in Frameworks */,
 				4DB80A452AE2F96E000DD1FC /* AWSCloudWatchLoggingPlugin in Frameworks */,
 				4DB80A5D2AE2FA68000DD1FC /* AWSCloudWatchLoggingPlugin in Frameworks */,
 				4DB80A4F2AE2F96E000DD1FC /* AWSPinpointPushNotificationsPlugin in Frameworks */,
@@ -894,6 +896,7 @@
 				4DB80A5E2AE2FA68000DD1FC /* AWSCognitoAuthPlugin */,
 				4DB80A602AE2FA68000DD1FC /* AWSDataStorePlugin */,
 				4DB80A622AE2FA68000DD1FC /* AWSLocationGeoPlugin */,
+				4DA154F12B9D8EE0008108C2 /* SwiftyCrop */,
 			);
 			productName = DiveMeets;
 			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
@@ -929,6 +932,7 @@
 				4DF9F7FC2A85E3730049CCD3 /* XCRemoteSwiftPackageReference "amplify-swift" */,
 				4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */,
 				0034B5D22AECFCEB00A2D7A1 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
+				4DA154F02B9D8EE0008108C2 /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
 			);
 			productRefGroup = 4D74FE9429AE7B9800401178 /* Products */;
 			projectDirPath = "";
@@ -1362,6 +1366,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		4DA154F02B9D8EE0008108C2 /* XCRemoteSwiftPackageReference "SwiftyCrop" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/benedom/SwiftyCrop";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		4DEF7D3429BEE796003EAD70 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/scinfu/SwiftSoup";
@@ -1395,6 +1407,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4D76438A2A70F733000F35CB /* XCRemoteSwiftPackageReference "swiftui-gif" */;
 			productName = SwiftUIGIF;
+		};
+		4DA154F12B9D8EE0008108C2 /* SwiftyCrop */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4DA154F02B9D8EE0008108C2 /* XCRemoteSwiftPackageReference "SwiftyCrop" */;
+			productName = SwiftyCrop;
 		};
 		4DB80A422AE2F96E000DD1FC /* AWSAPIPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
