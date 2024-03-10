@@ -9,8 +9,8 @@ import SwiftUI
 import Amplify
 
 // Cache RankingList to avoid slow sorting
-//                 [Gender: [AgeGrp: [Board : NumberedRankingList]]]
-var cachedRatings: [String: [String: [String: NumberedRankingList]]] = [:]
+//                 [Gender: [GradYearOffset: [Board : NumberedRankingList]]]
+var cachedRatings: [String: [Int: [String: NumberedRankingList]]] = [:]
 
 // Cache previously queried NewUser objects so it doesn't query AWS again to check if the user has
 // an Adrenaline profile
@@ -35,9 +35,12 @@ enum GenderInt: Int, CaseIterable {
     case female = 1
 }
 
-enum AgeGroup: String, CaseIterable {
-    case fourteenFifteen = "14-15"
-    case sixteenEighteen = "16-18"
+enum GraduationYear: Int, CaseIterable {
+    case baseYear = 0
+    case baseYearPlusOne = 1
+    case baseYearPlusTwo = 2
+    case baseYearPlusThree = 3
+    case baseYearPlusFour = 4
 }
 
 struct RankedUser {
@@ -63,7 +66,7 @@ struct RankingsView: View {
     @Environment(\.networkIsConnected) private var networkIsConnected
     @State private var rankingType: RankingType = .combined
     @State private var gender: Gender = .male
-    @State private var ageGroup: AgeGroup = .fourteenFifteen
+    @State private var gradYear: GraduationYear = .baseYear
     @State private var maleRatings: GenderRankingList = []
     @State private var femaleRatings: GenderRankingList = []
     @State private var contentHasScrolled: Bool = false
@@ -79,11 +82,23 @@ struct RankingsView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     private let skill = SkillRating()
+    private let lastGradYearOffset = GraduationYear.baseYearPlusFour
     
     @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
     @ScaledMetric private var typeBGWidthScaled: CGFloat = 40
     @ScaledMetric private var maxHeightOffsetScaled: CGFloat = 50
+    
+    // If in or after June, set base to the following year
+    // e.g. if Nov 2023, set year to 2024 as soonest year to see rankings
+    private var baseYear: Int {
+        let currentDate = Date.now
+        if Calendar.current.component(.month, from: currentDate) >= 6 {
+            return Calendar.current.component(.year, from: currentDate) + 1
+        } else {
+            return Calendar.current.component(.year, from: currentDate)
+        }
+    }
     
     private var typeBubbleWidth: CGFloat {
         min(typeBubbleWidthScaled, 150)
@@ -102,8 +117,8 @@ struct RankingsView: View {
     // Sets currentList to nil unless there is a value stored in the cache
     private var currentList: NumberedRankingList? {
         if currentSettingsAddedToCache,
-           let ageDict = cachedRatings[gender.rawValue],
-           let boardDict = ageDict[ageGroup.rawValue] {
+           let gradYearDict = cachedRatings[gender.rawValue],
+           let boardDict = gradYearDict[gradYear.rawValue] {
             return boardDict[rankingType.rawValue]
         }
         
@@ -249,52 +264,33 @@ struct RankingsView: View {
         femaleRatings = removeDuplicates(pendingFemaleRatings)
     }
     
-    private func isInAgeRange(age: Int) -> Bool {
-        switch ageGroup {
-            case .fourteenFifteen:
-                return 14 <= age && age <= 15
-            case .sixteenEighteen:
-                return 16 <= age && age <= 18
+    private func guessGraduationYear(age: Int) -> Int? {
+        // DiveMeetsDivers should not be outside of this range
+        if age > 18 || age < 14 {
+            return nil
         }
+        
+        guard let offset = GraduationYear(rawValue: 18 - age) else {
+            return nil
+        }
+        
+        return baseYear + offset.rawValue
     }
     
-    private func filterByAgeGroup(_ ratings: GenderRankingList,
-                                  ageGroup: AgeGroup) -> GenderRankingList {
+    private func filterByGraduationYear(_ ratings: GenderRankingList,
+                                        gradYear: GraduationYear) -> GenderRankingList {
         var result: GenderRankingList = []
-        let df = DateFormatter()
-        df.dateFormat = "yyyy-MM-dd"
-        let currentDate: Date = .now
-        let boundaryYear: Int
-        
-        // If in or after June, set boundary at the following year
-        // e.g. if Nov 2023, set year to 2024
-        if Calendar.current.component(.month, from: currentDate) >= 6 {
-            boundaryYear = Calendar.current.component(.year, from: currentDate) + 1
-        } else {
-            boundaryYear = Calendar.current.component(.year, from: currentDate)
-        }
-        
-        var lowerBoundYear = boundaryYear
-        if ageGroup == .fourteenFifteen {
-            lowerBoundYear += 3
-        }
-        
-        // Sets gradYear range for age group
-        // e.g. 14-15 age group -> 2027-2028, 16-18 age group -> 2024-2026
-        let upperBoundYear = ageGroup == .fourteenFifteen ? lowerBoundYear + 1 : lowerBoundYear + 2
-        
+        let filterYear = baseYear + gradYear.rawValue
         for rating in ratings {
             let user = rating.0
             
-            // If age exists and in age range, append and continue
-            if let age = user.finaAge, isInAgeRange(age: age) {
-                result.append(rating)
-                continue
-            }
-            
-            // If age doesn't exist or it is not in range, but gradYear is, append
-            if let gradYear = user.hsGradYear,
-               gradYear >= lowerBoundYear, gradYear <= upperBoundYear {
+            // If gradYear exists, skip age whether the user matches the filter or not
+            if let userGradYear = user.hsGradYear {
+                // If gradYear filter matches, append
+                if userGradYear == filterYear {
+                    result.append(rating)
+                }
+            } else if let age = user.finaAge, guessGraduationYear(age: age) == filterYear {
                 result.append(rating)
             }
         }
@@ -328,13 +324,13 @@ struct RankingsView: View {
         return result
     }
     
-    private func ratingListInCache(gender: Gender, ageGroup: AgeGroup,
+    private func ratingListInCache(gender: Gender, gradYear: GraduationYear,
                                    board: RankingType) -> NumberedRankingList? {
         lock.lock()
         
         if let genderDict = cachedRatings[gender.rawValue],
-           let ageGroupDict = genderDict[ageGroup.rawValue],
-           let boardList = ageGroupDict[board.rawValue] {
+           let gradYearDict = genderDict[gradYear.rawValue],
+           let boardList = gradYearDict[board.rawValue] {
             lock.unlock()
             return boardList
         }
@@ -343,7 +339,7 @@ struct RankingsView: View {
         return nil
     }
     
-    private func cacheRatingList(gender: Gender, ageGroup: AgeGroup, board: RankingType,
+    private func cacheRatingList(gender: Gender, gradYear: GraduationYear, board: RankingType,
                                  ratings: NumberedRankingList) {
         lock.lock()
         
@@ -351,19 +347,19 @@ struct RankingsView: View {
             cachedRatings[gender.rawValue] = [:]
         }
         
-        if !cachedRatings[gender.rawValue]!.keys.contains(ageGroup.rawValue) {
-            cachedRatings[gender.rawValue]![ageGroup.rawValue] = [:]
+        if !cachedRatings[gender.rawValue]!.keys.contains(gradYear.rawValue) {
+            cachedRatings[gender.rawValue]![gradYear.rawValue] = [:]
         }
         
-        cachedRatings[gender.rawValue]![ageGroup.rawValue]![board.rawValue] = ratings
+        cachedRatings[gender.rawValue]![gradYear.rawValue]![board.rawValue] = ratings
         
         lock.unlock()
     }
     
-    private func getSortedRankingList(gender: Gender, ageGroup: AgeGroup,
+    private func getSortedRankingList(gender: Gender, gradYear: GraduationYear,
                                       board: RankingType) -> RankingList {
         let list = gender == .male ? maleRatings : femaleRatings
-        let filtered = filterByAgeGroup(list, ageGroup: ageGroup)
+        let filtered = filterByGraduationYear(list, gradYear: gradYear)
         let normalized = normalizeRatings(ratings: filtered)
         let keep = normalized.map {
             // Values rounded to one decimal place
@@ -390,14 +386,14 @@ struct RankingsView: View {
     }
     
     // This should be called after sorting to get a number for that result in the ranking list view
-    private func numberSortedRankingList(_ list: RankingList, gender: Gender, ageGroup: AgeGroup,
+    private func numberSortedRankingList(_ list: RankingList, gender: Gender, 
+                                         gradYear: GraduationYear,
                                          board: RankingType) -> NumberedRankingList {
         var result: NumberedRankingList = []
         
         var everyIdx: Int = 0
         var curIdx: Int = 0
         var curRating: Double = 100.1
-        
         do {
             for item in list {
                 let rating = item.1
@@ -431,21 +427,21 @@ struct RankingsView: View {
         }
         
         // Caches rating list for future viewing since it won't change
-        cacheRatingList(gender: gender, ageGroup: ageGroup, board: board, ratings: result)
+        cacheRatingList(gender: gender, gradYear: gradYear, board: board, ratings: result)
         
         return result
     }
     
-    private func getFinalRankingList(gender: Gender, ageGroup: AgeGroup,
+    private func getFinalRankingList(gender: Gender, gradYear: GraduationYear,
                                      board: RankingType) -> NumberedRankingList {
-        if let result = ratingListInCache(gender: gender, ageGroup: ageGroup, board: board) {
+        if let result = ratingListInCache(gender: gender, gradYear: gradYear, board: board) {
             return result
         }
         
         return numberSortedRankingList(
-            getSortedRankingList(gender: gender, ageGroup: ageGroup, board: board),
+            getSortedRankingList(gender: gender, gradYear: gradYear, board: board),
             gender: gender,
-            ageGroup: ageGroup,
+            gradYear: gradYear,
             board: board
         )
     }
@@ -525,17 +521,17 @@ struct RankingsView: View {
                                 // Creates a task for every combintion of rankings lists we show
                                 // to concurrently compute the lists and cache them
                                 for g in Gender.allCases {
-                                    for a in AgeGroup.allCases {
+                                    for y in GraduationYear.allCases {
                                         for r in RankingType.allCases {
                                             group.addTask {
                                                 let _ = getFinalRankingList(gender: g,
-                                                                            ageGroup: a,
+                                                                            gradYear: y,
                                                                             board: r)
                                                 
                                                 // This updates the computed property to refresh the
                                                 // currentList if no other background changes occur
                                                 // to initiate an update
-                                                if g == gender, a == ageGroup, r == rankingType {
+                                                if g == gender, y == gradYear, r == rankingType {
                                                     currentSettingsAddedToCache = true
                                                 }
                                             }
@@ -659,13 +655,13 @@ struct RankingsView: View {
             }
             
             Menu {
-                Picker("", selection: $ageGroup) {
-                    ForEach(AgeGroup.allCases, id: \.self) { g in
-                        Text(g.rawValue)
-                            .tag(g)
+                Picker("", selection: $gradYear) {
+                    ForEach(GraduationYear.allCases, id: \.self) { g in
+                        Text(String(baseYear + g.rawValue))
+                            .tag(baseYear + g.rawValue)
                     }
                 }
-            } label: { Text("Age") }
+            } label: { Text("Graduation Year") }
         }
     }
 }
