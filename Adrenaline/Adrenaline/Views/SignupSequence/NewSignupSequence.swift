@@ -8,6 +8,7 @@
 import SwiftUI
 import Amplify
 import PhotosUI
+import SwiftyCrop
 
 extension Formatter {
     static let heightFtFormatter: NumberFormatter = {
@@ -81,7 +82,7 @@ struct NewSignupSequence: View {
     
     // General States
     @State var buttonPressed: Bool = false
-    @State var pageIndex: PageIndex = .athleteInfo
+    @State var pageIndex: PageIndex = .accountType
     @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
@@ -119,8 +120,6 @@ struct NewSignupSequence: View {
     @State var gender: Gender = .male
     @State var genderString: String = ""
     @State var date = Date()
-    @State var birthday: String = ""
-    @State var age: Int = 0
     @State var gradYear: Int = 0
     @State var highSchool: String = ""
     @State var hometown: String = ""
@@ -134,8 +133,10 @@ struct NewSignupSequence: View {
     
     // Variables for Profile Picture Upload
     @State private var selectedProfilePicImage: PhotosPickerItem? = nil
+    @State private var showImageCropper: Bool = false
     @State private var profilePic: Image? = nil
     @State private var profilePicData: Data? = nil
+    @State private var croppedImage: UIImage?
     @State private var identityVerificationFailed: Bool = false
     @State private var devSkipProfilePic: Bool = false
     
@@ -197,23 +198,22 @@ struct NewSignupSequence: View {
                        tokens: tokensList)
     }
     
-    // format birthday string
-    private func formatBirthdayText() {
-        let numericOnly = birthday.filter { "0123456789".contains($0) }
-        var formattedText = ""
-        
-        for (index, char) in numericOnly.enumerated() {
-            if index == 2 || index == 4 { // positions after month and day
-                formattedText += "/" // add slash
-            }
-            formattedText.append(char)
-            if formattedText.count == 10 { // MM/DD/YYYY format
-                break // stop if maximum length reached
-            }
-        }
-        
-        birthday = formattedText
+    private func dateString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd"
+        return formatter.string(from: date)
     }
+    
+    private func loadImageForCropping() async {
+        guard let selectedImageItem = selectedProfilePicImage else { return }
+        
+        // Load the image from the PhotosPickerItem
+        if let imageData = try? await selectedImageItem.loadTransferable(type: Data.self), let image = UIImage(data: imageData) {
+            self.croppedImage = image
+            self.showImageCropper = true
+        }
+    }
+    
     
     // Saves new user with stored State data, and handles CoachUser creation if needed
     private func saveNewUser() async -> Bool {
@@ -750,7 +750,7 @@ struct NewSignupSequence: View {
     }
     
     var athleteAllFieldsFilled: Bool {
-        heightFeet != 0 && heightInches != -1 && weight != 0 && age != 0 && gradYear != 0 &&
+        heightFeet != 0 && heightInches != -1 && weight != 0  && gradYear != 0 &&
         !highSchool.isEmpty && !hometown.isEmpty
     }
     
@@ -1023,6 +1023,25 @@ struct NewSignupSequence: View {
                             .offset(x: -20, y: 20)
                     }
                 }
+                .onChange(of: selectedProfilePicImage) {
+                    Task {
+                        // Load the image for cropping
+                        await loadImageForCropping()
+                    }
+                }
+                .fullScreenCover(isPresented: $showImageCropper) {
+                    if let selectedImage = croppedImage {
+                        SwiftyCropView(
+                            imageToCrop: selectedImage,
+                            maskShape: .circle // or .square based on your requirement
+                        ) { croppedImage in
+                            // Handle the cropped image
+                            self.croppedImage = croppedImage
+                            // Convert UIImage to Data for upload
+                            self.profilePicData = croppedImage?.jpegData(compressionQuality: 0.8)
+                        }
+                    }
+                }
                 .padding(.top, 20)
                 .padding(.bottom, 45)
                 
@@ -1207,9 +1226,8 @@ struct NewSignupSequence: View {
                 weight: weight,
                 weightUnit: weightUnitString,
                 gender: genderString,
-                age: age,
-                // TODO: add date of birth in YYYY-MM-dd format
-                dateOfBirth: try Temporal.Date(iso8601String: ""),
+                age: 0,
+                dateOfBirth:  try Temporal.Date(iso8601String: dateString(from: date)),
                 graduationYear: gradYear,
                 highSchool: highSchool,
                 hometown: hometown,
