@@ -113,7 +113,7 @@ struct NewSignupSequence: View {
     
     // Variables for Recruiting
     @State var heightFeet: Int = 0
-    @State var heightInches: Double = -.infinity
+    @State var heightInches: Int?
     @State var weight: Int = 0
     @State var weightUnit: WeightUnit = .lb
     @State var weightUnitString: String = ""
@@ -750,8 +750,8 @@ struct NewSignupSequence: View {
     }
     
     var athleteAllFieldsFilled: Bool {
-        heightFeet != 0 && heightInches != -1 && weight != 0  && gradYear != 0 &&
-        !highSchool.isEmpty && !hometown.isEmpty
+        heightFeet != 0 && heightInches != nil && weight != 0 && isValidDate(a: date, b: Date()) &&
+        gradYear != 0 && !highSchool.isEmpty && !hometown.isEmpty
     }
     
     var athleteInfoForm: some View {
@@ -774,7 +774,7 @@ struct NewSignupSequence: View {
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && heightInches == 0
+                                                iconColor: buttonPressed && heightInches == nil
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .heightInches)
@@ -805,7 +805,27 @@ struct NewSignupSequence: View {
             }
             
             HStack {
-                CustomDatePickerView(date: $date, icon: "hexagon.fill", iconColor: (buttonPressed && gradYear == 0 ? Custom.error : nil))
+                let dateB = Date()
+                HStack {
+                    Text(isValidDate(a: date, b: dateB)
+                         ? date.formatted(.dateTime.day().month().year())
+                         : "Birthday")
+                    Spacer()
+                }
+                    .foregroundColor(isValidDate(a: date, b: Date()) ? .primary : .secondary)
+                    .frame(maxWidth: .infinity)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: (buttonPressed && 
+                                                            !isValidDate(a: date, b: dateB)
+                                                            ? Custom.error
+                                                            : nil)))
+                    .overlay {
+                        // https://stackoverflow.com/a/77426363/22068672
+                        DatePicker("", selection: $date, displayedComponents: [.date])
+                            .labelsHidden()
+                            .contentShape(Rectangle())
+                            .opacity(0.011)
+                    }
                 
                 BubbleSelectView(selection: $gender)
                     .frame(width: textFieldWidth / 2)
@@ -857,7 +877,12 @@ struct NewSignupSequence: View {
                     showAthleteError = false
                 }
                 Task {
-                    await saveNewAthlete()
+                    if athleteAllFieldsFilled {
+                        await saveNewAthlete()
+                    } else {
+                        showAthleteError = true
+                        buttonPressed = true
+                    }
                 }
             } label: {
                 ColorfulButton(title: "Continue")
@@ -1137,6 +1162,10 @@ struct NewSignupSequence: View {
         }
     }
     
+    private func isValidDate(a: Date, b: Date) -> Bool {
+        return a < b.addingTimeInterval(.days(-1))
+    }
+    
     private func loadPhotoIdTransferable(from imageSelection: PhotosPickerItem) -> Progress {
         return imageSelection.loadTransferable(type: Image.self) { result in
             DispatchQueue.main.async {
@@ -1222,12 +1251,12 @@ struct NewSignupSequence: View {
                 user: user,
                 // TODO: save academics field
                 heightFeet: heightFeet,
-                heightInches: Int(heightInches),
+                heightInches: heightInches ?? 0,
                 weight: weight,
                 weightUnit: weightUnitString,
                 gender: genderString,
                 age: 0,
-                dateOfBirth:  try Temporal.Date(iso8601String: dateString(from: date)),
+                dateOfBirth: try Temporal.Date(iso8601String: dateString(from: date)),
                 graduationYear: gradYear,
                 highSchool: highSchool,
                 hometown: hometown,
