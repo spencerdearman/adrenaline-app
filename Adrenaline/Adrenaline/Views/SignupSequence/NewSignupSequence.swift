@@ -1187,12 +1187,15 @@ struct NewSignupSequence: View {
             // Create the athlete item using the saved user, team, and college
             let athlete = NewAthlete(
                 user: user,
+                // TODO: save academics field
                 heightFeet: heightFeet,
                 heightInches: Int(heightInches),
                 weight: weight,
                 weightUnit: weightUnitString,
                 gender: genderString,
                 age: age,
+                // TODO: add date of birth in YYYY-MM-dd format
+                dateOfBirth: try Temporal.Date(iso8601String: ""),
                 graduationYear: gradYear,
                 highSchool: highSchool,
                 hometown: hometown,

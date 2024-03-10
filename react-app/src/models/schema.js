@@ -691,6 +691,24 @@ export const schema = {
                         ]
                     }
                 },
+                "academics": {
+                    "name": "academics",
+                    "isArray": false,
+                    "type": {
+                        "model": "AcademicRecord"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "newAthleteAcademicsId"
+                        ]
+                    }
+                },
                 "heightFeet": {
                     "name": "heightFeet",
                     "isArray": false,
@@ -730,6 +748,13 @@ export const schema = {
                     "name": "age",
                     "isArray": false,
                     "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "dateOfBirth": {
+                    "name": "dateOfBirth",
+                    "isArray": false,
+                    "type": "AWSDate",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -826,6 +851,13 @@ export const schema = {
                     "isArray": false,
                     "type": "ID",
                     "isRequired": true,
+                    "attributes": []
+                },
+                "newAthleteAcademicsId": {
+                    "name": "newAthleteAcademicsId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
                     "attributes": []
                 }
             },
@@ -2090,13 +2122,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "_ttl": {
-                    "name": "_ttl",
-                    "isArray": false,
-                    "type": "AWSTimestamp",
-                    "isRequired": true,
-                    "attributes": []
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -2148,10 +2173,129 @@ export const schema = {
                     }
                 }
             ]
+        },
+        "AcademicRecord": {
+            "name": "AcademicRecord",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "athlete": {
+                    "name": "athlete",
+                    "isArray": false,
+                    "type": {
+                        "model": "NewAthlete"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "academicRecordAthleteId"
+                        ]
+                    }
+                },
+                "satScore": {
+                    "name": "satScore",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "actScore": {
+                    "name": "actScore",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "weightedGPA": {
+                    "name": "weightedGPA",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "gpaScale": {
+                    "name": "gpaScale",
+                    "isArray": false,
+                    "type": "Float",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "coursework": {
+                    "name": "coursework",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "academicRecordAthleteId": {
+                    "name": "academicRecordAthleteId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "AcademicRecords",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "private",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            },
+                            {
+                                "allow": "public",
+                                "provider": "apiKey",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     },
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "2a57304563a0f73c10dfe66ec3e7659e"
+    "version": "d274a2863c25e8352fdfbd2ff2db23ff"
 };

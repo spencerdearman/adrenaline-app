@@ -14,7 +14,6 @@ extension DiveMeetsDiver {
     case springboardRating
     case platformRating
     case totalRating
-    case _ttl
     case createdAt
     case updatedAt
   }
@@ -26,8 +25,8 @@ extension DiveMeetsDiver {
     let diveMeetsDiver = DiveMeetsDiver.keys
     
     model.authRules = [
-      rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read]),
-      rule(allow: .private, operations: [.create, .update, .delete, .read])
+      rule(allow: .private, operations: [.create, .update, .delete, .read]),
+      rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
     
     model.listPluralName = "DiveMeetsDivers"
@@ -47,7 +46,6 @@ extension DiveMeetsDiver {
       .field(diveMeetsDiver.springboardRating, is: .optional, ofType: .double),
       .field(diveMeetsDiver.platformRating, is: .optional, ofType: .double),
       .field(diveMeetsDiver.totalRating, is: .optional, ofType: .double),
-      .field(diveMeetsDiver._ttl, is: .required, ofType: .int),
       .field(diveMeetsDiver.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(diveMeetsDiver.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
@@ -88,9 +86,6 @@ extension ModelPath where ModelType == DiveMeetsDiver {
     }
   public var totalRating: FieldPath<Double>   {
       double("totalRating") 
-    }
-  public var _ttl: FieldPath<Int>   {
-      int("_ttl") 
     }
   public var createdAt: FieldPath<Temporal.DateTime>   {
       datetime("createdAt") 

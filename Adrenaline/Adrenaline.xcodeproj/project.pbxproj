@@ -45,6 +45,8 @@
 		0069DC5B2A0DC5610096C04B /* ScalingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */; };
 		006BDEA42AE5DAAE009D384E /* UserSavedPost+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006BDEA22AE5DAAE009D384E /* UserSavedPost+Schema.swift */; };
 		00759D0F2AEB7EB40079BCCB /* UserSavedPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */; };
+		0079E1662B9D4F0D0085B96A /* AcademicRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0079E1642B9D4F0C0085B96A /* AcademicRecord.swift */; };
+		0079E1672B9D4F0D0085B96A /* AcademicRecord+Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0079E1652B9D4F0C0085B96A /* AcademicRecord+Schema.swift */; };
 		0080BF9F2A6F0CE6001F5764 /* RankingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */; };
 		0084323A2B53DC4B0077ABE1 /* RecruitingDashboardBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008432392B53DC4B0077ABE1 /* RecruitingDashboardBar.swift */; };
 		0084323C2B54E2A00077ABE1 /* ExpandedResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0084323B2B54E2A00077ABE1 /* ExpandedResultsView.swift */; };
@@ -237,6 +239,8 @@
 		0069DC5A2A0DC5610096C04B /* ScalingScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScalingScrollView.swift; sourceTree = "<group>"; };
 		006BDEA22AE5DAAE009D384E /* UserSavedPost+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UserSavedPost+Schema.swift"; sourceTree = "<group>"; };
 		00759D0E2AEB7EB40079BCCB /* UserSavedPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSavedPost.swift; sourceTree = "<group>"; };
+		0079E1642B9D4F0C0085B96A /* AcademicRecord.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AcademicRecord.swift; sourceTree = "<group>"; };
+		0079E1652B9D4F0C0085B96A /* AcademicRecord+Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AcademicRecord+Schema.swift"; sourceTree = "<group>"; };
 		0080BF9E2A6F0CE6001F5764 /* RankingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingsView.swift; sourceTree = "<group>"; };
 		008432392B53DC4B0077ABE1 /* RecruitingDashboardBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitingDashboardBar.swift; sourceTree = "<group>"; };
 		0084323B2B54E2A00077ABE1 /* ExpandedResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandedResultsView.swift; sourceTree = "<group>"; };
@@ -783,6 +787,8 @@
 		4DA482BE2AA98BE8003DFA3B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				0079E1642B9D4F0C0085B96A /* AcademicRecord.swift */,
+				0079E1652B9D4F0C0085B96A /* AcademicRecord+Schema.swift */,
 				4DA482C42AA98BE8003DFA3B /* AmplifyModels.swift */,
 				4DA482D22AA98BE8003DFA3B /* CoachUser.swift */,
 				4DA482CE2AA98BE8003DFA3B /* CoachUser+Schema.swift */,
@@ -1010,6 +1016,7 @@
 				4DA482F72AA98BE8003DFA3B /* College+Schema.swift in Sources */,
 				00DAFEE02A8DA22F00497917 /* ImageStore.swift in Sources */,
 				009F41B22A69B66000348C68 /* SkillRating.swift in Sources */,
+				0079E1672B9D4F0D0085B96A /* AcademicRecord+Schema.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
@@ -1081,6 +1088,7 @@
 				4D502E632AA03D4A00D25B7B /* BubbleSelectView.swift in Sources */,
 				4DB1DC7C2A671B910016EE14 /* BackgroundBubbleGenerator.swift in Sources */,
 				006651332A7C466300A373F6 /* CollegeLogoParser.swift in Sources */,
+				0079E1662B9D4F0D0085B96A /* AcademicRecord.swift in Sources */,
 				00B5BB0A2AA0E80D00E587B5 /* FollowingTestView.swift in Sources */,
 				4D1A31B92A96DA1C00128F81 /* FeedModel.swift in Sources */,
 				006BDEA42AE5DAAE009D384E /* UserSavedPost+Schema.swift in Sources */,
@@ -1367,7 +1375,7 @@
 			repositoryURL = "https://github.com/aws-amplify/amplify-swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
+				minimumVersion = 2.27.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

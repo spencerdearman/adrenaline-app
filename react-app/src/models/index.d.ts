@@ -203,12 +203,14 @@ type EagerNewAthlete = {
   readonly user: NewUser;
   readonly team?: NewTeam | null;
   readonly college?: College | null;
+  readonly academics?: AcademicRecord | null;
   readonly heightFeet: number;
   readonly heightInches: number;
   readonly weight: number;
   readonly weightUnit: string;
   readonly gender: string;
   readonly age: number;
+  readonly dateOfBirth: string;
   readonly graduationYear: number;
   readonly highSchool: string;
   readonly hometown: string;
@@ -221,6 +223,7 @@ type EagerNewAthlete = {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly newAthleteUserId: string;
+  readonly newAthleteAcademicsId?: string | null;
 }
 
 type LazyNewAthlete = {
@@ -232,12 +235,14 @@ type LazyNewAthlete = {
   readonly user: AsyncItem<NewUser>;
   readonly team: AsyncItem<NewTeam | undefined>;
   readonly college: AsyncItem<College | undefined>;
+  readonly academics: AsyncItem<AcademicRecord | undefined>;
   readonly heightFeet: number;
   readonly heightInches: number;
   readonly weight: number;
   readonly weightUnit: string;
   readonly gender: string;
   readonly age: number;
+  readonly dateOfBirth: string;
   readonly graduationYear: number;
   readonly highSchool: string;
   readonly hometown: string;
@@ -250,6 +255,7 @@ type LazyNewAthlete = {
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly newAthleteUserId: string;
+  readonly newAthleteAcademicsId?: string | null;
 }
 
 export declare type NewAthlete = LazyLoading extends LazyLoadingDisabled ? EagerNewAthlete : LazyNewAthlete
@@ -622,7 +628,6 @@ type EagerDiveMeetsDiver = {
   readonly springboardRating?: number | null;
   readonly platformRating?: number | null;
   readonly totalRating?: number | null;
-  readonly _ttl: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -641,7 +646,6 @@ type LazyDiveMeetsDiver = {
   readonly springboardRating?: number | null;
   readonly platformRating?: number | null;
   readonly totalRating?: number | null;
-  readonly _ttl: number;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -650,4 +654,44 @@ export declare type DiveMeetsDiver = LazyLoading extends LazyLoadingDisabled ? E
 
 export declare const DiveMeetsDiver: (new (init: ModelInit<DiveMeetsDiver>) => DiveMeetsDiver) & {
   copyOf(source: DiveMeetsDiver, mutator: (draft: MutableModel<DiveMeetsDiver>) => MutableModel<DiveMeetsDiver> | void): DiveMeetsDiver;
+}
+
+type EagerAcademicRecord = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<AcademicRecord, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly athlete: NewAthlete;
+  readonly satScore?: number | null;
+  readonly actScore?: number | null;
+  readonly weightedGPA?: number | null;
+  readonly gpaScale?: number | null;
+  readonly coursework?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly academicRecordAthleteId: string;
+}
+
+type LazyAcademicRecord = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<AcademicRecord, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly athlete: AsyncItem<NewAthlete>;
+  readonly satScore?: number | null;
+  readonly actScore?: number | null;
+  readonly weightedGPA?: number | null;
+  readonly gpaScale?: number | null;
+  readonly coursework?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly academicRecordAthleteId: string;
+}
+
+export declare type AcademicRecord = LazyLoading extends LazyLoadingDisabled ? EagerAcademicRecord : LazyAcademicRecord
+
+export declare const AcademicRecord: (new (init: ModelInit<AcademicRecord>) => AcademicRecord) & {
+  copyOf(source: AcademicRecord, mutator: (draft: MutableModel<AcademicRecord>) => MutableModel<AcademicRecord> | void): AcademicRecord;
 }

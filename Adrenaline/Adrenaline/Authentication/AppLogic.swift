@@ -32,7 +32,9 @@ class AppLogic: ObservableObject {
     func configureAmplify() {
         do {
             // reduce verbosity of AWS SDK
-            SDKLoggingSystem.initialize(logLevel: .warning)
+            Task {
+                await SDKLoggingSystem.initialize(logLevel: .warning)
+            }
             Amplify.Logging.logLevel = .info
             
             try Amplify.add(plugin: AWSCognitoAuthPlugin())
