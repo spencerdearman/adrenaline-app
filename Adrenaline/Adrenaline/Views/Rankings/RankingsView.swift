@@ -82,7 +82,6 @@ struct RankingsView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     private let skill = SkillRating()
-    private let lastGradYearOffset = GraduationYear.baseYearPlusFour
     
     @ScaledMetric private var typeBubbleWidthScaled: CGFloat = 110
     @ScaledMetric private var typeBubbleHeightScaled: CGFloat = 35
