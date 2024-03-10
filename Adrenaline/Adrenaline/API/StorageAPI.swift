@@ -9,12 +9,14 @@ import Foundation
 import Amplify
 import AWSS3StoragePlugin
 
-func getPhotoIdKey(userId: String) -> String {
-    return "id-cards/\(userId).jpg"
+func getPhotoIdKey(userId: String,
+                   firstName: String, lastName: String, dateOfBirth: String) -> String {
+    return "id-cards/\(userId)_\(firstName)_\(lastName)_\(dateOfBirth).jpg"
 }
 
-func getProfilePictureReviewKey(userId: String) -> String {
-    return "profile-pics-under-review/\(userId).jpg"
+func getProfilePictureReviewKey(userId: String, firstName: String,
+                                lastName: String, dateOfBirth: String) -> String {
+    return "profile-pics-under-review/\(userId)_\(firstName)_\(lastName)_\(dateOfBirth).jpg"
 }
 
 func getProfilePictureKey(userId: String) -> String {
@@ -26,8 +28,10 @@ func getProfilePictureURL(userId: String) -> String {
 }
 
 // Upload photo ID to S3
-func uploadPhotoId(data: Data, userId: String) async throws {
-    let key = getPhotoIdKey(userId: userId)
+func uploadPhotoId(data: Data, userId: String, firstName: String, lastName: String,
+                   dateOfBirth: String) async throws {
+    let key = getPhotoIdKey(userId: userId, firstName: firstName, lastName: lastName,
+                            dateOfBirth: dateOfBirth)
     let task = Amplify.Storage.uploadData(key: key, data: data)
     
     let _ = try await task.value
@@ -35,8 +39,10 @@ func uploadPhotoId(data: Data, userId: String) async throws {
 }
 
 // Upload profile picture to S3 to be reviewed for identity verification
-func uploadProfilePictureForReview(data: Data, userId: String) async throws {
-    let key = getProfilePictureReviewKey(userId: userId)
+func uploadProfilePictureForReview(data: Data, userId: String, firstName: String, 
+                                   lastName: String, dateOfBirth: String) async throws {
+    let key = getProfilePictureReviewKey(userId: userId, firstName: firstName, 
+                                         lastName: lastName, dateOfBirth: dateOfBirth)
     let task = Amplify.Storage.uploadData(key: key, data: data)
     
     let _ = try await task.value
@@ -44,8 +50,10 @@ func uploadProfilePictureForReview(data: Data, userId: String) async throws {
 }
 
 // Delete profile picture under review from S3
-func deleteProfilePictureInReview(userId: String) async throws {
-    let key = getProfilePictureReviewKey(userId: userId)
+func deleteProfilePictureInReview(userId: String, firstName: String,
+                                  lastName: String, dateOfBirth: String) async throws {
+    let key = getProfilePictureReviewKey(userId: userId, firstName: firstName,
+                                         lastName: lastName, dateOfBirth: dateOfBirth)
     try await Amplify.Storage.remove(key: key)
     print("Profile picture for \(userId) removed from review")
 }
@@ -59,10 +67,12 @@ func uploadProfilePicture(data: Data, userId: String) async throws {
     print("Profile picture for \(userId) uploaded")
 }
 
-func hasProfilePictureInReview(userId: String) async -> Bool {
+func hasProfilePictureInReview(userId: String, firstName: String,
+                               lastName: String, dateOfBirth: String) async -> Bool {
     do {
         let _ = try await Amplify.Storage.getURL(
-            key: getProfilePictureReviewKey(userId: userId),
+            key: getProfilePictureReviewKey(userId: userId, firstName: firstName,
+                                            lastName: lastName, dateOfBirth: dateOfBirth),
             options: .init(
                 pluginOptions: AWSStorageGetURLOptions(
                     validateObjectExistence: true
@@ -97,8 +107,10 @@ func hasProfilePicture(userId: String) async -> Bool {
     return false
 }
 
-func deletePhotoId(userId: String) async throws {
-    let key = getPhotoIdKey(userId: userId)
+func deletePhotoId(userId: String, firstName: String, lastName: String,
+                   dateOfBirth: String) async throws {
+    let key = getPhotoIdKey(userId: userId, firstName: firstName, lastName: lastName,
+                            dateOfBirth: dateOfBirth)
     try await Amplify.Storage.remove(key: key)
 }
 

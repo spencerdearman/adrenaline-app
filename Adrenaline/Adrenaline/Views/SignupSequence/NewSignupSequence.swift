@@ -1133,8 +1133,16 @@ struct NewSignupSequence: View {
                     Task {
                         buttonPressed = true
                         
-                        if let data = photoIdData, let id = savedUser?.id {
-                            try await uploadPhotoId(data: data, userId: id)
+                        if let data = photoIdData,
+                           let id = savedUser?.id,
+                           let firstName = savedUser?.firstName,
+                           let lastName = savedUser?.lastName,
+                           let dateOfBirth = savedUser?.dateOfBirth {
+                            try await uploadPhotoId(data: data,
+                                                    userId: id,
+                                                    firstName: firstName,
+                                                    lastName: lastName,
+                                                    dateOfBirth: dateOfBirth)
                         }
                         
                         withAnimation(.openCard) {
@@ -1156,9 +1164,15 @@ struct NewSignupSequence: View {
                     .accentColor(.primary.opacity(0.7))
                     .onTapGesture {
                         Task {
-                            if let id = savedUser?.id {
+                            if let id = savedUser?.id,
+                               let firstName = savedUser?.firstName,
+                               let lastName = savedUser?.lastName,
+                               let dateOfBirth = savedUser?.dateOfBirth {
                                 do {
-                                    try await deletePhotoId(userId: id)
+                                    try await deletePhotoId(userId: id, 
+                                                            firstName: firstName,
+                                                            lastName: lastName,
+                                                            dateOfBirth: dateOfBirth)
                                 } catch {
                                     print("Failed to delete photo ID")
                                 }
@@ -1266,8 +1280,16 @@ struct NewSignupSequence: View {
                         buttonPressed = true
                         identityVerificationFailed = false
                         
-                        if let data = profilePicData, let id = savedUser?.id {
-                            try await uploadProfilePictureForReview(data: data, userId: id)
+                        if let data = profilePicData,
+                           let id = savedUser?.id,
+                           let firstName = savedUser?.firstName,
+                           let lastName = savedUser?.lastName,
+                           let dateOfBirth = savedUser?.dateOfBirth {
+                            try await uploadProfilePictureForReview(data: data,
+                                                                    userId: id,
+                                                                    firstName: firstName,
+                                                                    lastName: lastName, 
+                                                                    dateOfBirth: dateOfBirth)
                             try await Task.sleep(seconds: 10)
                         }
                         

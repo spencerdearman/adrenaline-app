@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 import boto3
 import botocore
 
@@ -13,6 +14,7 @@ def lambda_handler(event, context):
         "rekognition",
         region_name="us-east-1",
     )
+    textract = boto3.client("textract")
 
     print(event)
     records = event["Records"]
@@ -20,8 +22,9 @@ def lambda_handler(event, context):
     for record in records:
         bucket = record["s3"]["bucket"]["name"]
         profilepic_s3_key = record["s3"]["object"]["key"]
-        user_id = os.path.splitext(os.path.basename(profilepic_s3_key))[0]
-        id_s3_key = f"public/id-cards/{user_id}.jpg"
+        filename = os.path.splitext(os.path.basename(profilepic_s3_key))[0]
+        user_id = filename.split("_")[0]
+        id_s3_key = f"public/id-cards/{filename}.jpg"
 
         print(f"S3 Bucket: {bucket}")
         print(f"Profile Pic S3 Key: {profilepic_s3_key}")
@@ -45,6 +48,7 @@ def lambda_handler(event, context):
             response = handle_new_user(
                 s3,
                 rek,
+                textract,
                 bucket,
                 profilepic_s3_key,
                 user_id,
@@ -109,12 +113,32 @@ def handle_existing_user(rek, profilepic_s3_bucket, profilepic_s3_key, user_id):
 def handle_new_user(
     s3,
     rek,
+    textract,
     profilepic_s3_bucket,
     profilepic_s3_key,
     user_id,
     id_s3_bucket,
     id_s3_key,
 ):
+    first_name, last_name, dob = None, None, None
+    try:
+        user_fields = os.path.splitext(os.path.basename(id_s3_key))[0].split("_")
+        _, first_name, last_name, dob = user_fields
+        first_name = first_name.lower()
+        last_name = last_name.lower()
+    except Exception:
+        print("Failed to get user fields from filename")
+        return False
+
+    id_response = textract.analyze_id(
+        DocumentPages=[{"S3Object": {"Bucket": id_s3_bucket, "Name": id_s3_key}}]
+    )
+
+    if not verify_id_fields(id_response, first_name, last_name, dob):
+        print("Unable to verify ID fields")
+        return False
+    print("Verified ID fields against user inputs")
+
     face_matches = compare_faces(
         rek, profilepic_s3_bucket, profilepic_s3_key, id_s3_bucket, id_s3_key
     )
@@ -164,6 +188,63 @@ def handle_new_user(
 
     # Remove ID card from S3
     response = s3.delete_object(Bucket=id_s3_bucket, Key=id_s3_key)
+
+    return True
+
+
+def get_iso_date(date):
+    date_formats = [
+        "%m/%d/%Y",
+        "%m-%d-%Y",
+        "%m/%d/%y",
+        "%m-%d-%y",
+        "%Y-%m-%d",
+        "%Y/%m/%d",
+    ]
+    for date_format in date_formats:
+        try:
+            return datetime.strptime(date, date_format).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+
+    return None
+
+
+def verify_id_fields(id_response, first_name, last_name, dob):
+    try:
+        for doc in id_response["IdentityDocuments"][0]["IdentityDocumentFields"]:
+            doc_type = doc["Type"]
+            value = doc["ValueDetection"]
+
+            match doc_type["Text"]:
+                case "FIRST_NAME":
+                    print("First Name:", value["Text"])
+                    if value["Text"].lower() != first_name:
+                        print("First name on ID does not match first name from user")
+                        return False
+                case "LAST_NAME":
+                    print("Last Name:", value["Text"])
+                    if value["Text"].lower() != last_name:
+                        print("Last name on ID does not match last name from user")
+                        return False
+                case "DATE_OF_BIRTH":
+                    date = value["Text"]
+                    iso_date = get_iso_date(date)
+                    if iso_date is None:
+                        print("Failed to parse date of birth into ISO format")
+                        return False
+                    print("Date of Birth:", iso_date)
+                    if iso_date != dob:
+                        print(
+                            "Date of Birth on ID does not match date of birth from user"
+                        )
+                        return False
+                case _:
+                    continue
+
+    except KeyError:
+        print("Unable to access ID response")
+        return False
 
     return True
 

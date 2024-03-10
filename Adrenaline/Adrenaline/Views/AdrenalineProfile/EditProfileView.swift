@@ -239,12 +239,23 @@ struct EditProfileView: View {
                         isSavingChanges = true
                         profilePicUploadFailed = false
                         
-                        if let data = profilePicData, let id = newUser?.id {
-                            try await uploadProfilePictureForReview(data: data, userId: id)
+                        if let data = profilePicData,
+                           let id = newUser?.id,
+                           let firstName = newUser?.firstName,
+                           let lastName = newUser?.lastName,
+                           let dateOfBirth = newUser?.dateOfBirth {
+                            try await uploadProfilePictureForReview(data: data,
+                                                                    userId: id,
+                                                                    firstName: firstName,
+                                                                    lastName: lastName,
+                                                                    dateOfBirth: dateOfBirth)
                             try await Task.sleep(seconds: 10)
                             
                             // If identity verification fails, no changes are saved
-                            if await hasProfilePictureInReview(userId: id) {
+                            if await hasProfilePictureInReview(userId: id,
+                                                               firstName: firstName,
+                                                               lastName: lastName,
+                                                               dateOfBirth: dateOfBirth) {
                                 profilePicUploadFailed = true
                                 isSavingChanges = false
                                 return
