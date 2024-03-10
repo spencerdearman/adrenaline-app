@@ -38,10 +38,11 @@ extension Formatter {
         return formatter
     }()
     
-    static let ageFormatter: NumberFormatter = {
+    
+    static let birthdayFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.zeroSymbol = ""
-        formatter.maximum = 99
+        formatter.maximum = 99999999
         return formatter
     }()
 }
@@ -80,7 +81,7 @@ struct NewSignupSequence: View {
     
     // General States
     @State var buttonPressed: Bool = false
-    @State var pageIndex: PageIndex = .accountType
+    @State var pageIndex: PageIndex = .athleteInfo
     @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
@@ -117,6 +118,8 @@ struct NewSignupSequence: View {
     @State var weightUnitString: String = ""
     @State var gender: Gender = .male
     @State var genderString: String = ""
+    @State var date = Date()
+    @State var birthday: String = ""
     @State var age: Int = 0
     @State var gradYear: Int = 0
     @State var highSchool: String = ""
@@ -194,6 +197,24 @@ struct NewSignupSequence: View {
                        tokens: tokensList)
     }
     
+    // format birthday string
+    private func formatBirthdayText() {
+        let numericOnly = birthday.filter { "0123456789".contains($0) }
+        var formattedText = ""
+        
+        for (index, char) in numericOnly.enumerated() {
+            if index == 2 || index == 4 { // positions after month and day
+                formattedText += "/" // add slash
+            }
+            formattedText.append(char)
+            if formattedText.count == 10 { // MM/DD/YYYY format
+                break // stop if maximum length reached
+            }
+        }
+        
+        birthday = formattedText
+    }
+    
     // Saves new user with stored State data, and handles CoachUser creation if needed
     private func saveNewUser() async -> Bool {
         do {
@@ -231,111 +252,111 @@ struct NewSignupSequence: View {
             
             Group {
                 switch pageIndex {
-                    case .accountType:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Account Type")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .frame(height: screenHeight * 0.6)
-                        .matchedGeometryEffect(id: "form1", in: namespace)
-                    case .basicInfo:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Basic Info")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form1", in: namespace)
-                    case .diveMeetsLink:
-                        Group {
-                            if searchSubmitted && !personTimedOut && !linksParsed {
-                                ZStack {
-                                    SwiftUIWebView(firstName: $firstName, lastName: $lastName,
-                                                   parsedLinks: $parsedLinks,
-                                                   dmSearchSubmitted: $dmSearchSubmitted,
-                                                   linksParsed: $linksParsed,
-                                                   timedOut: $personTimedOut)
-                                    .opacity(0)
-                                    VStack {
-                                        Text("Searching")
-                                            .font(.largeTitle).bold()
-                                            .foregroundColor(.primary)
-                                            .slideFadeIn(show: appear[0], offset: 30)
-                                        ProgressView()
-                                    }
+                case .accountType:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Account Type")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .frame(height: screenHeight * 0.6)
+                    .matchedGeometryEffect(id: "form1", in: namespace)
+                case .basicInfo:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Basic Info")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form1", in: namespace)
+                case .diveMeetsLink:
+                    Group {
+                        if searchSubmitted && !personTimedOut && !linksParsed {
+                            ZStack {
+                                SwiftUIWebView(firstName: $firstName, lastName: $lastName,
+                                               parsedLinks: $parsedLinks,
+                                               dmSearchSubmitted: $dmSearchSubmitted,
+                                               linksParsed: $linksParsed,
+                                               timedOut: $personTimedOut)
+                                .opacity(0)
+                                VStack {
+                                    Text("Searching")
+                                        .font(.largeTitle).bold()
+                                        .foregroundColor(.primary)
+                                        .slideFadeIn(show: appear[0], offset: 30)
+                                    ProgressView()
+                                }
+                            }
+                            .frame(height: screenHeight * 0.5)
+                        } else {
+                            if linksParsed || personTimedOut {
+                                VStack(alignment: .leading, spacing: 20) {
+                                    diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
                                 }
                                 .frame(height: screenHeight * 0.5)
+                                .matchedGeometryEffect(id: "form", in: namespace)
                             } else {
-                                if linksParsed || personTimedOut {
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                                    }
-                                    .frame(height: screenHeight * 0.5)
-                                    .matchedGeometryEffect(id: "form", in: namespace)
-                                } else {
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        Text("Searching")
-                                            .font(.largeTitle).bold()
-                                            .foregroundColor(.primary)
-                                            .slideFadeIn(show: appear[0], offset: 30)
-                                    }
-                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                VStack(alignment: .leading, spacing: 20) {
+                                    Text("Searching")
+                                        .font(.largeTitle).bold()
+                                        .foregroundColor(.primary)
+                                        .slideFadeIn(show: appear[0], offset: 30)
                                 }
+                                .matchedGeometryEffect(id: "form", in: namespace)
                             }
                         }
-                        .onDisappear {
-                            searchSubmitted = false
-                            dmSearchSubmitted = false
-                            linksParsed = false
-                        }
-                    case .athleteInfo:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Recruiting Info")
+                    }
+                    .onDisappear {
+                        searchSubmitted = false
+                        dmSearchSubmitted = false
+                        linksParsed = false
+                    }
+                case .athleteInfo:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Recruiting Info")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                case .photoId:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Photo ID")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        photoIdUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                case .profilePic:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Profile Picture")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        profilePicUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                case .welcome:
+                    VStack(alignment: .leading, spacing: 20) {
+                        if let savedUser = savedUser {
+                            Text("Welcome to Adrenaline \(savedUser.firstName)!")
                                 .font(.largeTitle).bold()
                                 .foregroundColor(.primary)
                                 .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
                         }
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                    case .photoId:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Photo ID")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            photoIdUploadForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                    case .profilePic:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Profile Picture")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            profilePicUploadForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                    case .welcome:
-                        VStack(alignment: .leading, spacing: 20) {
-                            if let savedUser = savedUser {
-                                Text("Welcome to Adrenaline \(savedUser.firstName)!")
-                                    .font(.largeTitle).bold()
-                                    .foregroundColor(.primary)
-                                    .slideFadeIn(show: appear[0], offset: 30)
-                            }
-                            
-                            welcomeForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
+                        
+                        welcomeForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
                 }
             }
             .padding(20)
@@ -593,7 +614,7 @@ struct NewSignupSequence: View {
                                                     .fontWeight(.semibold)
                                                 
                                                 if sortedRecords.count > 1,
-                                                    let hometown = sortedRecordsHometowns[value] {
+                                                   let hometown = sortedRecordsHometowns[value] {
                                                     Text(hometown)
                                                         .foregroundColor(.secondary)
                                                         .font(.headline)
@@ -782,17 +803,9 @@ struct NewSignupSequence: View {
                         weightUnitString = weightUnit.rawValue
                     }
             }
+            
             HStack {
-                TextField("Age", value: $age, formatter: .ageFormatter)
-                    .keyboardType(.numberPad)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && age == 0
-                                                ? Custom.error
-                                                : nil))
-                    .focused($focusedField, equals: .age)
-                    .onChange(of: age) {
-                        age = age
-                    }
+                CustomDatePickerView(date: $date, icon: "hexagon.fill", iconColor: (buttonPressed && gradYear == 0 ? Custom.error : nil))
                 
                 BubbleSelectView(selection: $gender)
                     .frame(width: textFieldWidth / 2)
@@ -804,6 +817,7 @@ struct NewSignupSequence: View {
                         genderString = gender.rawValue
                     }
             }
+            
             TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
                 .keyboardType(.numberPad)
                 .disableAutocorrection(true)
@@ -1109,16 +1123,16 @@ struct NewSignupSequence: View {
             DispatchQueue.main.async {
                 guard selectedPhotoIdImage == self.selectedPhotoIdImage else { return }
                 switch result {
-                    case .success(let image?):
-                        // Handle the success case with the image.
-                        photoId = image
-                    case .success(nil):
-                        // Handle the success case with an empty value.
-                        photoId = nil
-                    case .failure(let error):
-                        // Handle the failure case with the provided error.
-                        print("Failed to get image from picker: \(error)")
-                        photoId = nil
+                case .success(let image?):
+                    // Handle the success case with the image.
+                    photoId = image
+                case .success(nil):
+                    // Handle the success case with an empty value.
+                    photoId = nil
+                case .failure(let error):
+                    // Handle the failure case with the provided error.
+                    print("Failed to get image from picker: \(error)")
+                    photoId = nil
                 }
             }
         }
@@ -1129,16 +1143,16 @@ struct NewSignupSequence: View {
             DispatchQueue.main.async {
                 guard selectedProfilePicImage == self.selectedProfilePicImage else { return }
                 switch result {
-                    case .success(let image?):
-                        // Handle the success case with the image.
-                        profilePic = image
-                    case .success(nil):
-                        // Handle the success case with an empty value.
-                        profilePic = nil
-                    case .failure(let error):
-                        // Handle the failure case with the provided error.
-                        print("Failed to get image from picker: \(error)")
-                        profilePic = nil
+                case .success(let image?):
+                    // Handle the success case with the image.
+                    profilePic = image
+                case .success(nil):
+                    // Handle the success case with an empty value.
+                    profilePic = nil
+                case .failure(let error):
+                    // Handle the failure case with the provided error.
+                    print("Failed to get image from picker: \(error)")
+                    profilePic = nil
                 }
             }
         }

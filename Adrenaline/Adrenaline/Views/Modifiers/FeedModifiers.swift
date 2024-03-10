@@ -82,6 +82,71 @@ struct OutlineOverlay: ViewModifier {
     }
 }
 
+
+struct CustomDatePickerView: View {
+    @Binding var date: Date
+    var icon: String
+    var iconColor: Color? = nil
+    @State private var showingDatePicker = false
+
+    var body: some View {
+        VStack {
+            Text(dateString(from: date))
+                .foregroundColor(.primary)
+                .offset(x: -27)
+        }
+        .overlay(
+            HStack {
+                Image(systemName: icon)
+                    .frame(width: 36, height: 36)
+                    .foregroundColor(iconColor != nil
+                                     ? iconColor
+                                     : .gray.opacity(0.5))
+                    .background(.thinMaterial)
+                    .cornerRadius(14)
+                    .modifier(OutlineOverlay(cornerRadius: 14))
+                    .offset(x: -72)
+                    .foregroundStyle(.secondary)
+                    .accessibility(hidden: true)
+                Spacer()
+            }
+        )
+        .foregroundStyle(.primary)
+        .frame(maxWidth: .infinity)
+        .padding(15)
+        .padding(.leading, 40)
+        .background(.thinMaterial)
+        .cornerRadius(20)
+        .modifier(OutlineOverlay(cornerRadius: 20))
+        .onTapGesture {
+            self.showingDatePicker = true
+        }
+        .sheet(isPresented: $showingDatePicker) {
+            VStack {
+                Text("Birthday")
+                    .font(.largeTitle).bold()
+                    .foregroundColor(.primary)
+                DatePicker("Select Date", selection: $date, displayedComponents: [.date])
+                    .datePickerStyle(GraphicalDatePickerStyle())
+                    .padding()
+                Button("Done") {
+                    self.showingDatePicker = false
+                }
+                .padding()
+            }
+        }
+        .animation(.easeInOut, value: showingDatePicker)
+    }
+    
+    private func dateString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long 
+        return formatter.string(from: date)
+    }
+}
+
+
+
 struct BackgroundColor: ViewModifier {
     var opacity: Double = 0.6
     @Environment(\.colorScheme) var currentMode
