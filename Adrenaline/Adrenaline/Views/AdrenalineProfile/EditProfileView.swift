@@ -36,7 +36,7 @@ struct EditProfileView: View {
     var newUser: NewUser?
     
     private var athleteAllFieldsFilled: Bool {
-        heightFeet != 0 && heightInches != -1 && weight != 0 && athlete?.age != 0 && gradYear != 0 &&
+        heightFeet != 0 && heightInches != -1 && weight != 0 && gradYear != 0 &&
         !highSchool.isEmpty && !hometown.isEmpty
     }
     
@@ -61,9 +61,6 @@ struct EditProfileView: View {
                                      weight: weight,
                                      weightUnit: weightUnitString,
                                      gender: newAthlete.gender,
-                                     age: newAthlete.age,
-                                     // TODO: add date of birth in YYYY-MM-dd format
-                                     dateOfBirth: try Temporal.Date(iso8601String: ""),
                                      graduationYear: gradYear,
                                      highSchool: highSchool,
                                      hometown: hometown,

@@ -147,6 +147,18 @@ struct NewSignupSequence: View {
         screenWidth * 0.5
     }
     
+    var defaultTemporalDate: Temporal.Date {
+        // Attempt to create a Temporal.Date for the current date as default
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let currentDateStr = formatter.string(from: Date())
+        do {
+            return try Temporal.Date(iso8601String: currentDateStr)
+        } catch {
+            fatalError("Invalid default Temporal.Date")
+        }
+    }
+    
     private var noDiverSelected: Bool {
         !selectedDict.values.contains(true)
     }
@@ -188,6 +200,12 @@ struct NewSignupSequence: View {
         if let userToken = UserDefaults.standard.string(forKey: "userToken") {
             tokensList = [userToken]
         } else { tokensList = [] }
+        var DOB: Temporal.Date = defaultTemporalDate
+        do {
+            DOB = try Temporal.Date(iso8601String: dateString(from: date))
+        } catch {
+            print("Could not process birthday")
+        }
         return NewUser(id: authUserId, firstName: firstName,
                        lastName: lastName, email: email,
                        phone: phone == ""
@@ -195,6 +213,7 @@ struct NewSignupSequence: View {
                        : removePhoneFormatting(string: phone),
                        diveMeetsID: diveMeetsID,
                        accountType: accountType,
+                       dateOfBirth:  DOB,
                        tokens: tokensList)
     }
     
@@ -504,6 +523,28 @@ struct NewSignupSequence: View {
                     phone = formatPhoneString(string: phone)
                 }
             
+            let dateB = Date()
+            HStack {
+                Text(isValidDate(a: date, b: dateB)
+                     ? date.formatted(.dateTime.day().month().year())
+                     : "Birthday")
+                Spacer()
+            }
+                .foregroundColor(isValidDate(a: date, b: Date()) ? .primary : .secondary)
+                .frame(maxWidth: .infinity)
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: (buttonPressed &&
+                                                        !isValidDate(a: date, b: dateB)
+                                                        ? Custom.error
+                                                        : nil)))
+                .overlay {
+                    // https://stackoverflow.com/a/77426363/22068672
+                    DatePicker("", selection: $date, displayedComponents: [.date])
+                        .labelsHidden()
+                        .contentShape(Rectangle())
+                        .opacity(0.011)
+                }
+            
             Divider()
             
             Button {
@@ -799,26 +840,16 @@ struct NewSignupSequence: View {
             }
             
             HStack {
-                let dateB = Date()
-                HStack {
-                    Text(isValidDate(a: date, b: dateB)
-                         ? date.formatted(.dateTime.day().month().year())
-                         : "Birthday")
-                    Spacer()
-                }
-                    .foregroundColor(isValidDate(a: date, b: Date()) ? .primary : .secondary)
-                    .frame(maxWidth: .infinity)
+                TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
+                    .keyboardType(.numberPad)
+                    .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: (buttonPressed && 
-                                                            !isValidDate(a: date, b: dateB)
-                                                            ? Custom.error
-                                                            : nil)))
-                    .overlay {
-                        // https://stackoverflow.com/a/77426363/22068672
-                        DatePicker("", selection: $date, displayedComponents: [.date])
-                            .labelsHidden()
-                            .contentShape(Rectangle())
-                            .opacity(0.011)
+                                                iconColor: buttonPressed && gradYear == 0
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .gradYear)
+                    .onChange(of: gradYear) {
+                        gradYear = gradYear
                     }
                 
                 BubbleSelectView(selection: $gender)
@@ -831,18 +862,6 @@ struct NewSignupSequence: View {
                         genderString = gender.rawValue
                     }
             }
-            
-            TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
-                .keyboardType(.numberPad)
-                .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                            iconColor: buttonPressed && gradYear == 0
-                                            ? Custom.error
-                                            : nil))
-                .focused($focusedField, equals: .gradYear)
-                .onChange(of: gradYear) {
-                    gradYear = gradYear
-                }
             TextField("High School", text: $highSchool)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill",
@@ -1261,8 +1280,6 @@ struct NewSignupSequence: View {
                 weight: weight,
                 weightUnit: weightUnitString,
                 gender: genderString,
-                age: 0,
-                dateOfBirth: try Temporal.Date(iso8601String: dateString(from: date)),
                 graduationYear: gradYear,
                 highSchool: highSchool,
                 hometown: hometown,

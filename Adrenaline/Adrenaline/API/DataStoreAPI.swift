@@ -131,9 +131,6 @@ func updateAthleteField(user: NewUser, key: String, value: Any) async throws {
             case "gender":
                 updatedAthlete.gender = value as! String
                 break
-            case "age":
-                updatedAthlete.age = value as! Int
-                break
             case "graduationYear":
                 updatedAthlete.graduationYear = value as! Int
                 break
