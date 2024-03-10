@@ -9,12 +9,14 @@ extension NewAthlete {
     case user
     case team
     case college
+    case academics
     case heightFeet
     case heightInches
     case weight
     case weightUnit
     case gender
     case age
+    case dateOfBirth
     case graduationYear
     case highSchool
     case hometown
@@ -24,6 +26,7 @@ extension NewAthlete {
     case dives
     case createdAt
     case updatedAt
+    case newAthleteAcademicsId
   }
   
   public static let keys = CodingKeys.self
@@ -33,7 +36,8 @@ extension NewAthlete {
     let newAthlete = NewAthlete.keys
     
     model.authRules = [
-      rule(allow: .private, operations: [.create, .update, .delete, .read])
+      rule(allow: .private, operations: [.create, .update, .delete, .read]),
+      rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
     
     model.listPluralName = "NewAthletes"
@@ -50,12 +54,14 @@ extension NewAthlete {
       .belongsTo(newAthlete.user, is: .required, ofType: NewUser.self, targetNames: ["newAthleteUserId"]),
       .belongsTo(newAthlete.team, is: .optional, ofType: NewTeam.self, targetNames: ["newteamID"]),
       .belongsTo(newAthlete.college, is: .optional, ofType: College.self, targetNames: ["collegeID"]),
+      .hasOne(newAthlete.academics, is: .optional, ofType: AcademicRecord.self, associatedWith: AcademicRecord.keys.athlete, targetNames: ["newAthleteAcademicsId"]),
       .field(newAthlete.heightFeet, is: .required, ofType: .int),
       .field(newAthlete.heightInches, is: .required, ofType: .int),
       .field(newAthlete.weight, is: .required, ofType: .int),
       .field(newAthlete.weightUnit, is: .required, ofType: .string),
       .field(newAthlete.gender, is: .required, ofType: .string),
       .field(newAthlete.age, is: .required, ofType: .int),
+      .field(newAthlete.dateOfBirth, is: .required, ofType: .date),
       .field(newAthlete.graduationYear, is: .required, ofType: .int),
       .field(newAthlete.highSchool, is: .required, ofType: .string),
       .field(newAthlete.hometown, is: .required, ofType: .string),
@@ -64,7 +70,8 @@ extension NewAthlete {
       .field(newAthlete.totalRating, is: .optional, ofType: .double),
       .hasMany(newAthlete.dives, is: .optional, ofType: Dive.self, associatedWith: Dive.keys.newathleteID),
       .field(newAthlete.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(newAthlete.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
+      .field(newAthlete.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
+      .field(newAthlete.newAthleteAcademicsId, is: .optional, ofType: .string)
     )
     }
     public class Path: ModelPath<NewAthlete> { }
@@ -89,6 +96,9 @@ extension ModelPath where ModelType == NewAthlete {
   public var college: ModelPath<College>   {
       College.Path(name: "college", parent: self) 
     }
+  public var academics: ModelPath<AcademicRecord>   {
+      AcademicRecord.Path(name: "academics", parent: self) 
+    }
   public var heightFeet: FieldPath<Int>   {
       int("heightFeet") 
     }
@@ -106,6 +116,9 @@ extension ModelPath where ModelType == NewAthlete {
     }
   public var age: FieldPath<Int>   {
       int("age") 
+    }
+  public var dateOfBirth: FieldPath<Temporal.Date>   {
+      date("dateOfBirth") 
     }
   public var graduationYear: FieldPath<Int>   {
       int("graduationYear") 
@@ -133,5 +146,8 @@ extension ModelPath where ModelType == NewAthlete {
     }
   public var updatedAt: FieldPath<Temporal.DateTime>   {
       datetime("updatedAt") 
+    }
+  public var newAthleteAcademicsId: FieldPath<String>   {
+      string("newAthleteAcademicsId") 
     }
 }

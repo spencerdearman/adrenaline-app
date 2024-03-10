@@ -2059,8 +2059,8 @@ public struct DeleteNewUserInput: GraphQLMapConvertible {
 public struct CreateNewAthleteInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, version: Int? = nil, newAthleteUserId: GraphQLID) {
-    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "_version": version, "newAthleteUserId": newAthleteUserId]
+  public init(id: GraphQLID? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, version: Int? = nil, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "_version": version, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId]
   }
 
   public var id: GraphQLID? {
@@ -2123,6 +2123,15 @@ public struct CreateNewAthleteInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "age")
+    }
+  }
+
+  public var dateOfBirth: String {
+    get {
+      return graphQLMap["dateOfBirth"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "dateOfBirth")
     }
   }
 
@@ -2207,6 +2216,15 @@ public struct CreateNewAthleteInput: GraphQLMapConvertible {
     }
   }
 
+  public var newAthleteAcademicsId: GraphQLID? {
+    get {
+      return graphQLMap["newAthleteAcademicsId"] as! GraphQLID?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "newAthleteAcademicsId")
+    }
+  }
+
   public var newAthleteUserId: GraphQLID {
     get {
       return graphQLMap["newAthleteUserId"] as! GraphQLID
@@ -2220,8 +2238,8 @@ public struct CreateNewAthleteInput: GraphQLMapConvertible {
 public struct ModelNewAthleteConditionInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(heightFeet: ModelIntInput? = nil, heightInches: ModelIntInput? = nil, weight: ModelIntInput? = nil, weightUnit: ModelStringInput? = nil, gender: ModelStringInput? = nil, age: ModelIntInput? = nil, graduationYear: ModelIntInput? = nil, highSchool: ModelStringInput? = nil, hometown: ModelStringInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, collegeId: ModelIDInput? = nil, newteamId: ModelIDInput? = nil, and: [ModelNewAthleteConditionInput?]? = nil, or: [ModelNewAthleteConditionInput?]? = nil, not: ModelNewAthleteConditionInput? = nil, deleted: ModelBooleanInput? = nil, newAthleteUserId: ModelIDInput? = nil) {
-    graphQLMap = ["heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "and": and, "or": or, "not": not, "_deleted": deleted, "newAthleteUserId": newAthleteUserId]
+  public init(heightFeet: ModelIntInput? = nil, heightInches: ModelIntInput? = nil, weight: ModelIntInput? = nil, weightUnit: ModelStringInput? = nil, gender: ModelStringInput? = nil, age: ModelIntInput? = nil, dateOfBirth: ModelStringInput? = nil, graduationYear: ModelIntInput? = nil, highSchool: ModelStringInput? = nil, hometown: ModelStringInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, collegeId: ModelIDInput? = nil, newteamId: ModelIDInput? = nil, and: [ModelNewAthleteConditionInput?]? = nil, or: [ModelNewAthleteConditionInput?]? = nil, not: ModelNewAthleteConditionInput? = nil, deleted: ModelBooleanInput? = nil, newAthleteAcademicsId: ModelIDInput? = nil, newAthleteUserId: ModelIDInput? = nil) {
+    graphQLMap = ["heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "and": and, "or": or, "not": not, "_deleted": deleted, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId]
   }
 
   public var heightFeet: ModelIntInput? {
@@ -2275,6 +2293,15 @@ public struct ModelNewAthleteConditionInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "age")
+    }
+  }
+
+  public var dateOfBirth: ModelStringInput? {
+    get {
+      return graphQLMap["dateOfBirth"] as! ModelStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "dateOfBirth")
     }
   }
 
@@ -2383,6 +2410,15 @@ public struct ModelNewAthleteConditionInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "_deleted")
+    }
+  }
+
+  public var newAthleteAcademicsId: ModelIDInput? {
+    get {
+      return graphQLMap["newAthleteAcademicsId"] as! ModelIDInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "newAthleteAcademicsId")
     }
   }
 
@@ -2577,8 +2613,8 @@ public struct ModelFloatInput: GraphQLMapConvertible {
 public struct UpdateNewAthleteInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID, heightFeet: Int? = nil, heightInches: Int? = nil, weight: Int? = nil, weightUnit: String? = nil, gender: String? = nil, age: Int? = nil, graduationYear: Int? = nil, highSchool: String? = nil, hometown: String? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, version: Int? = nil, newAthleteUserId: GraphQLID? = nil) {
-    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "_version": version, "newAthleteUserId": newAthleteUserId]
+  public init(id: GraphQLID, heightFeet: Int? = nil, heightInches: Int? = nil, weight: Int? = nil, weightUnit: String? = nil, gender: String? = nil, age: Int? = nil, dateOfBirth: String? = nil, graduationYear: Int? = nil, highSchool: String? = nil, hometown: String? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, version: Int? = nil, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID? = nil) {
+    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "_version": version, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId]
   }
 
   public var id: GraphQLID {
@@ -2641,6 +2677,15 @@ public struct UpdateNewAthleteInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "age")
+    }
+  }
+
+  public var dateOfBirth: String? {
+    get {
+      return graphQLMap["dateOfBirth"] as! String?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "dateOfBirth")
     }
   }
 
@@ -2722,6 +2767,15 @@ public struct UpdateNewAthleteInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "_version")
+    }
+  }
+
+  public var newAthleteAcademicsId: GraphQLID? {
+    get {
+      return graphQLMap["newAthleteAcademicsId"] as! GraphQLID?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "newAthleteAcademicsId")
     }
   }
 
@@ -4915,8 +4969,8 @@ public struct DeleteMessageInput: GraphQLMapConvertible {
 public struct CreateDiveMeetsDiverInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID? = nil, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, version: Int? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "_version": version]
+  public init(id: GraphQLID? = nil, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, version: Int? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_version": version]
   }
 
   public var id: GraphQLID? {
@@ -5000,15 +5054,6 @@ public struct CreateDiveMeetsDiverInput: GraphQLMapConvertible {
     }
   }
 
-  public var ttl: Int {
-    get {
-      return graphQLMap["_ttl"] as! Int
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "_ttl")
-    }
-  }
-
   public var version: Int? {
     get {
       return graphQLMap["_version"] as! Int?
@@ -5022,8 +5067,8 @@ public struct CreateDiveMeetsDiverInput: GraphQLMapConvertible {
 public struct ModelDiveMeetsDiverConditionInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, gender: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, ttl: ModelIntInput? = nil, and: [ModelDiveMeetsDiverConditionInput?]? = nil, or: [ModelDiveMeetsDiverConditionInput?]? = nil, not: ModelDiveMeetsDiverConditionInput? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "and": and, "or": or, "not": not, "_deleted": deleted]
+  public init(firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, gender: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, and: [ModelDiveMeetsDiverConditionInput?]? = nil, or: [ModelDiveMeetsDiverConditionInput?]? = nil, not: ModelDiveMeetsDiverConditionInput? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "not": not, "_deleted": deleted]
   }
 
   public var firstName: ModelStringInput? {
@@ -5098,15 +5143,6 @@ public struct ModelDiveMeetsDiverConditionInput: GraphQLMapConvertible {
     }
   }
 
-  public var ttl: ModelIntInput? {
-    get {
-      return graphQLMap["_ttl"] as! ModelIntInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "_ttl")
-    }
-  }
-
   public var and: [ModelDiveMeetsDiverConditionInput?]? {
     get {
       return graphQLMap["and"] as! [ModelDiveMeetsDiverConditionInput?]?
@@ -5147,8 +5183,8 @@ public struct ModelDiveMeetsDiverConditionInput: GraphQLMapConvertible {
 public struct UpdateDiveMeetsDiverInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID, firstName: String? = nil, lastName: String? = nil, gender: String? = nil, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int? = nil, version: Int? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "_version": version]
+  public init(id: GraphQLID, firstName: String? = nil, lastName: String? = nil, gender: String? = nil, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, version: Int? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_version": version]
   }
 
   public var id: GraphQLID {
@@ -5232,12 +5268,29 @@ public struct UpdateDiveMeetsDiverInput: GraphQLMapConvertible {
     }
   }
 
-  public var ttl: Int? {
+  public var version: Int? {
     get {
-      return graphQLMap["_ttl"] as! Int?
+      return graphQLMap["_version"] as! Int?
     }
     set {
-      graphQLMap.updateValue(newValue, forKey: "_ttl")
+      graphQLMap.updateValue(newValue, forKey: "_version")
+    }
+  }
+}
+
+public struct DeleteDiveMeetsDiverInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(id: GraphQLID, version: Int? = nil) {
+    graphQLMap = ["id": id, "_version": version]
+  }
+
+  public var id: GraphQLID {
+    get {
+      return graphQLMap["id"] as! GraphQLID
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
     }
   }
 
@@ -5251,7 +5304,265 @@ public struct UpdateDiveMeetsDiverInput: GraphQLMapConvertible {
   }
 }
 
-public struct DeleteDiveMeetsDiverInput: GraphQLMapConvertible {
+public struct CreateAcademicRecordInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(id: GraphQLID? = nil, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, version: Int? = nil, academicRecordAthleteId: GraphQLID) {
+    graphQLMap = ["id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "_version": version, "academicRecordAthleteId": academicRecordAthleteId]
+  }
+
+  public var id: GraphQLID? {
+    get {
+      return graphQLMap["id"] as! GraphQLID?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  public var satScore: Int? {
+    get {
+      return graphQLMap["satScore"] as! Int?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "satScore")
+    }
+  }
+
+  public var actScore: Int? {
+    get {
+      return graphQLMap["actScore"] as! Int?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "actScore")
+    }
+  }
+
+  public var weightedGpa: Double? {
+    get {
+      return graphQLMap["weightedGPA"] as! Double?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "weightedGPA")
+    }
+  }
+
+  public var gpaScale: Double? {
+    get {
+      return graphQLMap["gpaScale"] as! Double?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gpaScale")
+    }
+  }
+
+  public var coursework: String? {
+    get {
+      return graphQLMap["coursework"] as! String?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "coursework")
+    }
+  }
+
+  public var version: Int? {
+    get {
+      return graphQLMap["_version"] as! Int?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "_version")
+    }
+  }
+
+  public var academicRecordAthleteId: GraphQLID {
+    get {
+      return graphQLMap["academicRecordAthleteId"] as! GraphQLID
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "academicRecordAthleteId")
+    }
+  }
+}
+
+public struct ModelAcademicRecordConditionInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(satScore: ModelIntInput? = nil, actScore: ModelIntInput? = nil, weightedGpa: ModelFloatInput? = nil, gpaScale: ModelFloatInput? = nil, coursework: ModelStringInput? = nil, and: [ModelAcademicRecordConditionInput?]? = nil, or: [ModelAcademicRecordConditionInput?]? = nil, not: ModelAcademicRecordConditionInput? = nil, deleted: ModelBooleanInput? = nil, academicRecordAthleteId: ModelIDInput? = nil) {
+    graphQLMap = ["satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "and": and, "or": or, "not": not, "_deleted": deleted, "academicRecordAthleteId": academicRecordAthleteId]
+  }
+
+  public var satScore: ModelIntInput? {
+    get {
+      return graphQLMap["satScore"] as! ModelIntInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "satScore")
+    }
+  }
+
+  public var actScore: ModelIntInput? {
+    get {
+      return graphQLMap["actScore"] as! ModelIntInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "actScore")
+    }
+  }
+
+  public var weightedGpa: ModelFloatInput? {
+    get {
+      return graphQLMap["weightedGPA"] as! ModelFloatInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "weightedGPA")
+    }
+  }
+
+  public var gpaScale: ModelFloatInput? {
+    get {
+      return graphQLMap["gpaScale"] as! ModelFloatInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gpaScale")
+    }
+  }
+
+  public var coursework: ModelStringInput? {
+    get {
+      return graphQLMap["coursework"] as! ModelStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "coursework")
+    }
+  }
+
+  public var and: [ModelAcademicRecordConditionInput?]? {
+    get {
+      return graphQLMap["and"] as! [ModelAcademicRecordConditionInput?]?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "and")
+    }
+  }
+
+  public var or: [ModelAcademicRecordConditionInput?]? {
+    get {
+      return graphQLMap["or"] as! [ModelAcademicRecordConditionInput?]?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "or")
+    }
+  }
+
+  public var not: ModelAcademicRecordConditionInput? {
+    get {
+      return graphQLMap["not"] as! ModelAcademicRecordConditionInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "not")
+    }
+  }
+
+  public var deleted: ModelBooleanInput? {
+    get {
+      return graphQLMap["_deleted"] as! ModelBooleanInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "_deleted")
+    }
+  }
+
+  public var academicRecordAthleteId: ModelIDInput? {
+    get {
+      return graphQLMap["academicRecordAthleteId"] as! ModelIDInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "academicRecordAthleteId")
+    }
+  }
+}
+
+public struct UpdateAcademicRecordInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, version: Int? = nil, academicRecordAthleteId: GraphQLID? = nil) {
+    graphQLMap = ["id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "_version": version, "academicRecordAthleteId": academicRecordAthleteId]
+  }
+
+  public var id: GraphQLID {
+    get {
+      return graphQLMap["id"] as! GraphQLID
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  public var satScore: Int? {
+    get {
+      return graphQLMap["satScore"] as! Int?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "satScore")
+    }
+  }
+
+  public var actScore: Int? {
+    get {
+      return graphQLMap["actScore"] as! Int?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "actScore")
+    }
+  }
+
+  public var weightedGpa: Double? {
+    get {
+      return graphQLMap["weightedGPA"] as! Double?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "weightedGPA")
+    }
+  }
+
+  public var gpaScale: Double? {
+    get {
+      return graphQLMap["gpaScale"] as! Double?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gpaScale")
+    }
+  }
+
+  public var coursework: String? {
+    get {
+      return graphQLMap["coursework"] as! String?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "coursework")
+    }
+  }
+
+  public var version: Int? {
+    get {
+      return graphQLMap["_version"] as! Int?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "_version")
+    }
+  }
+
+  public var academicRecordAthleteId: GraphQLID? {
+    get {
+      return graphQLMap["academicRecordAthleteId"] as! GraphQLID?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "academicRecordAthleteId")
+    }
+  }
+}
+
+public struct DeleteAcademicRecordInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   public init(id: GraphQLID, version: Int? = nil) {
@@ -5776,8 +6087,8 @@ public struct ModelNewUserFilterInput: GraphQLMapConvertible {
 public struct ModelNewAthleteFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelIDInput? = nil, heightFeet: ModelIntInput? = nil, heightInches: ModelIntInput? = nil, weight: ModelIntInput? = nil, weightUnit: ModelStringInput? = nil, gender: ModelStringInput? = nil, age: ModelIntInput? = nil, graduationYear: ModelIntInput? = nil, highSchool: ModelStringInput? = nil, hometown: ModelStringInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, collegeId: ModelIDInput? = nil, newteamId: ModelIDInput? = nil, and: [ModelNewAthleteFilterInput?]? = nil, or: [ModelNewAthleteFilterInput?]? = nil, not: ModelNewAthleteFilterInput? = nil, deleted: ModelBooleanInput? = nil, newAthleteUserId: ModelIDInput? = nil) {
-    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "and": and, "or": or, "not": not, "_deleted": deleted, "newAthleteUserId": newAthleteUserId]
+  public init(id: ModelIDInput? = nil, heightFeet: ModelIntInput? = nil, heightInches: ModelIntInput? = nil, weight: ModelIntInput? = nil, weightUnit: ModelStringInput? = nil, gender: ModelStringInput? = nil, age: ModelIntInput? = nil, dateOfBirth: ModelStringInput? = nil, graduationYear: ModelIntInput? = nil, highSchool: ModelStringInput? = nil, hometown: ModelStringInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, collegeId: ModelIDInput? = nil, newteamId: ModelIDInput? = nil, and: [ModelNewAthleteFilterInput?]? = nil, or: [ModelNewAthleteFilterInput?]? = nil, not: ModelNewAthleteFilterInput? = nil, deleted: ModelBooleanInput? = nil, newAthleteAcademicsId: ModelIDInput? = nil, newAthleteUserId: ModelIDInput? = nil) {
+    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "and": and, "or": or, "not": not, "_deleted": deleted, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId]
   }
 
   public var id: ModelIDInput? {
@@ -5840,6 +6151,15 @@ public struct ModelNewAthleteFilterInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "age")
+    }
+  }
+
+  public var dateOfBirth: ModelStringInput? {
+    get {
+      return graphQLMap["dateOfBirth"] as! ModelStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "dateOfBirth")
     }
   }
 
@@ -5948,6 +6268,15 @@ public struct ModelNewAthleteFilterInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "_deleted")
+    }
+  }
+
+  public var newAthleteAcademicsId: ModelIDInput? {
+    get {
+      return graphQLMap["newAthleteAcademicsId"] as! ModelIDInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "newAthleteAcademicsId")
     }
   }
 
@@ -6792,8 +7121,8 @@ public struct ModelMessageFilterInput: GraphQLMapConvertible {
 public struct ModelDiveMeetsDiverFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelIDInput? = nil, firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, gender: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, ttl: ModelIntInput? = nil, and: [ModelDiveMeetsDiverFilterInput?]? = nil, or: [ModelDiveMeetsDiverFilterInput?]? = nil, not: ModelDiveMeetsDiverFilterInput? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "and": and, "or": or, "not": not, "_deleted": deleted]
+  public init(id: ModelIDInput? = nil, firstName: ModelStringInput? = nil, lastName: ModelStringInput? = nil, gender: ModelStringInput? = nil, finaAge: ModelIntInput? = nil, hsGradYear: ModelIntInput? = nil, springboardRating: ModelFloatInput? = nil, platformRating: ModelFloatInput? = nil, totalRating: ModelFloatInput? = nil, and: [ModelDiveMeetsDiverFilterInput?]? = nil, or: [ModelDiveMeetsDiverFilterInput?]? = nil, not: ModelDiveMeetsDiverFilterInput? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "not": not, "_deleted": deleted]
   }
 
   public var id: ModelIDInput? {
@@ -6877,15 +7206,6 @@ public struct ModelDiveMeetsDiverFilterInput: GraphQLMapConvertible {
     }
   }
 
-  public var ttl: ModelIntInput? {
-    get {
-      return graphQLMap["_ttl"] as! ModelIntInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "_ttl")
-    }
-  }
-
   public var and: [ModelDiveMeetsDiverFilterInput?]? {
     get {
       return graphQLMap["and"] as! [ModelDiveMeetsDiverFilterInput?]?
@@ -6919,6 +7239,113 @@ public struct ModelDiveMeetsDiverFilterInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "_deleted")
+    }
+  }
+}
+
+public struct ModelAcademicRecordFilterInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(id: ModelIDInput? = nil, satScore: ModelIntInput? = nil, actScore: ModelIntInput? = nil, weightedGpa: ModelFloatInput? = nil, gpaScale: ModelFloatInput? = nil, coursework: ModelStringInput? = nil, and: [ModelAcademicRecordFilterInput?]? = nil, or: [ModelAcademicRecordFilterInput?]? = nil, not: ModelAcademicRecordFilterInput? = nil, deleted: ModelBooleanInput? = nil, academicRecordAthleteId: ModelIDInput? = nil) {
+    graphQLMap = ["id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "and": and, "or": or, "not": not, "_deleted": deleted, "academicRecordAthleteId": academicRecordAthleteId]
+  }
+
+  public var id: ModelIDInput? {
+    get {
+      return graphQLMap["id"] as! ModelIDInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  public var satScore: ModelIntInput? {
+    get {
+      return graphQLMap["satScore"] as! ModelIntInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "satScore")
+    }
+  }
+
+  public var actScore: ModelIntInput? {
+    get {
+      return graphQLMap["actScore"] as! ModelIntInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "actScore")
+    }
+  }
+
+  public var weightedGpa: ModelFloatInput? {
+    get {
+      return graphQLMap["weightedGPA"] as! ModelFloatInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "weightedGPA")
+    }
+  }
+
+  public var gpaScale: ModelFloatInput? {
+    get {
+      return graphQLMap["gpaScale"] as! ModelFloatInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gpaScale")
+    }
+  }
+
+  public var coursework: ModelStringInput? {
+    get {
+      return graphQLMap["coursework"] as! ModelStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "coursework")
+    }
+  }
+
+  public var and: [ModelAcademicRecordFilterInput?]? {
+    get {
+      return graphQLMap["and"] as! [ModelAcademicRecordFilterInput?]?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "and")
+    }
+  }
+
+  public var or: [ModelAcademicRecordFilterInput?]? {
+    get {
+      return graphQLMap["or"] as! [ModelAcademicRecordFilterInput?]?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "or")
+    }
+  }
+
+  public var not: ModelAcademicRecordFilterInput? {
+    get {
+      return graphQLMap["not"] as! ModelAcademicRecordFilterInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "not")
+    }
+  }
+
+  public var deleted: ModelBooleanInput? {
+    get {
+      return graphQLMap["_deleted"] as! ModelBooleanInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "_deleted")
+    }
+  }
+
+  public var academicRecordAthleteId: ModelIDInput? {
+    get {
+      return graphQLMap["academicRecordAthleteId"] as! ModelIDInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "academicRecordAthleteId")
     }
   }
 }
@@ -7584,8 +8011,8 @@ public struct ModelSubscriptionNewUserFilterInput: GraphQLMapConvertible {
 public struct ModelSubscriptionNewAthleteFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelSubscriptionIDInput? = nil, heightFeet: ModelSubscriptionIntInput? = nil, heightInches: ModelSubscriptionIntInput? = nil, weight: ModelSubscriptionIntInput? = nil, weightUnit: ModelSubscriptionStringInput? = nil, gender: ModelSubscriptionStringInput? = nil, age: ModelSubscriptionIntInput? = nil, graduationYear: ModelSubscriptionIntInput? = nil, highSchool: ModelSubscriptionStringInput? = nil, hometown: ModelSubscriptionStringInput? = nil, springboardRating: ModelSubscriptionFloatInput? = nil, platformRating: ModelSubscriptionFloatInput? = nil, totalRating: ModelSubscriptionFloatInput? = nil, collegeId: ModelSubscriptionIDInput? = nil, newteamId: ModelSubscriptionIDInput? = nil, and: [ModelSubscriptionNewAthleteFilterInput?]? = nil, or: [ModelSubscriptionNewAthleteFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "and": and, "or": or, "_deleted": deleted]
+  public init(id: ModelSubscriptionIDInput? = nil, heightFeet: ModelSubscriptionIntInput? = nil, heightInches: ModelSubscriptionIntInput? = nil, weight: ModelSubscriptionIntInput? = nil, weightUnit: ModelSubscriptionStringInput? = nil, gender: ModelSubscriptionStringInput? = nil, age: ModelSubscriptionIntInput? = nil, dateOfBirth: ModelSubscriptionStringInput? = nil, graduationYear: ModelSubscriptionIntInput? = nil, highSchool: ModelSubscriptionStringInput? = nil, hometown: ModelSubscriptionStringInput? = nil, springboardRating: ModelSubscriptionFloatInput? = nil, platformRating: ModelSubscriptionFloatInput? = nil, totalRating: ModelSubscriptionFloatInput? = nil, collegeId: ModelSubscriptionIDInput? = nil, newteamId: ModelSubscriptionIDInput? = nil, and: [ModelSubscriptionNewAthleteFilterInput?]? = nil, or: [ModelSubscriptionNewAthleteFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "and": and, "or": or, "_deleted": deleted]
   }
 
   public var id: ModelSubscriptionIDInput? {
@@ -7648,6 +8075,15 @@ public struct ModelSubscriptionNewAthleteFilterInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "age")
+    }
+  }
+
+  public var dateOfBirth: ModelSubscriptionStringInput? {
+    get {
+      return graphQLMap["dateOfBirth"] as! ModelSubscriptionStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "dateOfBirth")
     }
   }
 
@@ -8634,8 +9070,8 @@ public struct ModelSubscriptionMessageFilterInput: GraphQLMapConvertible {
 public struct ModelSubscriptionDiveMeetsDiverFilterInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: ModelSubscriptionIDInput? = nil, firstName: ModelSubscriptionStringInput? = nil, lastName: ModelSubscriptionStringInput? = nil, gender: ModelSubscriptionStringInput? = nil, finaAge: ModelSubscriptionIntInput? = nil, hsGradYear: ModelSubscriptionIntInput? = nil, springboardRating: ModelSubscriptionFloatInput? = nil, platformRating: ModelSubscriptionFloatInput? = nil, totalRating: ModelSubscriptionFloatInput? = nil, ttl: ModelSubscriptionIntInput? = nil, and: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, or: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
-    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "and": and, "or": or, "_deleted": deleted]
+  public init(id: ModelSubscriptionIDInput? = nil, firstName: ModelSubscriptionStringInput? = nil, lastName: ModelSubscriptionStringInput? = nil, gender: ModelSubscriptionStringInput? = nil, finaAge: ModelSubscriptionIntInput? = nil, hsGradYear: ModelSubscriptionIntInput? = nil, springboardRating: ModelSubscriptionFloatInput? = nil, platformRating: ModelSubscriptionFloatInput? = nil, totalRating: ModelSubscriptionFloatInput? = nil, and: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, or: [ModelSubscriptionDiveMeetsDiverFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "and": and, "or": or, "_deleted": deleted]
   }
 
   public var id: ModelSubscriptionIDInput? {
@@ -8719,15 +9155,6 @@ public struct ModelSubscriptionDiveMeetsDiverFilterInput: GraphQLMapConvertible 
     }
   }
 
-  public var ttl: ModelSubscriptionIntInput? {
-    get {
-      return graphQLMap["_ttl"] as! ModelSubscriptionIntInput?
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "_ttl")
-    }
-  }
-
   public var and: [ModelSubscriptionDiveMeetsDiverFilterInput?]? {
     get {
       return graphQLMap["and"] as! [ModelSubscriptionDiveMeetsDiverFilterInput?]?
@@ -8740,6 +9167,95 @@ public struct ModelSubscriptionDiveMeetsDiverFilterInput: GraphQLMapConvertible 
   public var or: [ModelSubscriptionDiveMeetsDiverFilterInput?]? {
     get {
       return graphQLMap["or"] as! [ModelSubscriptionDiveMeetsDiverFilterInput?]?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "or")
+    }
+  }
+
+  public var deleted: ModelBooleanInput? {
+    get {
+      return graphQLMap["_deleted"] as! ModelBooleanInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "_deleted")
+    }
+  }
+}
+
+public struct ModelSubscriptionAcademicRecordFilterInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(id: ModelSubscriptionIDInput? = nil, satScore: ModelSubscriptionIntInput? = nil, actScore: ModelSubscriptionIntInput? = nil, weightedGpa: ModelSubscriptionFloatInput? = nil, gpaScale: ModelSubscriptionFloatInput? = nil, coursework: ModelSubscriptionStringInput? = nil, and: [ModelSubscriptionAcademicRecordFilterInput?]? = nil, or: [ModelSubscriptionAcademicRecordFilterInput?]? = nil, deleted: ModelBooleanInput? = nil) {
+    graphQLMap = ["id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "and": and, "or": or, "_deleted": deleted]
+  }
+
+  public var id: ModelSubscriptionIDInput? {
+    get {
+      return graphQLMap["id"] as! ModelSubscriptionIDInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  public var satScore: ModelSubscriptionIntInput? {
+    get {
+      return graphQLMap["satScore"] as! ModelSubscriptionIntInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "satScore")
+    }
+  }
+
+  public var actScore: ModelSubscriptionIntInput? {
+    get {
+      return graphQLMap["actScore"] as! ModelSubscriptionIntInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "actScore")
+    }
+  }
+
+  public var weightedGpa: ModelSubscriptionFloatInput? {
+    get {
+      return graphQLMap["weightedGPA"] as! ModelSubscriptionFloatInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "weightedGPA")
+    }
+  }
+
+  public var gpaScale: ModelSubscriptionFloatInput? {
+    get {
+      return graphQLMap["gpaScale"] as! ModelSubscriptionFloatInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "gpaScale")
+    }
+  }
+
+  public var coursework: ModelSubscriptionStringInput? {
+    get {
+      return graphQLMap["coursework"] as! ModelSubscriptionStringInput?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "coursework")
+    }
+  }
+
+  public var and: [ModelSubscriptionAcademicRecordFilterInput?]? {
+    get {
+      return graphQLMap["and"] as! [ModelSubscriptionAcademicRecordFilterInput?]?
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "and")
+    }
+  }
+
+  public var or: [ModelSubscriptionAcademicRecordFilterInput?]? {
+    get {
+      return graphQLMap["or"] as! [ModelSubscriptionAcademicRecordFilterInput?]?
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "or")
@@ -11203,7 +11719,7 @@ public final class DeleteMessageNewUserMutation: GraphQLMutation {
 
 public final class CreateNewUserMutation: GraphQLMutation {
   public static let operationString =
-    "mutation CreateNewUser($input: CreateNewUserInput!, $condition: ModelNewUserConditionInput) {\n  createNewUser(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
+    "mutation CreateNewUser($input: CreateNewUserInput!, $condition: ModelNewUserConditionInput) {\n  createNewUser(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
 
   public var input: CreateNewUserInput
   public var condition: ModelNewUserConditionInput?
@@ -11481,6 +11997,7 @@ public final class CreateNewUserMutation: GraphQLMutation {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -11494,6 +12011,7 @@ public final class CreateNewUserMutation: GraphQLMutation {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -11503,8 +12021,8 @@ public final class CreateNewUserMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -11576,6 +12094,15 @@ public final class CreateNewUserMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -11693,6 +12220,15 @@ public final class CreateNewUserMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -11932,7 +12468,7 @@ public final class CreateNewUserMutation: GraphQLMutation {
 
 public final class UpdateNewUserMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdateNewUser($input: UpdateNewUserInput!, $condition: ModelNewUserConditionInput) {\n  updateNewUser(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
+    "mutation UpdateNewUser($input: UpdateNewUserInput!, $condition: ModelNewUserConditionInput) {\n  updateNewUser(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
 
   public var input: UpdateNewUserInput
   public var condition: ModelNewUserConditionInput?
@@ -12210,6 +12746,7 @@ public final class UpdateNewUserMutation: GraphQLMutation {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -12223,6 +12760,7 @@ public final class UpdateNewUserMutation: GraphQLMutation {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -12232,8 +12770,8 @@ public final class UpdateNewUserMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -12305,6 +12843,15 @@ public final class UpdateNewUserMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -12422,6 +12969,15 @@ public final class UpdateNewUserMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -12661,7 +13217,7 @@ public final class UpdateNewUserMutation: GraphQLMutation {
 
 public final class DeleteNewUserMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeleteNewUser($input: DeleteNewUserInput!, $condition: ModelNewUserConditionInput) {\n  deleteNewUser(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
+    "mutation DeleteNewUser($input: DeleteNewUserInput!, $condition: ModelNewUserConditionInput) {\n  deleteNewUser(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
 
   public var input: DeleteNewUserInput
   public var condition: ModelNewUserConditionInput?
@@ -12939,6 +13495,7 @@ public final class DeleteNewUserMutation: GraphQLMutation {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -12952,6 +13509,7 @@ public final class DeleteNewUserMutation: GraphQLMutation {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -12961,8 +13519,8 @@ public final class DeleteNewUserMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -13034,6 +13592,15 @@ public final class DeleteNewUserMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -13151,6 +13718,15 @@ public final class DeleteNewUserMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -13390,7 +13966,7 @@ public final class DeleteNewUserMutation: GraphQLMutation {
 
 public final class CreateNewAthleteMutation: GraphQLMutation {
   public static let operationString =
-    "mutation CreateNewAthlete($input: CreateNewAthleteInput!, $condition: ModelNewAthleteConditionInput) {\n  createNewAthlete(input: $input, condition: $condition) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteUserId\n  }\n}"
+    "mutation CreateNewAthlete($input: CreateNewAthleteInput!, $condition: ModelNewAthleteConditionInput) {\n  createNewAthlete(input: $input, condition: $condition) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    academics {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    dateOfBirth\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteAcademicsId\n    newAthleteUserId\n  }\n}"
 
   public var input: CreateNewAthleteInput
   public var condition: ModelNewAthleteConditionInput?
@@ -13439,12 +14015,14 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
         GraphQLField("user", type: .nonNull(.object(User.selections))),
         GraphQLField("team", type: .object(Team.selections)),
         GraphQLField("college", type: .object(College.selections)),
+        GraphQLField("academics", type: .object(Academic.selections)),
         GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
         GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
         GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
         GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
         GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
         GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -13459,6 +14037,7 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
         GraphQLField("_deleted", type: .scalar(Bool.self)),
         GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
         GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
       ]
 
@@ -13468,8 +14047,8 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, academics: Academic? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "academics": academics.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
       }
 
       public var __typename: String {
@@ -13514,6 +14093,15 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue?.snapshot, forKey: "college")
+        }
+      }
+
+      public var academics: Academic? {
+        get {
+          return (snapshot["academics"] as? Snapshot).flatMap { Academic(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "academics")
         }
       }
 
@@ -13568,6 +14156,15 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "age")
+        }
+      }
+
+      public var dateOfBirth: String {
+        get {
+          return snapshot["dateOfBirth"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "dateOfBirth")
         }
       }
 
@@ -13694,6 +14291,15 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var newAthleteAcademicsId: GraphQLID? {
+        get {
+          return snapshot["newAthleteAcademicsId"] as? GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
         }
       }
 
@@ -14113,6 +14719,153 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "collegeCoachId")
+          }
+        }
+      }
+
+      public struct Academic: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
           }
         }
       }
@@ -14169,7 +14922,7 @@ public final class CreateNewAthleteMutation: GraphQLMutation {
 
 public final class UpdateNewAthleteMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdateNewAthlete($input: UpdateNewAthleteInput!, $condition: ModelNewAthleteConditionInput) {\n  updateNewAthlete(input: $input, condition: $condition) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteUserId\n  }\n}"
+    "mutation UpdateNewAthlete($input: UpdateNewAthleteInput!, $condition: ModelNewAthleteConditionInput) {\n  updateNewAthlete(input: $input, condition: $condition) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    academics {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    dateOfBirth\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteAcademicsId\n    newAthleteUserId\n  }\n}"
 
   public var input: UpdateNewAthleteInput
   public var condition: ModelNewAthleteConditionInput?
@@ -14218,12 +14971,14 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
         GraphQLField("user", type: .nonNull(.object(User.selections))),
         GraphQLField("team", type: .object(Team.selections)),
         GraphQLField("college", type: .object(College.selections)),
+        GraphQLField("academics", type: .object(Academic.selections)),
         GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
         GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
         GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
         GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
         GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
         GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -14238,6 +14993,7 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
         GraphQLField("_deleted", type: .scalar(Bool.self)),
         GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
         GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
       ]
 
@@ -14247,8 +15003,8 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, academics: Academic? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "academics": academics.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
       }
 
       public var __typename: String {
@@ -14293,6 +15049,15 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue?.snapshot, forKey: "college")
+        }
+      }
+
+      public var academics: Academic? {
+        get {
+          return (snapshot["academics"] as? Snapshot).flatMap { Academic(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "academics")
         }
       }
 
@@ -14347,6 +15112,15 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "age")
+        }
+      }
+
+      public var dateOfBirth: String {
+        get {
+          return snapshot["dateOfBirth"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "dateOfBirth")
         }
       }
 
@@ -14473,6 +15247,15 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var newAthleteAcademicsId: GraphQLID? {
+        get {
+          return snapshot["newAthleteAcademicsId"] as? GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
         }
       }
 
@@ -14892,6 +15675,153 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "collegeCoachId")
+          }
+        }
+      }
+
+      public struct Academic: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
           }
         }
       }
@@ -14948,7 +15878,7 @@ public final class UpdateNewAthleteMutation: GraphQLMutation {
 
 public final class DeleteNewAthleteMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeleteNewAthlete($input: DeleteNewAthleteInput!, $condition: ModelNewAthleteConditionInput) {\n  deleteNewAthlete(input: $input, condition: $condition) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteUserId\n  }\n}"
+    "mutation DeleteNewAthlete($input: DeleteNewAthleteInput!, $condition: ModelNewAthleteConditionInput) {\n  deleteNewAthlete(input: $input, condition: $condition) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    academics {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    dateOfBirth\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteAcademicsId\n    newAthleteUserId\n  }\n}"
 
   public var input: DeleteNewAthleteInput
   public var condition: ModelNewAthleteConditionInput?
@@ -14997,12 +15927,14 @@ public final class DeleteNewAthleteMutation: GraphQLMutation {
         GraphQLField("user", type: .nonNull(.object(User.selections))),
         GraphQLField("team", type: .object(Team.selections)),
         GraphQLField("college", type: .object(College.selections)),
+        GraphQLField("academics", type: .object(Academic.selections)),
         GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
         GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
         GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
         GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
         GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
         GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -15017,6 +15949,7 @@ public final class DeleteNewAthleteMutation: GraphQLMutation {
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
         GraphQLField("_deleted", type: .scalar(Bool.self)),
         GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
         GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
       ]
 
@@ -15026,8 +15959,8 @@ public final class DeleteNewAthleteMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, academics: Academic? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "academics": academics.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
       }
 
       public var __typename: String {
@@ -15072,6 +16005,15 @@ public final class DeleteNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue?.snapshot, forKey: "college")
+        }
+      }
+
+      public var academics: Academic? {
+        get {
+          return (snapshot["academics"] as? Snapshot).flatMap { Academic(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "academics")
         }
       }
 
@@ -15126,6 +16068,15 @@ public final class DeleteNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "age")
+        }
+      }
+
+      public var dateOfBirth: String {
+        get {
+          return snapshot["dateOfBirth"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "dateOfBirth")
         }
       }
 
@@ -15252,6 +16203,15 @@ public final class DeleteNewAthleteMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var newAthleteAcademicsId: GraphQLID? {
+        get {
+          return snapshot["newAthleteAcademicsId"] as? GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
         }
       }
 
@@ -15671,6 +16631,153 @@ public final class DeleteNewAthleteMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "collegeCoachId")
+          }
+        }
+      }
+
+      public struct Academic: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
           }
         }
       }
@@ -22315,7 +23422,7 @@ public final class DeleteNewEventMutation: GraphQLMutation {
 
 public final class CreateDiveMutation: GraphQLMutation {
   public static let operationString =
-    "mutation CreateDive($input: CreateDiveInput!, $condition: ModelDiveConditionInput) {\n  createDive(input: $input, condition: $condition) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation CreateDive($input: CreateDiveInput!, $condition: ModelDiveConditionInput) {\n  createDive(input: $input, condition: $condition) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: CreateDiveInput
   public var condition: ModelDiveConditionInput?
@@ -22700,6 +23807,7 @@ public final class CreateDiveMutation: GraphQLMutation {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -22713,6 +23821,7 @@ public final class CreateDiveMutation: GraphQLMutation {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -22722,8 +23831,8 @@ public final class CreateDiveMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -22795,6 +23904,15 @@ public final class CreateDiveMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -22915,6 +24033,15 @@ public final class CreateDiveMutation: GraphQLMutation {
           }
         }
 
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
         public var newAthleteUserId: GraphQLID {
           get {
             return snapshot["newAthleteUserId"]! as! GraphQLID
@@ -22977,7 +24104,7 @@ public final class CreateDiveMutation: GraphQLMutation {
 
 public final class UpdateDiveMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdateDive($input: UpdateDiveInput!, $condition: ModelDiveConditionInput) {\n  updateDive(input: $input, condition: $condition) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation UpdateDive($input: UpdateDiveInput!, $condition: ModelDiveConditionInput) {\n  updateDive(input: $input, condition: $condition) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: UpdateDiveInput
   public var condition: ModelDiveConditionInput?
@@ -23362,6 +24489,7 @@ public final class UpdateDiveMutation: GraphQLMutation {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -23375,6 +24503,7 @@ public final class UpdateDiveMutation: GraphQLMutation {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -23384,8 +24513,8 @@ public final class UpdateDiveMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -23457,6 +24586,15 @@ public final class UpdateDiveMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -23577,6 +24715,15 @@ public final class UpdateDiveMutation: GraphQLMutation {
           }
         }
 
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
         public var newAthleteUserId: GraphQLID {
           get {
             return snapshot["newAthleteUserId"]! as! GraphQLID
@@ -23639,7 +24786,7 @@ public final class UpdateDiveMutation: GraphQLMutation {
 
 public final class DeleteDiveMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeleteDive($input: DeleteDiveInput!, $condition: ModelDiveConditionInput) {\n  deleteDive(input: $input, condition: $condition) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation DeleteDive($input: DeleteDiveInput!, $condition: ModelDiveConditionInput) {\n  deleteDive(input: $input, condition: $condition) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: DeleteDiveInput
   public var condition: ModelDiveConditionInput?
@@ -24024,6 +25171,7 @@ public final class DeleteDiveMutation: GraphQLMutation {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -24037,6 +25185,7 @@ public final class DeleteDiveMutation: GraphQLMutation {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -24046,8 +25195,8 @@ public final class DeleteDiveMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -24119,6 +25268,15 @@ public final class DeleteDiveMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -24236,6 +25394,15 @@ public final class DeleteDiveMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -25909,7 +27076,7 @@ public final class DeleteMessageMutation: GraphQLMutation {
 
 public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
   public static let operationString =
-    "mutation CreateDiveMeetsDiver($input: CreateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  createDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    _ttl\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation CreateDiveMeetsDiver($input: CreateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  createDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: CreateDiveMeetsDiverInput
   public var condition: ModelDiveMeetsDiverConditionInput?
@@ -25963,7 +27130,6 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
         GraphQLField("springboardRating", type: .scalar(Double.self)),
         GraphQLField("platformRating", type: .scalar(Double.self)),
         GraphQLField("totalRating", type: .scalar(Double.self)),
-        GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -25977,8 +27143,8 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -26068,15 +27234,6 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "totalRating")
-        }
-      }
-
-      public var ttl: Int {
-        get {
-          return snapshot["_ttl"]! as! Int
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "_ttl")
         }
       }
 
@@ -26130,7 +27287,7 @@ public final class CreateDiveMeetsDiverMutation: GraphQLMutation {
 
 public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdateDiveMeetsDiver($input: UpdateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  updateDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    _ttl\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation UpdateDiveMeetsDiver($input: UpdateDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  updateDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: UpdateDiveMeetsDiverInput
   public var condition: ModelDiveMeetsDiverConditionInput?
@@ -26184,7 +27341,6 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
         GraphQLField("springboardRating", type: .scalar(Double.self)),
         GraphQLField("platformRating", type: .scalar(Double.self)),
         GraphQLField("totalRating", type: .scalar(Double.self)),
-        GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -26198,8 +27354,8 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -26289,15 +27445,6 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "totalRating")
-        }
-      }
-
-      public var ttl: Int {
-        get {
-          return snapshot["_ttl"]! as! Int
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "_ttl")
         }
       }
 
@@ -26351,7 +27498,7 @@ public final class UpdateDiveMeetsDiverMutation: GraphQLMutation {
 
 public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeleteDiveMeetsDiver($input: DeleteDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  deleteDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    _ttl\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "mutation DeleteDiveMeetsDiver($input: DeleteDiveMeetsDiverInput!, $condition: ModelDiveMeetsDiverConditionInput) {\n  deleteDiveMeetsDiver(input: $input, condition: $condition) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var input: DeleteDiveMeetsDiverInput
   public var condition: ModelDiveMeetsDiverConditionInput?
@@ -26405,7 +27552,6 @@ public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
         GraphQLField("springboardRating", type: .scalar(Double.self)),
         GraphQLField("platformRating", type: .scalar(Double.self)),
         GraphQLField("totalRating", type: .scalar(Double.self)),
-        GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -26419,8 +27565,8 @@ public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -26513,12 +27659,195 @@ public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
         }
       }
 
-      public var ttl: Int {
+      public var createdAt: String {
         get {
-          return snapshot["_ttl"]! as! Int
+          return snapshot["createdAt"]! as! String
         }
         set {
-          snapshot.updateValue(newValue, forKey: "_ttl")
+          snapshot.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return snapshot["updatedAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+
+      public var version: Int {
+        get {
+          return snapshot["_version"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_version")
+        }
+      }
+
+      public var deleted: Bool? {
+        get {
+          return snapshot["_deleted"] as? Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_deleted")
+        }
+      }
+
+      public var lastChangedAt: Int {
+        get {
+          return snapshot["_lastChangedAt"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+    }
+  }
+}
+
+public final class CreateAcademicRecordMutation: GraphQLMutation {
+  public static let operationString =
+    "mutation CreateAcademicRecord($input: CreateAcademicRecordInput!, $condition: ModelAcademicRecordConditionInput) {\n  createAcademicRecord(input: $input, condition: $condition) {\n    __typename\n    id\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    satScore\n    actScore\n    weightedGPA\n    gpaScale\n    coursework\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    academicRecordAthleteId\n  }\n}"
+
+  public var input: CreateAcademicRecordInput
+  public var condition: ModelAcademicRecordConditionInput?
+
+  public init(input: CreateAcademicRecordInput, condition: ModelAcademicRecordConditionInput? = nil) {
+    self.input = input
+    self.condition = condition
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input, "condition": condition]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Mutation"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("createAcademicRecord", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(CreateAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(createAcademicRecord: CreateAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Mutation", "createAcademicRecord": createAcademicRecord.flatMap { $0.snapshot }])
+    }
+
+    public var createAcademicRecord: CreateAcademicRecord? {
+      get {
+        return (snapshot["createAcademicRecord"] as? Snapshot).flatMap { CreateAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "createAcademicRecord")
+      }
+    }
+
+    public struct CreateAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["AcademicRecord"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("athlete", type: .nonNull(.object(Athlete.selections))),
+        GraphQLField("satScore", type: .scalar(Int.self)),
+        GraphQLField("actScore", type: .scalar(Int.self)),
+        GraphQLField("weightedGPA", type: .scalar(Double.self)),
+        GraphQLField("gpaScale", type: .scalar(Double.self)),
+        GraphQLField("coursework", type: .scalar(String.self)),
+        GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("_deleted", type: .scalar(Bool.self)),
+        GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, athlete: Athlete, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+        self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "athlete": athlete.snapshot, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var athlete: Athlete {
+        get {
+          return Athlete(snapshot: snapshot["athlete"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "athlete")
+        }
+      }
+
+      public var satScore: Int? {
+        get {
+          return snapshot["satScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "satScore")
+        }
+      }
+
+      public var actScore: Int? {
+        get {
+          return snapshot["actScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "actScore")
+        }
+      }
+
+      public var weightedGpa: Double? {
+        get {
+          return snapshot["weightedGPA"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "weightedGPA")
+        }
+      }
+
+      public var gpaScale: Double? {
+        get {
+          return snapshot["gpaScale"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gpaScale")
+        }
+      }
+
+      public var coursework: String? {
+        get {
+          return snapshot["coursework"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "coursework")
         }
       }
 
@@ -26564,6 +27893,1188 @@ public final class DeleteDiveMeetsDiverMutation: GraphQLMutation {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var academicRecordAthleteId: GraphQLID {
+        get {
+          return snapshot["academicRecordAthleteId"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+        }
+      }
+
+      public struct Athlete: GraphQLSelectionSet {
+        public static let possibleTypes = ["NewAthlete"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
+          GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
+          GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
+          GraphQLField("springboardRating", type: .scalar(Double.self)),
+          GraphQLField("platformRating", type: .scalar(Double.self)),
+          GraphQLField("totalRating", type: .scalar(Double.self)),
+          GraphQLField("collegeID", type: .scalar(GraphQLID.self)),
+          GraphQLField("newteamID", type: .scalar(GraphQLID.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
+          GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var heightFeet: Int {
+          get {
+            return snapshot["heightFeet"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightFeet")
+          }
+        }
+
+        public var heightInches: Int {
+          get {
+            return snapshot["heightInches"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightInches")
+          }
+        }
+
+        public var weight: Int {
+          get {
+            return snapshot["weight"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weight")
+          }
+        }
+
+        public var weightUnit: String {
+          get {
+            return snapshot["weightUnit"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightUnit")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
+          }
+        }
+
+        public var age: Int {
+          get {
+            return snapshot["age"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
+          }
+        }
+
+        public var graduationYear: Int {
+          get {
+            return snapshot["graduationYear"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "graduationYear")
+          }
+        }
+
+        public var highSchool: String {
+          get {
+            return snapshot["highSchool"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "highSchool")
+          }
+        }
+
+        public var hometown: String {
+          get {
+            return snapshot["hometown"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hometown")
+          }
+        }
+
+        public var springboardRating: Double? {
+          get {
+            return snapshot["springboardRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "springboardRating")
+          }
+        }
+
+        public var platformRating: Double? {
+          get {
+            return snapshot["platformRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "platformRating")
+          }
+        }
+
+        public var totalRating: Double? {
+          get {
+            return snapshot["totalRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "totalRating")
+          }
+        }
+
+        public var collegeId: GraphQLID? {
+          get {
+            return snapshot["collegeID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "collegeID")
+          }
+        }
+
+        public var newteamId: GraphQLID? {
+          get {
+            return snapshot["newteamID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newteamID")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
+        public var newAthleteUserId: GraphQLID {
+          get {
+            return snapshot["newAthleteUserId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteUserId")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class UpdateAcademicRecordMutation: GraphQLMutation {
+  public static let operationString =
+    "mutation UpdateAcademicRecord($input: UpdateAcademicRecordInput!, $condition: ModelAcademicRecordConditionInput) {\n  updateAcademicRecord(input: $input, condition: $condition) {\n    __typename\n    id\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    satScore\n    actScore\n    weightedGPA\n    gpaScale\n    coursework\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    academicRecordAthleteId\n  }\n}"
+
+  public var input: UpdateAcademicRecordInput
+  public var condition: ModelAcademicRecordConditionInput?
+
+  public init(input: UpdateAcademicRecordInput, condition: ModelAcademicRecordConditionInput? = nil) {
+    self.input = input
+    self.condition = condition
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input, "condition": condition]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Mutation"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("updateAcademicRecord", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(UpdateAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(updateAcademicRecord: UpdateAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Mutation", "updateAcademicRecord": updateAcademicRecord.flatMap { $0.snapshot }])
+    }
+
+    public var updateAcademicRecord: UpdateAcademicRecord? {
+      get {
+        return (snapshot["updateAcademicRecord"] as? Snapshot).flatMap { UpdateAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "updateAcademicRecord")
+      }
+    }
+
+    public struct UpdateAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["AcademicRecord"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("athlete", type: .nonNull(.object(Athlete.selections))),
+        GraphQLField("satScore", type: .scalar(Int.self)),
+        GraphQLField("actScore", type: .scalar(Int.self)),
+        GraphQLField("weightedGPA", type: .scalar(Double.self)),
+        GraphQLField("gpaScale", type: .scalar(Double.self)),
+        GraphQLField("coursework", type: .scalar(String.self)),
+        GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("_deleted", type: .scalar(Bool.self)),
+        GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, athlete: Athlete, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+        self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "athlete": athlete.snapshot, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var athlete: Athlete {
+        get {
+          return Athlete(snapshot: snapshot["athlete"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "athlete")
+        }
+      }
+
+      public var satScore: Int? {
+        get {
+          return snapshot["satScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "satScore")
+        }
+      }
+
+      public var actScore: Int? {
+        get {
+          return snapshot["actScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "actScore")
+        }
+      }
+
+      public var weightedGpa: Double? {
+        get {
+          return snapshot["weightedGPA"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "weightedGPA")
+        }
+      }
+
+      public var gpaScale: Double? {
+        get {
+          return snapshot["gpaScale"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gpaScale")
+        }
+      }
+
+      public var coursework: String? {
+        get {
+          return snapshot["coursework"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "coursework")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return snapshot["createdAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return snapshot["updatedAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+
+      public var version: Int {
+        get {
+          return snapshot["_version"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_version")
+        }
+      }
+
+      public var deleted: Bool? {
+        get {
+          return snapshot["_deleted"] as? Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_deleted")
+        }
+      }
+
+      public var lastChangedAt: Int {
+        get {
+          return snapshot["_lastChangedAt"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var academicRecordAthleteId: GraphQLID {
+        get {
+          return snapshot["academicRecordAthleteId"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+        }
+      }
+
+      public struct Athlete: GraphQLSelectionSet {
+        public static let possibleTypes = ["NewAthlete"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
+          GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
+          GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
+          GraphQLField("springboardRating", type: .scalar(Double.self)),
+          GraphQLField("platformRating", type: .scalar(Double.self)),
+          GraphQLField("totalRating", type: .scalar(Double.self)),
+          GraphQLField("collegeID", type: .scalar(GraphQLID.self)),
+          GraphQLField("newteamID", type: .scalar(GraphQLID.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
+          GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var heightFeet: Int {
+          get {
+            return snapshot["heightFeet"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightFeet")
+          }
+        }
+
+        public var heightInches: Int {
+          get {
+            return snapshot["heightInches"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightInches")
+          }
+        }
+
+        public var weight: Int {
+          get {
+            return snapshot["weight"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weight")
+          }
+        }
+
+        public var weightUnit: String {
+          get {
+            return snapshot["weightUnit"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightUnit")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
+          }
+        }
+
+        public var age: Int {
+          get {
+            return snapshot["age"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
+          }
+        }
+
+        public var graduationYear: Int {
+          get {
+            return snapshot["graduationYear"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "graduationYear")
+          }
+        }
+
+        public var highSchool: String {
+          get {
+            return snapshot["highSchool"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "highSchool")
+          }
+        }
+
+        public var hometown: String {
+          get {
+            return snapshot["hometown"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hometown")
+          }
+        }
+
+        public var springboardRating: Double? {
+          get {
+            return snapshot["springboardRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "springboardRating")
+          }
+        }
+
+        public var platformRating: Double? {
+          get {
+            return snapshot["platformRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "platformRating")
+          }
+        }
+
+        public var totalRating: Double? {
+          get {
+            return snapshot["totalRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "totalRating")
+          }
+        }
+
+        public var collegeId: GraphQLID? {
+          get {
+            return snapshot["collegeID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "collegeID")
+          }
+        }
+
+        public var newteamId: GraphQLID? {
+          get {
+            return snapshot["newteamID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newteamID")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
+        public var newAthleteUserId: GraphQLID {
+          get {
+            return snapshot["newAthleteUserId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteUserId")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class DeleteAcademicRecordMutation: GraphQLMutation {
+  public static let operationString =
+    "mutation DeleteAcademicRecord($input: DeleteAcademicRecordInput!, $condition: ModelAcademicRecordConditionInput) {\n  deleteAcademicRecord(input: $input, condition: $condition) {\n    __typename\n    id\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    satScore\n    actScore\n    weightedGPA\n    gpaScale\n    coursework\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    academicRecordAthleteId\n  }\n}"
+
+  public var input: DeleteAcademicRecordInput
+  public var condition: ModelAcademicRecordConditionInput?
+
+  public init(input: DeleteAcademicRecordInput, condition: ModelAcademicRecordConditionInput? = nil) {
+    self.input = input
+    self.condition = condition
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input, "condition": condition]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Mutation"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("deleteAcademicRecord", arguments: ["input": GraphQLVariable("input"), "condition": GraphQLVariable("condition")], type: .object(DeleteAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(deleteAcademicRecord: DeleteAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Mutation", "deleteAcademicRecord": deleteAcademicRecord.flatMap { $0.snapshot }])
+    }
+
+    public var deleteAcademicRecord: DeleteAcademicRecord? {
+      get {
+        return (snapshot["deleteAcademicRecord"] as? Snapshot).flatMap { DeleteAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "deleteAcademicRecord")
+      }
+    }
+
+    public struct DeleteAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["AcademicRecord"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("athlete", type: .nonNull(.object(Athlete.selections))),
+        GraphQLField("satScore", type: .scalar(Int.self)),
+        GraphQLField("actScore", type: .scalar(Int.self)),
+        GraphQLField("weightedGPA", type: .scalar(Double.self)),
+        GraphQLField("gpaScale", type: .scalar(Double.self)),
+        GraphQLField("coursework", type: .scalar(String.self)),
+        GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("_deleted", type: .scalar(Bool.self)),
+        GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, athlete: Athlete, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+        self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "athlete": athlete.snapshot, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var athlete: Athlete {
+        get {
+          return Athlete(snapshot: snapshot["athlete"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "athlete")
+        }
+      }
+
+      public var satScore: Int? {
+        get {
+          return snapshot["satScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "satScore")
+        }
+      }
+
+      public var actScore: Int? {
+        get {
+          return snapshot["actScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "actScore")
+        }
+      }
+
+      public var weightedGpa: Double? {
+        get {
+          return snapshot["weightedGPA"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "weightedGPA")
+        }
+      }
+
+      public var gpaScale: Double? {
+        get {
+          return snapshot["gpaScale"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gpaScale")
+        }
+      }
+
+      public var coursework: String? {
+        get {
+          return snapshot["coursework"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "coursework")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return snapshot["createdAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return snapshot["updatedAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+
+      public var version: Int {
+        get {
+          return snapshot["_version"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_version")
+        }
+      }
+
+      public var deleted: Bool? {
+        get {
+          return snapshot["_deleted"] as? Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_deleted")
+        }
+      }
+
+      public var lastChangedAt: Int {
+        get {
+          return snapshot["_lastChangedAt"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var academicRecordAthleteId: GraphQLID {
+        get {
+          return snapshot["academicRecordAthleteId"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+        }
+      }
+
+      public struct Athlete: GraphQLSelectionSet {
+        public static let possibleTypes = ["NewAthlete"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
+          GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
+          GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
+          GraphQLField("springboardRating", type: .scalar(Double.self)),
+          GraphQLField("platformRating", type: .scalar(Double.self)),
+          GraphQLField("totalRating", type: .scalar(Double.self)),
+          GraphQLField("collegeID", type: .scalar(GraphQLID.self)),
+          GraphQLField("newteamID", type: .scalar(GraphQLID.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
+          GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var heightFeet: Int {
+          get {
+            return snapshot["heightFeet"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightFeet")
+          }
+        }
+
+        public var heightInches: Int {
+          get {
+            return snapshot["heightInches"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightInches")
+          }
+        }
+
+        public var weight: Int {
+          get {
+            return snapshot["weight"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weight")
+          }
+        }
+
+        public var weightUnit: String {
+          get {
+            return snapshot["weightUnit"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightUnit")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
+          }
+        }
+
+        public var age: Int {
+          get {
+            return snapshot["age"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
+          }
+        }
+
+        public var graduationYear: Int {
+          get {
+            return snapshot["graduationYear"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "graduationYear")
+          }
+        }
+
+        public var highSchool: String {
+          get {
+            return snapshot["highSchool"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "highSchool")
+          }
+        }
+
+        public var hometown: String {
+          get {
+            return snapshot["hometown"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hometown")
+          }
+        }
+
+        public var springboardRating: Double? {
+          get {
+            return snapshot["springboardRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "springboardRating")
+          }
+        }
+
+        public var platformRating: Double? {
+          get {
+            return snapshot["platformRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "platformRating")
+          }
+        }
+
+        public var totalRating: Double? {
+          get {
+            return snapshot["totalRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "totalRating")
+          }
+        }
+
+        public var collegeId: GraphQLID? {
+          get {
+            return snapshot["collegeID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "collegeID")
+          }
+        }
+
+        public var newteamId: GraphQLID? {
+          get {
+            return snapshot["newteamID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newteamID")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
+        public var newAthleteUserId: GraphQLID {
+          get {
+            return snapshot["newAthleteUserId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteUserId")
+          }
         }
       }
     }
@@ -30481,7 +32992,7 @@ public final class MessageNewUsersByMessageIdQuery: GraphQLQuery {
 
 public final class GetNewUserQuery: GraphQLQuery {
   public static let operationString =
-    "query GetNewUser($id: ID!) {\n  getNewUser(id: $id) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
+    "query GetNewUser($id: ID!) {\n  getNewUser(id: $id) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
 
   public var id: GraphQLID
 
@@ -30757,6 +33268,7 @@ public final class GetNewUserQuery: GraphQLQuery {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -30770,6 +33282,7 @@ public final class GetNewUserQuery: GraphQLQuery {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -30779,8 +33292,8 @@ public final class GetNewUserQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -30852,6 +33365,15 @@ public final class GetNewUserQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -30969,6 +33491,15 @@ public final class GetNewUserQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -31790,7 +34321,7 @@ public final class SyncNewUsersQuery: GraphQLQuery {
 
 public final class GetNewAthleteQuery: GraphQLQuery {
   public static let operationString =
-    "query GetNewAthlete($id: ID!) {\n  getNewAthlete(id: $id) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteUserId\n  }\n}"
+    "query GetNewAthlete($id: ID!) {\n  getNewAthlete(id: $id) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    academics {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    dateOfBirth\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteAcademicsId\n    newAthleteUserId\n  }\n}"
 
   public var id: GraphQLID
 
@@ -31837,12 +34368,14 @@ public final class GetNewAthleteQuery: GraphQLQuery {
         GraphQLField("user", type: .nonNull(.object(User.selections))),
         GraphQLField("team", type: .object(Team.selections)),
         GraphQLField("college", type: .object(College.selections)),
+        GraphQLField("academics", type: .object(Academic.selections)),
         GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
         GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
         GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
         GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
         GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
         GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -31857,6 +34390,7 @@ public final class GetNewAthleteQuery: GraphQLQuery {
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
         GraphQLField("_deleted", type: .scalar(Bool.self)),
         GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
         GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
       ]
 
@@ -31866,8 +34400,8 @@ public final class GetNewAthleteQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, academics: Academic? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "academics": academics.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
       }
 
       public var __typename: String {
@@ -31912,6 +34446,15 @@ public final class GetNewAthleteQuery: GraphQLQuery {
         }
         set {
           snapshot.updateValue(newValue?.snapshot, forKey: "college")
+        }
+      }
+
+      public var academics: Academic? {
+        get {
+          return (snapshot["academics"] as? Snapshot).flatMap { Academic(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "academics")
         }
       }
 
@@ -31966,6 +34509,15 @@ public final class GetNewAthleteQuery: GraphQLQuery {
         }
         set {
           snapshot.updateValue(newValue, forKey: "age")
+        }
+      }
+
+      public var dateOfBirth: String {
+        get {
+          return snapshot["dateOfBirth"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "dateOfBirth")
         }
       }
 
@@ -32092,6 +34644,15 @@ public final class GetNewAthleteQuery: GraphQLQuery {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var newAthleteAcademicsId: GraphQLID? {
+        get {
+          return snapshot["newAthleteAcademicsId"] as? GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
         }
       }
 
@@ -32515,6 +35076,153 @@ public final class GetNewAthleteQuery: GraphQLQuery {
         }
       }
 
+      public struct Academic: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+          }
+        }
+      }
+
       public struct Dife: GraphQLSelectionSet {
         public static let possibleTypes = ["ModelDiveConnection"]
 
@@ -32567,7 +35275,7 @@ public final class GetNewAthleteQuery: GraphQLQuery {
 
 public final class ListNewAthletesQuery: GraphQLQuery {
   public static let operationString =
-    "query ListNewAthletes($filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String) {\n  listNewAthletes(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query ListNewAthletes($filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String) {\n  listNewAthletes(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelNewAthleteFilterInput?
   public var limit: Int?
@@ -32677,6 +35385,7 @@ public final class ListNewAthletesQuery: GraphQLQuery {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -32690,6 +35399,7 @@ public final class ListNewAthletesQuery: GraphQLQuery {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -32699,8 +35409,8 @@ public final class ListNewAthletesQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -32772,6 +35482,15 @@ public final class ListNewAthletesQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -32892,6 +35611,15 @@ public final class ListNewAthletesQuery: GraphQLQuery {
           }
         }
 
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
         public var newAthleteUserId: GraphQLID {
           get {
             return snapshot["newAthleteUserId"]! as! GraphQLID
@@ -32907,7 +35635,7 @@ public final class ListNewAthletesQuery: GraphQLQuery {
 
 public final class SyncNewAthletesQuery: GraphQLQuery {
   public static let operationString =
-    "query SyncNewAthletes($filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncNewAthletes(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query SyncNewAthletes($filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncNewAthletes(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelNewAthleteFilterInput?
   public var limit: Int?
@@ -33019,6 +35747,7 @@ public final class SyncNewAthletesQuery: GraphQLQuery {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -33032,6 +35761,7 @@ public final class SyncNewAthletesQuery: GraphQLQuery {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -33041,8 +35771,8 @@ public final class SyncNewAthletesQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -33114,6 +35844,15 @@ public final class SyncNewAthletesQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -33234,6 +35973,15 @@ public final class SyncNewAthletesQuery: GraphQLQuery {
           }
         }
 
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
         public var newAthleteUserId: GraphQLID {
           get {
             return snapshot["newAthleteUserId"]! as! GraphQLID
@@ -33249,7 +35997,7 @@ public final class SyncNewAthletesQuery: GraphQLQuery {
 
 public final class NewAthletesByCollegeIdQuery: GraphQLQuery {
   public static let operationString =
-    "query NewAthletesByCollegeID($collegeID: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String) {\n  newAthletesByCollegeID(\n    collegeID: $collegeID\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query NewAthletesByCollegeID($collegeID: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String) {\n  newAthletesByCollegeID(\n    collegeID: $collegeID\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var collegeID: GraphQLID
   public var sortDirection: ModelSortDirection?
@@ -33363,6 +36111,7 @@ public final class NewAthletesByCollegeIdQuery: GraphQLQuery {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -33376,6 +36125,7 @@ public final class NewAthletesByCollegeIdQuery: GraphQLQuery {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -33385,8 +36135,8 @@ public final class NewAthletesByCollegeIdQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -33458,6 +36208,15 @@ public final class NewAthletesByCollegeIdQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -33578,6 +36337,15 @@ public final class NewAthletesByCollegeIdQuery: GraphQLQuery {
           }
         }
 
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
         public var newAthleteUserId: GraphQLID {
           get {
             return snapshot["newAthleteUserId"]! as! GraphQLID
@@ -33593,7 +36361,7 @@ public final class NewAthletesByCollegeIdQuery: GraphQLQuery {
 
 public final class NewAthletesByNewteamIdQuery: GraphQLQuery {
   public static let operationString =
-    "query NewAthletesByNewteamID($newteamID: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String) {\n  newAthletesByNewteamID(\n    newteamID: $newteamID\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query NewAthletesByNewteamID($newteamID: ID!, $sortDirection: ModelSortDirection, $filter: ModelNewAthleteFilterInput, $limit: Int, $nextToken: String) {\n  newAthletesByNewteamID(\n    newteamID: $newteamID\n    sortDirection: $sortDirection\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var newteamID: GraphQLID
   public var sortDirection: ModelSortDirection?
@@ -33707,6 +36475,7 @@ public final class NewAthletesByNewteamIdQuery: GraphQLQuery {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -33720,6 +36489,7 @@ public final class NewAthletesByNewteamIdQuery: GraphQLQuery {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -33729,8 +36499,8 @@ public final class NewAthletesByNewteamIdQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -33802,6 +36572,15 @@ public final class NewAthletesByNewteamIdQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -33919,6 +36698,15 @@ public final class NewAthletesByNewteamIdQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -39421,7 +42209,7 @@ public final class NewEventsByNewmeetIdQuery: GraphQLQuery {
 
 public final class GetDiveQuery: GraphQLQuery {
   public static let operationString =
-    "query GetDive($id: ID!) {\n  getDive(id: $id) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "query GetDive($id: ID!) {\n  getDive(id: $id) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var id: GraphQLID
 
@@ -39804,6 +42592,7 @@ public final class GetDiveQuery: GraphQLQuery {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -39817,6 +42606,7 @@ public final class GetDiveQuery: GraphQLQuery {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -39826,8 +42616,8 @@ public final class GetDiveQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -39899,6 +42689,15 @@ public final class GetDiveQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -40016,6 +42815,15 @@ public final class GetDiveQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -42761,7 +45569,7 @@ public final class SyncMessagesQuery: GraphQLQuery {
 
 public final class GetDiveMeetsDiverQuery: GraphQLQuery {
   public static let operationString =
-    "query GetDiveMeetsDiver($id: ID!) {\n  getDiveMeetsDiver(id: $id) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    _ttl\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "query GetDiveMeetsDiver($id: ID!) {\n  getDiveMeetsDiver(id: $id) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var id: GraphQLID
 
@@ -42813,7 +45621,6 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
         GraphQLField("springboardRating", type: .scalar(Double.self)),
         GraphQLField("platformRating", type: .scalar(Double.self)),
         GraphQLField("totalRating", type: .scalar(Double.self)),
-        GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -42827,8 +45634,8 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -42921,15 +45728,6 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
         }
       }
 
-      public var ttl: Int {
-        get {
-          return snapshot["_ttl"]! as! Int
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "_ttl")
-        }
-      }
-
       public var createdAt: String {
         get {
           return snapshot["createdAt"]! as! String
@@ -42980,7 +45778,7 @@ public final class GetDiveMeetsDiverQuery: GraphQLQuery {
 
 public final class ListDiveMeetsDiversQuery: GraphQLQuery {
   public static let operationString =
-    "query ListDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String) {\n  listDiveMeetsDivers(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      gender\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      _ttl\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query ListDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String) {\n  listDiveMeetsDivers(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      gender\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelDiveMeetsDiverFilterInput?
   public var limit: Int?
@@ -43092,7 +45890,6 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
           GraphQLField("springboardRating", type: .scalar(Double.self)),
           GraphQLField("platformRating", type: .scalar(Double.self)),
           GraphQLField("totalRating", type: .scalar(Double.self)),
-          GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -43106,8 +45903,8 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -43200,15 +45997,6 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
           }
         }
 
-        public var ttl: Int {
-          get {
-            return snapshot["_ttl"]! as! Int
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "_ttl")
-          }
-        }
-
         public var createdAt: String {
           get {
             return snapshot["createdAt"]! as! String
@@ -43260,7 +46048,7 @@ public final class ListDiveMeetsDiversQuery: GraphQLQuery {
 
 public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
   public static let operationString =
-    "query SyncDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncDiveMeetsDivers(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      gender\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      _ttl\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
+    "query SyncDiveMeetsDivers($filter: ModelDiveMeetsDiverFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncDiveMeetsDivers(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      firstName\n      lastName\n      gender\n      finaAge\n      hsGradYear\n      springboardRating\n      platformRating\n      totalRating\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    nextToken\n    startedAt\n  }\n}"
 
   public var filter: ModelDiveMeetsDiverFilterInput?
   public var limit: Int?
@@ -43374,7 +46162,6 @@ public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
           GraphQLField("springboardRating", type: .scalar(Double.self)),
           GraphQLField("platformRating", type: .scalar(Double.self)),
           GraphQLField("totalRating", type: .scalar(Double.self)),
-          GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
           GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -43388,8 +46175,8 @@ public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+        public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+          self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
         }
 
         public var __typename: String {
@@ -43482,12 +46269,441 @@ public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
           }
         }
 
-        public var ttl: Int {
+        public var createdAt: String {
           get {
-            return snapshot["_ttl"]! as! Int
+            return snapshot["createdAt"]! as! String
           }
           set {
-            snapshot.updateValue(newValue, forKey: "_ttl")
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class GetAcademicRecordQuery: GraphQLQuery {
+  public static let operationString =
+    "query GetAcademicRecord($id: ID!) {\n  getAcademicRecord(id: $id) {\n    __typename\n    id\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    satScore\n    actScore\n    weightedGPA\n    gpaScale\n    coursework\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    academicRecordAthleteId\n  }\n}"
+
+  public var id: GraphQLID
+
+  public init(id: GraphQLID) {
+    self.id = id
+  }
+
+  public var variables: GraphQLMap? {
+    return ["id": id]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("getAcademicRecord", arguments: ["id": GraphQLVariable("id")], type: .object(GetAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(getAcademicRecord: GetAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Query", "getAcademicRecord": getAcademicRecord.flatMap { $0.snapshot }])
+    }
+
+    public var getAcademicRecord: GetAcademicRecord? {
+      get {
+        return (snapshot["getAcademicRecord"] as? Snapshot).flatMap { GetAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "getAcademicRecord")
+      }
+    }
+
+    public struct GetAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["AcademicRecord"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("athlete", type: .nonNull(.object(Athlete.selections))),
+        GraphQLField("satScore", type: .scalar(Int.self)),
+        GraphQLField("actScore", type: .scalar(Int.self)),
+        GraphQLField("weightedGPA", type: .scalar(Double.self)),
+        GraphQLField("gpaScale", type: .scalar(Double.self)),
+        GraphQLField("coursework", type: .scalar(String.self)),
+        GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("_deleted", type: .scalar(Bool.self)),
+        GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, athlete: Athlete, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+        self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "athlete": athlete.snapshot, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var athlete: Athlete {
+        get {
+          return Athlete(snapshot: snapshot["athlete"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "athlete")
+        }
+      }
+
+      public var satScore: Int? {
+        get {
+          return snapshot["satScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "satScore")
+        }
+      }
+
+      public var actScore: Int? {
+        get {
+          return snapshot["actScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "actScore")
+        }
+      }
+
+      public var weightedGpa: Double? {
+        get {
+          return snapshot["weightedGPA"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "weightedGPA")
+        }
+      }
+
+      public var gpaScale: Double? {
+        get {
+          return snapshot["gpaScale"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gpaScale")
+        }
+      }
+
+      public var coursework: String? {
+        get {
+          return snapshot["coursework"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "coursework")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return snapshot["createdAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return snapshot["updatedAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+
+      public var version: Int {
+        get {
+          return snapshot["_version"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_version")
+        }
+      }
+
+      public var deleted: Bool? {
+        get {
+          return snapshot["_deleted"] as? Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_deleted")
+        }
+      }
+
+      public var lastChangedAt: Int {
+        get {
+          return snapshot["_lastChangedAt"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var academicRecordAthleteId: GraphQLID {
+        get {
+          return snapshot["academicRecordAthleteId"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+        }
+      }
+
+      public struct Athlete: GraphQLSelectionSet {
+        public static let possibleTypes = ["NewAthlete"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
+          GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
+          GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
+          GraphQLField("springboardRating", type: .scalar(Double.self)),
+          GraphQLField("platformRating", type: .scalar(Double.self)),
+          GraphQLField("totalRating", type: .scalar(Double.self)),
+          GraphQLField("collegeID", type: .scalar(GraphQLID.self)),
+          GraphQLField("newteamID", type: .scalar(GraphQLID.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
+          GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var heightFeet: Int {
+          get {
+            return snapshot["heightFeet"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightFeet")
+          }
+        }
+
+        public var heightInches: Int {
+          get {
+            return snapshot["heightInches"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightInches")
+          }
+        }
+
+        public var weight: Int {
+          get {
+            return snapshot["weight"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weight")
+          }
+        }
+
+        public var weightUnit: String {
+          get {
+            return snapshot["weightUnit"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightUnit")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
+          }
+        }
+
+        public var age: Int {
+          get {
+            return snapshot["age"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
+          }
+        }
+
+        public var graduationYear: Int {
+          get {
+            return snapshot["graduationYear"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "graduationYear")
+          }
+        }
+
+        public var highSchool: String {
+          get {
+            return snapshot["highSchool"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "highSchool")
+          }
+        }
+
+        public var hometown: String {
+          get {
+            return snapshot["hometown"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hometown")
+          }
+        }
+
+        public var springboardRating: Double? {
+          get {
+            return snapshot["springboardRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "springboardRating")
+          }
+        }
+
+        public var platformRating: Double? {
+          get {
+            return snapshot["platformRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "platformRating")
+          }
+        }
+
+        public var totalRating: Double? {
+          get {
+            return snapshot["totalRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "totalRating")
+          }
+        }
+
+        public var collegeId: GraphQLID? {
+          get {
+            return snapshot["collegeID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "collegeID")
+          }
+        }
+
+        public var newteamId: GraphQLID? {
+          get {
+            return snapshot["newteamID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newteamID")
           }
         }
 
@@ -43533,6 +46749,526 @@ public final class SyncDiveMeetsDiversQuery: GraphQLQuery {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
+        public var newAthleteUserId: GraphQLID {
+          get {
+            return snapshot["newAthleteUserId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteUserId")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class ListAcademicRecordsQuery: GraphQLQuery {
+  public static let operationString =
+    "query ListAcademicRecords($filter: ModelAcademicRecordFilterInput, $limit: Int, $nextToken: String) {\n  listAcademicRecords(filter: $filter, limit: $limit, nextToken: $nextToken) {\n    __typename\n    items {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    nextToken\n    startedAt\n  }\n}"
+
+  public var filter: ModelAcademicRecordFilterInput?
+  public var limit: Int?
+  public var nextToken: String?
+
+  public init(filter: ModelAcademicRecordFilterInput? = nil, limit: Int? = nil, nextToken: String? = nil) {
+    self.filter = filter
+    self.limit = limit
+    self.nextToken = nextToken
+  }
+
+  public var variables: GraphQLMap? {
+    return ["filter": filter, "limit": limit, "nextToken": nextToken]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("listAcademicRecords", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken")], type: .object(ListAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(listAcademicRecords: ListAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Query", "listAcademicRecords": listAcademicRecords.flatMap { $0.snapshot }])
+    }
+
+    public var listAcademicRecords: ListAcademicRecord? {
+      get {
+        return (snapshot["listAcademicRecords"] as? Snapshot).flatMap { ListAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "listAcademicRecords")
+      }
+    }
+
+    public struct ListAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["ModelAcademicRecordConnection"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
+        GraphQLField("nextToken", type: .scalar(String.self)),
+        GraphQLField("startedAt", type: .scalar(Int.self)),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
+        self.init(snapshot: ["__typename": "ModelAcademicRecordConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var items: [Item?] {
+        get {
+          return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
+        }
+        set {
+          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+        }
+      }
+
+      public var nextToken: String? {
+        get {
+          return snapshot["nextToken"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "nextToken")
+        }
+      }
+
+      public var startedAt: Int? {
+        get {
+          return snapshot["startedAt"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "startedAt")
+        }
+      }
+
+      public struct Item: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class SyncAcademicRecordsQuery: GraphQLQuery {
+  public static let operationString =
+    "query SyncAcademicRecords($filter: ModelAcademicRecordFilterInput, $limit: Int, $nextToken: String, $lastSync: AWSTimestamp) {\n  syncAcademicRecords(\n    filter: $filter\n    limit: $limit\n    nextToken: $nextToken\n    lastSync: $lastSync\n  ) {\n    __typename\n    items {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    nextToken\n    startedAt\n  }\n}"
+
+  public var filter: ModelAcademicRecordFilterInput?
+  public var limit: Int?
+  public var nextToken: String?
+  public var lastSync: Int?
+
+  public init(filter: ModelAcademicRecordFilterInput? = nil, limit: Int? = nil, nextToken: String? = nil, lastSync: Int? = nil) {
+    self.filter = filter
+    self.limit = limit
+    self.nextToken = nextToken
+    self.lastSync = lastSync
+  }
+
+  public var variables: GraphQLMap? {
+    return ["filter": filter, "limit": limit, "nextToken": nextToken, "lastSync": lastSync]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("syncAcademicRecords", arguments: ["filter": GraphQLVariable("filter"), "limit": GraphQLVariable("limit"), "nextToken": GraphQLVariable("nextToken"), "lastSync": GraphQLVariable("lastSync")], type: .object(SyncAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(syncAcademicRecords: SyncAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Query", "syncAcademicRecords": syncAcademicRecords.flatMap { $0.snapshot }])
+    }
+
+    public var syncAcademicRecords: SyncAcademicRecord? {
+      get {
+        return (snapshot["syncAcademicRecords"] as? Snapshot).flatMap { SyncAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "syncAcademicRecords")
+      }
+    }
+
+    public struct SyncAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["ModelAcademicRecordConnection"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("items", type: .nonNull(.list(.object(Item.selections)))),
+        GraphQLField("nextToken", type: .scalar(String.self)),
+        GraphQLField("startedAt", type: .scalar(Int.self)),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(items: [Item?], nextToken: String? = nil, startedAt: Int? = nil) {
+        self.init(snapshot: ["__typename": "ModelAcademicRecordConnection", "items": items.map { $0.flatMap { $0.snapshot } }, "nextToken": nextToken, "startedAt": startedAt])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var items: [Item?] {
+        get {
+          return (snapshot["items"] as! [Snapshot?]).map { $0.flatMap { Item(snapshot: $0) } }
+        }
+        set {
+          snapshot.updateValue(newValue.map { $0.flatMap { $0.snapshot } }, forKey: "items")
+        }
+      }
+
+      public var nextToken: String? {
+        get {
+          return snapshot["nextToken"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "nextToken")
+        }
+      }
+
+      public var startedAt: Int? {
+        get {
+          return snapshot["startedAt"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "startedAt")
+        }
+      }
+
+      public struct Item: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
           }
         }
       }
@@ -45963,7 +49699,7 @@ public final class OnDeleteMessageNewUserSubscription: GraphQLSubscription {
 
 public final class OnCreateNewUserSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {\n  onCreateNewUser(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
+    "subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {\n  onCreateNewUser(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
 
   public var filter: ModelSubscriptionNewUserFilterInput?
 
@@ -46239,6 +49975,7 @@ public final class OnCreateNewUserSubscription: GraphQLSubscription {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -46252,6 +49989,7 @@ public final class OnCreateNewUserSubscription: GraphQLSubscription {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -46261,8 +49999,8 @@ public final class OnCreateNewUserSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -46334,6 +50072,15 @@ public final class OnCreateNewUserSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -46451,6 +50198,15 @@ public final class OnCreateNewUserSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -46690,7 +50446,7 @@ public final class OnCreateNewUserSubscription: GraphQLSubscription {
 
 public final class OnUpdateNewUserSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {\n  onUpdateNewUser(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
+    "subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {\n  onUpdateNewUser(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
 
   public var filter: ModelSubscriptionNewUserFilterInput?
 
@@ -46966,6 +50722,7 @@ public final class OnUpdateNewUserSubscription: GraphQLSubscription {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -46979,6 +50736,7 @@ public final class OnUpdateNewUserSubscription: GraphQLSubscription {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -46988,8 +50746,8 @@ public final class OnUpdateNewUserSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -47061,6 +50819,15 @@ public final class OnUpdateNewUserSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -47178,6 +50945,15 @@ public final class OnUpdateNewUserSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -47417,7 +51193,7 @@ public final class OnUpdateNewUserSubscription: GraphQLSubscription {
 
 public final class OnDeleteNewUserSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {\n  onDeleteNewUser(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
+    "subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {\n  onDeleteNewUser(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    email\n    phone\n    diveMeetsID\n    accountType\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    coach {\n      __typename\n      id\n      favoritesOrder\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      coachUserUserId\n      coachUserTeamId\n      coachUserCollegeId\n    }\n    posts {\n      __typename\n      nextToken\n      startedAt\n    }\n    tokens\n    savedPosts {\n      __typename\n      nextToken\n      startedAt\n    }\n    favoritesIds\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newUserAthleteId\n    newUserCoachId\n  }\n}"
 
   public var filter: ModelSubscriptionNewUserFilterInput?
 
@@ -47693,6 +51469,7 @@ public final class OnDeleteNewUserSubscription: GraphQLSubscription {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -47706,6 +51483,7 @@ public final class OnDeleteNewUserSubscription: GraphQLSubscription {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -47715,8 +51493,8 @@ public final class OnDeleteNewUserSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -47788,6 +51566,15 @@ public final class OnDeleteNewUserSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -47905,6 +51692,15 @@ public final class OnDeleteNewUserSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -48144,7 +51940,7 @@ public final class OnDeleteNewUserSubscription: GraphQLSubscription {
 
 public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnCreateNewAthlete($filter: ModelSubscriptionNewAthleteFilterInput) {\n  onCreateNewAthlete(filter: $filter) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteUserId\n  }\n}"
+    "subscription OnCreateNewAthlete($filter: ModelSubscriptionNewAthleteFilterInput) {\n  onCreateNewAthlete(filter: $filter) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    academics {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    dateOfBirth\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteAcademicsId\n    newAthleteUserId\n  }\n}"
 
   public var filter: ModelSubscriptionNewAthleteFilterInput?
 
@@ -48191,12 +51987,14 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
         GraphQLField("user", type: .nonNull(.object(User.selections))),
         GraphQLField("team", type: .object(Team.selections)),
         GraphQLField("college", type: .object(College.selections)),
+        GraphQLField("academics", type: .object(Academic.selections)),
         GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
         GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
         GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
         GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
         GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
         GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -48211,6 +52009,7 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
         GraphQLField("_deleted", type: .scalar(Bool.self)),
         GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
         GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
       ]
 
@@ -48220,8 +52019,8 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, academics: Academic? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "academics": academics.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
       }
 
       public var __typename: String {
@@ -48266,6 +52065,15 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue?.snapshot, forKey: "college")
+        }
+      }
+
+      public var academics: Academic? {
+        get {
+          return (snapshot["academics"] as? Snapshot).flatMap { Academic(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "academics")
         }
       }
 
@@ -48320,6 +52128,15 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "age")
+        }
+      }
+
+      public var dateOfBirth: String {
+        get {
+          return snapshot["dateOfBirth"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "dateOfBirth")
         }
       }
 
@@ -48446,6 +52263,15 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var newAthleteAcademicsId: GraphQLID? {
+        get {
+          return snapshot["newAthleteAcademicsId"] as? GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
         }
       }
 
@@ -48865,6 +52691,153 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "collegeCoachId")
+          }
+        }
+      }
+
+      public struct Academic: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
           }
         }
       }
@@ -48921,7 +52894,7 @@ public final class OnCreateNewAthleteSubscription: GraphQLSubscription {
 
 public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnUpdateNewAthlete($filter: ModelSubscriptionNewAthleteFilterInput) {\n  onUpdateNewAthlete(filter: $filter) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteUserId\n  }\n}"
+    "subscription OnUpdateNewAthlete($filter: ModelSubscriptionNewAthleteFilterInput) {\n  onUpdateNewAthlete(filter: $filter) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    academics {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    dateOfBirth\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteAcademicsId\n    newAthleteUserId\n  }\n}"
 
   public var filter: ModelSubscriptionNewAthleteFilterInput?
 
@@ -48968,12 +52941,14 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
         GraphQLField("user", type: .nonNull(.object(User.selections))),
         GraphQLField("team", type: .object(Team.selections)),
         GraphQLField("college", type: .object(College.selections)),
+        GraphQLField("academics", type: .object(Academic.selections)),
         GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
         GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
         GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
         GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
         GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
         GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -48988,6 +52963,7 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
         GraphQLField("_deleted", type: .scalar(Bool.self)),
         GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
         GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
       ]
 
@@ -48997,8 +52973,8 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, academics: Academic? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "academics": academics.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
       }
 
       public var __typename: String {
@@ -49043,6 +53019,15 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue?.snapshot, forKey: "college")
+        }
+      }
+
+      public var academics: Academic? {
+        get {
+          return (snapshot["academics"] as? Snapshot).flatMap { Academic(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "academics")
         }
       }
 
@@ -49097,6 +53082,15 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "age")
+        }
+      }
+
+      public var dateOfBirth: String {
+        get {
+          return snapshot["dateOfBirth"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "dateOfBirth")
         }
       }
 
@@ -49223,6 +53217,15 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var newAthleteAcademicsId: GraphQLID? {
+        get {
+          return snapshot["newAthleteAcademicsId"] as? GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
         }
       }
 
@@ -49642,6 +53645,153 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "collegeCoachId")
+          }
+        }
+      }
+
+      public struct Academic: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
           }
         }
       }
@@ -49698,7 +53848,7 @@ public final class OnUpdateNewAthleteSubscription: GraphQLSubscription {
 
 public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnDeleteNewAthlete($filter: ModelSubscriptionNewAthleteFilterInput) {\n  onDeleteNewAthlete(filter: $filter) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteUserId\n  }\n}"
+    "subscription OnDeleteNewAthlete($filter: ModelSubscriptionNewAthleteFilterInput) {\n  onDeleteNewAthlete(filter: $filter) {\n    __typename\n    id\n    user {\n      __typename\n      id\n      firstName\n      lastName\n      email\n      phone\n      diveMeetsID\n      accountType\n      tokens\n      favoritesIds\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newUserAthleteId\n      newUserCoachId\n    }\n    team {\n      __typename\n      id\n      name\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newTeamCoachId\n    }\n    college {\n      __typename\n      id\n      name\n      imageLink\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      collegeCoachId\n    }\n    academics {\n      __typename\n      id\n      satScore\n      actScore\n      weightedGPA\n      gpaScale\n      coursework\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      academicRecordAthleteId\n    }\n    heightFeet\n    heightInches\n    weight\n    weightUnit\n    gender\n    age\n    dateOfBirth\n    graduationYear\n    highSchool\n    hometown\n    springboardRating\n    platformRating\n    totalRating\n    dives {\n      __typename\n      nextToken\n      startedAt\n    }\n    collegeID\n    newteamID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    newAthleteAcademicsId\n    newAthleteUserId\n  }\n}"
 
   public var filter: ModelSubscriptionNewAthleteFilterInput?
 
@@ -49745,12 +53895,14 @@ public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
         GraphQLField("user", type: .nonNull(.object(User.selections))),
         GraphQLField("team", type: .object(Team.selections)),
         GraphQLField("college", type: .object(College.selections)),
+        GraphQLField("academics", type: .object(Academic.selections)),
         GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
         GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
         GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
         GraphQLField("gender", type: .nonNull(.scalar(String.self))),
         GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
         GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
         GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
         GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -49765,6 +53917,7 @@ public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
         GraphQLField("_deleted", type: .scalar(Bool.self)),
         GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
         GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
       ]
 
@@ -49774,8 +53927,8 @@ public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+      public init(id: GraphQLID, user: User, team: Team? = nil, college: College? = nil, academics: Academic? = nil, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, dives: Dife? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+        self.init(snapshot: ["__typename": "NewAthlete", "id": id, "user": user.snapshot, "team": team.flatMap { $0.snapshot }, "college": college.flatMap { $0.snapshot }, "academics": academics.flatMap { $0.snapshot }, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "dives": dives.flatMap { $0.snapshot }, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
       }
 
       public var __typename: String {
@@ -49820,6 +53973,15 @@ public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue?.snapshot, forKey: "college")
+        }
+      }
+
+      public var academics: Academic? {
+        get {
+          return (snapshot["academics"] as? Snapshot).flatMap { Academic(snapshot: $0) }
+        }
+        set {
+          snapshot.updateValue(newValue?.snapshot, forKey: "academics")
         }
       }
 
@@ -49874,6 +54036,15 @@ public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "age")
+        }
+      }
+
+      public var dateOfBirth: String {
+        get {
+          return snapshot["dateOfBirth"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "dateOfBirth")
         }
       }
 
@@ -50000,6 +54171,15 @@ public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var newAthleteAcademicsId: GraphQLID? {
+        get {
+          return snapshot["newAthleteAcademicsId"] as? GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
         }
       }
 
@@ -50419,6 +54599,153 @@ public final class OnDeleteNewAthleteSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "collegeCoachId")
+          }
+        }
+      }
+
+      public struct Academic: GraphQLSelectionSet {
+        public static let possibleTypes = ["AcademicRecord"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("satScore", type: .scalar(Int.self)),
+          GraphQLField("actScore", type: .scalar(Int.self)),
+          GraphQLField("weightedGPA", type: .scalar(Double.self)),
+          GraphQLField("gpaScale", type: .scalar(Double.self)),
+          GraphQLField("coursework", type: .scalar(String.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+          self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var satScore: Int? {
+          get {
+            return snapshot["satScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "satScore")
+          }
+        }
+
+        public var actScore: Int? {
+          get {
+            return snapshot["actScore"] as? Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "actScore")
+          }
+        }
+
+        public var weightedGpa: Double? {
+          get {
+            return snapshot["weightedGPA"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightedGPA")
+          }
+        }
+
+        public var gpaScale: Double? {
+          get {
+            return snapshot["gpaScale"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gpaScale")
+          }
+        }
+
+        public var coursework: String? {
+          get {
+            return snapshot["coursework"] as? String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "coursework")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var academicRecordAthleteId: GraphQLID {
+          get {
+            return snapshot["academicRecordAthleteId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
           }
         }
       }
@@ -57027,7 +61354,7 @@ public final class OnDeleteNewEventSubscription: GraphQLSubscription {
 
 public final class OnCreateDiveSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {\n  onCreateDive(filter: $filter) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {\n  onCreateDive(filter: $filter) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveFilterInput?
 
@@ -57410,6 +61737,7 @@ public final class OnCreateDiveSubscription: GraphQLSubscription {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -57423,6 +61751,7 @@ public final class OnCreateDiveSubscription: GraphQLSubscription {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -57432,8 +61761,8 @@ public final class OnCreateDiveSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -57505,6 +61834,15 @@ public final class OnCreateDiveSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -57625,6 +61963,15 @@ public final class OnCreateDiveSubscription: GraphQLSubscription {
           }
         }
 
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
         public var newAthleteUserId: GraphQLID {
           get {
             return snapshot["newAthleteUserId"]! as! GraphQLID
@@ -57687,7 +62034,7 @@ public final class OnCreateDiveSubscription: GraphQLSubscription {
 
 public final class OnUpdateDiveSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {\n  onUpdateDive(filter: $filter) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {\n  onUpdateDive(filter: $filter) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveFilterInput?
 
@@ -58070,6 +62417,7 @@ public final class OnUpdateDiveSubscription: GraphQLSubscription {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -58083,6 +62431,7 @@ public final class OnUpdateDiveSubscription: GraphQLSubscription {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -58092,8 +62441,8 @@ public final class OnUpdateDiveSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -58165,6 +62514,15 @@ public final class OnUpdateDiveSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -58285,6 +62643,15 @@ public final class OnUpdateDiveSubscription: GraphQLSubscription {
           }
         }
 
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
         public var newAthleteUserId: GraphQLID {
           get {
             return snapshot["newAthleteUserId"]! as! GraphQLID
@@ -58347,7 +62714,7 @@ public final class OnUpdateDiveSubscription: GraphQLSubscription {
 
 public final class OnDeleteDiveSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {\n  onDeleteDive(filter: $filter) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {\n  onDeleteDive(filter: $filter) {\n    __typename\n    id\n    event {\n      __typename\n      id\n      name\n      date\n      link\n      numEntries\n      newmeetID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n    }\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    number\n    name\n    height\n    netScore\n    dd\n    totalScore\n    scores {\n      __typename\n      nextToken\n      startedAt\n    }\n    newathleteID\n    neweventID\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveFilterInput?
 
@@ -58730,6 +63097,7 @@ public final class OnDeleteDiveSubscription: GraphQLSubscription {
           GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
           GraphQLField("gender", type: .nonNull(.scalar(String.self))),
           GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
           GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
           GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
           GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
@@ -58743,6 +63111,7 @@ public final class OnDeleteDiveSubscription: GraphQLSubscription {
           GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
           GraphQLField("_deleted", type: .scalar(Bool.self)),
           GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
           GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
         ]
 
@@ -58752,8 +63121,8 @@ public final class OnDeleteDiveSubscription: GraphQLSubscription {
           self.snapshot = snapshot
         }
 
-        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteUserId: GraphQLID) {
-          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteUserId": newAthleteUserId])
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
         }
 
         public var __typename: String {
@@ -58825,6 +63194,15 @@ public final class OnDeleteDiveSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
           }
         }
 
@@ -58942,6 +63320,15 @@ public final class OnDeleteDiveSubscription: GraphQLSubscription {
           }
           set {
             snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
           }
         }
 
@@ -60603,7 +64990,7 @@ public final class OnDeleteMessageSubscription: GraphQLSubscription {
 
 public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnCreateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onCreateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    _ttl\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnCreateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onCreateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveMeetsDiverFilterInput?
 
@@ -60655,7 +65042,6 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
         GraphQLField("springboardRating", type: .scalar(Double.self)),
         GraphQLField("platformRating", type: .scalar(Double.self)),
         GraphQLField("totalRating", type: .scalar(Double.self)),
-        GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -60669,8 +65055,8 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -60760,15 +65146,6 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "totalRating")
-        }
-      }
-
-      public var ttl: Int {
-        get {
-          return snapshot["_ttl"]! as! Int
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "_ttl")
         }
       }
 
@@ -60822,7 +65199,7 @@ public final class OnCreateDiveMeetsDiverSubscription: GraphQLSubscription {
 
 public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnUpdateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onUpdateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    _ttl\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnUpdateDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onUpdateDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveMeetsDiverFilterInput?
 
@@ -60874,7 +65251,6 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
         GraphQLField("springboardRating", type: .scalar(Double.self)),
         GraphQLField("platformRating", type: .scalar(Double.self)),
         GraphQLField("totalRating", type: .scalar(Double.self)),
-        GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -60888,8 +65264,8 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -60979,15 +65355,6 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "totalRating")
-        }
-      }
-
-      public var ttl: Int {
-        get {
-          return snapshot["_ttl"]! as! Int
-        }
-        set {
-          snapshot.updateValue(newValue, forKey: "_ttl")
         }
       }
 
@@ -61041,7 +65408,7 @@ public final class OnUpdateDiveMeetsDiverSubscription: GraphQLSubscription {
 
 public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
   public static let operationString =
-    "subscription OnDeleteDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onDeleteDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    _ttl\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
+    "subscription OnDeleteDiveMeetsDiver($filter: ModelSubscriptionDiveMeetsDiverFilterInput) {\n  onDeleteDiveMeetsDiver(filter: $filter) {\n    __typename\n    id\n    firstName\n    lastName\n    gender\n    finaAge\n    hsGradYear\n    springboardRating\n    platformRating\n    totalRating\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n  }\n}"
 
   public var filter: ModelSubscriptionDiveMeetsDiverFilterInput?
 
@@ -61093,7 +65460,6 @@ public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
         GraphQLField("springboardRating", type: .scalar(Double.self)),
         GraphQLField("platformRating", type: .scalar(Double.self)),
         GraphQLField("totalRating", type: .scalar(Double.self)),
-        GraphQLField("_ttl", type: .nonNull(.scalar(Int.self))),
         GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
         GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
@@ -61107,8 +65473,8 @@ public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, ttl: Int, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
-        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "_ttl": ttl, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
+      public init(id: GraphQLID, firstName: String, lastName: String, gender: String, finaAge: Int? = nil, hsGradYear: Int? = nil, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int) {
+        self.init(snapshot: ["__typename": "DiveMeetsDiver", "id": id, "firstName": firstName, "lastName": lastName, "gender": gender, "finaAge": finaAge, "hsGradYear": hsGradYear, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt])
       }
 
       public var __typename: String {
@@ -61201,12 +65567,193 @@ public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
         }
       }
 
-      public var ttl: Int {
+      public var createdAt: String {
         get {
-          return snapshot["_ttl"]! as! Int
+          return snapshot["createdAt"]! as! String
         }
         set {
-          snapshot.updateValue(newValue, forKey: "_ttl")
+          snapshot.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return snapshot["updatedAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+
+      public var version: Int {
+        get {
+          return snapshot["_version"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_version")
+        }
+      }
+
+      public var deleted: Bool? {
+        get {
+          return snapshot["_deleted"] as? Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_deleted")
+        }
+      }
+
+      public var lastChangedAt: Int {
+        get {
+          return snapshot["_lastChangedAt"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+    }
+  }
+}
+
+public final class OnCreateAcademicRecordSubscription: GraphQLSubscription {
+  public static let operationString =
+    "subscription OnCreateAcademicRecord($filter: ModelSubscriptionAcademicRecordFilterInput) {\n  onCreateAcademicRecord(filter: $filter) {\n    __typename\n    id\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    satScore\n    actScore\n    weightedGPA\n    gpaScale\n    coursework\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    academicRecordAthleteId\n  }\n}"
+
+  public var filter: ModelSubscriptionAcademicRecordFilterInput?
+
+  public init(filter: ModelSubscriptionAcademicRecordFilterInput? = nil) {
+    self.filter = filter
+  }
+
+  public var variables: GraphQLMap? {
+    return ["filter": filter]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Subscription"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("onCreateAcademicRecord", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnCreateAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(onCreateAcademicRecord: OnCreateAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Subscription", "onCreateAcademicRecord": onCreateAcademicRecord.flatMap { $0.snapshot }])
+    }
+
+    public var onCreateAcademicRecord: OnCreateAcademicRecord? {
+      get {
+        return (snapshot["onCreateAcademicRecord"] as? Snapshot).flatMap { OnCreateAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "onCreateAcademicRecord")
+      }
+    }
+
+    public struct OnCreateAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["AcademicRecord"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("athlete", type: .nonNull(.object(Athlete.selections))),
+        GraphQLField("satScore", type: .scalar(Int.self)),
+        GraphQLField("actScore", type: .scalar(Int.self)),
+        GraphQLField("weightedGPA", type: .scalar(Double.self)),
+        GraphQLField("gpaScale", type: .scalar(Double.self)),
+        GraphQLField("coursework", type: .scalar(String.self)),
+        GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("_deleted", type: .scalar(Bool.self)),
+        GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, athlete: Athlete, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+        self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "athlete": athlete.snapshot, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var athlete: Athlete {
+        get {
+          return Athlete(snapshot: snapshot["athlete"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "athlete")
+        }
+      }
+
+      public var satScore: Int? {
+        get {
+          return snapshot["satScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "satScore")
+        }
+      }
+
+      public var actScore: Int? {
+        get {
+          return snapshot["actScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "actScore")
+        }
+      }
+
+      public var weightedGpa: Double? {
+        get {
+          return snapshot["weightedGPA"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "weightedGPA")
+        }
+      }
+
+      public var gpaScale: Double? {
+        get {
+          return snapshot["gpaScale"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gpaScale")
+        }
+      }
+
+      public var coursework: String? {
+        get {
+          return snapshot["coursework"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "coursework")
         }
       }
 
@@ -61252,6 +65799,1184 @@ public final class OnDeleteDiveMeetsDiverSubscription: GraphQLSubscription {
         }
         set {
           snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var academicRecordAthleteId: GraphQLID {
+        get {
+          return snapshot["academicRecordAthleteId"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+        }
+      }
+
+      public struct Athlete: GraphQLSelectionSet {
+        public static let possibleTypes = ["NewAthlete"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
+          GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
+          GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
+          GraphQLField("springboardRating", type: .scalar(Double.self)),
+          GraphQLField("platformRating", type: .scalar(Double.self)),
+          GraphQLField("totalRating", type: .scalar(Double.self)),
+          GraphQLField("collegeID", type: .scalar(GraphQLID.self)),
+          GraphQLField("newteamID", type: .scalar(GraphQLID.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
+          GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var heightFeet: Int {
+          get {
+            return snapshot["heightFeet"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightFeet")
+          }
+        }
+
+        public var heightInches: Int {
+          get {
+            return snapshot["heightInches"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightInches")
+          }
+        }
+
+        public var weight: Int {
+          get {
+            return snapshot["weight"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weight")
+          }
+        }
+
+        public var weightUnit: String {
+          get {
+            return snapshot["weightUnit"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightUnit")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
+          }
+        }
+
+        public var age: Int {
+          get {
+            return snapshot["age"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
+          }
+        }
+
+        public var graduationYear: Int {
+          get {
+            return snapshot["graduationYear"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "graduationYear")
+          }
+        }
+
+        public var highSchool: String {
+          get {
+            return snapshot["highSchool"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "highSchool")
+          }
+        }
+
+        public var hometown: String {
+          get {
+            return snapshot["hometown"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hometown")
+          }
+        }
+
+        public var springboardRating: Double? {
+          get {
+            return snapshot["springboardRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "springboardRating")
+          }
+        }
+
+        public var platformRating: Double? {
+          get {
+            return snapshot["platformRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "platformRating")
+          }
+        }
+
+        public var totalRating: Double? {
+          get {
+            return snapshot["totalRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "totalRating")
+          }
+        }
+
+        public var collegeId: GraphQLID? {
+          get {
+            return snapshot["collegeID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "collegeID")
+          }
+        }
+
+        public var newteamId: GraphQLID? {
+          get {
+            return snapshot["newteamID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newteamID")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
+        public var newAthleteUserId: GraphQLID {
+          get {
+            return snapshot["newAthleteUserId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteUserId")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class OnUpdateAcademicRecordSubscription: GraphQLSubscription {
+  public static let operationString =
+    "subscription OnUpdateAcademicRecord($filter: ModelSubscriptionAcademicRecordFilterInput) {\n  onUpdateAcademicRecord(filter: $filter) {\n    __typename\n    id\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    satScore\n    actScore\n    weightedGPA\n    gpaScale\n    coursework\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    academicRecordAthleteId\n  }\n}"
+
+  public var filter: ModelSubscriptionAcademicRecordFilterInput?
+
+  public init(filter: ModelSubscriptionAcademicRecordFilterInput? = nil) {
+    self.filter = filter
+  }
+
+  public var variables: GraphQLMap? {
+    return ["filter": filter]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Subscription"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("onUpdateAcademicRecord", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnUpdateAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(onUpdateAcademicRecord: OnUpdateAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Subscription", "onUpdateAcademicRecord": onUpdateAcademicRecord.flatMap { $0.snapshot }])
+    }
+
+    public var onUpdateAcademicRecord: OnUpdateAcademicRecord? {
+      get {
+        return (snapshot["onUpdateAcademicRecord"] as? Snapshot).flatMap { OnUpdateAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "onUpdateAcademicRecord")
+      }
+    }
+
+    public struct OnUpdateAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["AcademicRecord"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("athlete", type: .nonNull(.object(Athlete.selections))),
+        GraphQLField("satScore", type: .scalar(Int.self)),
+        GraphQLField("actScore", type: .scalar(Int.self)),
+        GraphQLField("weightedGPA", type: .scalar(Double.self)),
+        GraphQLField("gpaScale", type: .scalar(Double.self)),
+        GraphQLField("coursework", type: .scalar(String.self)),
+        GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("_deleted", type: .scalar(Bool.self)),
+        GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, athlete: Athlete, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+        self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "athlete": athlete.snapshot, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var athlete: Athlete {
+        get {
+          return Athlete(snapshot: snapshot["athlete"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "athlete")
+        }
+      }
+
+      public var satScore: Int? {
+        get {
+          return snapshot["satScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "satScore")
+        }
+      }
+
+      public var actScore: Int? {
+        get {
+          return snapshot["actScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "actScore")
+        }
+      }
+
+      public var weightedGpa: Double? {
+        get {
+          return snapshot["weightedGPA"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "weightedGPA")
+        }
+      }
+
+      public var gpaScale: Double? {
+        get {
+          return snapshot["gpaScale"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gpaScale")
+        }
+      }
+
+      public var coursework: String? {
+        get {
+          return snapshot["coursework"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "coursework")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return snapshot["createdAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return snapshot["updatedAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+
+      public var version: Int {
+        get {
+          return snapshot["_version"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_version")
+        }
+      }
+
+      public var deleted: Bool? {
+        get {
+          return snapshot["_deleted"] as? Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_deleted")
+        }
+      }
+
+      public var lastChangedAt: Int {
+        get {
+          return snapshot["_lastChangedAt"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var academicRecordAthleteId: GraphQLID {
+        get {
+          return snapshot["academicRecordAthleteId"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+        }
+      }
+
+      public struct Athlete: GraphQLSelectionSet {
+        public static let possibleTypes = ["NewAthlete"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
+          GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
+          GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
+          GraphQLField("springboardRating", type: .scalar(Double.self)),
+          GraphQLField("platformRating", type: .scalar(Double.self)),
+          GraphQLField("totalRating", type: .scalar(Double.self)),
+          GraphQLField("collegeID", type: .scalar(GraphQLID.self)),
+          GraphQLField("newteamID", type: .scalar(GraphQLID.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
+          GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var heightFeet: Int {
+          get {
+            return snapshot["heightFeet"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightFeet")
+          }
+        }
+
+        public var heightInches: Int {
+          get {
+            return snapshot["heightInches"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightInches")
+          }
+        }
+
+        public var weight: Int {
+          get {
+            return snapshot["weight"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weight")
+          }
+        }
+
+        public var weightUnit: String {
+          get {
+            return snapshot["weightUnit"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightUnit")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
+          }
+        }
+
+        public var age: Int {
+          get {
+            return snapshot["age"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
+          }
+        }
+
+        public var graduationYear: Int {
+          get {
+            return snapshot["graduationYear"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "graduationYear")
+          }
+        }
+
+        public var highSchool: String {
+          get {
+            return snapshot["highSchool"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "highSchool")
+          }
+        }
+
+        public var hometown: String {
+          get {
+            return snapshot["hometown"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hometown")
+          }
+        }
+
+        public var springboardRating: Double? {
+          get {
+            return snapshot["springboardRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "springboardRating")
+          }
+        }
+
+        public var platformRating: Double? {
+          get {
+            return snapshot["platformRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "platformRating")
+          }
+        }
+
+        public var totalRating: Double? {
+          get {
+            return snapshot["totalRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "totalRating")
+          }
+        }
+
+        public var collegeId: GraphQLID? {
+          get {
+            return snapshot["collegeID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "collegeID")
+          }
+        }
+
+        public var newteamId: GraphQLID? {
+          get {
+            return snapshot["newteamID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newteamID")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
+        public var newAthleteUserId: GraphQLID {
+          get {
+            return snapshot["newAthleteUserId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteUserId")
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class OnDeleteAcademicRecordSubscription: GraphQLSubscription {
+  public static let operationString =
+    "subscription OnDeleteAcademicRecord($filter: ModelSubscriptionAcademicRecordFilterInput) {\n  onDeleteAcademicRecord(filter: $filter) {\n    __typename\n    id\n    athlete {\n      __typename\n      id\n      heightFeet\n      heightInches\n      weight\n      weightUnit\n      gender\n      age\n      dateOfBirth\n      graduationYear\n      highSchool\n      hometown\n      springboardRating\n      platformRating\n      totalRating\n      collegeID\n      newteamID\n      createdAt\n      updatedAt\n      _version\n      _deleted\n      _lastChangedAt\n      newAthleteAcademicsId\n      newAthleteUserId\n    }\n    satScore\n    actScore\n    weightedGPA\n    gpaScale\n    coursework\n    createdAt\n    updatedAt\n    _version\n    _deleted\n    _lastChangedAt\n    academicRecordAthleteId\n  }\n}"
+
+  public var filter: ModelSubscriptionAcademicRecordFilterInput?
+
+  public init(filter: ModelSubscriptionAcademicRecordFilterInput? = nil) {
+    self.filter = filter
+  }
+
+  public var variables: GraphQLMap? {
+    return ["filter": filter]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Subscription"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("onDeleteAcademicRecord", arguments: ["filter": GraphQLVariable("filter")], type: .object(OnDeleteAcademicRecord.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(onDeleteAcademicRecord: OnDeleteAcademicRecord? = nil) {
+      self.init(snapshot: ["__typename": "Subscription", "onDeleteAcademicRecord": onDeleteAcademicRecord.flatMap { $0.snapshot }])
+    }
+
+    public var onDeleteAcademicRecord: OnDeleteAcademicRecord? {
+      get {
+        return (snapshot["onDeleteAcademicRecord"] as? Snapshot).flatMap { OnDeleteAcademicRecord(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "onDeleteAcademicRecord")
+      }
+    }
+
+    public struct OnDeleteAcademicRecord: GraphQLSelectionSet {
+      public static let possibleTypes = ["AcademicRecord"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("athlete", type: .nonNull(.object(Athlete.selections))),
+        GraphQLField("satScore", type: .scalar(Int.self)),
+        GraphQLField("actScore", type: .scalar(Int.self)),
+        GraphQLField("weightedGPA", type: .scalar(Double.self)),
+        GraphQLField("gpaScale", type: .scalar(Double.self)),
+        GraphQLField("coursework", type: .scalar(String.self)),
+        GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+        GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("_deleted", type: .scalar(Bool.self)),
+        GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("academicRecordAthleteId", type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, athlete: Athlete, satScore: Int? = nil, actScore: Int? = nil, weightedGpa: Double? = nil, gpaScale: Double? = nil, coursework: String? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, academicRecordAthleteId: GraphQLID) {
+        self.init(snapshot: ["__typename": "AcademicRecord", "id": id, "athlete": athlete.snapshot, "satScore": satScore, "actScore": actScore, "weightedGPA": weightedGpa, "gpaScale": gpaScale, "coursework": coursework, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "academicRecordAthleteId": academicRecordAthleteId])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var athlete: Athlete {
+        get {
+          return Athlete(snapshot: snapshot["athlete"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "athlete")
+        }
+      }
+
+      public var satScore: Int? {
+        get {
+          return snapshot["satScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "satScore")
+        }
+      }
+
+      public var actScore: Int? {
+        get {
+          return snapshot["actScore"] as? Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "actScore")
+        }
+      }
+
+      public var weightedGpa: Double? {
+        get {
+          return snapshot["weightedGPA"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "weightedGPA")
+        }
+      }
+
+      public var gpaScale: Double? {
+        get {
+          return snapshot["gpaScale"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "gpaScale")
+        }
+      }
+
+      public var coursework: String? {
+        get {
+          return snapshot["coursework"] as? String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "coursework")
+        }
+      }
+
+      public var createdAt: String {
+        get {
+          return snapshot["createdAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "createdAt")
+        }
+      }
+
+      public var updatedAt: String {
+        get {
+          return snapshot["updatedAt"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "updatedAt")
+        }
+      }
+
+      public var version: Int {
+        get {
+          return snapshot["_version"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_version")
+        }
+      }
+
+      public var deleted: Bool? {
+        get {
+          return snapshot["_deleted"] as? Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_deleted")
+        }
+      }
+
+      public var lastChangedAt: Int {
+        get {
+          return snapshot["_lastChangedAt"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+        }
+      }
+
+      public var academicRecordAthleteId: GraphQLID {
+        get {
+          return snapshot["academicRecordAthleteId"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "academicRecordAthleteId")
+        }
+      }
+
+      public struct Athlete: GraphQLSelectionSet {
+        public static let possibleTypes = ["NewAthlete"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("heightFeet", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("heightInches", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weight", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("weightUnit", type: .nonNull(.scalar(String.self))),
+          GraphQLField("gender", type: .nonNull(.scalar(String.self))),
+          GraphQLField("age", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("dateOfBirth", type: .nonNull(.scalar(String.self))),
+          GraphQLField("graduationYear", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("highSchool", type: .nonNull(.scalar(String.self))),
+          GraphQLField("hometown", type: .nonNull(.scalar(String.self))),
+          GraphQLField("springboardRating", type: .scalar(Double.self)),
+          GraphQLField("platformRating", type: .scalar(Double.self)),
+          GraphQLField("totalRating", type: .scalar(Double.self)),
+          GraphQLField("collegeID", type: .scalar(GraphQLID.self)),
+          GraphQLField("newteamID", type: .scalar(GraphQLID.self)),
+          GraphQLField("createdAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("updatedAt", type: .nonNull(.scalar(String.self))),
+          GraphQLField("_version", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("_deleted", type: .scalar(Bool.self)),
+          GraphQLField("_lastChangedAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("newAthleteAcademicsId", type: .scalar(GraphQLID.self)),
+          GraphQLField("newAthleteUserId", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(id: GraphQLID, heightFeet: Int, heightInches: Int, weight: Int, weightUnit: String, gender: String, age: Int, dateOfBirth: String, graduationYear: Int, highSchool: String, hometown: String, springboardRating: Double? = nil, platformRating: Double? = nil, totalRating: Double? = nil, collegeId: GraphQLID? = nil, newteamId: GraphQLID? = nil, createdAt: String, updatedAt: String, version: Int, deleted: Bool? = nil, lastChangedAt: Int, newAthleteAcademicsId: GraphQLID? = nil, newAthleteUserId: GraphQLID) {
+          self.init(snapshot: ["__typename": "NewAthlete", "id": id, "heightFeet": heightFeet, "heightInches": heightInches, "weight": weight, "weightUnit": weightUnit, "gender": gender, "age": age, "dateOfBirth": dateOfBirth, "graduationYear": graduationYear, "highSchool": highSchool, "hometown": hometown, "springboardRating": springboardRating, "platformRating": platformRating, "totalRating": totalRating, "collegeID": collegeId, "newteamID": newteamId, "createdAt": createdAt, "updatedAt": updatedAt, "_version": version, "_deleted": deleted, "_lastChangedAt": lastChangedAt, "newAthleteAcademicsId": newAthleteAcademicsId, "newAthleteUserId": newAthleteUserId])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return snapshot["id"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var heightFeet: Int {
+          get {
+            return snapshot["heightFeet"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightFeet")
+          }
+        }
+
+        public var heightInches: Int {
+          get {
+            return snapshot["heightInches"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "heightInches")
+          }
+        }
+
+        public var weight: Int {
+          get {
+            return snapshot["weight"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weight")
+          }
+        }
+
+        public var weightUnit: String {
+          get {
+            return snapshot["weightUnit"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "weightUnit")
+          }
+        }
+
+        public var gender: String {
+          get {
+            return snapshot["gender"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "gender")
+          }
+        }
+
+        public var age: Int {
+          get {
+            return snapshot["age"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "age")
+          }
+        }
+
+        public var dateOfBirth: String {
+          get {
+            return snapshot["dateOfBirth"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "dateOfBirth")
+          }
+        }
+
+        public var graduationYear: Int {
+          get {
+            return snapshot["graduationYear"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "graduationYear")
+          }
+        }
+
+        public var highSchool: String {
+          get {
+            return snapshot["highSchool"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "highSchool")
+          }
+        }
+
+        public var hometown: String {
+          get {
+            return snapshot["hometown"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "hometown")
+          }
+        }
+
+        public var springboardRating: Double? {
+          get {
+            return snapshot["springboardRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "springboardRating")
+          }
+        }
+
+        public var platformRating: Double? {
+          get {
+            return snapshot["platformRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "platformRating")
+          }
+        }
+
+        public var totalRating: Double? {
+          get {
+            return snapshot["totalRating"] as? Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "totalRating")
+          }
+        }
+
+        public var collegeId: GraphQLID? {
+          get {
+            return snapshot["collegeID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "collegeID")
+          }
+        }
+
+        public var newteamId: GraphQLID? {
+          get {
+            return snapshot["newteamID"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newteamID")
+          }
+        }
+
+        public var createdAt: String {
+          get {
+            return snapshot["createdAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "createdAt")
+          }
+        }
+
+        public var updatedAt: String {
+          get {
+            return snapshot["updatedAt"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "updatedAt")
+          }
+        }
+
+        public var version: Int {
+          get {
+            return snapshot["_version"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_version")
+          }
+        }
+
+        public var deleted: Bool? {
+          get {
+            return snapshot["_deleted"] as? Bool
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_deleted")
+          }
+        }
+
+        public var lastChangedAt: Int {
+          get {
+            return snapshot["_lastChangedAt"]! as! Int
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "_lastChangedAt")
+          }
+        }
+
+        public var newAthleteAcademicsId: GraphQLID? {
+          get {
+            return snapshot["newAthleteAcademicsId"] as? GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteAcademicsId")
+          }
+        }
+
+        public var newAthleteUserId: GraphQLID {
+          get {
+            return snapshot["newAthleteUserId"]! as! GraphQLID
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "newAthleteUserId")
+          }
         }
       }
     }

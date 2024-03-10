@@ -499,6 +499,7 @@ query GetNewUser($id: ID!) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -512,6 +513,7 @@ query GetNewUser($id: ID!) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -664,12 +666,28 @@ query GetNewAthlete($id: ID!) {
       collegeCoachId
       __typename
     }
+    academics {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
     heightFeet
     heightInches
     weight
     weightUnit
     gender
     age
+    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -688,6 +706,7 @@ query GetNewAthlete($id: ID!) {
     _version
     _deleted
     _lastChangedAt
+    newAthleteAcademicsId
     newAthleteUserId
     __typename
   }
@@ -707,6 +726,7 @@ query ListNewAthletes(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -720,6 +740,7 @@ query ListNewAthletes(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -749,6 +770,7 @@ query SyncNewAthletes(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -762,6 +784,7 @@ query SyncNewAthletes(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -793,6 +816,7 @@ query NewAthletesByCollegeID(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -806,6 +830,7 @@ query NewAthletesByCollegeID(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -837,6 +862,7 @@ query NewAthletesByNewteamID(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -850,6 +876,7 @@ query NewAthletesByNewteamID(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1498,6 +1525,7 @@ query GetDive($id: ID!) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1511,6 +1539,7 @@ query GetDive($id: ID!) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1870,7 +1899,6 @@ query GetDiveMeetsDiver($id: ID!) {
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -1896,7 +1924,6 @@ query ListDiveMeetsDivers(
       springboardRating
       platformRating
       totalRating
-      _ttl
       createdAt
       updatedAt
       _version
@@ -1932,12 +1959,115 @@ query SyncDiveMeetsDivers(
       springboardRating
       platformRating
       totalRating
-      _ttl
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetAcademicRecord($id: ID!) {
+  getAcademicRecord(id: $id) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      dateOfBirth
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteAcademicsId
+      newAthleteUserId
+      __typename
+    }
+    satScore
+    actScore
+    weightedGPA
+    gpaScale
+    coursework
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    academicRecordAthleteId
+    __typename
+  }
+}
+
+query ListAcademicRecords(
+  $filter: ModelAcademicRecordFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listAcademicRecords(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncAcademicRecords(
+  $filter: ModelAcademicRecordFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncAcademicRecords(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
       __typename
     }
     nextToken

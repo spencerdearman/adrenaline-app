@@ -20,7 +20,8 @@ extension Message {
     let message = Message.keys
     
     model.authRules = [
-      rule(allow: .private, operations: [.create, .update, .delete, .read])
+      rule(allow: .private, operations: [.create, .update, .delete, .read]),
+      rule(allow: .public, provider: .apiKey, operations: [.create, .update, .delete, .read])
     ]
     
     model.listPluralName = "Messages"

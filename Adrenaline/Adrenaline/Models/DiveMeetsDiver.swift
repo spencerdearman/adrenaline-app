@@ -12,7 +12,6 @@ public struct DiveMeetsDiver: Model {
   public var springboardRating: Double?
   public var platformRating: Double?
   public var totalRating: Double?
-  public var _ttl: Int
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   
@@ -24,8 +23,7 @@ public struct DiveMeetsDiver: Model {
       hsGradYear: Int? = nil,
       springboardRating: Double? = nil,
       platformRating: Double? = nil,
-      totalRating: Double? = nil,
-      _ttl: Int) {
+      totalRating: Double? = nil) {
     self.init(id: id,
       firstName: firstName,
       lastName: lastName,
@@ -35,7 +33,6 @@ public struct DiveMeetsDiver: Model {
       springboardRating: springboardRating,
       platformRating: platformRating,
       totalRating: totalRating,
-      _ttl: _ttl,
       createdAt: nil,
       updatedAt: nil)
   }
@@ -48,7 +45,6 @@ public struct DiveMeetsDiver: Model {
       springboardRating: Double? = nil,
       platformRating: Double? = nil,
       totalRating: Double? = nil,
-      _ttl: Int,
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil) {
       self.id = id
@@ -60,7 +56,6 @@ public struct DiveMeetsDiver: Model {
       self.springboardRating = springboardRating
       self.platformRating = platformRating
       self.totalRating = totalRating
-      self._ttl = _ttl
       self.createdAt = createdAt
       self.updatedAt = updatedAt
   }

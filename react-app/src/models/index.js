@@ -1,9 +1,12 @@
 // @ts-check
-import { initSchema } from '@aws-amplify/datastore'
+import { initSchema } from '@aws-amplify/datastore';
+import { schema } from './schema';
 
-import { schema } from './schema'
 
-const {
+
+const { UserSavedPost, Post, NewImage, MessageNewUser, NewUser, NewAthlete, Video, CoachUser, NewTeam, College, NewMeet, NewEvent, Dive, JudgeScore, Message, DiveMeetsDiver, AcademicRecord } = initSchema(schema);
+
+export {
   UserSavedPost,
   Post,
   NewImage,
@@ -19,24 +22,6 @@ const {
   Dive,
   JudgeScore,
   Message,
-  DiveMeetsDiver
-} = initSchema(schema)
-
-export {
-  CoachUser,
-  College,
-  Dive,
   DiveMeetsDiver,
-  JudgeScore,
-  Message,
-  MessageNewUser,
-  NewAthlete,
-  NewEvent,
-  NewImage,
-  NewMeet,
-  NewTeam,
-  NewUser,
-  Post,
-  UserSavedPost,
-  Video
-}
+  AcademicRecord
+};
