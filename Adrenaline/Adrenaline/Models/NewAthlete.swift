@@ -33,8 +33,6 @@ public struct NewAthlete: Model {
   public var weight: Int
   public var weightUnit: String
   public var gender: String
-  public var age: Int
-  public var dateOfBirth: Temporal.Date
   public var graduationYear: Int
   public var highSchool: String
   public var hometown: String
@@ -56,8 +54,6 @@ public struct NewAthlete: Model {
       weight: Int,
       weightUnit: String,
       gender: String,
-      age: Int,
-      dateOfBirth: Temporal.Date,
       graduationYear: Int,
       highSchool: String,
       hometown: String,
@@ -76,8 +72,6 @@ public struct NewAthlete: Model {
       weight: weight,
       weightUnit: weightUnit,
       gender: gender,
-      age: age,
-      dateOfBirth: dateOfBirth,
       graduationYear: graduationYear,
       highSchool: highSchool,
       hometown: hometown,
@@ -99,8 +93,6 @@ public struct NewAthlete: Model {
       weight: Int,
       weightUnit: String,
       gender: String,
-      age: Int,
-      dateOfBirth: Temporal.Date,
       graduationYear: Int,
       highSchool: String,
       hometown: String,
@@ -121,8 +113,6 @@ public struct NewAthlete: Model {
       self.weight = weight
       self.weightUnit = weightUnit
       self.gender = gender
-      self.age = age
-      self.dateOfBirth = dateOfBirth
       self.graduationYear = graduationYear
       self.highSchool = highSchool
       self.hometown = hometown
@@ -158,8 +148,6 @@ public struct NewAthlete: Model {
       weight = try values.decode(Int.self, forKey: .weight)
       weightUnit = try values.decode(String.self, forKey: .weightUnit)
       gender = try values.decode(String.self, forKey: .gender)
-      age = try values.decode(Int.self, forKey: .age)
-      dateOfBirth = try values.decode(Temporal.Date.self, forKey: .dateOfBirth)
       graduationYear = try values.decode(Int.self, forKey: .graduationYear)
       highSchool = try values.decode(String.self, forKey: .highSchool)
       hometown = try values.decode(String.self, forKey: .hometown)
@@ -183,8 +171,6 @@ public struct NewAthlete: Model {
       try container.encode(weight, forKey: .weight)
       try container.encode(weightUnit, forKey: .weightUnit)
       try container.encode(gender, forKey: .gender)
-      try container.encode(age, forKey: .age)
-      try container.encode(dateOfBirth, forKey: .dateOfBirth)
       try container.encode(graduationYear, forKey: .graduationYear)
       try container.encode(highSchool, forKey: .highSchool)
       try container.encode(hometown, forKey: .hometown)

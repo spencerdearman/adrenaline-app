@@ -491,6 +491,7 @@ query GetNewUser($id: ID!) {
     phone
     diveMeetsID
     accountType
+    dateOfBirth
     athlete {
       id
       heightFeet
@@ -498,8 +499,6 @@ query GetNewUser($id: ID!) {
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -567,6 +566,7 @@ query ListNewUsers(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -604,6 +604,7 @@ query SyncNewUsers(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -632,6 +633,7 @@ query GetNewAthlete($id: ID!) {
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -686,8 +688,6 @@ query GetNewAthlete($id: ID!) {
     weight
     weightUnit
     gender
-    age
-    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -725,8 +725,6 @@ query ListNewAthletes(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -769,8 +767,6 @@ query SyncNewAthletes(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -815,8 +811,6 @@ query NewAthletesByCollegeID(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -861,8 +855,6 @@ query NewAthletesByNewteamID(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -998,6 +990,7 @@ query GetCoachUser($id: ID!) {
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -1524,8 +1517,6 @@ query GetDive($id: ID!) {
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1982,8 +1973,6 @@ query GetAcademicRecord($id: ID!) {
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
