@@ -254,6 +254,7 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -267,6 +268,7 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -323,6 +325,7 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -336,6 +339,7 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -392,6 +396,7 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -405,6 +410,7 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -491,12 +497,28 @@ subscription OnCreateNewAthlete(
       collegeCoachId
       __typename
     }
+    academics {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
     heightFeet
     heightInches
     weight
     weightUnit
     gender
     age
+    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -515,6 +537,7 @@ subscription OnCreateNewAthlete(
     _version
     _deleted
     _lastChangedAt
+    newAthleteAcademicsId
     newAthleteUserId
     __typename
   }
@@ -567,12 +590,28 @@ subscription OnUpdateNewAthlete(
       collegeCoachId
       __typename
     }
+    academics {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
     heightFeet
     heightInches
     weight
     weightUnit
     gender
     age
+    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -591,6 +630,7 @@ subscription OnUpdateNewAthlete(
     _version
     _deleted
     _lastChangedAt
+    newAthleteAcademicsId
     newAthleteUserId
     __typename
   }
@@ -643,12 +683,28 @@ subscription OnDeleteNewAthlete(
       collegeCoachId
       __typename
     }
+    academics {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
     heightFeet
     heightInches
     weight
     weightUnit
     gender
     age
+    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -667,6 +723,7 @@ subscription OnDeleteNewAthlete(
     _version
     _deleted
     _lastChangedAt
+    newAthleteAcademicsId
     newAthleteUserId
     __typename
   }
@@ -1315,6 +1372,7 @@ subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1328,6 +1386,7 @@ subscription OnCreateDive($filter: ModelSubscriptionDiveFilterInput) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1378,6 +1437,7 @@ subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1391,6 +1451,7 @@ subscription OnUpdateDive($filter: ModelSubscriptionDiveFilterInput) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1441,6 +1502,7 @@ subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1454,6 +1516,7 @@ subscription OnDeleteDive($filter: ModelSubscriptionDiveFilterInput) {
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1648,7 +1711,6 @@ subscription OnCreateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -1671,7 +1733,6 @@ subscription OnUpdateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -1694,12 +1755,149 @@ subscription OnDeleteDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    __typename
+  }
+}
+
+subscription OnCreateAcademicRecord(
+  $filter: ModelSubscriptionAcademicRecordFilterInput
+) {
+  onCreateAcademicRecord(filter: $filter) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      dateOfBirth
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteAcademicsId
+      newAthleteUserId
+      __typename
+    }
+    satScore
+    actScore
+    weightedGPA
+    gpaScale
+    coursework
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    academicRecordAthleteId
+    __typename
+  }
+}
+
+subscription OnUpdateAcademicRecord(
+  $filter: ModelSubscriptionAcademicRecordFilterInput
+) {
+  onUpdateAcademicRecord(filter: $filter) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      dateOfBirth
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteAcademicsId
+      newAthleteUserId
+      __typename
+    }
+    satScore
+    actScore
+    weightedGPA
+    gpaScale
+    coursework
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    academicRecordAthleteId
+    __typename
+  }
+}
+
+subscription OnDeleteAcademicRecord(
+  $filter: ModelSubscriptionAcademicRecordFilterInput
+) {
+  onDeleteAcademicRecord(filter: $filter) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      dateOfBirth
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteAcademicsId
+      newAthleteUserId
+      __typename
+    }
+    satScore
+    actScore
+    weightedGPA
+    gpaScale
+    coursework
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    academicRecordAthleteId
     __typename
   }
 }

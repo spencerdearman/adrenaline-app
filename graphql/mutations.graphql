@@ -281,6 +281,7 @@ mutation CreateNewUser(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -294,6 +295,7 @@ mutation CreateNewUser(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -353,6 +355,7 @@ mutation UpdateNewUser(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -366,6 +369,7 @@ mutation UpdateNewUser(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -425,6 +429,7 @@ mutation DeleteNewUser(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -438,6 +443,7 @@ mutation DeleteNewUser(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -525,12 +531,28 @@ mutation CreateNewAthlete(
       collegeCoachId
       __typename
     }
+    academics {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
     heightFeet
     heightInches
     weight
     weightUnit
     gender
     age
+    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -549,6 +571,7 @@ mutation CreateNewAthlete(
     _version
     _deleted
     _lastChangedAt
+    newAthleteAcademicsId
     newAthleteUserId
     __typename
   }
@@ -602,12 +625,28 @@ mutation UpdateNewAthlete(
       collegeCoachId
       __typename
     }
+    academics {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
     heightFeet
     heightInches
     weight
     weightUnit
     gender
     age
+    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -626,6 +665,7 @@ mutation UpdateNewAthlete(
     _version
     _deleted
     _lastChangedAt
+    newAthleteAcademicsId
     newAthleteUserId
     __typename
   }
@@ -679,12 +719,28 @@ mutation DeleteNewAthlete(
       collegeCoachId
       __typename
     }
+    academics {
+      id
+      satScore
+      actScore
+      weightedGPA
+      gpaScale
+      coursework
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      academicRecordAthleteId
+      __typename
+    }
     heightFeet
     heightInches
     weight
     weightUnit
     gender
     age
+    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -703,6 +759,7 @@ mutation DeleteNewAthlete(
     _version
     _deleted
     _lastChangedAt
+    newAthleteAcademicsId
     newAthleteUserId
     __typename
   }
@@ -1408,6 +1465,7 @@ mutation CreateDive(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1421,6 +1479,7 @@ mutation CreateDive(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1474,6 +1533,7 @@ mutation UpdateDive(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1487,6 +1547,7 @@ mutation UpdateDive(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1540,6 +1601,7 @@ mutation DeleteDive(
       weightUnit
       gender
       age
+      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1553,6 +1615,7 @@ mutation DeleteDive(
       _version
       _deleted
       _lastChangedAt
+      newAthleteAcademicsId
       newAthleteUserId
       __typename
     }
@@ -1760,7 +1823,6 @@ mutation CreateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -1784,7 +1846,6 @@ mutation UpdateDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -1808,12 +1869,152 @@ mutation DeleteDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
+    __typename
+  }
+}
+
+mutation CreateAcademicRecord(
+  $input: CreateAcademicRecordInput!
+  $condition: ModelAcademicRecordConditionInput
+) {
+  createAcademicRecord(input: $input, condition: $condition) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      dateOfBirth
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteAcademicsId
+      newAthleteUserId
+      __typename
+    }
+    satScore
+    actScore
+    weightedGPA
+    gpaScale
+    coursework
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    academicRecordAthleteId
+    __typename
+  }
+}
+
+mutation UpdateAcademicRecord(
+  $input: UpdateAcademicRecordInput!
+  $condition: ModelAcademicRecordConditionInput
+) {
+  updateAcademicRecord(input: $input, condition: $condition) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      dateOfBirth
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteAcademicsId
+      newAthleteUserId
+      __typename
+    }
+    satScore
+    actScore
+    weightedGPA
+    gpaScale
+    coursework
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    academicRecordAthleteId
+    __typename
+  }
+}
+
+mutation DeleteAcademicRecord(
+  $input: DeleteAcademicRecordInput!
+  $condition: ModelAcademicRecordConditionInput
+) {
+  deleteAcademicRecord(input: $input, condition: $condition) {
+    id
+    athlete {
+      id
+      heightFeet
+      heightInches
+      weight
+      weightUnit
+      gender
+      age
+      dateOfBirth
+      graduationYear
+      highSchool
+      hometown
+      springboardRating
+      platformRating
+      totalRating
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newAthleteAcademicsId
+      newAthleteUserId
+      __typename
+    }
+    satScore
+    actScore
+    weightedGPA
+    gpaScale
+    coursework
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    academicRecordAthleteId
     __typename
   }
 }

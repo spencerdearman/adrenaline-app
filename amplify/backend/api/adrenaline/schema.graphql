@@ -50,12 +50,14 @@ type NewAthlete @model @auth(rules: [{allow: private}, {allow: public, provider:
   user: NewUser! @belongsTo
   team: NewTeam @belongsTo(fields: ["newteamID"])
   college: College @belongsTo(fields: ["collegeID"])
+  academics: AcademicRecord @hasOne
   heightFeet: Int!
   heightInches: Int!
   weight: Int!
   weightUnit: String!
   gender: String!
   age: Int!
+  dateOfBirth: AWSDate!
   graduationYear: Int!
   highSchool: String!
   hometown: String!
@@ -162,5 +164,14 @@ type DiveMeetsDiver @model @auth(rules: [{allow: private}, {allow: public, provi
   springboardRating: Float
   platformRating: Float
   totalRating: Float
-  _ttl: AWSTimestamp!
+}
+
+type AcademicRecord @model @auth(rules: [{allow: private}, {allow: public, provider: apiKey}]) {
+  id: ID!
+  athlete: NewAthlete! @belongsTo
+  satScore: Int
+  actScore: Int
+  weightedGPA: Float
+  gpaScale: Float
+  coursework: String
 }
