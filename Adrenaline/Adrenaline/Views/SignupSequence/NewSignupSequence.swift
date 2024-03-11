@@ -528,6 +528,7 @@ struct NewSignupSequence: View {
                 Text(isValidDate(a: date, b: dateB)
                      ? date.formatted(.dateTime.day().month().year())
                      : "Birthday")
+                .brightness(-0.2)
                 Spacer()
             }
                 .foregroundColor(isValidDate(a: date, b: Date()) ? .primary : .secondary)
@@ -543,6 +544,7 @@ struct NewSignupSequence: View {
                         .labelsHidden()
                         .contentShape(Rectangle())
                         .opacity(0.011)
+                        .offset(x: -60)
                 }
             
             Divider()
@@ -802,7 +804,9 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .heightFeet)
                     .onChange(of: heightFeet) {
-                        heightFeet = heightFeet
+                        if (4...8).contains(heightFeet) {
+                            heightFeet = heightFeet
+                        }
                     }
                 TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
                     .keyboardType(.numberPad)
@@ -814,7 +818,11 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .heightInches)
                     .onChange(of: heightInches) {
-                        heightInches = heightInches
+                        if let heightInches = heightInches {
+                            if (0...12).contains(heightInches) {
+                                heightFeet = heightFeet
+                            }
+                        }
                     }
             }
             HStack {
@@ -827,6 +835,11 @@ struct NewSignupSequence: View {
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .weight)
+                    .onChange(of: weight) {
+                        if (10...300).contains(weight) {
+                            weight = weight
+                        }
+                    }
                 
                 BubbleSelectView(selection: $weightUnit)
                     .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
