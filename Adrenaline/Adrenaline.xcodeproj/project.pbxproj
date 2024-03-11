@@ -19,6 +19,7 @@
 		00287E3B2AF4A52700470767 /* PostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3A2AF4A52700470767 /* PostsView.swift */; };
 		00287E3D2AF4A56200470767 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3C2AF4A56200470767 /* FavoritesView.swift */; };
 		00287E3F2AF4A57300470767 /* SavedPostsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00287E3E2AF4A57300470767 /* SavedPostsView.swift */; };
+		0028DB442B9E9FC500D70ACD /* AssociateWithCollegeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0028DB432B9E9FC500D70ACD /* AssociateWithCollegeView.swift */; };
 		002A1B3429DB7C4700A26FED /* ProfileHTMLCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002A1B3329DB7C4700A26FED /* ProfileHTMLCache.swift */; };
 		002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002A1BB529DCF2F900A26FED /* GetTextAsync.swift */; };
 		0034B5D42AECFCEC00A2D7A1 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 0034B5D32AECFCEC00A2D7A1 /* CachedAsyncImage */; };
@@ -217,6 +218,7 @@
 		00287E3A2AF4A52700470767 /* PostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsView.swift; sourceTree = "<group>"; };
 		00287E3C2AF4A56200470767 /* FavoritesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FavoritesView.swift; path = Adrenaline/Views/AdrenalineProfile/FavoritesView.swift; sourceTree = SOURCE_ROOT; };
 		00287E3E2AF4A57300470767 /* SavedPostsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPostsView.swift; sourceTree = "<group>"; };
+		0028DB432B9E9FC500D70ACD /* AssociateWithCollegeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssociateWithCollegeView.swift; sourceTree = "<group>"; };
 		002A1B3329DB7C4700A26FED /* ProfileHTMLCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHTMLCache.swift; sourceTree = "<group>"; };
 		002A1BB529DCF2F900A26FED /* GetTextAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetTextAsync.swift; sourceTree = "<group>"; };
 		0037877729D4F40900D3CD59 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Cache.swift; path = Adrenaline/Model/Cache.swift; sourceTree = SOURCE_ROOT; };
@@ -836,17 +838,19 @@
 		4DB1DC782A67112B0016EE14 /* AdrenalineProfile */ = {
 			isa = PBXGroup;
 			children = (
-				00287E372AF4A4D300470767 /* Common */,
 				4DB1DC792A6711D80016EE14 /* AdrenalineProfileView.swift */,
+				0028DB432B9E9FC500D70ACD /* AssociateWithCollegeView.swift */,
 				4DD880BA2A761089008F69F2 /* AthleteProfile.swift */,
 				4DD880B82A76103D008F69F2 /* CoachProfile.swift */,
 				00B22DCC2B368AAD007208D0 /* CommittedCollegeView.swift */,
+				00CD87532B660D4E001D64C3 /* EditProfileView.swift */,
 				00D6DDD72AE5F2BA0065F040 /* PostProfileView.swift */,
 				4D13F3BC2A999F930081823D /* SettingsPage.swift */,
 				4D9443902BA53E1300033540 /* UserSettingsPage.swift */,
 				4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */,
 				00CD87532B660D4E001D64C3 /* EditProfileView.swift */,
 				4D94438E2BA536D400033540 /* EditAcadmicsView.swift */,
+				00287E372AF4A4D300470767 /* Common */,
 			);
 			path = AdrenalineProfile;
 			sourceTree = "<group>";
@@ -1086,6 +1090,7 @@
 				4DA482E22AA98BE8003DFA3B /* MessageNewUser.swift in Sources */,
 				4D541C0C2AAA540500EC47D8 /* ChatAPI.swift in Sources */,
 				00B5BB0C2AA0E8A000E587B5 /* FollowingAPI.swift in Sources */,
+				0028DB442B9E9FC500D70ACD /* AssociateWithCollegeView.swift in Sources */,
 				00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */,
 				4DA482DC2AA98BE8003DFA3B /* NewEvent+Schema.swift in Sources */,
 				00759D0F2AEB7EB40079BCCB /* UserSavedPost.swift in Sources */,

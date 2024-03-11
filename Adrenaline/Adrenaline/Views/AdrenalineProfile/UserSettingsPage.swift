@@ -33,12 +33,20 @@ struct UserSettingsPage: View {
                     }
                     .navigationTitle("Profile")
                     
-                    NavigationLink {
-                        CommittedCollegeView(selectedCollege: $selectedCollege,
-                                             updateDataStoreData: $updateDataStoreData,
-                                             newUser: user)
-                    } label: {
-                        Label("Change Committed College", systemImage: "graduationcap")
+                    if user.accountType == "Athlete" {
+                        NavigationLink {
+                            CommittedCollegeView(selectedCollege: $selectedCollege,
+                                                    updateDataStoreData: $updateDataStoreData,
+                                                    newUser: user)
+                        } label: {
+                            Label("Change Committed College", systemImage: "graduationcap")
+                        }
+                    } else if user.accountType == "Coach" {
+                        NavigationLink {
+                            AssociateWithCollegeView(newUser: user)
+                        } label: {
+                            Label("Associate with College", systemImage: "graduationcap")
+                        }
                     }
                 }
             }
