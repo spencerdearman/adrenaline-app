@@ -273,6 +273,7 @@ mutation CreateNewUser(
     phone
     diveMeetsID
     accountType
+    dateOfBirth
     athlete {
       id
       heightFeet
@@ -280,8 +281,6 @@ mutation CreateNewUser(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -347,6 +346,7 @@ mutation UpdateNewUser(
     phone
     diveMeetsID
     accountType
+    dateOfBirth
     athlete {
       id
       heightFeet
@@ -354,8 +354,6 @@ mutation UpdateNewUser(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -421,6 +419,7 @@ mutation DeleteNewUser(
     phone
     diveMeetsID
     accountType
+    dateOfBirth
     athlete {
       id
       heightFeet
@@ -428,8 +427,6 @@ mutation DeleteNewUser(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -497,6 +494,7 @@ mutation CreateNewAthlete(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -551,8 +549,6 @@ mutation CreateNewAthlete(
     weight
     weightUnit
     gender
-    age
-    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -591,6 +587,7 @@ mutation UpdateNewAthlete(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -645,8 +642,6 @@ mutation UpdateNewAthlete(
     weight
     weightUnit
     gender
-    age
-    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -685,6 +680,7 @@ mutation DeleteNewAthlete(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -739,8 +735,6 @@ mutation DeleteNewAthlete(
     weight
     weightUnit
     gender
-    age
-    dateOfBirth
     graduationYear
     highSchool
     hometown
@@ -833,6 +827,7 @@ mutation CreateCoachUser(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -894,6 +889,7 @@ mutation UpdateCoachUser(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -955,6 +951,7 @@ mutation DeleteCoachUser(
       phone
       diveMeetsID
       accountType
+      dateOfBirth
       tokens
       favoritesIds
       createdAt
@@ -1464,8 +1461,6 @@ mutation CreateDive(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1532,8 +1527,6 @@ mutation UpdateDive(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1600,8 +1593,6 @@ mutation DeleteDive(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1891,8 +1882,6 @@ mutation CreateAcademicRecord(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1938,8 +1927,6 @@ mutation UpdateAcademicRecord(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown
@@ -1985,8 +1972,6 @@ mutation DeleteAcademicRecord(
       weight
       weightUnit
       gender
-      age
-      dateOfBirth
       graduationYear
       highSchool
       hometown

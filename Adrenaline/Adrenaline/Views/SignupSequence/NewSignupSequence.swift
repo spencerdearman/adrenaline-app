@@ -8,6 +8,41 @@
 import SwiftUI
 import Amplify
 import PhotosUI
+import SwiftyCrop
+
+
+//https://www.avanderlee.com/swiftui/formatstyle-formatter-restrict-textfield-input/#:~:text=A%20custom%20FormatStyle%20can%20help,using%20a%20custom%20FormatStyle%20implementation.
+struct RangeIntegerStyle: ParseableFormatStyle {
+    
+    var parseStrategy: RangeIntegerStrategy = .init()
+    let range: ClosedRange<Int>
+    
+    func format(_ value: Int) -> String {
+        let constrainedValue = min(max(value, range.lowerBound), range.upperBound)
+        return "\(constrainedValue)"
+    }
+}
+
+struct RangeIntegerStrategy: ParseStrategy {
+    func parse(_ value: String) throws -> Int {
+        return Int(value) ?? 1
+    }
+}
+// allows us to write .ranged(0...12) etc.
+extension FormatStyle where Self == RangeIntegerStyle {
+    static func ranged(_ range: ClosedRange<Int>) -> RangeIntegerStyle {
+        return RangeIntegerStyle(range: range)
+    }
+}
+
+extension Binding where Value == Int? {
+    func converted() -> Binding<Int> {
+        Binding<Int>(
+            get: { self.wrappedValue ?? 0 },
+            set: { self.wrappedValue = $0 }
+        )
+    }
+}
 
 extension Formatter {
     static let heightFtFormatter: NumberFormatter = {
@@ -38,10 +73,11 @@ extension Formatter {
         return formatter
     }()
     
-    static let ageFormatter: NumberFormatter = {
+    
+    static let birthdayFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.zeroSymbol = ""
-        formatter.maximum = 99
+        formatter.maximum = 99999999
         return formatter
     }()
 }
@@ -110,15 +146,15 @@ struct NewSignupSequence: View {
     @State private var waitingForLoad: Bool = true
     
     // Variables for Recruiting
-    @State var heightFeet: Int = 0
-    @State var heightInches: Double = -.infinity
-    @State var weight: Int = 0
+    @State var heightFeet: Int? = nil
+    @State var heightInches: Int? = nil
+    @State var weight: Int? = nil
     @State var weightUnit: WeightUnit = .lb
     @State var weightUnitString: String = ""
     @State var gender: Gender = .male
     @State var genderString: String = ""
-    @State var age: Int = 0
-    @State var gradYear: Int = 0
+    @State var date = Date()
+    @State var gradYear: Int? = nil
     @State var highSchool: String = ""
     @State var hometown: String = ""
     @State var athleteCreationSuccessful: Bool = false
@@ -131,6 +167,8 @@ struct NewSignupSequence: View {
     
     // Variables for Profile Picture Upload
     @State private var selectedProfilePicImage: PhotosPickerItem? = nil
+    @State private var pickedImage: UIImage? = nil
+    @State private var showImageCropper: Bool = false
     @State private var profilePic: Image? = nil
     @State private var profilePicData: Data? = nil
     @State private var identityVerificationFailed: Bool = false
@@ -141,6 +179,20 @@ struct NewSignupSequence: View {
     private let screenHeight = UIScreen.main.bounds.height
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
+    }
+    
+    enum Field { case heightFeet, heightInches, weight, gradYear }
+    
+    var defaultTemporalDate: Temporal.Date {
+        // Attempt to create a Temporal.Date for the current date as default
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let currentDateStr = formatter.string(from: Date())
+        do {
+            return try Temporal.Date(iso8601String: currentDateStr)
+        } catch {
+            fatalError("Invalid default Temporal.Date")
+        }
     }
     
     private var noDiverSelected: Bool {
@@ -184,6 +236,12 @@ struct NewSignupSequence: View {
         if let userToken = UserDefaults.standard.string(forKey: "userToken") {
             tokensList = [userToken]
         } else { tokensList = [] }
+        var DOB: Temporal.Date = defaultTemporalDate
+        do {
+            DOB = try Temporal.Date(iso8601String: dateString(from: date))
+        } catch {
+            print("Could not process birthday")
+        }
         return NewUser(id: authUserId, firstName: firstName,
                        lastName: lastName, email: email,
                        phone: phone == ""
@@ -191,7 +249,19 @@ struct NewSignupSequence: View {
                        : removePhoneFormatting(string: phone),
                        diveMeetsID: diveMeetsID,
                        accountType: accountType,
+                       dateOfBirth:  DOB,
                        tokens: tokensList)
+    }
+    
+    private func dateString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy/MM/dd"
+        return formatter.string(from: date)
+    }
+    
+    func loadImage(_ item: PhotosPickerItem) async {
+        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
+        pickedImage = UIImage(data: data)
     }
     
     // Saves new user with stored State data, and handles CoachUser creation if needed
@@ -231,111 +301,111 @@ struct NewSignupSequence: View {
             
             Group {
                 switch pageIndex {
-                    case .accountType:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Account Type")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .frame(height: screenHeight * 0.6)
-                        .matchedGeometryEffect(id: "form1", in: namespace)
-                    case .basicInfo:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Basic Info")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form1", in: namespace)
-                    case .diveMeetsLink:
-                        Group {
-                            if searchSubmitted && !personTimedOut && !linksParsed {
-                                ZStack {
-                                    SwiftUIWebView(firstName: $firstName, lastName: $lastName,
-                                                   parsedLinks: $parsedLinks,
-                                                   dmSearchSubmitted: $dmSearchSubmitted,
-                                                   linksParsed: $linksParsed,
-                                                   timedOut: $personTimedOut)
-                                    .opacity(0)
-                                    VStack {
-                                        Text("Searching")
-                                            .font(.largeTitle).bold()
-                                            .foregroundColor(.primary)
-                                            .slideFadeIn(show: appear[0], offset: 30)
-                                        ProgressView()
-                                    }
+                case .accountType:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Account Type")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .frame(height: screenHeight * 0.6)
+                    .matchedGeometryEffect(id: "form1", in: namespace)
+                case .basicInfo:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Basic Info")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form1", in: namespace)
+                case .diveMeetsLink:
+                    Group {
+                        if searchSubmitted && !personTimedOut && !linksParsed {
+                            ZStack {
+                                SwiftUIWebView(firstName: $firstName, lastName: $lastName,
+                                               parsedLinks: $parsedLinks,
+                                               dmSearchSubmitted: $dmSearchSubmitted,
+                                               linksParsed: $linksParsed,
+                                               timedOut: $personTimedOut)
+                                .opacity(0)
+                                VStack {
+                                    Text("Searching")
+                                        .font(.largeTitle).bold()
+                                        .foregroundColor(.primary)
+                                        .slideFadeIn(show: appear[0], offset: 30)
+                                    ProgressView()
+                                }
+                            }
+                            .frame(height: screenHeight * 0.5)
+                        } else {
+                            if linksParsed || personTimedOut {
+                                VStack(alignment: .leading, spacing: 20) {
+                                    diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
                                 }
                                 .frame(height: screenHeight * 0.5)
+                                .matchedGeometryEffect(id: "form", in: namespace)
                             } else {
-                                if linksParsed || personTimedOut {
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                                    }
-                                    .frame(height: screenHeight * 0.5)
-                                    .matchedGeometryEffect(id: "form", in: namespace)
-                                } else {
-                                    VStack(alignment: .leading, spacing: 20) {
-                                        Text("Searching")
-                                            .font(.largeTitle).bold()
-                                            .foregroundColor(.primary)
-                                            .slideFadeIn(show: appear[0], offset: 30)
-                                    }
-                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                VStack(alignment: .leading, spacing: 20) {
+                                    Text("Searching")
+                                        .font(.largeTitle).bold()
+                                        .foregroundColor(.primary)
+                                        .slideFadeIn(show: appear[0], offset: 30)
                                 }
+                                .matchedGeometryEffect(id: "form", in: namespace)
                             }
                         }
-                        .onDisappear {
-                            searchSubmitted = false
-                            dmSearchSubmitted = false
-                            linksParsed = false
-                        }
-                    case .athleteInfo:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Recruiting Info")
+                    }
+                    .onDisappear {
+                        searchSubmitted = false
+                        dmSearchSubmitted = false
+                        linksParsed = false
+                    }
+                case .athleteInfo:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Recruiting Info")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                case .photoId:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Photo ID")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        photoIdUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                case .profilePic:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Profile Picture")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        profilePicUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                case .welcome:
+                    VStack(alignment: .leading, spacing: 20) {
+                        if let savedUser = savedUser {
+                            Text("Welcome to Adrenaline \(savedUser.firstName)!")
                                 .font(.largeTitle).bold()
                                 .foregroundColor(.primary)
                                 .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
                         }
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                    case .photoId:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Photo ID")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            photoIdUploadForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                    case .profilePic:
-                        VStack(alignment: .leading, spacing: 20) {
-                            Text("Profile Picture")
-                                .font(.largeTitle).bold()
-                                .foregroundColor(.primary)
-                                .slideFadeIn(show: appear[0], offset: 30)
-                            
-                            profilePicUploadForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
-                    case .welcome:
-                        VStack(alignment: .leading, spacing: 20) {
-                            if let savedUser = savedUser {
-                                Text("Welcome to Adrenaline \(savedUser.firstName)!")
-                                    .font(.largeTitle).bold()
-                                    .foregroundColor(.primary)
-                                    .slideFadeIn(show: appear[0], offset: 30)
-                            }
-                            
-                            welcomeForm.slideFadeIn(show: appear[2], offset: 10)
-                        }
-                        .matchedGeometryEffect(id: "form", in: namespace)
+                        
+                        welcomeForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
                 }
             }
             .padding(20)
@@ -489,6 +559,30 @@ struct NewSignupSequence: View {
                     phone = formatPhoneString(string: phone)
                 }
             
+            let dateB = Date()
+            HStack {
+                Text(isValidDate(a: date, b: dateB)
+                     ? date.formatted(.dateTime.day().month().year())
+                     : "Birthday")
+                .brightness(-0.2)
+                Spacer()
+            }
+            .foregroundColor(isValidDate(a: date, b: Date()) ? .primary : .secondary)
+            .frame(maxWidth: .infinity)
+            .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                        iconColor: (buttonPressed &&
+                                                    !isValidDate(a: date, b: dateB)
+                                                    ? Custom.error
+                                                    : nil)))
+            .overlay {
+                // https://stackoverflow.com/a/77426363/22068672
+                DatePicker("", selection: $date, displayedComponents: [.date])
+                    .labelsHidden()
+                    .contentShape(Rectangle())
+                    .opacity(0.011)
+                    .offset(x: -60)
+            }
+            
             Divider()
             
             Button {
@@ -593,7 +687,7 @@ struct NewSignupSequence: View {
                                                     .fontWeight(.semibold)
                                                 
                                                 if sortedRecords.count > 1,
-                                                    let hometown = sortedRecordsHometowns[value] {
+                                                   let hometown = sortedRecordsHometowns[value] {
                                                     Text(hometown)
                                                         .foregroundColor(.secondary)
                                                         .font(.headline)
@@ -729,14 +823,14 @@ struct NewSignupSequence: View {
     }
     
     var athleteAllFieldsFilled: Bool {
-        heightFeet != 0 && heightInches != -1 && weight != 0 && age != 0 && gradYear != 0 &&
-        !highSchool.isEmpty && !hometown.isEmpty
+        heightFeet != 0 && heightInches != nil && weight != 0 && isValidDate(a: date, b: Date()) &&
+        gradYear != 0 && !highSchool.isEmpty && !hometown.isEmpty
     }
     
     var athleteInfoForm: some View {
         Group {
             HStack {
-                TextField("Height (ft)", value: $heightFeet, formatter: .heightFtFormatter)
+                TextField("Height (ft)", value: $heightFeet.converted(), format: .ranged(3...7))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -748,21 +842,21 @@ struct NewSignupSequence: View {
                     .onChange(of: heightFeet) {
                         heightFeet = heightFeet
                     }
-                TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
+                TextField("Height (in)", value: $heightInches.converted(), format: .ranged(0...11))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && heightInches == 0
+                                                iconColor: buttonPressed && heightInches == nil
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .heightInches)
                     .onChange(of: heightInches) {
-                        heightInches = heightInches
+                        heightFeet = heightFeet
                     }
             }
             HStack {
-                TextField("Weight", value: $weight, formatter: .weightFormatter)
+                TextField("Weight", value: $weight.converted(), format: .ranged(40...300))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -771,6 +865,9 @@ struct NewSignupSequence: View {
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .weight)
+                    .onChange(of: weight) {
+                        weight = weight
+                    }
                 
                 BubbleSelectView(selection: $weightUnit)
                     .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
@@ -782,16 +879,18 @@ struct NewSignupSequence: View {
                         weightUnitString = weightUnit.rawValue
                     }
             }
+            
             HStack {
-                TextField("Age", value: $age, formatter: .ageFormatter)
+                TextField("Graduation Year", value: $gradYear.converted(), format: .ranged(2000...2999))
                     .keyboardType(.numberPad)
+                    .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && age == 0
+                                                iconColor: buttonPressed && gradYear == 0
                                                 ? Custom.error
                                                 : nil))
-                    .focused($focusedField, equals: .age)
-                    .onChange(of: age) {
-                        age = age
+                    .focused($focusedField, equals: .gradYear)
+                    .onChange(of: gradYear) {
+                        gradYear = gradYear
                     }
                 
                 BubbleSelectView(selection: $gender)
@@ -804,17 +903,6 @@ struct NewSignupSequence: View {
                         genderString = gender.rawValue
                     }
             }
-            TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
-                .keyboardType(.numberPad)
-                .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                            iconColor: buttonPressed && gradYear == 0
-                                            ? Custom.error
-                                            : nil))
-                .focused($focusedField, equals: .gradYear)
-                .onChange(of: gradYear) {
-                    gradYear = gradYear
-                }
             TextField("High School", text: $highSchool)
                 .disableAutocorrection(true)
                 .modifier(TextFieldModifier(icon: "hexagon.fill",
@@ -843,7 +931,12 @@ struct NewSignupSequence: View {
                     showAthleteError = false
                 }
                 Task {
-                    await saveNewAthlete()
+                    if athleteAllFieldsFilled {
+                        await saveNewAthlete()
+                    } else {
+                        showAthleteError = true
+                        buttonPressed = true
+                    }
                 }
             } label: {
                 ColorfulButton(title: "Continue")
@@ -1010,7 +1103,18 @@ struct NewSignupSequence: View {
                     }
                 }
                 .padding(.top, 20)
-                .padding(.bottom, 45)
+                .padding(.bottom, 35)
+                
+                Text("**Crop Image**")
+                    .font(.footnote)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(.primary.opacity(0.7))
+                    .accentColor(.primary.opacity(0.7))
+                    .onTapGesture {
+                        withAnimation(.openCard) {
+                            showImageCropper.toggle()
+                        }
+                    }
                 
                 if identityVerificationFailed {
                     Text("Failed to verify your identity. Make sure your face is visible in your profile picture and matches your photo ID")
@@ -1065,16 +1169,36 @@ struct NewSignupSequence: View {
                         }
                     }
             }
+            .fullScreenCover(isPresented: $showImageCropper) {
+                if let pickedImage = pickedImage {
+                    SwiftyCropView(
+                        imageToCrop: pickedImage,
+                        maskShape: .circle
+                    ) { croppedImage in
+                        if let croppedImage = croppedImage {
+                            if let imageData = croppedImage.jpegData(compressionQuality: 0.8) {
+                                profilePicData = imageData
+                            } else {
+                                print("Failed to convert UIImage to JPEG data.")
+                            }
+                            profilePic = Image(uiImage: croppedImage)
+                        }
+                    }
+                }
+            }
+            
             .onChange(of: selectedProfilePicImage) {
                 Task {
-                    guard let selectedImage = selectedProfilePicImage else { return }
-                    
-                    // Load Picker image into Image
-                    let _ = loadProfilePicTransferable(from: selectedImage)
-                    
-                    // Load Picker image into Data
-                    if let data = try? await selectedImage.loadTransferable(type: Data.self) {
-                        profilePicData = data
+                    if let selectedImage = selectedProfilePicImage {
+                        await loadImage(selectedImage)
+                    }
+                    if let pickedImage = pickedImage {
+                        if let imageData = pickedImage.jpegData(compressionQuality: 0.8) {
+                            profilePicData = imageData
+                        } else {
+                            print("Failed to convert UIImage to JPEG data.")
+                        }
+                        profilePic = Image(uiImage: pickedImage)
                     }
                 }
             }
@@ -1104,21 +1228,25 @@ struct NewSignupSequence: View {
         }
     }
     
+    private func isValidDate(a: Date, b: Date) -> Bool {
+        return a < b.addingTimeInterval(.days(-1))
+    }
+    
     private func loadPhotoIdTransferable(from imageSelection: PhotosPickerItem) -> Progress {
         return imageSelection.loadTransferable(type: Image.self) { result in
             DispatchQueue.main.async {
                 guard selectedPhotoIdImage == self.selectedPhotoIdImage else { return }
                 switch result {
-                    case .success(let image?):
-                        // Handle the success case with the image.
-                        photoId = image
-                    case .success(nil):
-                        // Handle the success case with an empty value.
-                        photoId = nil
-                    case .failure(let error):
-                        // Handle the failure case with the provided error.
-                        print("Failed to get image from picker: \(error)")
-                        photoId = nil
+                case .success(let image?):
+                    // Handle the success case with the image.
+                    photoId = image
+                case .success(nil):
+                    // Handle the success case with an empty value.
+                    photoId = nil
+                case .failure(let error):
+                    // Handle the failure case with the provided error.
+                    print("Failed to get image from picker: \(error)")
+                    photoId = nil
                 }
             }
         }
@@ -1129,16 +1257,16 @@ struct NewSignupSequence: View {
             DispatchQueue.main.async {
                 guard selectedProfilePicImage == self.selectedProfilePicImage else { return }
                 switch result {
-                    case .success(let image?):
-                        // Handle the success case with the image.
-                        profilePic = image
-                    case .success(nil):
-                        // Handle the success case with an empty value.
-                        profilePic = nil
-                    case .failure(let error):
-                        // Handle the failure case with the provided error.
-                        print("Failed to get image from picker: \(error)")
-                        profilePic = nil
+                case .success(let image?):
+                    // Handle the success case with the image.
+                    profilePic = image
+                case .success(nil):
+                    // Handle the success case with an empty value.
+                    profilePic = nil
+                case .failure(let error):
+                    // Handle the failure case with the provided error.
+                    print("Failed to get image from picker: \(error)")
+                    profilePic = nil
                 }
             }
         }
@@ -1188,15 +1316,12 @@ struct NewSignupSequence: View {
             let athlete = NewAthlete(
                 user: user,
                 // TODO: save academics field
-                heightFeet: heightFeet,
-                heightInches: Int(heightInches),
-                weight: weight,
+                heightFeet: heightFeet ?? 0,
+                heightInches: heightInches ?? 0,
+                weight: weight ?? 0,
                 weightUnit: weightUnitString,
                 gender: genderString,
-                age: age,
-                // TODO: add date of birth in YYYY-MM-dd format
-                dateOfBirth: try Temporal.Date(iso8601String: ""),
-                graduationYear: gradYear,
+                graduationYear: gradYear ?? 0,
                 highSchool: highSchool,
                 hometown: hometown,
                 springboardRating: springboard,

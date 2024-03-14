@@ -34,7 +34,7 @@ enum SignupInfoField: Int, Hashable, CaseIterable {
     case heightFeet
     case heightInches
     case weight
-    case age
+    case birthday
     case gradYear
     case highSchool
     case hometown

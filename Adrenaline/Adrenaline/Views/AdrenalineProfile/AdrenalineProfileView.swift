@@ -174,6 +174,35 @@ struct AdrenalineProfileView: View {
     }
 }
 
+extension Temporal.Date {
+    func toDate() -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.date(from: self.iso8601String)
+    }
+}
+
+func calculateAge(fromDate date: Any) -> Int? {
+    let calendar = Calendar.current
+    var convertedDate: Date?
+    
+    if let temporalDate = date as? Temporal.Date, let date = temporalDate.toDate() {
+        convertedDate = date
+    } else if let standardDate = date as? Date {
+        convertedDate = standardDate
+    } else {
+        print("Unsupported date type")
+        return nil
+    }
+    
+    if let birthDate = convertedDate {
+        let ageComponents = calendar.dateComponents([.year], from: birthDate, to: Date())
+        return ageComponents.year
+    } else {
+        return nil
+    }
+}
+
 struct PersonalInfoView: View {
     @Environment(\.colorScheme) var currentMode
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -283,7 +312,7 @@ struct PersonalInfoView: View {
                                 }
                                 HStack {
                                     Image(systemName: "person.fill")
-                                    if let age = athlete?.age {
+                                    if let age = calculateAge(fromDate: user.dateOfBirth.toDate()) {
                                         Text(String(age))
                                     } else {
                                         Text("?")

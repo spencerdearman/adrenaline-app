@@ -1,5 +1,5 @@
 {
-  "originHash" : "de01181235f1d885dd6c66e556f48e2635c00107134e205d999ce90436da2fdf",
+  "originHash" : "ef663b4e355bb42d8059d05c6c3980f7edf50bd12263f2e98f3fe507838a4b3f",
   "pins" : [
     {
       "identity" : "amplify-swift",
@@ -116,6 +116,15 @@
       "state" : {
         "revision" : "89af6b7e04b0dc0bf97a721d27fc87c4db8e3829",
         "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "swiftycrop",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/benedom/SwiftyCrop",
+      "state" : {
+        "branch" : "master",
+        "revision" : "ea2f6c8365f683d57c15f5049fdf0bedd660e0ef"
       }
     }
   ],
