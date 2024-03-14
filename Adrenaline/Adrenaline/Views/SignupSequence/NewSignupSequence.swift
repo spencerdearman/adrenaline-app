@@ -13,10 +13,10 @@ import SwiftyCrop
 
 //https://www.avanderlee.com/swiftui/formatstyle-formatter-restrict-textfield-input/#:~:text=A%20custom%20FormatStyle%20can%20help,using%20a%20custom%20FormatStyle%20implementation.
 struct RangeIntegerStyle: ParseableFormatStyle {
-
+    
     var parseStrategy: RangeIntegerStrategy = .init()
     let range: ClosedRange<Int>
-
+    
     func format(_ value: Int) -> String {
         let constrainedValue = min(max(value, range.lowerBound), range.upperBound)
         return "\(constrainedValue)"
@@ -28,7 +28,7 @@ struct RangeIntegerStrategy: ParseStrategy {
         return Int(value) ?? 1
     }
 }
-/// Allow writing `.ranged(0...5)` instead of `RangeIntegerStyle(range: 0...5)`.
+// allows us to write .ranged(0...12) etc.
 extension FormatStyle where Self == RangeIntegerStyle {
     static func ranged(_ range: ClosedRange<Int>) -> RangeIntegerStyle {
         return RangeIntegerStyle(range: range)
@@ -116,7 +116,7 @@ struct NewSignupSequence: View {
     
     // General States
     @State var buttonPressed: Bool = false
-    @State var pageIndex: PageIndex = .athleteInfo
+    @State var pageIndex: PageIndex = .accountType
     @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
@@ -260,9 +260,9 @@ struct NewSignupSequence: View {
     }
     
     func loadImage(_ item: PhotosPickerItem) async {
-            guard let data = try? await item.loadTransferable(type: Data.self) else { return }
-            pickedImage = UIImage(data: data)
-        }
+        guard let data = try? await item.loadTransferable(type: Data.self) else { return }
+        pickedImage = UIImage(data: data)
+    }
     
     // Saves new user with stored State data, and handles CoachUser creation if needed
     private func saveNewUser() async -> Bool {
@@ -567,21 +567,21 @@ struct NewSignupSequence: View {
                 .brightness(-0.2)
                 Spacer()
             }
-                .foregroundColor(isValidDate(a: date, b: Date()) ? .primary : .secondary)
-                .frame(maxWidth: .infinity)
-                .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                            iconColor: (buttonPressed &&
-                                                        !isValidDate(a: date, b: dateB)
-                                                        ? Custom.error
-                                                        : nil)))
-                .overlay {
-                    // https://stackoverflow.com/a/77426363/22068672
-                    DatePicker("", selection: $date, displayedComponents: [.date])
-                        .labelsHidden()
-                        .contentShape(Rectangle())
-                        .opacity(0.011)
-                        .offset(x: -60)
-                }
+            .foregroundColor(isValidDate(a: date, b: Date()) ? .primary : .secondary)
+            .frame(maxWidth: .infinity)
+            .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                        iconColor: (buttonPressed &&
+                                                    !isValidDate(a: date, b: dateB)
+                                                    ? Custom.error
+                                                    : nil)))
+            .overlay {
+                // https://stackoverflow.com/a/77426363/22068672
+                DatePicker("", selection: $date, displayedComponents: [.date])
+                    .labelsHidden()
+                    .contentShape(Rectangle())
+                    .opacity(0.011)
+                    .offset(x: -60)
+            }
             
             Divider()
             
@@ -840,7 +840,7 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .heightFeet)
                     .onChange(of: heightFeet) {
-                            heightFeet = heightFeet
+                        heightFeet = heightFeet
                     }
                 TextField("Height (in)", value: $heightInches.converted(), format: .ranged(0...11))
                     .keyboardType(.numberPad)
@@ -866,7 +866,7 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .weight)
                     .onChange(of: weight) {
-                            weight = weight
+                        weight = weight
                     }
                 
                 BubbleSelectView(selection: $weightUnit)
@@ -1170,22 +1170,22 @@ struct NewSignupSequence: View {
                     }
             }
             .fullScreenCover(isPresented: $showImageCropper) {
-                        if let pickedImage = pickedImage {
-                            SwiftyCropView(
-                                imageToCrop: pickedImage,
-                                maskShape: .circle
-                            ) { croppedImage in
-                                if let croppedImage = croppedImage {
-                                    if let imageData = croppedImage.jpegData(compressionQuality: 0.8) {
-                                        profilePicData = imageData
-                                    } else {
-                                        print("Failed to convert UIImage to JPEG data.")
-                                    }
-                                    profilePic = Image(uiImage: croppedImage)
-                                }
+                if let pickedImage = pickedImage {
+                    SwiftyCropView(
+                        imageToCrop: pickedImage,
+                        maskShape: .circle
+                    ) { croppedImage in
+                        if let croppedImage = croppedImage {
+                            if let imageData = croppedImage.jpegData(compressionQuality: 0.8) {
+                                profilePicData = imageData
+                            } else {
+                                print("Failed to convert UIImage to JPEG data.")
                             }
+                            profilePic = Image(uiImage: croppedImage)
                         }
+                    }
                 }
+            }
             
             .onChange(of: selectedProfilePicImage) {
                 Task {
