@@ -80,6 +80,13 @@ extension Formatter {
         formatter.maximum = 99999999
         return formatter
     }()
+    
+    static let GPAFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.zeroSymbol = ""
+        formatter.maximum = 6.0
+        return formatter
+    }()
 }
 
 struct ButtonInfo: Identifiable {
@@ -160,6 +167,13 @@ struct NewSignupSequence: View {
     @State var hometown: String = ""
     @State var athleteCreationSuccessful: Bool = false
     @State var showAthleteError: Bool = false
+    
+    // Variables for Academics
+    @State var satScore: Int? = nil
+    @State var actScore: Int? = nil
+    @State var weightedGPA: Double? = nil
+    @State var gpaScale: Double? = nil
+    @State var courseWork: String? = nil
     
     // Variables for Photo ID Upload
     @State private var selectedPhotoIdImage: PhotosPickerItem? = nil
@@ -984,7 +998,7 @@ struct NewSignupSequence: View {
     var academicInfoForm: some View {
         Group {
             HStack {
-                TextField("Height (ft)", value: $heightFeet.converted(), format: .ranged(3...7))
+                TextField("SAT Score", value: $satScore.converted(), format: .ranged(400...1600))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -993,10 +1007,10 @@ struct NewSignupSequence: View {
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .heightFeet)
-                    .onChange(of: heightFeet) {
-                        heightFeet = heightFeet
+                    .onChange(of: satScore) {
+                        satScore = satScore
                     }
-                TextField("Height (in)", value: $heightInches.converted(), format: .ranged(0...11))
+                TextField("ACT Score", value: $actScore.converted(), format: .ranged(1...36))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -1005,12 +1019,12 @@ struct NewSignupSequence: View {
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .heightInches)
-                    .onChange(of: heightInches) {
-                        heightFeet = heightFeet
+                    .onChange(of: actScore) {
+                        actScore = actScore
                     }
             }
             HStack {
-                TextField("Weight", value: $weight.converted(), format: .ranged(40...300))
+                TextField("Weighted GPA", value: $weightedGPA, format: .GPAFormatter)
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -1019,64 +1033,12 @@ struct NewSignupSequence: View {
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .weight)
-                    .onChange(of: weight) {
-                        weight = weight
-                    }
-                
-                BubbleSelectView(selection: $weightUnit)
-                    .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
-                    .scaleEffect(1.08)
-                    .onAppear {
-                        weightUnitString = weightUnit.rawValue
-                    }
-                    .onChange(of: weightUnit) {
-                        weightUnitString = weightUnit.rawValue
+                    .onChange(of: weightedGPA) {
+                        weightedGPA = weightedGPA
                     }
             }
             
-            HStack {
-                TextField("Graduation Year", value: $gradYear.converted(), format: .ranged(2000...2999))
-                    .keyboardType(.numberPad)
-                    .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && gradYear == 0
-                                                ? Custom.error
-                                                : nil))
-                    .focused($focusedField, equals: .gradYear)
-                    .onChange(of: gradYear) {
-                        gradYear = gradYear
-                    }
                 
-                BubbleSelectView(selection: $gender)
-                    .frame(width: textFieldWidth / 2)
-                    .scaleEffect(1.05)
-                    .onAppear {
-                        genderString = gender.rawValue
-                    }
-                    .onChange(of: gender) {
-                        genderString = gender.rawValue
-                    }
-            }
-            TextField("High School", text: $highSchool)
-                .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                            iconColor: buttonPressed && highSchool.isEmpty
-                                            ? Custom.error
-                                            : nil))
-                .focused($focusedField, equals: .highSchool)
-                .onChange(of: highSchool) {
-                    highSchool = highSchool
-                }
-            TextField("Hometown", text: $hometown)
-                .disableAutocorrection(true)
-                .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                            iconColor: buttonPressed && hometown.isEmpty
-                                            ? Custom.error
-                                            : nil))
-                .focused($focusedField, equals: .hometown)
-                .onChange(of: hometown) {
-                    hometown = hometown
-                }
             Divider()
             
             
