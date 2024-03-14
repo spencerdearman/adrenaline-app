@@ -12,6 +12,8 @@ struct ConfirmPasswordReset: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: ConfirmResetPasswordState
     @State var appear = [false, false, false]
+    @State var confirmErrorMessage: String = ""
+    @State var confirmError: Bool = false
     @FocusState private var focusedField: SignupInfoField?
     @Binding var signupCompleted: Bool
     private let screenWidth = UIScreen.main.bounds.width
@@ -59,19 +61,34 @@ struct ConfirmPasswordReset: View {
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
                 .focused($focusedField, equals: .password)
-
+            
             SecureField("Confirm Password", text: $state.confirmPassword)
                 .textContentType(.password)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
                 .focused($focusedField, equals: .confirmPassword)
-
+            
             Button {
                 Task {
                     focusedField = nil
-                    try await state.confirmResetPassword()
-                    signupCompleted = true
+                    // Passwords match
+//                    if !state.newPassword.isEmpty,
+//                       state.newPassword.value == state.confirmPassword.value, state.newPassword.count >= 8 {
+//                        confirmErrorMessage = ""
+//                        confirmError = false
+//                        do {
+                            try await state.confirmResetPassword()
+//                        } catch {
+//                            confirmError = true
+//                        }
+//                    } else if state.newPassword.count < 8 {
+//                        confirmErrorMessage = "Password must be at least 8 characters"
+//                        confirmError = true
+//                    } else if state.newPassword.value != state.confirmPassword {
+//                        confirmErrorMessage = "Passwords do not match"
+//                        confirmError = true
+//                    }
                 }
             } label: {
                 ColorfulButton(title: "Submit")

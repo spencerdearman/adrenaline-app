@@ -12,6 +12,7 @@ struct ForgotPassword: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: ResetPasswordState
     @State var appear = [false, false, false]
+    @State var forgotPasswordError: Bool = false
     @FocusState private var focusedField: SignupInfoField?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -56,7 +57,12 @@ struct ForgotPassword: View {
             Button {
                 Task {
                     focusedField = nil
-                    
+                    forgotPasswordError = false
+                    do {
+                        try await state.resetPassword()
+                    } catch {
+                        forgotPasswordError = true
+                    }
                     try? await state.resetPassword()
                 }
             } label: {
@@ -65,6 +71,13 @@ struct ForgotPassword: View {
             
             if state.isBusy {
                 ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            
+            if forgotPasswordError {
+                Text("Email does not exist, please sign up")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             
             Divider()
