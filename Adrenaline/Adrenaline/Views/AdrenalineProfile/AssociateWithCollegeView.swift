@@ -9,11 +9,13 @@ import SwiftUI
 import Amplify
 
 struct AssociateWithCollegeView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var coachUser: CoachUser? = nil
     @State private var searchTerm: String = ""
-//    @State private var originalSelectedCollege: String = ""
+    @State private var originalSelectedCollege: String = ""
     @State private var selectedCollege: String = ""
-//    @Binding var updateDataStoreData: Bool
+    @State private var showAlert: Bool = false
+    @State private var isRequestingAssociation: Bool = false
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -85,78 +87,38 @@ struct AssociateWithCollegeView: View {
                 }
                 .padding(.top)
             }
-        }
-        .searchable(text: $searchTerm, prompt: "Search Colleges")
-        .onAppear {
-            Task {
-//                originalSelectedCollege = selectedCollege
-                coachUser = try await newUser.coach
-                selectedCollege = try await coachUser?.college?.name ?? ""
+            
+            if selectedCollege != "" {
+                Button {
+                    Task {
+                        isRequestingAssociation = true
+                        try await uploadCollegeAssociationRequest(
+                            userId: newUser.id,
+                            selectedCollegeId: getCollegeId(name: selectedCollege)
+                        )
+                        showAlert = true
+                        isRequestingAssociation = false
+                    }
+                } label: {
+                    ColorfulButton(title: "Request Association")
+                }
+                .disabled(isRequestingAssociation)
             }
         }
-//        .onDisappear {
-//            Task {
-//                // If there was a change in selection, handle updating the DataStore
-//                if var coach = coachUser, selectedCollege != originalSelectedCollege {
-//                    var originalCollege: College? = nil
-//                    var newCollege: College? = nil
-//                    
-//                    if originalSelectedCollege != "" {
-//                        originalCollege = try await queryAWSCollegeById(id: getCollegeId(
-//                            name: originalSelectedCollege))
-//                    }
-//                    
-//                    if selectedCollege != "" {
-//                        newCollege = try await queryAWSCollegeById(id: getCollegeId(
-//                            name: selectedCollege))
-//                    }
-//                    
-//                    // If the user has selected a new college and the new college does not exist
-//                    // yet, create it with an empty athletes list
-//                    if selectedCollege != "",
-//                       newCollege == nil,
-//                       let imageLink = colleges?[selectedCollege] {
-//                        let college = College(id: getCollegeId(name: selectedCollege),
-//                                              name: selectedCollege,
-//                                              imageLink: imageLink)
-//                        newCollege = try await saveToDataStore(object: college)
-//                    }
-//                    
-//                    // If originalCollege was not None, remove athlete from its athletes list
-//                    if var college = originalCollege {
-//                        try await college.athletes?.fetch()
-//                        
-//                        if let athletes = college.athletes {
-//                            college.athletes = List<NewAthlete>.init(elements:
-//                                                                        athletes.elements.filter {
-//                                $0.id != athlete.id
-//                            })
-//                            
-//                            let _ = try await saveToDataStore(object: college)
-//                        }
-//                    }
-//                    
-//                    // If newCollege is not None, add athlete to its athletes list
-//                    if var college = newCollege {
-//                        try await college.athletes?.fetch()
-//                        
-//                        if let athletes = college.athletes {
-//                            college.athletes = List<NewAthlete>.init(elements: athletes.elements +
-//                                                                     [athlete])
-//                            
-//                            let _ = try await saveToDataStore(object: college)
-//                        }
-//                    }
-//                    
-//                    athlete.setCollege(newCollege)
-//                    let newAthlete = try await saveToDataStore(object: athlete)
-//                    var user = newUser
-//                    user.setAthlete(newAthlete)
-//                    let _ = try await saveToDataStore(object: user)
-//                    updateDataStoreData = true
-//                }
-//            }
-//        }
+        .searchable(text: $searchTerm, prompt: "Search Colleges")
+        .alert("College Association Request submitted. Our support team will verify your association and update your profile if approved.",
+               isPresented: $showAlert) {
+            Button("OK", role: .cancel) {
+                showAlert = false
+                dismiss()
+            }
+        }
+        .onAppear {
+            Task {
+                coachUser = try await newUser.coach
+                originalSelectedCollege = try await coachUser?.college?.name ?? ""
+            }
+        }
     }
     
     var noSelectionView: some View {
@@ -168,7 +130,7 @@ struct AssociateWithCollegeView: View {
                 .aspectRatio(contentMode: .fit)
                 .padding(.trailing)
             
-            Text("You are not currently associated with a college")
+            Text("None")
                 .padding()
                 .multilineTextAlignment(.leading)
             
@@ -193,43 +155,11 @@ struct AssociateWithCollegeView: View {
                 .fontWeight(.semibold)
                 .padding(.bottom)
             
-            if selectedCollege == "" {
+            if originalSelectedCollege == "" {
                 noSelectionView
             } else {
-                CollegeRowView(collegeName: selectedCollege)
+                CollegeRowView(collegeName: originalSelectedCollege)
             }
         }
     }
 }
-
-//struct CollegeRowView: View {
-//    var collegeName: String
-//    
-//    private let screenWidth = UIScreen.main.bounds.width
-//    private let screenHeight = UIScreen.main.bounds.height
-//    
-//    var body: some View {
-//        HStack {
-//            Image(getCollegeImageFilename(name: collegeName))
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-//                .clipShape(Circle())
-//                .padding(.trailing)
-//            
-//            Text(collegeName)
-//                .padding()
-//                .multilineTextAlignment(.leading)
-//            
-//            Spacer()
-//            Spacer()
-//            Spacer()
-//        }
-//        .padding()
-//        .background(
-//            RoundedRectangle(cornerRadius: 40)
-//                .foregroundColor(Custom.darkGray)
-//                .shadow(radius: 5)
-//        )
-//        .frame(width: screenWidth * 0.9, height: screenWidth * 0.2)
-//    }
-//}
