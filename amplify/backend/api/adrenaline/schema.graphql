@@ -37,7 +37,6 @@ type NewUser @model @auth(rules: [{allow: private}, {allow: public, provider: ap
   phone: AWSPhone
   diveMeetsID: String
   accountType: String!
-  dateOfBirth: AWSDate!
   athlete: NewAthlete @hasOne
   coach: CoachUser @hasOne
   posts: [Post] @hasMany(indexName: "byNewUser", fields: ["id"])
@@ -57,6 +56,8 @@ type NewAthlete @model @auth(rules: [{allow: private}, {allow: public, provider:
   weight: Int!
   weightUnit: String!
   gender: String!
+  age: Int!
+  dateOfBirth: AWSDate!
   graduationYear: Int!
   highSchool: String!
   hometown: String!

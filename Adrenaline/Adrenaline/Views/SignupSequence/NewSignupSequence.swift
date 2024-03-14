@@ -10,6 +10,40 @@ import Amplify
 import PhotosUI
 import SwiftyCrop
 
+
+//https://www.avanderlee.com/swiftui/formatstyle-formatter-restrict-textfield-input/#:~:text=A%20custom%20FormatStyle%20can%20help,using%20a%20custom%20FormatStyle%20implementation.
+struct RangeIntegerStyle: ParseableFormatStyle {
+
+    var parseStrategy: RangeIntegerStrategy = .init()
+    let range: ClosedRange<Int>
+
+    func format(_ value: Int) -> String {
+        let constrainedValue = min(max(value, range.lowerBound), range.upperBound)
+        return "\(constrainedValue)"
+    }
+}
+
+struct RangeIntegerStrategy: ParseStrategy {
+    func parse(_ value: String) throws -> Int {
+        return Int(value) ?? 1
+    }
+}
+/// Allow writing `.ranged(0...5)` instead of `RangeIntegerStyle(range: 0...5)`.
+extension FormatStyle where Self == RangeIntegerStyle {
+    static func ranged(_ range: ClosedRange<Int>) -> RangeIntegerStyle {
+        return RangeIntegerStyle(range: range)
+    }
+}
+
+extension Binding where Value == Int? {
+    func converted() -> Binding<Int> {
+        Binding<Int>(
+            get: { self.wrappedValue ?? 0 },
+            set: { self.wrappedValue = $0 }
+        )
+    }
+}
+
 extension Formatter {
     static let heightFtFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -82,7 +116,7 @@ struct NewSignupSequence: View {
     
     // General States
     @State var buttonPressed: Bool = false
-    @State var pageIndex: PageIndex = .accountType
+    @State var pageIndex: PageIndex = .athleteInfo
     @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
@@ -112,15 +146,15 @@ struct NewSignupSequence: View {
     @State private var waitingForLoad: Bool = true
     
     // Variables for Recruiting
-    @State var heightFeet: Int = 0
-    @State var heightInches: Int?
-    @State var weight: Int = 0
+    @State var heightFeet: Int? = nil
+    @State var heightInches: Int? = nil
+    @State var weight: Int? = nil
     @State var weightUnit: WeightUnit = .lb
     @State var weightUnitString: String = ""
     @State var gender: Gender = .male
     @State var genderString: String = ""
     @State var date = Date()
-    @State var gradYear: Int = 0
+    @State var gradYear: Int? = nil
     @State var highSchool: String = ""
     @State var hometown: String = ""
     @State var athleteCreationSuccessful: Bool = false
@@ -146,6 +180,8 @@ struct NewSignupSequence: View {
     private var textFieldWidth: CGFloat {
         screenWidth * 0.5
     }
+    
+    enum Field { case heightFeet, heightInches, weight, gradYear }
     
     var defaultTemporalDate: Temporal.Date {
         // Attempt to create a Temporal.Date for the current date as default
@@ -794,7 +830,7 @@ struct NewSignupSequence: View {
     var athleteInfoForm: some View {
         Group {
             HStack {
-                TextField("Height (ft)", value: $heightFeet, formatter: .heightFtFormatter)
+                TextField("Height (ft)", value: $heightFeet.converted(), format: .ranged(3...7))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -804,11 +840,9 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .heightFeet)
                     .onChange(of: heightFeet) {
-                        if (4...8).contains(heightFeet) {
                             heightFeet = heightFeet
-                        }
                     }
-                TextField("Height (in)", value: $heightInches, formatter: .heightInFormatter)
+                TextField("Height (in)", value: $heightInches.converted(), format: .ranged(0...11))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -818,15 +852,11 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .heightInches)
                     .onChange(of: heightInches) {
-                        if let heightInches = heightInches {
-                            if (0...12).contains(heightInches) {
-                                heightFeet = heightFeet
-                            }
-                        }
+                        heightFeet = heightFeet
                     }
             }
             HStack {
-                TextField("Weight", value: $weight, formatter: .weightFormatter)
+                TextField("Weight", value: $weight.converted(), format: .ranged(40...300))
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -836,9 +866,7 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .weight)
                     .onChange(of: weight) {
-                        if (10...300).contains(weight) {
                             weight = weight
-                        }
                     }
                 
                 BubbleSelectView(selection: $weightUnit)
@@ -853,7 +881,7 @@ struct NewSignupSequence: View {
             }
             
             HStack {
-                TextField("Graduation Year", value: $gradYear, formatter: .yearFormatter)
+                TextField("Graduation Year", value: $gradYear.converted(), format: .ranged(2000...2999))
                     .keyboardType(.numberPad)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
@@ -1288,12 +1316,12 @@ struct NewSignupSequence: View {
             let athlete = NewAthlete(
                 user: user,
                 // TODO: save academics field
-                heightFeet: heightFeet,
+                heightFeet: heightFeet ?? 0,
                 heightInches: heightInches ?? 0,
-                weight: weight,
+                weight: weight ?? 0,
                 weightUnit: weightUnitString,
                 gender: genderString,
-                graduationYear: gradYear,
+                graduationYear: gradYear ?? 0,
                 highSchool: highSchool,
                 hometown: hometown,
                 springboardRating: springboard,
