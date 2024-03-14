@@ -12,6 +12,8 @@ import Authenticator
 struct SignUp: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: SignUpState
+    @State var signUpErrorMessage: String = ""
+    @State var signUpError: Bool = false
     @Binding var email: String
     @Binding var signupCompleted: Bool
     @State var appear = [false, false, false]
@@ -58,10 +60,27 @@ struct SignUp: View {
                 
                 // Passwords match
                 if !state.fields[0].value.isEmpty,
-                    state.fields[1].value == state.fields[2].value {
+                   state.fields[1].value == state.fields[2].value, state.fields[1].value.count >= 8 {
                     Task {
-                        try? await state.signUp()
+                        signUpErrorMessage = ""
+                        signUpError = false
+                        do {
+                            try await state.signUp()
+                        } catch {
+                            if state.fields[0].value.contains("@") {
+                                signUpErrorMessage = "Email already exists, please sign in"
+                            } else {
+                                signUpErrorMessage = "Email invalid, please try again"
+                            }
+                            signUpError = true
+                        }
                     }
+                } else if state.fields[1].value.count < 8 {
+                    signUpErrorMessage = "Password must be at least 8 characters"
+                    signUpError = true
+                } else if state.fields[1].value != state.fields[2].value {
+                    signUpErrorMessage = "Passwords do not match"
+                    signUpError = true
                 }
             } label: {
                 ColorfulButton(title: "Sign Up")
@@ -69,6 +88,12 @@ struct SignUp: View {
             
             if state.isBusy {
                 ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            if signUpError {
+                Text(signUpErrorMessage)
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             
             Divider()
