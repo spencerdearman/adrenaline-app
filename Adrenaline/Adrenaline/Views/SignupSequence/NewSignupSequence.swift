@@ -94,9 +94,10 @@ enum PageIndex: Int, CaseIterable {
     case basicInfo = 1
     case diveMeetsLink = 2
     case athleteInfo = 3
-    case photoId = 4
-    case profilePic = 5
-    case welcome = 6
+    case academicInfo = 4
+    case photoId = 5
+    case profilePic = 6
+    case welcome = 7
 }
 
 struct NewSignupSequence: View {
@@ -374,6 +375,18 @@ struct NewSignupSequence: View {
                         athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
                     }
                     .matchedGeometryEffect(id: "form", in: namespace)
+                    
+                case .academicInfo:
+                    VStack(alignment: .leading, spacing: 20) {
+                        Text("Academic Info")
+                            .font(.largeTitle).bold()
+                            .foregroundColor(.primary)
+                            .slideFadeIn(show: appear[0], offset: 30)
+                        
+                        academicInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                    }
+                    .matchedGeometryEffect(id: "form", in: namespace)
+                    
                 case .photoId:
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Photo ID")
@@ -967,6 +980,149 @@ struct NewSignupSequence: View {
                 }
         }
     }
+    
+    var academicInfoForm: some View {
+        Group {
+            HStack {
+                TextField("Height (ft)", value: $heightFeet.converted(), format: .ranged(3...7))
+                    .keyboardType(.numberPad)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && heightFeet == 0
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .heightFeet)
+                    .onChange(of: heightFeet) {
+                        heightFeet = heightFeet
+                    }
+                TextField("Height (in)", value: $heightInches.converted(), format: .ranged(0...11))
+                    .keyboardType(.numberPad)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && heightInches == nil
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .heightInches)
+                    .onChange(of: heightInches) {
+                        heightFeet = heightFeet
+                    }
+            }
+            HStack {
+                TextField("Weight", value: $weight.converted(), format: .ranged(40...300))
+                    .keyboardType(.numberPad)
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && weight == 0
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .weight)
+                    .onChange(of: weight) {
+                        weight = weight
+                    }
+                
+                BubbleSelectView(selection: $weightUnit)
+                    .frame(width: textFieldWidth / 2, height: screenHeight * 0.02)
+                    .scaleEffect(1.08)
+                    .onAppear {
+                        weightUnitString = weightUnit.rawValue
+                    }
+                    .onChange(of: weightUnit) {
+                        weightUnitString = weightUnit.rawValue
+                    }
+            }
+            
+            HStack {
+                TextField("Graduation Year", value: $gradYear.converted(), format: .ranged(2000...2999))
+                    .keyboardType(.numberPad)
+                    .disableAutocorrection(true)
+                    .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                                iconColor: buttonPressed && gradYear == 0
+                                                ? Custom.error
+                                                : nil))
+                    .focused($focusedField, equals: .gradYear)
+                    .onChange(of: gradYear) {
+                        gradYear = gradYear
+                    }
+                
+                BubbleSelectView(selection: $gender)
+                    .frame(width: textFieldWidth / 2)
+                    .scaleEffect(1.05)
+                    .onAppear {
+                        genderString = gender.rawValue
+                    }
+                    .onChange(of: gender) {
+                        genderString = gender.rawValue
+                    }
+            }
+            TextField("High School", text: $highSchool)
+                .disableAutocorrection(true)
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && highSchool.isEmpty
+                                            ? Custom.error
+                                            : nil))
+                .focused($focusedField, equals: .highSchool)
+                .onChange(of: highSchool) {
+                    highSchool = highSchool
+                }
+            TextField("Hometown", text: $hometown)
+                .disableAutocorrection(true)
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && hometown.isEmpty
+                                            ? Custom.error
+                                            : nil))
+                .focused($focusedField, equals: .hometown)
+                .onChange(of: hometown) {
+                    hometown = hometown
+                }
+            Divider()
+            
+            
+            Button {
+//                withAnimation(.closeCard) {
+//                    showAthleteError = false
+//                }
+                Task {
+                    //TO DO
+//                    if athleteAllFieldsFilled {
+//                        await saveNewAthlete()
+//                    } else {
+//                        showAthleteError = true
+//                        buttonPressed = true
+//                    }
+                }
+            } label: {
+                ColorfulButton(title: "Continue")
+            }
+            if showAthleteError {
+                Text("Error creating athlete profile, please check information")
+                    .foregroundColor(.primary).fontWeight(.semibold)
+            }
+            
+            Text("**Previous**")
+                .font(.footnote)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .foregroundColor(.primary.opacity(0.7))
+                .accentColor(.primary.opacity(0.7))
+                .onTapGesture {
+                    Task {
+                        // If returning to DiveMeetsLink stage, clear the user's DiveMeets ID
+                        // so the search succeeds
+                        if var user = savedUser {
+                            user.diveMeetsID = nil
+                            savedUser = try await saveToDataStore(object: user)
+                        }
+                        
+                        withAnimation(.openCard) {
+                            pageIndex = .athleteInfo
+                        }
+                    }
+                }
+        }
+    }
+    
     
     var photoIdUploadForm: some View {
         Group {
