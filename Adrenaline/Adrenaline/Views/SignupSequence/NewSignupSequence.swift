@@ -12,35 +12,25 @@ import SwiftyCrop
 
 
 //https://www.avanderlee.com/swiftui/formatstyle-formatter-restrict-textfield-input/#:~:text=A%20custom%20FormatStyle%20can%20help,using%20a%20custom%20FormatStyle%20implementation.
-struct RangeIntegerStyle: ParseableFormatStyle {
+struct YearIntegerStyle: ParseableFormatStyle {
     
-    var parseStrategy: RangeIntegerStrategy = .init()
-    let range: ClosedRange<Int>
+    var parseStrategy: YearIntegerStrategy = .init()
     
-    func format(_ value: Int) -> String {
-        let constrainedValue = min(max(value, range.lowerBound), range.upperBound)
-        return "\(constrainedValue)"
+    func format(_ value: Int?) -> String {
+        guard let value = value else { return "" }
+        return "\(value)"
     }
 }
 
-struct RangeIntegerStrategy: ParseStrategy {
-    func parse(_ value: String) throws -> Int {
-        return Int(value) ?? 1
+struct YearIntegerStrategy: ParseStrategy {
+    func parse(_ value: String) throws -> Int? {
+        return Int(value)
     }
 }
 // allows us to write .ranged(0...12) etc.
-extension FormatStyle where Self == RangeIntegerStyle {
-    static func ranged(_ range: ClosedRange<Int>) -> RangeIntegerStyle {
-        return RangeIntegerStyle(range: range)
-    }
-}
-
-extension Binding where Value == Int? {
-    func converted() -> Binding<Int> {
-        Binding<Int>(
-            get: { self.wrappedValue ?? 0 },
-            set: { self.wrappedValue = $0 }
-        )
+extension FormatStyle where Self == YearIntegerStyle {
+    static func year() -> YearIntegerStyle {
+        return YearIntegerStyle()
     }
 }
 
@@ -83,8 +73,8 @@ extension Formatter {
     
     static let GPAFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.zeroSymbol = ""
-        formatter.maximum = 6.0
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 2
         return formatter
     }()
 }
@@ -121,10 +111,11 @@ struct NewSignupSequence: View {
     
     // User States
     @State var savedUser: NewUser? = nil
+    @State var savedAthlete: NewAthlete? = nil
     
     // General States
     @State var buttonPressed: Bool = false
-    @State var pageIndex: PageIndex = .accountType
+    @State var pageIndex: PageIndex = .academicInfo
     @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
@@ -173,7 +164,8 @@ struct NewSignupSequence: View {
     @State var actScore: Int? = nil
     @State var weightedGPA: Double? = nil
     @State var gpaScale: Double? = nil
-    @State var courseWork: String? = nil
+    @State var coursework: String = ""
+    @State var academicCreationSuccessful: Bool = false
     
     // Variables for Photo ID Upload
     @State private var selectedPhotoIdImage: PhotosPickerItem? = nil
@@ -277,6 +269,10 @@ struct NewSignupSequence: View {
     func loadImage(_ item: PhotosPickerItem) async {
         guard let data = try? await item.loadTransferable(type: Data.self) else { return }
         pickedImage = UIImage(data: data)
+    }
+    
+    private func minMax <T: Numeric> (value: T, lowerBound: T, upperBound: T) -> T where T: Comparable {
+        return min(max(value, lowerBound), upperBound)
     }
     
     // Saves new user with stored State data, and handles CoachUser creation if needed
@@ -850,26 +846,27 @@ struct NewSignupSequence: View {
     }
     
     var athleteAllFieldsFilled: Bool {
-        heightFeet != 0 && heightInches != nil && weight != 0 && isValidDate(a: date, b: Date()) &&
-        gradYear != 0 && !highSchool.isEmpty && !hometown.isEmpty
+        heightFeet != nil && heightInches != nil && weight != nil && isValidDate(a: date, b: Date()) &&
+        gradYear != nil && !highSchool.isEmpty && !hometown.isEmpty
     }
     
     var athleteInfoForm: some View {
         Group {
             HStack {
-                TextField("Height (ft)", value: $heightFeet.converted(), format: .ranged(3...7))
+                TextField("Height (ft)", value: $heightFeet, format: .number)
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && heightFeet == 0
+                                                iconColor: buttonPressed && heightFeet == nil
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .heightFeet)
                     .onChange(of: heightFeet) {
-                        heightFeet = heightFeet
+                        guard let height = heightFeet else { return }
+                        heightFeet = minMax(value: height, lowerBound: 3, upperBound: 7)
                     }
-                TextField("Height (in)", value: $heightInches.converted(), format: .ranged(0...11))
+                TextField("Height (in)", value: $heightInches, format: .number)
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
@@ -879,21 +876,23 @@ struct NewSignupSequence: View {
                                                 : nil))
                     .focused($focusedField, equals: .heightInches)
                     .onChange(of: heightInches) {
-                        heightFeet = heightFeet
+                        guard let inches = heightInches else { return }
+                        heightInches = minMax(value: inches, lowerBound: 0, upperBound: 11)
                     }
             }
             HStack {
-                TextField("Weight", value: $weight.converted(), format: .ranged(40...300))
+                TextField("Weight", value: $weight, format: .number)
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && weight == 0
+                                                iconColor: buttonPressed && weight == nil
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .weight)
                     .onChange(of: weight) {
-                        weight = weight
+                        guard let w = weight else { return }
+                        weight = minMax(value: w, lowerBound: 0, upperBound: 300)
                     }
                 
                 BubbleSelectView(selection: $weightUnit)
@@ -908,16 +907,17 @@ struct NewSignupSequence: View {
             }
             
             HStack {
-                TextField("Graduation Year", value: $gradYear.converted(), format: .ranged(2000...2999))
+                TextField("Graduation Year", value: $gradYear, format: .year())
                     .keyboardType(.numberPad)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && gradYear == 0
+                                                iconColor: buttonPressed && gradYear == nil
                                                 ? Custom.error
                                                 : nil))
                     .focused($focusedField, equals: .gradYear)
                     .onChange(of: gradYear) {
-                        gradYear = gradYear
+                        guard let year = gradYear else { return }
+                        gradYear = minMax(value: year, lowerBound: 0, upperBound: 2999)
                     }
                 
                 BubbleSelectView(selection: $gender)
@@ -995,72 +995,89 @@ struct NewSignupSequence: View {
         }
     }
     
+    var academicsFieldFilled: Bool {
+        satScore != nil || actScore != nil || weightedGPA != nil || gpaScale != nil || coursework != ""
+    }
+    
     var academicInfoForm: some View {
         Group {
             HStack {
-                TextField("SAT Score", value: $satScore.converted(), format: .ranged(400...1600))
+                TextField("SAT Score", value: $satScore, format: .year())
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && heightFeet == 0
+                                                iconColor: buttonPressed && satScore == nil
                                                 ? Custom.error
                                                 : nil))
-                    .focused($focusedField, equals: .heightFeet)
+                    .focused($focusedField, equals: .sat)
                     .onChange(of: satScore) {
-                        satScore = satScore
+                        guard let sat = satScore else { return }
+                        satScore = minMax(value: sat, lowerBound: 0, upperBound: 1600)
                     }
-                TextField("ACT Score", value: $actScore.converted(), format: .ranged(1...36))
+                
+                TextField("ACT Score", value: $actScore, format: .number)
                     .keyboardType(.numberPad)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
                     .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && heightInches == nil
+                                                iconColor: buttonPressed && actScore == nil
                                                 ? Custom.error
                                                 : nil))
-                    .focused($focusedField, equals: .heightInches)
+                    .focused($focusedField, equals: .act)
                     .onChange(of: actScore) {
-                        actScore = actScore
-                    }
-            }
-            HStack {
-                TextField("Weighted GPA", value: $weightedGPA, format: .GPAFormatter)
-                    .keyboardType(.numberPad)
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .modifier(TextFieldModifier(icon: "hexagon.fill",
-                                                iconColor: buttonPressed && weight == 0
-                                                ? Custom.error
-                                                : nil))
-                    .focused($focusedField, equals: .weight)
-                    .onChange(of: weightedGPA) {
-                        weightedGPA = weightedGPA
+                        guard let act = actScore else { return }
+                        actScore = minMax(value: act, lowerBound: 0, upperBound: 36)
                     }
             }
             
-                
+            TextField("Weighted GPA", value: $weightedGPA, format: .number)
+                .keyboardType(.decimalPad)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && weightedGPA == nil
+                                            ? Custom.error
+                                            : nil))
+                .focused($focusedField, equals: .gpa)
+                .onChange(of: weightedGPA) {
+                    guard let gpa = weightedGPA else { return }
+                    weightedGPA = minMax(value: gpa, lowerBound: 0.0, upperBound: 6.0)
+                }
+            
+            TextField("GPA Scale", value: $gpaScale, format: .number)
+                .keyboardType(.decimalPad)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && gpaScale == nil
+                                            ? Custom.error
+                                            : nil))
+                .focused($focusedField, equals: .gpaScale)
+                .onChange(of: gpaScale) {
+                    guard let scale = gpaScale else { return }
+                    gpaScale = minMax(value: scale, lowerBound: 0.0, upperBound: 6.0)
+                }
+            
+            TextField("Coursework", text: $coursework)
+                .disableAutocorrection(true)
+                .modifier(TextFieldModifier(icon: "hexagon.fill",
+                                            iconColor: buttonPressed && coursework.isEmpty
+                                            ? Custom.error
+                                            : nil))
+                .focused($focusedField, equals: .hometown)
+                .onChange(of: coursework) {
+                    coursework = coursework
+                }
+            
             Divider()
             
-            
             Button {
-//                withAnimation(.closeCard) {
-//                    showAthleteError = false
-//                }
                 Task {
-                    //TO DO
-//                    if athleteAllFieldsFilled {
-//                        await saveNewAthlete()
-//                    } else {
-//                        showAthleteError = true
-//                        buttonPressed = true
-//                    }
+                    await saveAcademics()
                 }
             } label: {
-                ColorfulButton(title: "Continue")
-            }
-            if showAthleteError {
-                Text("Error creating athlete profile, please check information")
-                    .foregroundColor(.primary).fontWeight(.semibold)
+                ColorfulButton(title: academicsFieldFilled ? "Continue" : "Complete Later")
             }
             
             Text("**Previous**")
@@ -1070,13 +1087,6 @@ struct NewSignupSequence: View {
                 .accentColor(.primary.opacity(0.7))
                 .onTapGesture {
                     Task {
-                        // If returning to DiveMeetsLink stage, clear the user's DiveMeets ID
-                        // so the search succeeds
-                        if var user = savedUser {
-                            user.diveMeetsID = nil
-                            savedUser = try await saveToDataStore(object: user)
-                        }
-                        
                         withAnimation(.openCard) {
                             pageIndex = .athleteInfo
                         }
@@ -1448,6 +1458,7 @@ struct NewSignupSequence: View {
             
             // Save the athlete item
             let savedItem = try await Amplify.DataStore.save(athlete)
+            savedAthlete = savedItem
             
             user.setAthlete(savedItem)
             user.newUserAthleteId = savedItem.id
@@ -1472,11 +1483,7 @@ struct NewSignupSequence: View {
             if athleteAllFieldsFilled {
                 if athleteCreationSuccessful {
                     buttonPressed = false
-                    if devSkipProfilePic {
-                        pageIndex = .welcome
-                    } else {
-                        pageIndex = .photoId
-                    }
+                    pageIndex = .academicInfo
                 } else {
                     showAthleteError = true
                 }
@@ -1485,6 +1492,59 @@ struct NewSignupSequence: View {
             }
         }
     }
+    
+    func saveAcademics() async {
+        do {
+            guard var athlete = savedAthlete else { return }
+            guard var user = savedUser else { return }
+            
+            let record = AcademicRecord(
+                athlete: athlete,
+                satScore: satScore,
+                actScore: actScore,
+                weightedGPA: weightedGPA,
+                gpaScale: gpaScale,
+                coursework: coursework)
+            
+            // Save the record item
+            let savedItem = try await Amplify.DataStore.save(record)
+            
+            // Updating athlete item
+            athlete.setAcademics(savedItem)
+            athlete.newAthleteAcademicsId = savedItem.id
+            savedAthlete = try await saveToDataStore(object: athlete)
+            
+            //
+            user.setAthlete(athlete)
+            savedUser = try await saveToDataStore(object: user)
+            
+            withAnimation(.openCard) {
+                academicCreationSuccessful = true
+            }
+            print("Saved item: \(savedItem)")
+        } catch let error as DataStoreError {
+            withAnimation(.closeCard) {
+                academicCreationSuccessful = false
+            }
+            print("Error creating item: \(error)")
+        } catch {
+            withAnimation(.closeCard) {
+                academicCreationSuccessful = false
+            }
+            print("Unexpected error: \(error)")
+        }
+        withAnimation(.openCard) {
+            if academicCreationSuccessful {
+                buttonPressed = false
+                if devSkipProfilePic {
+                    pageIndex = .welcome
+                } else {
+                    pageIndex = .photoId
+                }
+            }
+        }
+    }
+    
     
     func animate() {
         withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.8).delay(0.2)) {
