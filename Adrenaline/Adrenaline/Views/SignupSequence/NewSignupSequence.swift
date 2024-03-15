@@ -115,7 +115,7 @@ struct NewSignupSequence: View {
     
     // General States
     @State var buttonPressed: Bool = false
-    @State var pageIndex: PageIndex = .academicInfo
+    @State var pageIndex: PageIndex = .accountType
     @State var appear = [false, false, false]
     @State var selectedDict: [String: Bool] = [:]
     @State var selected: Bool = false
@@ -1059,8 +1059,9 @@ struct NewSignupSequence: View {
                     gpaScale = minMax(value: scale, lowerBound: 0.0, upperBound: 6.0)
                 }
             
-            TextField("Coursework", text: $coursework)
+            TextField("Coursework", text: $coursework, axis: .vertical)
                 .disableAutocorrection(true)
+                .lineLimit(4)
                 .modifier(TextFieldModifier(icon: "hexagon.fill",
                                             iconColor: buttonPressed && coursework.isEmpty
                                             ? Custom.error
@@ -1516,6 +1517,7 @@ struct NewSignupSequence: View {
             
             //
             user.setAthlete(athlete)
+            user.newUserAthleteId = athlete.id
             savedUser = try await saveToDataStore(object: user)
             
             withAnimation(.openCard) {

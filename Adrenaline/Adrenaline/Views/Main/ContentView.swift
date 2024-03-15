@@ -26,7 +26,7 @@ struct ContentView: View {
     @AppStorage("email") var email: String = ""
     @AppStorage("authUserId") var authUserId: String = ""
     @State private var showAccount: Bool = false
-//    @State private var newUser: NewUser? = nil
+    //    @State private var newUser: NewUser? = nil
     @StateObject private var newUserViewModel: NewUserViewModel = NewUserViewModel()
     @State private var recentSearches: [SearchItem] = []
     @State private var uploadingPost: Post? = nil
@@ -68,7 +68,7 @@ struct ContentView: View {
     // Test if given NewUser has the associated Athlete model when accountType is Athlete
     private func isAthleteWithAthleteModel(_ user: NewUser) async -> Bool {
         do {
-            guard user.accountType == "Athlete", 
+            guard user.accountType == "Athlete",
                     let _ = try await user.athlete else { return false }
             
             return true
@@ -82,7 +82,7 @@ struct ContentView: View {
     private func isCoachWithCoachModel(_ user: NewUser) async -> Bool {
         do {
             guard user.accountType == "Coach",
-                    let _ = try await user.coach else { return false }
+                  let _ = try await user.coach else { return false }
             
             return true
         } catch {
@@ -94,7 +94,7 @@ struct ContentView: View {
     private func getCurrentUser() async -> NewUser? {
         // First attempt to set current user through AppLogic since it is most likely to be recent
         if let user = appLogic.currentUser {
-//            print("AppLogic not nil")
+            //            print("AppLogic not nil")
             
             if user.accountType == "Spectator" { print("User is spectator"); return appLogic.currentUser }
             let athleteStatus = await isAthleteWithAthleteModel(user)
@@ -102,8 +102,8 @@ struct ContentView: View {
             if athleteStatus || coachStatus {
                 return appLogic.currentUser
             } /*else {
-                print("Current user did not have associated athlete/coach model, querying...")
-            }*/
+               print("Current user did not have associated athlete/coach model, querying...")
+               }*/
         }
         
         // Run a query if AppLogic is nil, or if the user is an Athlete or Coach without the
@@ -111,8 +111,8 @@ struct ContentView: View {
         do {
             guard let user = try await queryAWSUserById(id: authUserId) else { return nil }
             
-//            if user.accountType == "Athlete" { print("Current user Athlete:", try await user.athlete) }
-//            if user.accountType == "Coach" { print("Current user Coach:", try await user.coach) }
+            //            if user.accountType == "Athlete" { print("Current user Athlete:", try await user.athlete) }
+            //            if user.accountType == "Coach" { print("Current user Coach:", try await user.coach) }
             
             return user
         } catch {
@@ -139,8 +139,8 @@ struct ContentView: View {
             }
             
             newUserViewModel.newUser = user
-//            newUser = nil
-//            newUser = user
+            //            newUser = nil
+            //            newUser = user
             
             // Adds device token to user's list of tokens for push notifications
             guard let token = UserDefaults.standard.string(forKey: "userToken") else { return }
@@ -191,7 +191,7 @@ struct ContentView: View {
                     }, signUpContent: { state in
                         SignUp(state: state, email: $email, signupCompleted: $signupCompleted)
                     }, confirmSignUpContent: { state in
-                        ConfirmSignUp(state: state)
+                        ConfirmSignUp(state: state, email: $email)
                     }, resetPasswordContent: { state in
                         ForgotPassword(state: state)
                     }, confirmResetPasswordContent: { state in
@@ -252,11 +252,11 @@ struct ContentView: View {
                                 }
                                 
                                 MeetsView(newUser: $newUserViewModel.newUser, tabBarState: $tabBarState,
-                                     showAccount: $showAccount, recentSearches: $recentSearches,
-                                     uploadingPost: $uploadingPost)
-                                    .tabItem {
-                                        Label("Meets", systemImage: "figure.pool.swim")
-                                    }
+                                          showAccount: $showAccount, recentSearches: $recentSearches,
+                                          uploadingPost: $uploadingPost)
+                                .tabItem {
+                                    Label("Meets", systemImage: "figure.pool.swim")
+                                }
                             }
                             
                             if uploadingPost != nil {
@@ -389,10 +389,10 @@ struct ContentView: View {
                                     
                                     // Need to set to nil to show updated changes, should be
                                     // deprecated in favor of the view model
-//                                    newUser = nil
-//                                    newUser = currentUser
-//                                    print("Coach Order:", try await newUser?.coach?.favoritesOrder)
-//                                    print("View Model Order:", try await newUserViewModel.newUser?.coach?.favoritesOrder)
+                                    //                                    newUser = nil
+                                    //                                    newUser = currentUser
+                                    //                                    print("Coach Order:", try await newUser?.coach?.favoritesOrder)
+                                    //                                    print("View Model Order:", try await newUserViewModel.newUser?.coach?.favoritesOrder)
                                     appLogic.currentUserUpdated = false
                                 }
                             }

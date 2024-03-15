@@ -63,7 +63,6 @@ struct ForgotPassword: View {
                     } catch {
                         forgotPasswordError = true
                     }
-                    try? await state.resetPassword()
                 }
             } label: {
                 ColorfulButton(title: "Send Code")

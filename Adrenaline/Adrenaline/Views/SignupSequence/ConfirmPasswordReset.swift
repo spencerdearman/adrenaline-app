@@ -72,23 +72,12 @@ struct ConfirmPasswordReset: View {
             Button {
                 Task {
                     focusedField = nil
-                    // Passwords match
-//                    if !state.newPassword.isEmpty,
-//                       state.newPassword.value == state.confirmPassword.value, state.newPassword.count >= 8 {
-//                        confirmErrorMessage = ""
-//                        confirmError = false
-//                        do {
-                            try await state.confirmResetPassword()
-//                        } catch {
-//                            confirmError = true
-//                        }
-//                    } else if state.newPassword.count < 8 {
-//                        confirmErrorMessage = "Password must be at least 8 characters"
-//                        confirmError = true
-//                    } else if state.newPassword.value != state.confirmPassword {
-//                        confirmErrorMessage = "Passwords do not match"
-//                        confirmError = true
-//                    }
+                    do {
+                        try await state.confirmResetPassword()
+                    } catch {
+                        confirmErrorMessage = "Passwords must match and be at least 8 characters"
+                        confirmError = true
+                    }
                 }
             } label: {
                 ColorfulButton(title: "Submit")
@@ -96,7 +85,15 @@ struct ConfirmPasswordReset: View {
             
             if state.isBusy {
                 ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
+            
+            if confirmError {
+                Text(confirmErrorMessage)
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            
         }
     }
     

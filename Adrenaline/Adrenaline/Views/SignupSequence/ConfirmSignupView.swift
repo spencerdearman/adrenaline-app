@@ -10,7 +10,9 @@ import Authenticator
 
 struct ConfirmSignUp: View {
     @Environment(\.colorScheme) var currentMode
+    @Environment(\.authenticatorState) var authenticatorState
     @ObservedObject var state: ConfirmSignUpState
+    @Binding var email: String
     @State var appear = [false, false, false]
     @State var confirmationError = false
     @FocusState private var focusedField: SignupInfoField?
@@ -80,6 +82,14 @@ struct ConfirmSignUp: View {
                     .font(.subheadline)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
+            
+            Divider()
+            
+            Text("Code sent to \(email)")
+                .font(.footnote)
+                .foregroundColor(.primary.opacity(0.7))
+                .accentColor(.primary.opacity(0.7))
+                .frame(maxWidth: .infinity, alignment: .center)
         }
     }
     

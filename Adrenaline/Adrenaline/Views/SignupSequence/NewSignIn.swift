@@ -95,7 +95,7 @@ struct NewSignIn: View {
                     ProgressView()
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
-
+                
                 if signInError {
                     Text("Username/Password not found, please try again")
                         .font(.subheadline)
@@ -161,7 +161,7 @@ struct TextFieldModifier: ViewModifier {
                 HStack {
                     Image(systemName: icon)
                         .frame(width: 36, height: 36)
-                        .foregroundColor(iconColor != nil 
+                        .foregroundColor(iconColor != nil
                                          ? iconColor
                                          : .gray.opacity(0.5))
                         .background(.thinMaterial)
@@ -184,6 +184,6 @@ struct TextFieldModifier: ViewModifier {
 
 extension View {
     func customField(icon: String, iconColor: Color? = nil) -> some View {
-            self.modifier(TextFieldModifier(icon: icon, iconColor: iconColor))
+        self.modifier(TextFieldModifier(icon: icon, iconColor: iconColor))
     }
 }

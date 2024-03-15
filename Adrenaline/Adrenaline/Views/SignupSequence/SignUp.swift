@@ -6,8 +6,15 @@
 //
 
 import SwiftUI
+import Amplify
 import Authenticator
 
+// https://stackoverflow.com/questions/25471114/how-to-validate-an-e-mail-address-in-swift
+extension String {
+    var isValidEmail: Bool {
+        NSPredicate(format: "SELF MATCHES %@", "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}").evaluate(with: self)
+    }
+}
 
 struct SignUp: View {
     @Environment(\.colorScheme) var currentMode
@@ -67,7 +74,7 @@ struct SignUp: View {
                         do {
                             try await state.signUp()
                         } catch {
-                            if state.fields[0].value.contains("@") {
+                            if state.fields[0].value.isValidEmail {
                                 signUpErrorMessage = "Email already exists, please sign in"
                             } else {
                                 signUpErrorMessage = "Email invalid, please try again"
