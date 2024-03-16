@@ -11,7 +11,9 @@ import Authenticator
 struct ConfirmSignUp: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: ConfirmSignUpState
+    @Binding var email: String
     @State var appear = [false, false, false]
+    @State var confirmationError = false
     @FocusState private var focusedField: SignupInfoField?
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
@@ -58,8 +60,12 @@ struct ConfirmSignUp: View {
             Button {
                 Task {
                     focusedField = nil
-                    
-                    try? await state.confirmSignUp()
+                    confirmationError = false
+                    do {
+                        try await state.confirmSignUp()
+                    } catch {
+                        confirmationError = true
+                    }
                 }
             } label: {
                 ColorfulButton(title: "Confirm Email")
@@ -67,7 +73,22 @@ struct ConfirmSignUp: View {
             
             if state.isBusy {
                 ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
+            
+            if confirmationError {
+                Text("Incorrect code, please try again")
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            
+            Divider()
+            
+            Text("Code sent to \(email)")
+                .font(.footnote)
+                .foregroundColor(.primary.opacity(0.7))
+                .accentColor(.primary.opacity(0.7))
+                .frame(maxWidth: .infinity, alignment: .center)
         }
     }
     

@@ -13,6 +13,7 @@ struct NewSignIn: View {
     @Environment(\.colorScheme) private var currentMode
     @ObservedObject var state: SignInState
     @State private var username = ""
+    @State private var signInError = false
     @Binding var email: String
     @Binding var authUserId: String
     @Binding var signupCompleted: Bool
@@ -67,16 +68,20 @@ struct NewSignIn: View {
                 .customField(icon: "key.fill")
                 .focused($focusedField, equals: .password)
             
+            
             Button {
                 focusedField = nil
                 state.username = email
                 Task {
+                    signInError = false
                     try? await state.signIn()
                     
                     let pred = NewUser.keys.email == email
                     let users = await queryAWSUsers(where: pred)
                     if users.count == 1 {
                         authUserId = users[0].id
+                    } else {
+                        signInError = true
                     }
                     
                     signupCompleted = true
@@ -85,8 +90,17 @@ struct NewSignIn: View {
                 ColorfulButton(title: "Sign In")
             }
             
-            if state.isBusy {
-                ProgressView()
+            VStack (alignment: .center){
+                if state.isBusy {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                
+                if signInError {
+                    Text("Username/Password not found, please try again")
+                        .font(.subheadline)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
             }
             
             Divider()
@@ -147,7 +161,7 @@ struct TextFieldModifier: ViewModifier {
                 HStack {
                     Image(systemName: icon)
                         .frame(width: 36, height: 36)
-                        .foregroundColor(iconColor != nil 
+                        .foregroundColor(iconColor != nil
                                          ? iconColor
                                          : .gray.opacity(0.5))
                         .background(.thinMaterial)
@@ -170,6 +184,6 @@ struct TextFieldModifier: ViewModifier {
 
 extension View {
     func customField(icon: String, iconColor: Color? = nil) -> some View {
-            self.modifier(TextFieldModifier(icon: icon, iconColor: iconColor))
+        self.modifier(TextFieldModifier(icon: icon, iconColor: iconColor))
     }
 }

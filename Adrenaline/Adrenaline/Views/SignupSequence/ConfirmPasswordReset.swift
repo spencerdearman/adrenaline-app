@@ -12,6 +12,8 @@ struct ConfirmPasswordReset: View {
     @Environment(\.colorScheme) var currentMode
     @ObservedObject var state: ConfirmResetPasswordState
     @State var appear = [false, false, false]
+    @State var confirmErrorMessage: String = ""
+    @State var confirmError: Bool = false
     @FocusState private var focusedField: SignupInfoField?
     @Binding var signupCompleted: Bool
     private let screenWidth = UIScreen.main.bounds.width
@@ -59,19 +61,23 @@ struct ConfirmPasswordReset: View {
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
                 .focused($focusedField, equals: .password)
-
+            
             SecureField("Confirm Password", text: $state.confirmPassword)
                 .textContentType(.password)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .customField(icon: "key.fill")
                 .focused($focusedField, equals: .confirmPassword)
-
+            
             Button {
                 Task {
                     focusedField = nil
-                    try await state.confirmResetPassword()
-                    signupCompleted = true
+                    do {
+                        try await state.confirmResetPassword()
+                    } catch {
+                        confirmErrorMessage = "Passwords must match and be at least 8 characters"
+                        confirmError = true
+                    }
                 }
             } label: {
                 ColorfulButton(title: "Submit")
@@ -79,7 +85,15 @@ struct ConfirmPasswordReset: View {
             
             if state.isBusy {
                 ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
+            
+            if confirmError {
+                Text(confirmErrorMessage)
+                    .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            
         }
     }
     

@@ -38,6 +38,11 @@ enum SignupInfoField: Int, Hashable, CaseIterable {
     case gradYear
     case highSchool
     case hometown
+    case sat
+    case act
+    case gpa
+    case gpaScale
+    case coursework
 }
 
 struct UserViewData: Equatable {
