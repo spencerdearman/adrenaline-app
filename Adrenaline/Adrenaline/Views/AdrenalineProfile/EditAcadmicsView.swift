@@ -152,7 +152,6 @@ struct EditAcademicsView: View {
                         await saveAcademics()
                         updateDataStoreData = true
                         isSavingChanges = false
-                        print("UPDATED")
                         dismiss()
                     }
                 } label: {
