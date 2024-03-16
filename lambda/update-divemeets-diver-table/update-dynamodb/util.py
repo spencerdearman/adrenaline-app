@@ -19,7 +19,6 @@ class DiveMeetsDiver:
         springboard,
         platform,
         total,
-        ttl=None,
         version=1,
     ):
         self.id = id
@@ -31,7 +30,6 @@ class DiveMeetsDiver:
         self.springboardRating = springboard
         self.platformRating = platform
         self.totalRating = total
-        self._ttl = ttl
 
         # Need below fields for DataStore compatibility
         self.createdAt = datetime.now().isoformat()
@@ -183,7 +181,6 @@ mutation createDiveMeetsDiver($createDiveMeetsDiverInput: CreateDiveMeetsDiverIn
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -204,7 +201,6 @@ mutation createDiveMeetsDiver($createDiveMeetsDiverInput: CreateDiveMeetsDiverIn
                 "springboardRating": diveMeetsDiver.springboardRating,
                 "platformRating": diveMeetsDiver.platformRating,
                 "totalRating": diveMeetsDiver.totalRating,
-                "_ttl": None,
             }
         }
 
@@ -228,7 +224,6 @@ query getDiveMeetsDiver($id: ID!) {
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -266,7 +261,6 @@ mutation updateDiveMeetsDiver($updateDiveMeetsDiverInput: UpdateDiveMeetsDiverIn
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -327,7 +321,6 @@ mutation deleteDiveMeetsDiver(
     springboardRating
     platformRating
     totalRating
-    _ttl
     createdAt
     updatedAt
     _version
@@ -368,7 +361,6 @@ query listDiveMeetsDivers(
       springboardRating
       platformRating
       totalRating
-      _ttl
       createdAt
       updatedAt
       _version

@@ -55,11 +55,23 @@ def filter_adrenaline_profiles(ids):
 # Throws a KeyError if line 60 is reached but a key is missing. This is to be
 # caught when the function is called so logs can be properly routed to
 # CloudWatch
-def get_graphql_list_items(data):
+def get_graphql_list_items(
+    data, cloudwatch_client, log_group_name, log_stream_name, isLocal
+):
     if data is None:
         return []
 
-    return data["data"]["listDiveMeetsDivers"]["items"]
+    try:
+        return data["data"]["listDiveMeetsDivers"]["items"]
+    except Exception as exc:
+        send_output(
+            isLocal,
+            send_log_event,
+            cloudwatch_client,
+            log_group_name,
+            log_stream_name,
+            f"get_graphql_list_items: Request failed with response {data}: {repr(exc)}",
+        )
 
 
 def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal):
@@ -99,7 +111,13 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
             missing_items = list(
                 filter(
                     lambda x: x["id"] not in ids_set,
-                    get_graphql_list_items(gq_client.listDiveMeetsDivers()),
+                    get_graphql_list_items(
+                        gq_client.listDiveMeetsDivers(),
+                        cloudwatch_client,
+                        log_group_name,
+                        log_stream_name,
+                        isLocal,
+                    ),
                 )
             )
         except KeyError as exc:
@@ -112,6 +130,16 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                 f"process_ids: Failed to get missing items - {repr(exc)}",
             )
             missing_items = []
+        except Exception as exc:
+            send_output(
+                isLocal,
+                send_log_event,
+                cloudwatch_client,
+                log_group_name,
+                log_stream_name,
+                f"process_ids: Caught exception, aborting early - {repr(exc)}",
+            )
+            return
 
         send_output(
             isLocal,
@@ -143,7 +171,6 @@ def process_ids(ids, cloudwatch_client, log_group_name, log_stream_name, isLocal
                     item["springboardRating"],
                     item["platformRating"],
                     item["totalRating"],
-                    None,
                     item["_version"],
                 )
             )
