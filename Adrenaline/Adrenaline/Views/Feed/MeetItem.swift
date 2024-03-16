@@ -185,7 +185,6 @@ struct MeetFeedItemExpandedView: View {
                     .padding(outerTitlePadding)
                     .fixedSize(horizontal: false, vertical: true)
                 }
-                .border(Color.black, width: 2)
                 .offset(y: ((meet.resultsLink == nil || meet.resultsLink == "")
                             ? screenHeight * -0.1
                             : screenHeight * -0.182)
