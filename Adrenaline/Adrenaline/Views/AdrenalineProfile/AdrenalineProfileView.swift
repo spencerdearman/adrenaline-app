@@ -312,7 +312,7 @@ struct PersonalInfoView: View {
                                 }
                                 HStack {
                                     Image(systemName: "person.fill")
-                                    if let age = calculateAge(fromDate: user.dateOfBirth.toDate()) {
+                                    if let age = calculateAge(fromDate: user.dateOfBirth.foundationDate) {
                                         Text(String(age))
                                     } else {
                                         Text("?")
