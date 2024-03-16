@@ -11,13 +11,13 @@ def lambda_handler(event, context):
 
     response = dynamodb_client.scan(
         TableName="DiveMeetsDiver-mwfmh6eukfhdhngcz756xxhxsa-main",
-        Select="COUNT",
         ExpressionAttributeNames={"#L": "_lastChangedAt"},
         ExpressionAttributeValues={
             ":yesterdayUnixTimestamp": {"N": str(yesterday_unix_timestamp)}
         },
         FilterExpression="#L <= :yesterdayUnixTimestamp",
     )
+    print(response)
 
     response_count = 0
     failure_count = 0
