@@ -185,6 +185,7 @@ extension Temporal.Date {
 func calculateAge(fromDate date: Any) -> Int? {
     let calendar = Calendar.current
     var convertedDate: Date?
+    print(date)
     
     if let temporalDate = date as? Temporal.Date, let date = temporalDate.toDate() {
         convertedDate = date
@@ -197,6 +198,7 @@ func calculateAge(fromDate date: Any) -> Int? {
     
     if let birthDate = convertedDate {
         let ageComponents = calendar.dateComponents([.year], from: birthDate, to: Date())
+        print("Age Components: \(ageComponents)")
         return ageComponents.year
     } else {
         return nil
@@ -312,7 +314,7 @@ struct PersonalInfoView: View {
                                 }
                                 HStack {
                                     Image(systemName: "person.fill")
-                                    if let age = calculateAge(fromDate: user.dateOfBirth.toDate()) {
+                                    if let age = calculateAge(fromDate: user.dateOfBirth.foundationDate) {
                                         Text(String(age))
                                     } else {
                                         Text("?")
