@@ -93,7 +93,15 @@ struct SettingsView: View {
                                 EditProfileView(updateDataStoreData: $updateDataStoreData,
                                                 newUser: newUser)
                             } label: {
-                                Text("Edit Profile")
+                                Text("Athlete Information")
+                            }
+                            .navigationTitle("Profile")
+                            
+                            NavigationLink {
+                                EditAcademicsView(updateDataStoreData: $updateDataStoreData,
+                                                newUser: newUser)
+                            } label: {
+                                Text("Academic Information")
                             }
                             .navigationTitle("Profile")
                             
