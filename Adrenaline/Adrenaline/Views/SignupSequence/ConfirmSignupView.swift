@@ -10,7 +10,6 @@ import Authenticator
 
 struct ConfirmSignUp: View {
     @Environment(\.colorScheme) var currentMode
-    @Environment(\.authenticatorState) var authenticatorState
     @ObservedObject var state: ConfirmSignUpState
     @Binding var email: String
     @State var appear = [false, false, false]
