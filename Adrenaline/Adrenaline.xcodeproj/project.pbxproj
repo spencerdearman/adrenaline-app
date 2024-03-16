@@ -137,6 +137,7 @@
 		4D76438E2A71A4D1000F35CB /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D76438D2A71A4D1000F35CB /* Account.swift */; };
 		4D8B9C1929F8D395002B53AD /* MeetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D8B9C1829F8D395002B53AD /* MeetsView.swift */; };
 		4D94438F2BA536D400033540 /* EditAcadmicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D94438E2BA536D400033540 /* EditAcadmicsView.swift */; };
+		4D9443912BA53E1300033540 /* UserSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9443902BA53E1300033540 /* UserSettingsPage.swift */; };
 		4D9DD09A2A058EF700F6D31C /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9DD0992A058EF700F6D31C /* Event.swift */; };
 		4DA154F22B9D8EE0008108C2 /* SwiftyCrop in Frameworks */ = {isa = PBXBuildFile; productRef = 4DA154F12B9D8EE0008108C2 /* SwiftyCrop */; };
 		4DA4816D2AA266E5003DFA3B /* ConfirmSignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */; };
@@ -333,6 +334,7 @@
 		4D76438D2A71A4D1000F35CB /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
 		4D8B9C1829F8D395002B53AD /* MeetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetsView.swift; sourceTree = "<group>"; };
 		4D94438E2BA536D400033540 /* EditAcadmicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditAcadmicsView.swift; sourceTree = "<group>"; };
+		4D9443902BA53E1300033540 /* UserSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsPage.swift; sourceTree = "<group>"; };
 		4D9DD0992A058EF700F6D31C /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		4DA4816C2AA266E5003DFA3B /* ConfirmSignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSignupView.swift; sourceTree = "<group>"; };
 		4DA4816E2AA266FF003DFA3B /* SignUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUp.swift; sourceTree = "<group>"; };
@@ -841,6 +843,7 @@
 				00B22DCC2B368AAD007208D0 /* CommittedCollegeView.swift */,
 				00D6DDD72AE5F2BA0065F040 /* PostProfileView.swift */,
 				4D13F3BC2A999F930081823D /* SettingsPage.swift */,
+				4D9443902BA53E1300033540 /* UserSettingsPage.swift */,
 				4D261CB82A68DEE900CB4CF3 /* SkillsGraph.swift */,
 				00CD87532B660D4E001D64C3 /* EditProfileView.swift */,
 				4D94438E2BA536D400033540 /* EditAcadmicsView.swift */,
@@ -1027,6 +1030,7 @@
 				0079E1672B9D4F0D0085B96A /* AcademicRecord+Schema.swift in Sources */,
 				002A1BB629DCF2F900A26FED /* GetTextAsync.swift in Sources */,
 				4DD880BB2A761089008F69F2 /* AthleteProfile.swift in Sources */,
+				4D9443912BA53E1300033540 /* UserSettingsPage.swift in Sources */,
 				000D28E129E122B700B184E9 /* LiveResultsView.swift in Sources */,
 				4DA482EE2AA98BE8003DFA3B /* NewTeam.swift in Sources */,
 				4D1A31D32A9857FA00128F81 /* NewSearch.swift in Sources */,

@@ -86,75 +86,55 @@ struct SettingsView: View {
                 .padding()
             }
             Section {
-                NavigationLink {
-                    if let user = newUser {
-                        VStack {
-                            NavigationLink {
-                                EditProfileView(updateDataStoreData: $updateDataStoreData,
-                                                newUser: newUser)
-                            } label: {
-                                Text("Athlete Information")
-                            }
-                            .navigationTitle("Profile")
-                            
-                            NavigationLink {
-                                EditAcademicsView(updateDataStoreData: $updateDataStoreData,
-                                                newUser: newUser)
-                            } label: {
-                                Text("Academic Information")
-                            }
-                            .navigationTitle("Profile")
-                            
-                            NavigationLink {
-                                CommittedCollegeView(selectedCollege: $selectedCollege,
-                                                     updateDataStoreData: $updateDataStoreData,
-                                                     newUser: user)
-                            } label: {
-                                Text("Change Commited College")
-                            }
-                        }
-                    }
+                NavigationLink { 
+                    UserSettingsPage(newUser: newUser, updateDataStoreData: $updateDataStoreData, selectedCollege: $selectedCollege)
                 } label: {
                     Label("Profile", systemImage: "person")
                 }
                 
                 NavigationLink {
-                    VStack {
-                        Button {
-                            showDeleteAccountAlert = true
-                        } label: {
-                            Text("Delete Account")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .tint(.red)
-                        .disabled(isDeletingAccount)
-                        
-                        if isDeletingAccount {
-                            ProgressView()
-                        }
-                    }
-                    .alert("Are you sure you want to permanently delete your account? This action cannot be undone.", 
-                           isPresented: $showDeleteAccountAlert) {
-                        Button("Cancel", role: .cancel) {
-                            print("Cancel delete account")
-                            showDeleteAccountAlert = false
-                        }
-                        Button("Delete", role: .destructive) {
-                            Task {
-                                print("Initiating account deletion...")
-                                isDeletingAccount = true
+                    List {
+                        Section {
+                            VStack {
+                                Button {
+                                    showDeleteAccountAlert = true
+                                } label: {
+                                    Text("Delete Account")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .tint(.red)
+                                .disabled(isDeletingAccount)
                                 
-                                // Deletes all account data and login
-                                await deleteAccount(authUserId: authUserId)
-                                
-                                // Explicitly sign out of state since it is being observed
-                                await state.signOut()
-                                
-                                showDeleteAccountAlert = false
-                                dismiss()
+                                if isDeletingAccount {
+                                    ProgressView()
+                                }
+                            }
+                            .alert("Are you sure you want to permanently delete your account? This action cannot be undone.",
+                                   isPresented: $showDeleteAccountAlert) {
+                                Button("Cancel", role: .cancel) {
+                                    print("Cancel delete account")
+                                    showDeleteAccountAlert = false
+                                }
+                                Button("Delete", role: .destructive) {
+                                    Task {
+                                        print("Initiating account deletion...")
+                                        isDeletingAccount = true
+                                        
+                                        // Deletes all account data and login
+                                        await deleteAccount(authUserId: authUserId)
+                                        
+                                        // Explicitly sign out of state since it is being observed
+                                        await state.signOut()
+                                        
+                                        showDeleteAccountAlert = false
+                                        dismiss()
+                                    }
+                                }
                             }
                         }
+                        .listRowSeparator(.automatic)
                     }
+                    .listStyle(.insetGrouped)
                 } label: {
                     Label("Settings", systemImage: "gear")
                 }

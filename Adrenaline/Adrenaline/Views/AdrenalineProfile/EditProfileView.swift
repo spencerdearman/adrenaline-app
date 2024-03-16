@@ -113,6 +113,7 @@ struct EditProfileView: View {
     
     var body: some View {
         VStack {
+            Spacer()
             if let _ = newUser {
                 PhotosPicker(selection: $selectedImage, matching: .images) {
                     ZStack(alignment: .bottomTrailing) {
@@ -294,7 +295,7 @@ struct EditProfileView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Edit Profile")
+        .navigationTitle("Edit Athlete Profile")
         .alert("It may take up to 60 seconds for your profile picture to update", isPresented: $showAlert) {
             Button("OK", role: .cancel) {
                 showAlert = false
