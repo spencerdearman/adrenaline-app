@@ -59,8 +59,6 @@ struct EditAcademicsView: View {
             athlete.setAcademics(savedItem)
             athlete.newAthleteAcademicsId = savedItem.id
             savedAthlete = try await saveToDataStore(object: athlete)
-            
-            //
             user.setAthlete(athlete)
             user.newUserAthleteId = athlete.id
             let _ = try await saveToDataStore(object: user)
