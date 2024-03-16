@@ -235,6 +235,50 @@ func getAthleteUsersByFavoritesIds(ids: [String]) async throws -> [NewUser] {
     return order.sorted { $0.0 < $1.0 }.map { $0.1 }
 }
 
+func getUsersByIds(ids: [String]) async throws -> [NewUser] {
+    var pred: QueryPredicateGroup
+    if ids.count == 0 { return [] }
+    else if ids.count == 1 {
+        let user = try await queryAWSUserById(id: ids[0])
+        if let user = user {
+            return [user]
+        } else {
+            return []
+        }
+    }
+    
+    pred = (NewUser.keys.id == ids[0]).or(NewUser.keys.id == ids[1])
+    
+    if ids.count > 2 {
+        for id in ids[2...] {
+            pred = pred.or(NewUser.keys.id == id)
+        }
+    }
+    
+    // Query for users
+    let users = await queryAWSUsers(where: pred)
+    let userIds = Set(users.map { $0.id })
+    
+    // Get resulting input ids to maintain request sort order
+    let finalInputIds = ids.filter({ userIds.contains($0) })
+    let idToIndex = finalInputIds.enumerated()
+        .reduce(into: [String: Int]()) { result, item in
+            let (index, id) = item
+            result[id] = index
+        }
+    
+    // Combine default sort index with NewUser object
+    var order: [(Int, NewUser)] = []
+    for user in users {
+        if let idx = idToIndex[user.id] {
+            order.append((idx, user))
+        }
+    }
+    
+    // Return sorted list of NewUser objects
+    return order.sorted { $0.0 < $1.0 }.map { $0.1 }
+}
+
 // Returns posts in dictionary form, with key being the user id and list of posts in reverse
 // chronological order as value
 func getPostsByUserIds(ids: [String]) async throws -> [String: [Post]] {
@@ -271,14 +315,15 @@ func getPostsByUserIds(ids: [String]) async throws -> [String: [Post]] {
 
 // Returns posts in array form with posts in reverse chronological order. This is meant for the
 // feed page, where the owning user does not matter when listing the posts
-func getFeedPostsByUserIds(ids: [String]) async throws -> [Post] {
+func getFeedPostsByUserIds(ids: [String]) async throws -> [(NewUser, Post)] {
     var pred: QueryPredicateGroup
     if ids.count == 0 { return [] }
     else if ids.count == 1 {
         let pred = Post.keys.newuserID == ids[0]
         let posts: [Post] = try await query(where: pred)
-        return posts.sorted {
-            $0.creationDate > $1.creationDate
+        guard let user = try await queryAWSUserById(id: ids[0]) else { return [] }
+        return posts.map { (user, $0) }.sorted {
+            $0.1.creationDate > $1.1.creationDate
         }
     }
     
@@ -291,8 +336,21 @@ func getFeedPostsByUserIds(ids: [String]) async throws -> [Post] {
     }
     
     let allPosts: [Post] = try await query(where: pred)
+    let userIds = allPosts.map { $0.newuserID }
+    let users = try await getUsersByIds(ids: userIds)
+    var usersDict: [String: NewUser] = [:]
+    for user in users {
+        usersDict[user.id] = user
+    }
     
-    return allPosts.sorted {
-        $0.creationDate > $1.creationDate
+    var tuples: [(NewUser, Post)] = []
+    for post in allPosts {
+        if let user = usersDict[post.newuserID] {
+            tuples.append((user, post))
+        }
+    }
+    
+    return tuples.sorted {
+        $0.1.creationDate > $1.1.creationDate
     }
 }
