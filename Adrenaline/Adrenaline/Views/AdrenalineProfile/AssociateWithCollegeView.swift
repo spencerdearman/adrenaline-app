@@ -16,6 +16,7 @@ struct AssociateWithCollegeView: View {
     @State private var selectedCollege: String = ""
     @State private var showAlert: Bool = false
     @State private var isRequestingAssociation: Bool = false
+    @Binding var originalCollege: String
     var newUser: NewUser
     
     private let screenWidth = UIScreen.main.bounds.width
@@ -88,7 +89,10 @@ struct AssociateWithCollegeView: View {
                 .padding(.top)
             }
             
-            if selectedCollege != "" {
+            // If currently associated but selected 'None', or if current association doesn't match
+            // current selection
+            if (originalSelectedCollege != "" && selectedCollege == "") ||
+                originalSelectedCollege != selectedCollege {
                 Button {
                     Task {
                         isRequestingAssociation = true
@@ -100,7 +104,9 @@ struct AssociateWithCollegeView: View {
                         isRequestingAssociation = false
                     }
                 } label: {
-                    ColorfulButton(title: "Request Association")
+                    ColorfulButton(title: selectedCollege == ""
+                                   ? "Remove Association"
+                                   : "Request Association")
                 }
                 .disabled(isRequestingAssociation)
             }
@@ -113,12 +119,20 @@ struct AssociateWithCollegeView: View {
                 dismiss()
             }
         }
-        .onAppear {
-            Task {
-                coachUser = try await newUser.coach
-                originalSelectedCollege = try await coachUser?.college?.name ?? ""
-            }
-        }
+               .onAppear {
+                   Task {
+                       coachUser = try await newUser.coach
+                       
+                       originalSelectedCollege = try await coachUser?.college?.name ?? ""
+                       if originalSelectedCollege == "" && originalCollege != "" {
+                           originalSelectedCollege = originalCollege
+                       }
+                       
+                       if originalSelectedCollege != "" {
+                           selectedCollege = originalSelectedCollege
+                       }
+                   }
+               }
     }
     
     var noSelectionView: some View {

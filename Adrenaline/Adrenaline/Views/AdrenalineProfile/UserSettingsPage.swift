@@ -43,7 +43,8 @@ struct UserSettingsPage: View {
                         }
                     } else if user.accountType == "Coach" {
                         NavigationLink {
-                            AssociateWithCollegeView(newUser: user)
+                            AssociateWithCollegeView(originalCollege: $selectedCollege,
+                                                     newUser: user)
                         } label: {
                             Label("Associate with College", systemImage: "graduationcap")
                         }
