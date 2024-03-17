@@ -20,16 +20,19 @@ def lambda_handler(event, context):
     user_id = event["user_id"]
     college_id = event["college_id"]
 
-    get_college_response = gq_client.getCollegeById(college_id)
-    print(f"College Get response: {get_college_response}")
-    college = (
-        None
-        if get_college_response is None
-        else College(get_college_response["data"]["getCollege"])
-    )
-    print(f"College: {None if college is None else college.toJSON()}")
+    get_college_response = None
+    college = None
+    if college_id != "":
+        get_college_response = gq_client.getCollegeById(college_id)
+        print(f"College Get response: {get_college_response}")
+        college = (
+            None
+            if get_college_response is None
+            else College(get_college_response["data"]["getCollege"])
+        )
+        print(f"College: {None if college is None else college.toJSON()}")
 
-    if get_college_response is None:
+    if get_college_response is None and college_id != "":
         with open("collegeLogos.json", "r", encoding="utf-8") as fd:
             college_logos = json.load(fd)
 
@@ -107,24 +110,27 @@ def lambda_handler(event, context):
             print(f"Failed to remove coachID from college: {repr(exc)}")
             return
 
-    coach_user.collegeID = college_id
+    coach_user.collegeID = college_id if college_id != "" else None
     coach_user_update_response = gq_client.updateCoachUser(
         coach_user, coach_user_version
     )
     print(f"CoachUser: {coach_user_update_response}")
 
-    college.coachID = coach_user.id
-    college_update_response = gq_client.updateCollege(college, get_college_response)
-    print(f"College: {college_update_response}")
+    if college_id != "":
+        college.coachID = coach_user.id
+        college_update_response = gq_client.updateCollege(college, get_college_response)
+        print(f"College: {college_update_response}")
 
 
 if __name__ == "__main__":
     lambda_handler(
         {
             "user_id": "f629930a-9931-47d5-aaa3-93609e26444d",
+            # "user_id": "test",
             # "college_id": "abilene-christian-university",
             # "college_id": "university-of-chicago",
-            "college_id": "brown-university",
+            # "college_id": "test",
+            "college_id": "",
         },
         None,
     )
