@@ -519,14 +519,14 @@ query GetNewUser($id: ID!) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     posts {
@@ -660,12 +660,12 @@ query GetNewAthlete($id: ID!) {
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     academics {
@@ -1017,23 +1017,23 @@ query GetCoachUser($id: ID!) {
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     favoritesOrder
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
     coachUserUserId
-    coachUserTeamId
-    coachUserCollegeId
     __typename
   }
 }
@@ -1047,14 +1047,14 @@ query ListCoachUsers(
     items {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     nextToken
@@ -1078,14 +1078,47 @@ query SyncCoachUsers(
     items {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query CoachUsersByNewteamID(
+  $newteamID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelCoachUserFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  coachUsersByNewteamID(
+    newteamID: $newteamID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      favoritesOrder
+      collegeID
+      newteamID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      coachUserUserId
       __typename
     }
     nextToken
@@ -1101,14 +1134,14 @@ query GetNewTeam($id: ID!) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     athletes {
@@ -1191,22 +1224,22 @@ query GetCollege($id: ID!) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
+    coachID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    collegeCoachId
     __typename
   }
 }
@@ -1221,12 +1254,12 @@ query ListColleges(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     nextToken
@@ -1251,12 +1284,12 @@ query SyncColleges(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     nextToken

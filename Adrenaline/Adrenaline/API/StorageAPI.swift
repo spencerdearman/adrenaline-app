@@ -101,3 +101,13 @@ func deletePhotoId(userId: String) async throws {
     let key = getPhotoIdKey(userId: userId)
     try await Amplify.Storage.remove(key: key)
 }
+
+func uploadCollegeAssociationRequest(userId: String, selectedCollegeId: String) async throws {
+    let task = Amplify.Storage.uploadData(
+        key: "college-association-requests/\(userId)_\(selectedCollegeId).txt",
+        data: Data()
+    )
+    
+    let _ = try await task.value
+    print("College association request uploaded")
+}

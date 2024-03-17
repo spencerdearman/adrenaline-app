@@ -486,6 +486,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "dateOfBirth": {
+                    "name": "dateOfBirth",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": true,
+                    "attributes": []
+                },
                 "athlete": {
                     "name": "athlete",
                     "isArray": false,
@@ -741,20 +748,6 @@ export const schema = {
                     "name": "gender",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "age": {
-                    "name": "age",
-                    "isArray": false,
-                    "type": "Int",
-                    "isRequired": true,
-                    "attributes": []
-                },
-                "dateOfBirth": {
-                    "name": "dateOfBirth",
-                    "isArray": false,
-                    "type": "AWSDate",
                     "isRequired": true,
                     "attributes": []
                 },
@@ -1042,7 +1035,7 @@ export const schema = {
                     "association": {
                         "connectionType": "BELONGS_TO",
                         "targetNames": [
-                            "coachUserTeamId"
+                            "newteamID"
                         ]
                     }
                 },
@@ -1057,7 +1050,7 @@ export const schema = {
                     "association": {
                         "connectionType": "BELONGS_TO",
                         "targetNames": [
-                            "coachUserCollegeId"
+                            "collegeID"
                         ]
                     }
                 },
@@ -1068,6 +1061,20 @@ export const schema = {
                     "isRequired": true,
                     "attributes": [],
                     "isArrayNullable": false
+                },
+                "collegeID": {
+                    "name": "collegeID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "newteamID": {
+                    "name": "newteamID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1091,20 +1098,6 @@ export const schema = {
                     "type": "ID",
                     "isRequired": false,
                     "attributes": []
-                },
-                "coachUserTeamId": {
-                    "name": "coachUserTeamId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
-                },
-                "coachUserCollegeId": {
-                    "name": "coachUserCollegeId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
                 }
             },
             "syncable": true,
@@ -1113,6 +1106,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byNewTeam",
+                        "fields": [
+                            "newteamID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -1306,9 +1308,16 @@ export const schema = {
                             "id"
                         ],
                         "targetNames": [
-                            "collegeCoachId"
+                            "coachID"
                         ]
                     }
+                },
+                "coachID": {
+                    "name": "coachID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -1325,13 +1334,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
-                },
-                "collegeCoachId": {
-                    "name": "collegeCoachId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
                 }
             },
             "syncable": true,
@@ -2297,5 +2299,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "d274a2863c25e8352fdfbd2ff2db23ff"
+    "version": "6d02df424bd50a338324dd11746dd7a4"
 };

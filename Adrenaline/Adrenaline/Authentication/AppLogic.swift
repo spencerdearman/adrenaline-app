@@ -22,6 +22,7 @@ class AppLogic: ObservableObject {
     @Published var isSignedIn: Bool = false
     @Published var initialized: Bool = false
     @Published var users: [NewUser] = []
+    @Published var coaches: [CoachUser] = []
     @Published var meets: [NewMeet] = []
     @Published var teams: [NewTeam] = []
     @Published var colleges: [College] = []
@@ -152,6 +153,7 @@ class AppLogic: ObservableObject {
     func observeSearchData() async {
         // load data at start of app when user signed in
         observeUsers()
+        observeCoaches()
         observeMeets()
         observeTeams()
         observeColleges()
@@ -244,6 +246,23 @@ extension AppLogic {
         }
     }
     
+    func observeCoaches() {
+        let coachSubscription = Amplify.DataStore.observeQuery(for: CoachUser.self)
+        
+        Task {
+            do {
+                for try await snapshot in coachSubscription {
+                    await MainActor.run {
+                        self.coaches = snapshot.items
+                        print("updated coaches")
+                    }
+                }
+            } catch {
+                print("\(error)")
+            }
+        }
+    }
+    
     func observeMeets() {
         let meetSubscription = Amplify.DataStore.observeQuery(for: NewMeet.self)
         
@@ -284,8 +303,21 @@ extension AppLogic {
         Task {
             do {
                 for try await snapshot in collegeSubscription {
-                    await MainActor.run {
-                        self.colleges = snapshot.items
+                    var colleges: [College] = []
+                    for item in snapshot.items {
+                        if try await item.coach == nil,
+                           let coachID = item.coachID {
+                            var newItem = item
+                            newItem.setCoach(try await queryAWSCoachById(id: coachID))
+                            newItem = try await saveToDataStore(object: newItem)
+                            colleges.append(newItem)
+                        } else {
+                            colleges.append(item)
+                        }
+                    }
+                    
+                    await MainActor.run { [colleges] in
+                        self.colleges = colleges
                         print("updated colleges")
                     }
                 }

@@ -79,10 +79,13 @@ struct NewSearchView: View {
     @State private var searchTerm = ""
     @State private var showResult: Bool = false
     @State private var selectedItem: SearchItem? = nil
-    @State private var searchItems: [SearchItem] = []
     @State private var searchScope: SearchScope = .all
     @Binding var recentSearches: [SearchItem]
     @Namespace var namespace
+    
+    private var searchItems: [SearchItem] {
+        newMeets.map { .meet($0) } + newUsers.map { .user($0) } + newTeams.map { .team($0) } + colleges.map { .college($0) }
+    }
     
     private func updateRecentSearches(item: SearchItem) {
         if let index = recentSearches.firstIndex(of: item) {
@@ -110,23 +113,6 @@ struct NewSearchView: View {
             ForEach(SearchScope.allCases, id: \.self) { scope in
                 Text(scope.rawValue.capitalized)
             }
-        }
-        .onAppear {
-//            searchItems = [
-//                .meet(NewMeet(meetID: 1, name: "Test Meet 1", startDate: Temporal.Date(Date()),
-//                              endDate: Temporal.Date(Date()),
-//                              city: "Pittsburgh", state: "PA", country: "United States",
-//                              link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9080", meetType: 2)),
-//                .meet(NewMeet(meetID: 2, name: "Test Meet 2", startDate: Temporal.Date(Date()),
-//                              endDate: Temporal.Date(Date()),
-//                              city: "Oakton", state: "VA", country: "United States",
-//                              link: "https://secure.meetcontrol.com/divemeets/system/meetinfoext.php?meetnum=9088", meetType: 2))
-//            ]
-            
-            searchItems += newMeets.map { .meet($0) }
-            searchItems += newUsers.map { .user($0) }
-            searchItems += newTeams.map { .team($0) }
-            searchItems += colleges.map { .college($0) }
         }
     }
     

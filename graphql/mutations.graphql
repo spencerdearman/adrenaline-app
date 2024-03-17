@@ -301,14 +301,14 @@ mutation CreateNewUser(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     posts {
@@ -374,14 +374,14 @@ mutation UpdateNewUser(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     posts {
@@ -447,14 +447,14 @@ mutation DeleteNewUser(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     posts {
@@ -521,12 +521,12 @@ mutation CreateNewAthlete(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     academics {
@@ -614,12 +614,12 @@ mutation UpdateNewAthlete(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     academics {
@@ -707,12 +707,12 @@ mutation DeleteNewAthlete(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     academics {
@@ -854,23 +854,23 @@ mutation CreateCoachUser(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     favoritesOrder
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
     coachUserUserId
-    coachUserTeamId
-    coachUserCollegeId
     __typename
   }
 }
@@ -916,23 +916,23 @@ mutation UpdateCoachUser(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     favoritesOrder
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
     coachUserUserId
-    coachUserTeamId
-    coachUserCollegeId
     __typename
   }
 }
@@ -978,23 +978,23 @@ mutation DeleteCoachUser(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     favoritesOrder
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
     coachUserUserId
-    coachUserTeamId
-    coachUserCollegeId
     __typename
   }
 }
@@ -1009,14 +1009,14 @@ mutation CreateNewTeam(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     athletes {
@@ -1044,14 +1044,14 @@ mutation UpdateNewTeam(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     athletes {
@@ -1079,14 +1079,14 @@ mutation DeleteNewTeam(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     athletes {
@@ -1120,22 +1120,22 @@ mutation CreateCollege(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
+    coachID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    collegeCoachId
     __typename
   }
 }
@@ -1156,22 +1156,22 @@ mutation UpdateCollege(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
+    coachID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    collegeCoachId
     __typename
   }
 }
@@ -1192,22 +1192,22 @@ mutation DeleteCollege(
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
+    coachID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    collegeCoachId
     __typename
   }
 }
