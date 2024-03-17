@@ -29,14 +29,15 @@ extension CoachUser {
     model.syncPluralName = "CoachUsers"
     
     model.attributes(
+      .index(fields: ["newteamID"], name: "byNewTeam"),
       .primaryKey(fields: [coachUser.id])
     )
     
     model.fields(
       .field(coachUser.id, is: .required, ofType: .string),
       .belongsTo(coachUser.user, is: .optional, ofType: NewUser.self, targetNames: ["coachUserUserId"]),
-      .belongsTo(coachUser.team, is: .optional, ofType: NewTeam.self, targetNames: ["coachUserTeamId"]),
-      .belongsTo(coachUser.college, is: .optional, ofType: College.self, targetNames: ["coachUserCollegeId"]),
+      .belongsTo(coachUser.team, is: .optional, ofType: NewTeam.self, targetNames: ["newteamID"]),
+      .belongsTo(coachUser.college, is: .optional, ofType: College.self, targetNames: ["collegeID"]),
       .field(coachUser.favoritesOrder, is: .required, ofType: .embeddedCollection(of: Int.self)),
       .field(coachUser.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
       .field(coachUser.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)

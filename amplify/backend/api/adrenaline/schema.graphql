@@ -78,9 +78,11 @@ type Video @model @auth(rules: [{allow: private}, {allow: public, provider: apiK
 type CoachUser @model @auth(rules: [{allow: private}, {allow: public, provider: apiKey}]) {
   id: ID!
   user: NewUser @belongsTo
-  team: NewTeam @belongsTo
-  college: College @belongsTo
+  team: NewTeam @belongsTo(fields: ["newteamID"])
+  college: College @belongsTo(fields: ["collegeID"])
   favoritesOrder: [Int!]!
+  collegeID: ID
+  newteamID: ID @index(name: "byNewTeam")
 }
 
 type NewTeam @model @auth(rules: [{allow: private}, {allow: public, provider: apiKey}]) {
@@ -95,7 +97,8 @@ type College @model @auth(rules: [{allow: private}, {allow: public, provider: ap
   name: String!
   imageLink: AWSURL!
   athletes: [NewAthlete!]! @hasMany(indexName: "byCollege", fields: ["id"])
-  coach: CoachUser @hasOne
+  coach: CoachUser @hasOne(fields: ["coachID"])
+  coachID: ID
 }
 
 type NewMeet @model @auth(rules: [{allow: private}, {allow: public, provider: apiKey}]) {

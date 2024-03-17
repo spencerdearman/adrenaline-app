@@ -10,9 +10,9 @@ extension College {
     case imageLink
     case athletes
     case coach
+    case coachID
     case createdAt
     case updatedAt
-    case collegeCoachId
   }
   
   public static let keys = CodingKeys.self
@@ -38,10 +38,10 @@ extension College {
       .field(college.name, is: .required, ofType: .string),
       .field(college.imageLink, is: .required, ofType: .string),
       .hasMany(college.athletes, is: .optional, ofType: NewAthlete.self, associatedWith: NewAthlete.keys.college),
-      .hasOne(college.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.college, targetNames: ["collegeCoachId"]),
+      .hasOne(college.coach, is: .optional, ofType: CoachUser.self, associatedWith: CoachUser.keys.college, targetNames: ["coachID"]),
+      .field(college.coachID, is: .optional, ofType: .string),
       .field(college.createdAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(college.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime),
-      .field(college.collegeCoachId, is: .optional, ofType: .string)
+      .field(college.updatedAt, is: .optional, isReadOnly: true, ofType: .dateTime)
     )
     }
     public class Path: ModelPath<College> { }
@@ -69,13 +69,13 @@ extension ModelPath where ModelType == College {
   public var coach: ModelPath<CoachUser>   {
       CoachUser.Path(name: "coach", parent: self) 
     }
+  public var coachID: FieldPath<String>   {
+      string("coachID") 
+    }
   public var createdAt: FieldPath<Temporal.DateTime>   {
       datetime("createdAt") 
     }
   public var updatedAt: FieldPath<Temporal.DateTime>   {
       datetime("updatedAt") 
-    }
-  public var collegeCoachId: FieldPath<String>   {
-      string("collegeCoachId") 
     }
 }

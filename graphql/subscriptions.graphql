@@ -274,14 +274,14 @@ subscription OnCreateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     posts {
@@ -344,14 +344,14 @@ subscription OnUpdateNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     posts {
@@ -414,14 +414,14 @@ subscription OnDeleteNewUser($filter: ModelSubscriptionNewUserFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     posts {
@@ -487,12 +487,12 @@ subscription OnCreateNewAthlete(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     academics {
@@ -579,12 +579,12 @@ subscription OnUpdateNewAthlete(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     academics {
@@ -671,12 +671,12 @@ subscription OnDeleteNewAthlete(
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     academics {
@@ -806,23 +806,23 @@ subscription OnCreateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     favoritesOrder
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
     coachUserUserId
-    coachUserTeamId
-    coachUserCollegeId
     __typename
   }
 }
@@ -865,23 +865,23 @@ subscription OnUpdateCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     favoritesOrder
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
     coachUserUserId
-    coachUserTeamId
-    coachUserCollegeId
     __typename
   }
 }
@@ -924,23 +924,23 @@ subscription OnDeleteCoachUser($filter: ModelSubscriptionCoachUserFilterInput) {
       id
       name
       imageLink
+      coachID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      collegeCoachId
       __typename
     }
     favoritesOrder
+    collegeID
+    newteamID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
     coachUserUserId
-    coachUserTeamId
-    coachUserCollegeId
     __typename
   }
 }
@@ -952,14 +952,14 @@ subscription OnCreateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     athletes {
@@ -984,14 +984,14 @@ subscription OnUpdateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     athletes {
@@ -1016,14 +1016,14 @@ subscription OnDeleteNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
     athletes {
@@ -1054,22 +1054,22 @@ subscription OnCreateCollege($filter: ModelSubscriptionCollegeFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
+    coachID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    collegeCoachId
     __typename
   }
 }
@@ -1087,22 +1087,22 @@ subscription OnUpdateCollege($filter: ModelSubscriptionCollegeFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
+    coachID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    collegeCoachId
     __typename
   }
 }
@@ -1120,22 +1120,22 @@ subscription OnDeleteCollege($filter: ModelSubscriptionCollegeFilterInput) {
     coach {
       id
       favoritesOrder
+      collegeID
+      newteamID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       coachUserUserId
-      coachUserTeamId
-      coachUserCollegeId
       __typename
     }
+    coachID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    collegeCoachId
     __typename
   }
 }
