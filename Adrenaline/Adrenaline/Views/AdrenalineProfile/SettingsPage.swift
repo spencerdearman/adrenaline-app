@@ -248,8 +248,6 @@ struct SettingsView: View {
                             guard let athlete = try await user.athlete else { return }
                             college = try await athlete.college
                         case "Coach":
-                            // TODO: implement for coaches to associate with a college
-                            print("Coaches can't associate with a College yet")
                             college = nil
                         default:
                             return
