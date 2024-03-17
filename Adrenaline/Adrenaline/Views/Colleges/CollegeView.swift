@@ -32,6 +32,7 @@ struct CollegeView: View {
                     .font(.largeTitle)
                     .bold()
                     .padding([.horizontal, .bottom])
+                    .multilineTextAlignment(.center)
             }
             
             Divider()
@@ -48,6 +49,7 @@ struct CollegeView: View {
                             AdrenalineProfileView(newUser: coachUser)
                         } label: {
                             CollegeBubbleView(user: coachUser)
+                                .padding(.bottom)
                         }
                     } else {
                         VStack {
@@ -55,6 +57,7 @@ struct CollegeView: View {
                                 .foregroundColor(.secondary)
                                 .fontWeight(.semibold)
                                 .padding(.horizontal)
+                                .multilineTextAlignment(.center)
                         }
                         .padding(.vertical)
                     }
@@ -65,14 +68,25 @@ struct CollegeView: View {
                         .font(.title)
                         .bold()
                     
-                    ForEach(athletes.sorted(by: {
-                        $0.key.firstName + " " + $0.key.lastName < $1.key.firstName + " " + $1.key.lastName
-                    }), id: \.key) { user, athlete in
-                        NavigationLink {
-                            AdrenalineProfileView(newUser: user)
-                        } label: {
-                            CollegeBubbleView(user: user)
+                    if athletes.count > 0 {
+                        ForEach(athletes.sorted(by: {
+                            $0.key.firstName + " " + $0.key.lastName < $1.key.firstName + " " + $1.key.lastName
+                        }), id: \.key) { user, athlete in
+                            NavigationLink {
+                                AdrenalineProfileView(newUser: user)
+                            } label: {
+                                CollegeBubbleView(user: user)
+                            }
                         }
+                    } else {
+                        VStack {
+                            Text("There are no athletes associated with this college")
+                                .foregroundColor(.secondary)
+                                .fontWeight(.semibold)
+                                .padding(.horizontal)
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding(.bottom)
                     }
                 }
             }
