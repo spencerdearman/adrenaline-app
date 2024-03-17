@@ -152,6 +152,7 @@ type EagerNewUser = {
   readonly phone?: string | null;
   readonly diveMeetsID?: string | null;
   readonly accountType: string;
+  readonly dateOfBirth: string;
   readonly athlete?: NewAthlete | null;
   readonly coach?: CoachUser | null;
   readonly posts?: (Post | null)[] | null;
@@ -176,6 +177,7 @@ type LazyNewUser = {
   readonly phone?: string | null;
   readonly diveMeetsID?: string | null;
   readonly accountType: string;
+  readonly dateOfBirth: string;
   readonly athlete: AsyncItem<NewAthlete | undefined>;
   readonly coach: AsyncItem<CoachUser | undefined>;
   readonly posts: AsyncCollection<Post>;
@@ -209,8 +211,6 @@ type EagerNewAthlete = {
   readonly weight: number;
   readonly weightUnit: string;
   readonly gender: string;
-  readonly age: number;
-  readonly dateOfBirth: string;
   readonly graduationYear: number;
   readonly highSchool: string;
   readonly hometown: string;
@@ -241,8 +241,6 @@ type LazyNewAthlete = {
   readonly weight: number;
   readonly weightUnit: string;
   readonly gender: string;
-  readonly age: number;
-  readonly dateOfBirth: string;
   readonly graduationYear: number;
   readonly highSchool: string;
   readonly hometown: string;
@@ -306,11 +304,11 @@ type EagerCoachUser = {
   readonly team?: NewTeam | null;
   readonly college?: College | null;
   readonly favoritesOrder: number[];
+  readonly collegeID?: string | null;
+  readonly newteamID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly coachUserUserId?: string | null;
-  readonly coachUserTeamId?: string | null;
-  readonly coachUserCollegeId?: string | null;
 }
 
 type LazyCoachUser = {
@@ -323,11 +321,11 @@ type LazyCoachUser = {
   readonly team: AsyncItem<NewTeam | undefined>;
   readonly college: AsyncItem<College | undefined>;
   readonly favoritesOrder: number[];
+  readonly collegeID?: string | null;
+  readonly newteamID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly coachUserUserId?: string | null;
-  readonly coachUserTeamId?: string | null;
-  readonly coachUserCollegeId?: string | null;
 }
 
 export declare type CoachUser = LazyLoading extends LazyLoadingDisabled ? EagerCoachUser : LazyCoachUser
@@ -380,9 +378,9 @@ type EagerCollege = {
   readonly imageLink: string;
   readonly athletes: NewAthlete[];
   readonly coach?: CoachUser | null;
+  readonly coachID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly collegeCoachId?: string | null;
 }
 
 type LazyCollege = {
@@ -395,9 +393,9 @@ type LazyCollege = {
   readonly imageLink: string;
   readonly athletes: AsyncCollection<NewAthlete>;
   readonly coach: AsyncItem<CoachUser | undefined>;
+  readonly coachID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly collegeCoachId?: string | null;
 }
 
 export declare type College = LazyLoading extends LazyLoadingDisabled ? EagerCollege : LazyCollege
