@@ -121,6 +121,38 @@ def lambda_handler(event, context):
         college_update_response = gq_client.updateCollege(college, get_college_response)
         print(f"College: {college_update_response}")
 
+    email_body = (
+        f'User "{user_id}" has been approved to associate with college "{college_id}"'
+    )
+
+    # Generate email response
+    ses_client = boto3.client("ses", region_name="us-east-1")
+    response = ses_client.send_email(
+        Destination={
+            "ToAddresses": ["logansherwin@adren.tech", "spencerdearman@adren.tech"]
+        },
+        Message={
+            "Body": {
+                "Text": {
+                    "Charset": "UTF-8",
+                    "Data": email_body,
+                }
+            },
+            "Subject": {
+                "Charset": "UTF-8",
+                "Data": "College Association Request - Approved",
+            },
+        },
+        Source="logansherwin@adren.tech",
+    )
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps(
+            "Email Sent Successfully. MessageId is: " + response["MessageId"]
+        ),
+    }
+
 
 if __name__ == "__main__":
     lambda_handler(
