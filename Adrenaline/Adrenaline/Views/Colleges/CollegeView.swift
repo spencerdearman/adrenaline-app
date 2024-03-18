@@ -58,6 +58,7 @@ struct CollegeView: View {
                                 .fontWeight(.semibold)
                                 .padding(.horizontal)
                                 .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
                         }
                         .padding(.vertical)
                     }
@@ -85,6 +86,7 @@ struct CollegeView: View {
                                 .fontWeight(.semibold)
                                 .padding(.horizontal)
                                 .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
                         }
                         .padding(.bottom)
                     }

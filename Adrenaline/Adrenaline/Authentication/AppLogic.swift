@@ -255,6 +255,7 @@ extension AppLogic {
                     await MainActor.run {
                         self.coaches = snapshot.items
                         print("updated coaches")
+                        self.currentUserUpdated = true
                     }
                 }
             } catch {
