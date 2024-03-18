@@ -108,10 +108,12 @@ struct PostFeedItemCollapsedView: View {
                     .padding(.horizontal, 20)
                     .padding(.top, 10)
                     
-                    TabView(selection: $currentTab) {
-                        ForEach(mediaItems, id: \.id) { item in
-                            AnyView(item.view)
-                                .tag(item.id)
+                    GeometryReader { geometry in
+                        TabView(selection: $currentTab) {
+                            ForEach(mediaItems, id: \.id) { item in
+                                AnyView(item.view)
+                                    .tag(item.id)
+                            }
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
