@@ -21,7 +21,7 @@ struct FeedBase: View {
     @State private var feedModel: FeedModel = FeedModel()
     @State private var showStatusBar = true
     @State private var contentHasScrolled = false
-    @State private var feedItems: [FeedItem] = []
+    @State private var feedItems: [PostFeedItem] = []
     @State private var feedItemsLoaded: Bool = false
     @State private var tabBarState: Visibility = .visible
     @State private var contacts: [CNContact] = []
@@ -40,70 +40,72 @@ struct FeedBase: View {
                 Image(currentMode == .light ? "FeedBackgroundLight" : "FeedBackgroundDark")
                     .offset(x: screenWidth * 0.27, y: -screenHeight * 0.02)
                 
-                ScrollView {
-                    // Scrolling Detection
-                    GeometryReader { proxy in
-                        let offset = proxy.frame(in: .named("scroll")).minY
-                        Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
-                    }
-                    .onPreferenceChange(ScrollPreferenceKey.self) { value in
-                        withAnimation(.easeInOut) {
-                            if value < 0 {
-                                contentHasScrolled = true
-                                tabBarState = .hidden
-                            } else {
-                                contentHasScrolled = false
-                                tabBarState = .visible
-                            }
+                GeometryReader { geometry in
+                    ScrollView {
+                        // Scrolling Detection
+                        GeometryReader { proxy in
+                            let offset = proxy.frame(in: .named("scroll")).minY
+                            Color.clear.preference(key: ScrollPreferenceKey.self, value: offset)
                         }
-                    }
-                    
-                    Rectangle()
-                        .frame(width: 100, height: screenHeight * 0.15)
-                        .opacity(0)
-                    
-                    if feedItemsLoaded {
-                        LazyVGrid(columns: columns, spacing: 15) {
-                            // Show suggested users at the top if feed items is empty
-                            if feedItems.count == 0, suggestedUsers.count > 0 {
-                                suggestedUsersView
-                            } else {
-                                // Show feed items and insert suggested users at the bottom or after
-                                // the insertSuggestedUsersSlot-th post is shown
-                                ForEach($feedItems) { item in
-                                    AnyView(item.collapsedView.wrappedValue)
-                                    
-                                    // Check if should show suggested users under this post
-                                    if suggestedUsers.count > 0 &&
-                                        shouldShowSuggestedUsers(items: feedItems,
-                                                                 currentItem: item.wrappedValue) {
-                                        suggestedUsersView
-                                    }
+                        .onPreferenceChange(ScrollPreferenceKey.self) { value in
+                            withAnimation(.easeInOut) {
+                                if value < 0 {
+                                    contentHasScrolled = true
+                                    tabBarState = .hidden
+                                } else {
+                                    contentHasScrolled = false
+                                    tabBarState = .visible
                                 }
                             }
                         }
-                        .padding(.horizontal, 20)
-                        .offset(y: -80)
-                    } else {
-                        VStack {
-                            Text("Getting new posts")
-                                .foregroundColor(.secondary)
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                                .multilineTextAlignment(.center)
-                            ProgressView()
+                        
+                        Rectangle()
+                            .frame(width: 100, height: screenHeight * 0.15)
+                            .opacity(0)
+                        
+                        if feedItemsLoaded {
+                            LazyVGrid(columns: columns, spacing: 15) {
+                                // Show suggested users at the top if feed items is empty
+                                if feedItems.count == 0, suggestedUsers.count > 0 {
+                                    suggestedUsersView
+                                } else {
+                                    // Show feed items and insert suggested users at the bottom or after
+                                    // the insertSuggestedUsersSlot-th post is shown
+                                    ForEach($feedItems) { item in
+                                        AnyView(item.collapsedView.wrappedValue)
+                                        
+                                        // Check if should show suggested users under this post
+                                        if suggestedUsers.count > 0 &&
+                                            shouldShowSuggestedUsers(items: feedItems,
+                                                                     currentItem: item.wrappedValue) {
+                                            suggestedUsersView
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 20)
+                            .offset(y: -80)
+                        } else {
+                            VStack {
+                                Text("Getting new posts")
+                                    .foregroundColor(.secondary)
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                    .multilineTextAlignment(.center)
+                                ProgressView()
+                            }
+                            .padding(20)
+                            .background(.ultraThinMaterial)
+                            .modifier(OutlineOverlay(cornerRadius: 30))
+                            .backgroundStyle(cornerRadius: 30)
+                            .padding(20)
+                            .padding(.vertical, 80)
+                            .offset(y: 50)
                         }
-                        .padding(20)
-                        .background(.ultraThinMaterial)
-                        .modifier(OutlineOverlay(cornerRadius: 30))
-                        .backgroundStyle(cornerRadius: 30)
-                        .padding(20)
-                        .padding(.vertical, 80)
-                        .offset(y: 50)
                     }
+                    .dynamicTypeSize(.xSmall ... .xxLarge)
+                    .coordinateSpace(name: "scroll")
                 }
-                .dynamicTypeSize(.xSmall ... .xxLarge)
-                .coordinateSpace(name: "scroll")
             }
             .overlay {
                 NavigationBar(title: "Adrenaline", newUser: $newUser,
@@ -435,5 +437,33 @@ extension String {
         
         assertionFailure()
         return 0
+    }
+}
+
+struct OnScreenModifier: ViewModifier {
+    var onAppear: () -> Void
+    var onDisappear: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .overlay(
+                GeometryReader { geometry -> Color in
+                    let rect = geometry.frame(in: .global)
+                    DispatchQueue.main.async {
+                        if rect.maxY > 0 && rect.minY < UIScreen.main.bounds.height {
+                            onAppear()
+                        } else {
+                            onDisappear()
+                        }
+                    }
+                    return Color.clear
+                }
+            )
+    }
+}
+
+extension View {
+    func onScreenAppear(perform onAppear: @escaping () -> Void, onDisappear: @escaping () -> Void) -> some View {
+        self.modifier(OnScreenModifier(onAppear: onAppear, onDisappear: onDisappear))
     }
 }
