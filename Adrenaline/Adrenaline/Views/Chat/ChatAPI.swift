@@ -41,8 +41,16 @@ func separateChatRequests(conversations: ChatConversations, users: [NewUser]) ->
             continue
         }
         
-        // If only one message is in the list and they aren't the sender, incoming chat request
-        if messages.count == 1, !messages[0].1 {
+        // If all messages in the conversation are not from the current user, incoming chat request
+        var isIncomingChatRequest = true
+        for message in messages {
+            if message.1 {
+                isIncomingChatRequest = false
+                break
+            }
+        }
+        
+        if isIncomingChatRequest {
             result.append(user)
         }
     }
