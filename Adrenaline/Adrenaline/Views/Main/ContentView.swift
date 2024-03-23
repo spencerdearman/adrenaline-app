@@ -96,7 +96,11 @@ struct ContentView: View {
         if let user = appLogic.currentUser {
             //            print("AppLogic not nil")
             
-            if user.accountType == "Spectator" { print("User is spectator"); return appLogic.currentUser }
+            if user.accountType == "Spectator" {
+                print("User is spectator")
+                return appLogic.currentUser
+            }
+            
             let athleteStatus = await isAthleteWithAthleteModel(user)
             let coachStatus = await isCoachWithCoachModel(user)
             if athleteStatus || coachStatus {
@@ -219,14 +223,18 @@ struct ContentView: View {
                     } else {
                         ZStack(alignment: .bottom) {
                             TabView {
-                                FeedBase(newUser: $newUserViewModel.newUser, showAccount: $showAccount,
-                                         recentSearches: $recentSearches, uploadingPost: $uploadingPost)
+                                FeedBase(newUser: $newUserViewModel.newUser, 
+                                         showAccount: $showAccount,
+                                         recentSearches: $recentSearches, 
+                                         uploadingPost: $uploadingPost)
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
                                 
-                                if let user = newUserViewModel.newUser, user.accountType != "Spectator" {
-                                    ChatView(newUser: $newUserViewModel.newUser, showAccount: $showAccount,
+                                if let user = newUserViewModel.newUser, 
+                                    user.accountType != "Spectator" {
+                                    ChatView(newUser: $newUserViewModel.newUser,
+                                             showAccount: $showAccount,
                                              recentSearches: $recentSearches,
                                              deletedChatIds: $deletedChatIds)
                                     .tabItem {
@@ -244,8 +252,10 @@ struct ContentView: View {
                                     }
                                 }
                                 
-                                RankingsView(newUser: $newUserViewModel.newUser, tabBarState: $tabBarState,
-                                             showAccount: $showAccount, recentSearches: $recentSearches,
+                                RankingsView(newUser: $newUserViewModel.newUser, 
+                                             tabBarState: $tabBarState,
+                                             showAccount: $showAccount, 
+                                             recentSearches: $recentSearches,
                                              uploadingPost: $uploadingPost)
                                 .tabItem {
                                     Label("Rankings", systemImage: "trophy")
@@ -270,11 +280,15 @@ struct ContentView: View {
                             NavigationView {
                                 // Need to use WrapperView here since we have to pass in state
                                 // and showAccount for popover profile
-                                if let user = newUserViewModel.newUser, user.accountType != "Spectator" {
-                                    AdrenalineProfileWrapperView(state: state, newUser: $newUserViewModel.newUser,
-                                                                 showAccount: $showAccount,
-                                                                 recentSearches: $recentSearches,
-                                                                 updateDataStoreData: $updateDataStoreData)
+                                if let user = newUserViewModel.newUser, 
+                                    user.accountType != "Spectator" {
+                                    AdrenalineProfileWrapperView(
+                                        state: state,
+                                        newUser: $newUserViewModel.newUser,
+                                        showAccount: $showAccount,
+                                        recentSearches: $recentSearches,
+                                        updateDataStoreData: $updateDataStoreData
+                                    )
                                 } else if let _ = newUserViewModel.newUser {
                                     SettingsView(state: state,
                                                  newUser: newUserViewModel.newUser,
@@ -283,11 +297,13 @@ struct ContentView: View {
                                 } else {
                                     // In the event that a NewUser can't be queried, this is the
                                     // default view
-                                    AdrenalineProfileWrapperView(state: state,
-                                                                 authUserId: authUserId,
-                                                                 showAccount: $showAccount,
-                                                                 recentSearches: $recentSearches,
-                                                                 updateDataStoreData: $updateDataStoreData)
+                                    AdrenalineProfileWrapperView(
+                                        state: state,
+                                        authUserId: authUserId,
+                                        showAccount: $showAccount,
+                                        recentSearches: $recentSearches,
+                                        updateDataStoreData: $updateDataStoreData
+                                    )
                                 }
                             }
                         })
@@ -313,31 +329,40 @@ struct ContentView: View {
                                         }
                                         
                                         do {
-                                            // Increase maximum wait time for uploads to account for content
-                                            // moderation based on longest uploaded video
+                                            // Increase maximum wait time for uploads to account for
+                                            // content moderation based on longest uploaded video
                                             let baseWaitTimeSeconds: Double = 45.0
                                             var maxWaitTimeSeconds: Double = 0.0
                                             for video in videos {
                                                 let durationSeconds = try await getVideoDurationSeconds(
-                                                    url: getVideoPathURL(email: user.email, name: video.id))
+                                                    url: getVideoPathURL(email: user.email, 
+                                                                         name: video.id))
                                                 
                                                 // Add 30s of wait time for every 1 minute of video
                                                 let waitTimeIncrease = durationSeconds / 2
                                                 
                                                 // Take max of current max wait time
-                                                maxWaitTimeSeconds = max(maxWaitTimeSeconds,
-                                                                         baseWaitTimeSeconds + waitTimeIncrease)
+                                                maxWaitTimeSeconds = max(
+                                                    maxWaitTimeSeconds,
+                                                    baseWaitTimeSeconds + waitTimeIncrease
+                                                )
                                             }
                                             
+                                            // Add 5s per image as a buffer for content moderation
+                                            maxWaitTimeSeconds += 5.0 * Double(images.count)
+                                            
                                             // Be aware of data races with uploadingProgress
-                                            if try await trackUploadProgress(email: email,
-                                                                             videos: videos,
-                                                                             completedUploads: images.count,
-                                                                             totalUploads: videos.count + images.count,
-                                                                             uploadingProgress: $uploadingProgress,
-                                                                             maxWaitTimeSeconds: maxWaitTimeSeconds) {
+                                            if try await trackUploadProgress(
+                                                email: email,
+                                                videos: videos,
+                                                images: images,
+                                                totalUploads: videos.count + images.count,
+                                                uploadingProgress: $uploadingProgress,
+                                                maxWaitTimeSeconds: maxWaitTimeSeconds
+                                            ) {
                                                 
-                                                let (savedUser, _) = try await savePost(user: user, post: post)
+                                                let (savedUser, _) = try await savePost(user: user,
+                                                                                        post: post)
                                                 newUserViewModel.newUser = savedUser
                                             } else {
                                                 await handleUploadFailure(email: user.email,

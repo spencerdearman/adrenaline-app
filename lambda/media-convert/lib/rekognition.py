@@ -1,4 +1,3 @@
-import boto3
 import time
 import os
 
@@ -6,17 +5,23 @@ import os
 def checkContentModeration(client, bucket, key):
     response = client.start_content_moderation(
         Video={"S3Object": {"Bucket": bucket, "Name": key}},
-        MinConfidence=50,
+        MinConfidence=70,
         NotificationChannel={
             "SNSTopicArn": "arn:aws:sns:us-east-1:861465534182:video-moderation-topic",
             "RoleArn": os.environ["MediaConvertRole"],
         },
         JobTag="ContentModeration",
     )
+    print(response)
 
     job_id = response["JobId"]
     print(f"Started content moderation analysis. JobId: {job_id}")
     response = wait_for_job_completion(client, job_id)
+    print(response)
+
+    if response["JobStatus"] == "FAILED":
+        return False
+
     format_response(response)
 
     return has_no_inappropriate_content(response)

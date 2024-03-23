@@ -47,7 +47,7 @@ class PostFeedItem: FeedItem {
         if let images = images {
             for image in images.elements {
                 guard let url = URL(
-                    string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(user.email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg") else { continue }
+                    string: getImageURL(email: user.email, imageId: image.id)) else { continue }
                 aggregateItems.append((image.uploadDate,
                                        PostMediaItem(id: image.id, data: PostMedia.asyncImage(
                                         CachedAsyncImage(url: url, urlCache: .imageCache) { phase in

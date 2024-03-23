@@ -59,7 +59,7 @@ struct PostProfileItem: Hashable, Identifiable {
         if let images = images {
             for image in images.elements {
                 guard let url = URL(
-                    string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(user.email.replacingOccurrences(of: "@", with: "%40"))/\(image.id).jpg") else { continue }
+                    string: getImageURL(email: user.email, imageId: image.id)) else { continue }
                 aggregateItems.append((image.uploadDate,
                                        PostMediaItem(id: image.id, data: PostMedia.asyncImage(
                                         CachedAsyncImage(url: url, urlCache: .imageCache) { phase in
@@ -128,7 +128,7 @@ struct PostProfileCollapsedView: View {
                         guard let url = URL(string: v.thumbnailURL) else { return }
                         thumbnail = url
                     } else {
-                        guard let url = URL(string: "\(CLOUDFRONT_IMAGE_BASE_URL)\(user.email.replacingOccurrences(of: "@", with: "%40"))/\(item.id).jpg") else { return }
+                        guard let url = URL(string: getImageURL(email: user.email, imageId: item.id)) else { return }
                         thumbnail = url
                     }
                 }
@@ -474,7 +474,7 @@ struct PostMediaItemView: View {
     
     var body: some View {
         AnyView(item.view)
-//            .clipShape(RoundedRectangle(cornerRadius: 25))
+        //            .clipShape(RoundedRectangle(cornerRadius: 25))
             .matchedGeometryEffect(id: "body" + id, in: namespace)
     }
 }
