@@ -372,3 +372,99 @@ def check_for_seen_face(rek, bucket, key):
         print(f"{e}")
 
     return response["FaceMatches"]
+
+
+def remove_faces_by_ids(face_ids):
+    rek = boto3.client(
+        "rekognition",
+        region_name="us-east-1",
+    )
+    response = rek.delete_faces(
+        CollectionId=COLLECTION_ID,
+        FaceIds=face_ids,
+    )
+
+    print(response)
+    return response
+
+
+def remove_faces(event, context):
+    rek = boto3.client(
+        "rekognition",
+        region_name="us-east-1",
+    )
+
+    print(event)
+    records = event["Records"]
+
+    for record in records:
+        s3_key = record["s3"]["object"]["key"]
+        user_id = os.path.splitext(os.path.basename(s3_key))[0]
+
+        print(f"Profile Pic S3 Key: {s3_key}")
+        print(f"User ID: {user_id}")
+
+        print("Getting user faces from collection...")
+        face_response = rek.list_faces(CollectionId=COLLECTION_ID, UserId=user_id)
+        if "Faces" not in face_response:
+            print("ERROR: Failed to get faces associated with user")
+            continue
+
+        print(f"Found Faces: {face_response['Faces']}")
+
+        print("Removing user from collection...")
+        response = rek.list_users(CollectionId=COLLECTION_ID)
+        print(f"Users: {response['Users']}")
+
+        try:
+            response = rek.delete_user(CollectionId=COLLECTION_ID, UserId=user_id)
+        except Exception as e:
+            print(f"ERROR: Failed to delete user, {e}")
+            continue
+
+        if len(face_response["Faces"]) == 0:
+            print("No faces to be deleted")
+            continue
+
+        response = rek.delete_faces(
+            CollectionId=COLLECTION_ID,
+            FaceIds=list(map(lambda x: x["FaceId"], face_response["Faces"])),
+        )
+        print(f"Deleted Faces: {response}")
+
+
+# if __name__ == "__main__":
+#     key = "public/profile-pics-under-review/8f8fcd8d-a6c1-4c81-ada9-3cff76f80ddf_Andrew_Sample_1973-01-07.jpg"
+#     comps = key.split("/")
+#     remove_key = f"public/profile-pictures/{comps}"
+
+#     lambda_handler(
+#         {
+#             "Records": [
+#                 {
+#                     "s3": {
+#                         "bucket": {"name": "adrenalinexxxxx153503-main"},
+#                         "object": {"key": key},
+#                     }
+#                 }
+#             ]
+#         },
+#         None,
+#     )
+
+#     remove_faces(
+#         {
+#             "Records": [
+#                 {
+#                     "s3": {
+#                         "bucket": {"name": "adrenalinexxxxx153503-main"},
+#                         "object": {"key": key},
+#                     }
+#                 }
+#             ]
+#         },
+#         None,
+#     )
+#     remove_faces_by_ids(
+#         ["dbd16f46-e67e-438d-9449-a56d00471df3", "d7dff4bb-dfeb-4fca-b94e-563eb4be6675"]
+#     )

@@ -335,7 +335,10 @@ struct EditProfileView: View {
                 if let user = newUser {
                     athlete = try await user.athlete
                     
-                    if await hasProfilePicture(userId: user.id) {
+                    if await hasProfilePicture(userId: user.id,
+                                               firstName: user.firstName,
+                                               lastName: user.lastName,
+                                               dateOfBirth: user.dateOfBirth) {
                         profilePicURL = getProfilePictureURL(userId: user.id,
                                                              firstName: user.firstName,
                                                              lastName: user.lastName,
