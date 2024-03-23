@@ -65,13 +65,14 @@ def format_response(response):
 def has_no_inappropriate_content(response):
     # https://docs.aws.amazon.com/rekognition/latest/dg/moderation.html#moderation-api
     blocklist = {
-        "Explicit Nudity",
-        "Partial Nudity",
+        "Explicit",
+        "Partially Exposed Female Breast",
+        "Implied Nudity",
+        "Obstructed Intimate Parts",
         "Sexual Situations",
         "Violence",
         "Visually Disturbing",
-        "Drugs",
-        "Tobacco",
+        "Drugs & Tobacco",
         "Alcohol",
         "Gambling",
         "Hate Symbols",
