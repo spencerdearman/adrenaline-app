@@ -14,7 +14,10 @@ struct ProfileRow: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
-            let url = URL(string: getProfilePictureURL(userId: user.id))
+            let url = URL(string: getProfilePictureURL(userId: user.id,
+                                                       firstName: user.firstName,
+                                                       lastName: user.lastName,
+                                                       dateOfBirth: user.dateOfBirth))
             AnyView(
                 url != nil
                 ? AnyView(AsyncImage(url: url, transaction: .init(animation: .easeOut)) { phase in

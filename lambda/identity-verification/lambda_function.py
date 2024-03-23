@@ -93,7 +93,7 @@ def handle_existing_user(rek, profilepic_s3_bucket, profilepic_s3_key, user_id):
         if user_id not in set(
             map(lambda x: x["User"]["UserId"], response["UserMatches"])
         ):
-            print("ERROR: User not found with matching face")
+            print(f"ERROR: User {user_id} not found with matching face")
             return False
     except KeyError as e:
         print(f"{e}")

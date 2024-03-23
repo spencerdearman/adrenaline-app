@@ -336,8 +336,10 @@ struct EditProfileView: View {
                     athlete = try await user.athlete
                     
                     if await hasProfilePicture(userId: user.id) {
-                        profilePicURL = getProfilePictureURL(userId: user.id)
-                        print(profilePicURL)
+                        profilePicURL = getProfilePictureURL(userId: user.id,
+                                                             firstName: user.firstName,
+                                                             lastName: user.lastName,
+                                                             dateOfBirth: user.dateOfBirth)
                     }
                 }
                 

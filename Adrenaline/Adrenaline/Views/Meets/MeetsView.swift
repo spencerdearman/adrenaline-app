@@ -330,7 +330,7 @@ struct MeetsView: View {
                 }
                 .overlay {
                     if feedModel.showTab {
-                        MeetsBar(title: "Meets", userID: $userID, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches)
+                        MeetsBar(title: "Meets", user: $newUser, selection: $selection, showAccount: $showAccount, contentHasScrolled: $contentHasScrolled, feedModel: $feedModel, recentSearches: $recentSearches)
                             .frame(width: screenWidth)
                     }
                 }

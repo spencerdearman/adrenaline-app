@@ -94,8 +94,11 @@ struct PostFeedItemCollapsedView: View {
                 VStack(alignment: .center, spacing: 16) {
                     
                     HStack {
-                        LogoView(imageUrl: getProfilePictureURL(userId: user.id))
-                            .shadow(radius: 10)
+                        LogoView(imageUrl: getProfilePictureURL(userId: user.id, 
+                                                                firstName: user.firstName,
+                                                                lastName: user.lastName,
+                                                                dateOfBirth: user.dateOfBirth))
+                        .shadow(radius: 10)
                         Text(user.firstName + " " + user.lastName)
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(.secondary)

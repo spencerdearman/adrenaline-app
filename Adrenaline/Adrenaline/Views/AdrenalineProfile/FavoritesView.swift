@@ -41,9 +41,14 @@ struct FavoritesView: View {
                                     .fill(Custom.specialGray)
                                     .shadow(radius: 5)
                                 HStack(alignment: .center) {
-                                    ProfileImage(profilePicURL: getProfilePictureURL(userId: favorite.id))
-                                        .frame(width: 100, height: 100)
-                                        .scaleEffect(0.3)
+                                    ProfileImage(profilePicURL: getProfilePictureURL(
+                                        userId: favorite.id,
+                                        firstName: favorite.firstName,
+                                        lastName: favorite.lastName,
+                                        dateOfBirth: favorite.dateOfBirth
+                                    ))
+                                    .frame(width: 100, height: 100)
+                                    .scaleEffect(0.3)
                                     HStack(alignment: .firstTextBaseline) {
                                         Text((favorite.firstName) + " " + (favorite.lastName))
                                             .padding()

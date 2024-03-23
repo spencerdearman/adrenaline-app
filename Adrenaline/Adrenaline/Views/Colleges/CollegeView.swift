@@ -127,9 +127,12 @@ struct CollegeBubbleView: View {
                 .fill(Custom.specialGray)
                 .shadow(radius: 5)
             HStack(alignment: .center) {
-                ProfileImage(profilePicURL: getProfilePictureURL(userId: user.id))
-                    .frame(width: 100, height: 100)
-                    .scaleEffect(0.3)
+                ProfileImage(profilePicURL: getProfilePictureURL(userId: user.id, 
+                                                                 firstName: user.firstName,
+                                                                 lastName: user.lastName,
+                                                                 dateOfBirth: user.dateOfBirth))
+                .frame(width: 100, height: 100)
+                .scaleEffect(0.3)
                 HStack(alignment: .firstTextBaseline) {
                     Text((user.firstName) + " " + (user.lastName))
                         .foregroundColor(.primary)

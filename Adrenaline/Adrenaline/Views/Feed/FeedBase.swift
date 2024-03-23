@@ -126,8 +126,8 @@ struct FeedBase: View {
                     let posts = try await getFeedPostsByUserIds(ids: favorites)
                     
                     // Gets current user's posts (DEV)
-//                    try await user.posts?.fetch()
-//                    guard let posts = user.posts?.elements else { return }
+                    //                    try await user.posts?.fetch()
+                    //                    guard let posts = user.posts?.elements else { return }
                     
                     feedItems = try await posts.concurrentMap { user, post in
                         try await PostFeedItem(user: user, post: post, namespace: namespace)
@@ -164,8 +164,16 @@ struct FeedBase: View {
                             AdrenalineProfileView(newUser: user)
                         } label: {
                             VStack {
-                                MiniProfileImage(profilePicURL: getProfilePictureURL(userId: user.id),
-                                                 width: 80, height: 80)
+                                MiniProfileImage(
+                                    profilePicURL: getProfilePictureURL(
+                                        userId: user.id,
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        dateOfBirth: user.dateOfBirth
+                                    ),
+                                    width: 80,
+                                    height: 80
+                                )
                                 Text(user.firstName + " " + user.lastName)
                                     .fontWeight(.medium)
                                     .foregroundColor(.primary)

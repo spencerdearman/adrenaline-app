@@ -13,7 +13,7 @@ struct MeetsBar: View {
     @EnvironmentObject var appLogic: AppLogic
     private let screenWidth = UIScreen.main.bounds.width
     var title = ""
-    var userID:  Binding<String>
+    @Binding var user: NewUser?
     @State private var showSearchSheet = false
     @State private var isLogged = true
     @Binding var selection: ViewType
@@ -79,7 +79,14 @@ struct MeetsBar: View {
                     }
                 } label: {
                     Group {
-                        if let url = URL(string: getProfilePictureURL(userId: userID.wrappedValue)) {
+                        if let url = URL(string: user == nil
+                                         ? ""
+                                         : getProfilePictureURL(
+                                            userId: user!.id,
+                                            firstName: user!.firstName,
+                                            lastName: user!.lastName,
+                                            dateOfBirth: user!.dateOfBirth
+                                         )) {
                             AsyncImage(url: url, transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {
                                     case .empty:
