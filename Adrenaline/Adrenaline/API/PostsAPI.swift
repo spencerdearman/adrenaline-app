@@ -20,9 +20,13 @@ func getCurrentDateTime() -> String {
     return df.string(from: Date.now)
 }
 
+func getImageURL(email: String, imageId: String) -> String {
+    "\(CLOUDFRONT_IMAGE_BASE_URL)\(email.replacingOccurrences(of: "@", with: "%40"))/\(imageId).jpg"
+}
+
 // Attempts to upload an image to S3
-func uploadImage(data: Data, email: String, name: String) async throws {
-    let key = "images/\(email)/\(name).jpg"
+func uploadImageForReview(data: Data, email: String, name: String) async throws {
+    let key = "images-under-review/\(email)/\(name).jpg"
     let task = Amplify.Storage.uploadData(key: key, data: data)
     
     let _ = try await task.value
@@ -76,7 +80,7 @@ func createPost(user: NewUser, caption: String, videosData: [String: Data],
             if videos == nil { videos = [] }
             videos?.append(Video(id: id, s3key: id, uploadDate: .now(), postID: postId))
         } else if imagesData.keys.contains(id) {
-            try await uploadImage(data: imagesData[id]!, email: email, name: id)
+            try await uploadImageForReview(data: imagesData[id]!, email: email, name: id)
             
             if images == nil { images = [] }
             images?.append(NewImage(id: id, s3key: id, uploadDate: .now(), postID: postId))
@@ -254,7 +258,8 @@ func reportPost(currentUserId: String, reportedUserId: String, postId: String) a
 // Note: numAttempts resets if there is at least one completion in the attempt. In other words,
 // this function fails after (maxWaitTimeSeconds / sleepTimeSeconds) straight attempts without a
 // successful upload
-func trackUploadProgress(email: String, videos: [Video], completedUploads: Int = 0,
+func trackUploadProgress(email: String, videos: [Video], images: [NewImage],
+                         completedUploads: Int = 0,
                          totalUploads: Int,
                          uploadingProgress: Binding<Double>,
                          numAttempts: Int = 0,
@@ -280,6 +285,15 @@ func trackUploadProgress(email: String, videos: [Video], completedUploads: Int =
         }
     }
     
+    // Only run with images that haven't succeeded yet
+    for image in images.filter({ !successfulUploads.contains($0.id) }) {
+        // Checks that thumbnail can be loaded
+        if let url = URL(string: getImageURL(email: email, imageId: image.id)),
+           sendRequest(url: url) {
+            successes.insert(image.id)
+        }
+    }
+    
     // Update completed runs to update progress bar
     let completedRunUploads = successes.count
     let totalCompletedUploads = completedUploads + completedRunUploads
@@ -292,13 +306,15 @@ func trackUploadProgress(email: String, videos: [Video], completedUploads: Int =
     successes = successes.union(successfulUploads)
     
     // If all video elements are in set of all successful uploads, then uploads are complete
-    if Set(videos.map { $0.id }).subtracting(successes).isEmpty { return true }
+    if Set(videos.map { $0.id })
+        .union(Set(images.map { $0.id }))
+        .subtracting(successes).isEmpty { return true }
     
     try await Task.sleep(seconds: sleepTimeSeconds)
     
     // Else, retry with videos that still need to succeed
     // Note: numAttempts resets after a successful upload
-    return try await trackUploadProgress(email: email, videos: videos,
+    return try await trackUploadProgress(email: email, videos: videos, images: images,
                                          completedUploads: totalCompletedUploads,
                                          totalUploads: totalUploads,
                                          uploadingProgress: uploadingProgress,
