@@ -68,7 +68,8 @@ struct AdrenalineProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var offset: CGFloat = 0
     @State private var swiped: Bool = false
-    @Binding private var user: NewUser?
+    @State private var user: NewUser? = nil
+    @Binding private var userBinding: NewUser?
     
     var authUserId: String
     
@@ -77,17 +78,20 @@ struct AdrenalineProfileView: View {
     
     init(authUserId: String) {
         self.authUserId = authUserId
-        self._user = .constant(nil)
+        self.user = nil
+        self._userBinding = .constant(nil)
     }
     
     init(newUser: NewUser) {
         self.authUserId = newUser.id
-        self._user = .constant(newUser)
+        self.user = newUser
+        self._userBinding = .constant(nil)
     }
     
     init(newUser: Binding<NewUser?>) {
         self.authUserId = newUser.wrappedValue?.id ?? ""
-        self._user = newUser
+        self.user = newUser.wrappedValue
+        self._userBinding = newUser
     }
     
     private var bgColor: Color {
@@ -167,10 +171,18 @@ struct AdrenalineProfileView: View {
                 .offset(y: swiped ? screenHeight * 0.07 : screenHeight * 0.25)
             }
         }
+        .onChange(of: userBinding, initial: true) {
+            user = userBinding
+        }
         .onAppear {
             if user == nil {
                 Task {
+//                    let users = await queryAWSUsers(where: NewUser.keys.id.eq(authUserId))
+//                    if users.count == 1 {
+//                        user = users[0]
+//                    }
                     user = try await queryAWSUserById(id: authUserId)
+                    print("NewUser: ", user)
                 }
             }
         }
@@ -294,6 +306,12 @@ struct PersonalInfoView: View {
                                         }
                                     }
                                 
+                            }
+                            
+                            if let url = URL(string: "adrenaline://profile?id=\(user.id)") {
+                                ShareLink(item: url) {
+                                    Image(systemName: "square.and.arrow.up")
+                                }
                             }
                         }
                         

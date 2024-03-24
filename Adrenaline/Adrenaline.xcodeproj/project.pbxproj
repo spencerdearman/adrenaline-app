@@ -68,6 +68,7 @@
 		00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */; };
 		00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */ = {isa = PBXBuildFile; fileRef = 00BD0F9A2A7CAC830098E03A /* collegeLogos.json */; };
 		00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */; };
+		00C96CB02BB091B30044E41E /* DeepLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C96CAF2BB091B30044E41E /* DeepLinkView.swift */; };
 		00CD87542B660D4E001D64C3 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD87532B660D4E001D64C3 /* EditProfileView.swift */; };
 		00CD87582B662846001D64C3 /* StorageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD87572B662846001D64C3 /* StorageAPI.swift */; };
 		00CD875F2B7881A2001D64C3 /* CollegeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD875E2B7881A2001D64C3 /* CollegeView.swift */; };
@@ -266,6 +267,7 @@
 		00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentImageLoader.swift; sourceTree = "<group>"; };
 		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = collegeLogos.json; sourceTree = "<group>"; };
 		00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		00C96CAF2BB091B30044E41E /* DeepLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkView.swift; sourceTree = "<group>"; };
 		00CD87532B660D4E001D64C3 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		00CD87572B662846001D64C3 /* StorageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAPI.swift; sourceTree = "<group>"; };
 		00CD875E2B7881A2001D64C3 /* CollegeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollegeView.swift; sourceTree = "<group>"; };
@@ -485,6 +487,14 @@
 			path = Util;
 			sourceTree = "<group>";
 		};
+		00C96CAE2BB091A50044E41E /* DeepLinks */ = {
+			isa = PBXGroup;
+			children = (
+				00C96CAF2BB091B30044E41E /* DeepLinkView.swift */,
+			);
+			path = DeepLinks;
+			sourceTree = "<group>";
+		};
 		00CD875D2B78818D001D64C3 /* Colleges */ = {
 			isa = PBXGroup;
 			children = (
@@ -686,6 +696,7 @@
 				4DA481CB2AA789C4003DFA3B /* Chat */,
 				00CD875D2B78818D001D64C3 /* Colleges */,
 				4D8B9C1529F89A81002B53AD /* CustomStructures */,
+				00C96CAE2BB091A50044E41E /* DeepLinks */,
 				4D502E662AA194CE00D25B7B /* Enums */,
 				4D1A31B12A96AF9300128F81 /* Feed */,
 				4D8B9C1429F89A72002B53AD /* LiveResults */,
@@ -843,7 +854,6 @@
 				4DD880BA2A761089008F69F2 /* AthleteProfile.swift */,
 				4DD880B82A76103D008F69F2 /* CoachProfile.swift */,
 				00B22DCC2B368AAD007208D0 /* CommittedCollegeView.swift */,
-				00CD87532B660D4E001D64C3 /* EditProfileView.swift */,
 				00D6DDD72AE5F2BA0065F040 /* PostProfileView.swift */,
 				4D13F3BC2A999F930081823D /* SettingsPage.swift */,
 				4D9443902BA53E1300033540 /* UserSettingsPage.swift */,
@@ -1042,6 +1052,7 @@
 				4D261CB92A68DEE900CB4CF3 /* SkillsGraph.swift in Sources */,
 				0006B3A12AE35C12009863D7 /* VideoItem.swift in Sources */,
 				4DA482EF2AA98BE8003DFA3B /* CoachUser.swift in Sources */,
+				00C96CB02BB091B30044E41E /* DeepLinkView.swift in Sources */,
 				4D1A31B32A96AFA300128F81 /* FeedBase.swift in Sources */,
 				00FB12642B0A8ACA0060B2A9 /* UploadingPostView.swift in Sources */,
 				4D50E7922A2939B9009BFBFA /* ToolsMenu.swift in Sources */,

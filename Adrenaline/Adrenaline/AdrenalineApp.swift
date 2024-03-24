@@ -177,6 +177,9 @@ struct AdrenalineApp: App {
                         try await Amplify.Notifications.Push.identifyUser(userId: user)
                     }
                 }
+                .onOpenURL { url in
+                    appLogic.deepLink = url
+                }
         }
     }
 }
