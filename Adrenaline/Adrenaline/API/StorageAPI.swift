@@ -9,25 +9,35 @@ import Foundation
 import Amplify
 import AWSS3StoragePlugin
 
-func getPhotoIdKey(userId: String) -> String {
-    return "id-cards/\(userId).jpg"
+func getDateOfBirthString(_ dateOfBirth: Temporal.Date) -> String {
+    return dateOfBirth.iso8601FormattedString(format: .short, timeZone: .utc)
 }
 
-func getProfilePictureReviewKey(userId: String) -> String {
-    return "profile-pics-under-review/\(userId).jpg"
+func getPhotoIdKey(userId: String,
+                   firstName: String, lastName: String, dateOfBirth: Temporal.Date) -> String {
+    return "id-cards/\(userId)_\(firstName)_\(lastName)_\(getDateOfBirthString(dateOfBirth)).jpg"
 }
 
-func getProfilePictureKey(userId: String) -> String {
-    return "profile-pictures/\(userId).jpg"
+func getProfilePictureReviewKey(userId: String, firstName: String,
+                                lastName: String, dateOfBirth: Temporal.Date) -> String {
+    return "profile-pics-under-review/\(userId)_\(firstName)_\(lastName)_\(getDateOfBirthString(dateOfBirth)).jpg"
 }
 
-func getProfilePictureURL(userId: String) -> String {
-    return "\(CLOUDFRONT_PROFILE_PICS_BASE_URL)/\(userId).jpg"
+func getProfilePictureKey(userId: String, firstName: String,
+                          lastName: String, dateOfBirth: Temporal.Date) -> String {
+    return "profile-pictures/\(userId)_\(firstName)_\(lastName)_\(getDateOfBirthString(dateOfBirth)).jpg"
+}
+
+func getProfilePictureURL(userId: String, firstName: String, lastName: String,
+                          dateOfBirth: Temporal.Date) -> String {
+    return "\(CLOUDFRONT_PROFILE_PICS_BASE_URL)/\(userId)_\(firstName)_\(lastName)_\(getDateOfBirthString(dateOfBirth)).jpg"
 }
 
 // Upload photo ID to S3
-func uploadPhotoId(data: Data, userId: String) async throws {
-    let key = getPhotoIdKey(userId: userId)
+func uploadPhotoId(data: Data, userId: String, firstName: String, lastName: String,
+                   dateOfBirth: Temporal.Date) async throws {
+    let key = getPhotoIdKey(userId: userId, firstName: firstName, lastName: lastName,
+                            dateOfBirth: dateOfBirth)
     let task = Amplify.Storage.uploadData(key: key, data: data)
     
     let _ = try await task.value
@@ -35,8 +45,10 @@ func uploadPhotoId(data: Data, userId: String) async throws {
 }
 
 // Upload profile picture to S3 to be reviewed for identity verification
-func uploadProfilePictureForReview(data: Data, userId: String) async throws {
-    let key = getProfilePictureReviewKey(userId: userId)
+func uploadProfilePictureForReview(data: Data, userId: String, firstName: String, 
+                                   lastName: String, dateOfBirth: Temporal.Date) async throws {
+    let key = getProfilePictureReviewKey(userId: userId, firstName: firstName,
+                                         lastName: lastName, dateOfBirth: dateOfBirth)
     let task = Amplify.Storage.uploadData(key: key, data: data)
     
     let _ = try await task.value
@@ -44,25 +56,52 @@ func uploadProfilePictureForReview(data: Data, userId: String) async throws {
 }
 
 // Delete profile picture under review from S3
-func deleteProfilePictureInReview(userId: String) async throws {
-    let key = getProfilePictureReviewKey(userId: userId)
+func deleteProfilePictureInReview(userId: String, firstName: String,
+                                  lastName: String, dateOfBirth: Temporal.Date) async throws {
+    let key = getProfilePictureReviewKey(userId: userId, firstName: firstName,
+                                         lastName: lastName, dateOfBirth: dateOfBirth)
     try await Amplify.Storage.remove(key: key)
     print("Profile picture for \(userId) removed from review")
 }
 
 // Upload profile picture to S3
-func uploadProfilePicture(data: Data, userId: String) async throws {
-    let key = getProfilePictureKey(userId: userId)
+func uploadProfilePicture(data: Data, userId: String, firstName: String,
+                          lastName: String, dateOfBirth: Temporal.Date) async throws {
+    let key = getProfilePictureKey(userId: userId, firstName: firstName,
+                                   lastName: lastName, dateOfBirth: dateOfBirth)
     let task = Amplify.Storage.uploadData(key: key, data: data)
     
     let _ = try await task.value
     print("Profile picture for \(userId) uploaded")
 }
 
-func hasProfilePictureInReview(userId: String) async -> Bool {
+func hasProfilePictureInReview(userId: String, firstName: String,
+                               lastName: String, dateOfBirth: Temporal.Date) async -> Bool {
     do {
         let _ = try await Amplify.Storage.getURL(
-            key: getProfilePictureReviewKey(userId: userId),
+            key: getProfilePictureReviewKey(userId: userId, firstName: firstName,
+                                            lastName: lastName, dateOfBirth: dateOfBirth),
+            options: .init(
+                pluginOptions: AWSStorageGetURLOptions(
+                    validateObjectExistence: true
+                )
+            )
+        )
+        
+        return true
+    } catch {
+        print("User does not have profile picture in review")
+    }
+    
+    return false
+}
+
+func hasProfilePicture(userId: String, firstName: String,
+                       lastName: String, dateOfBirth: Temporal.Date) async -> Bool {
+    do {
+        let _ = try await Amplify.Storage.getURL(
+            key: getProfilePictureKey(userId: userId, firstName: firstName,
+                                      lastName: lastName, dateOfBirth: dateOfBirth),
             options: .init(
                 pluginOptions: AWSStorageGetURLOptions(
                     validateObjectExistence: true
@@ -78,27 +117,10 @@ func hasProfilePictureInReview(userId: String) async -> Bool {
     return false
 }
 
-func hasProfilePicture(userId: String) async -> Bool {
-    do {
-        let _ = try await Amplify.Storage.getURL(
-            key: getProfilePictureKey(userId: userId),
-            options: .init(
-                pluginOptions: AWSStorageGetURLOptions(
-                    validateObjectExistence: true
-                )
-            )
-        )
-        
-        return true
-    } catch {
-        print("User does not have profile picture")
-    }
-    
-    return false
-}
-
-func deletePhotoId(userId: String) async throws {
-    let key = getPhotoIdKey(userId: userId)
+func deletePhotoId(userId: String, firstName: String, lastName: String,
+                   dateOfBirth: Temporal.Date) async throws {
+    let key = getPhotoIdKey(userId: userId, firstName: firstName, lastName: lastName,
+                            dateOfBirth: dateOfBirth)
     try await Amplify.Storage.remove(key: key)
 }
 

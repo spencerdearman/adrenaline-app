@@ -312,123 +312,123 @@ struct NewSignupSequence: View {
             
             Group {
                 switch pageIndex {
-                case .accountType:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Account Type")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .frame(height: screenHeight * 0.6)
-                    .matchedGeometryEffect(id: "form1", in: namespace)
-                case .basicInfo:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Basic Info")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form1", in: namespace)
-                case .diveMeetsLink:
-                    Group {
-                        if searchSubmitted && !personTimedOut && !linksParsed {
-                            ZStack {
-                                SwiftUIWebView(firstName: $firstName, lastName: $lastName,
-                                               parsedLinks: $parsedLinks,
-                                               dmSearchSubmitted: $dmSearchSubmitted,
-                                               linksParsed: $linksParsed,
-                                               timedOut: $personTimedOut)
-                                .opacity(0)
-                                VStack {
-                                    Text("Searching")
-                                        .font(.largeTitle).bold()
-                                        .foregroundColor(.primary)
-                                        .slideFadeIn(show: appear[0], offset: 30)
-                                    ProgressView()
-                                }
-                            }
-                            .frame(height: screenHeight * 0.5)
-                        } else {
-                            if linksParsed || personTimedOut {
-                                VStack(alignment: .leading, spacing: 20) {
-                                    diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                                }
-                                .frame(height: screenHeight * 0.5)
-                                .matchedGeometryEffect(id: "form", in: namespace)
-                            } else {
-                                VStack(alignment: .leading, spacing: 20) {
-                                    Text("Searching")
-                                        .font(.largeTitle).bold()
-                                        .foregroundColor(.primary)
-                                        .slideFadeIn(show: appear[0], offset: 30)
-                                }
-                                .matchedGeometryEffect(id: "form", in: namespace)
-                            }
-                        }
-                    }
-                    .onDisappear {
-                        searchSubmitted = false
-                        dmSearchSubmitted = false
-                        linksParsed = false
-                    }
-                case .athleteInfo:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Recruiting Info")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                    
-                case .academicInfo:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Academic Info")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        academicInfoForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                    
-                case .photoId:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Photo ID")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        photoIdUploadForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                case .profilePic:
-                    VStack(alignment: .leading, spacing: 20) {
-                        Text("Profile Picture")
-                            .font(.largeTitle).bold()
-                            .foregroundColor(.primary)
-                            .slideFadeIn(show: appear[0], offset: 30)
-                        
-                        profilePicUploadForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
-                case .welcome:
-                    VStack(alignment: .leading, spacing: 20) {
-                        if let savedUser = savedUser {
-                            Text("Welcome to Adrenaline \(savedUser.firstName)!")
+                    case .accountType:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Account Type")
                                 .font(.largeTitle).bold()
                                 .foregroundColor(.primary)
                                 .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            accountInfoForm.slideFadeIn(show: appear[2], offset: 10)
                         }
+                        .frame(height: screenHeight * 0.6)
+                        .matchedGeometryEffect(id: "form1", in: namespace)
+                    case .basicInfo:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Basic Info")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            basicInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form1", in: namespace)
+                    case .diveMeetsLink:
+                        Group {
+                            if searchSubmitted && !personTimedOut && !linksParsed {
+                                ZStack {
+                                    SwiftUIWebView(firstName: $firstName, lastName: $lastName,
+                                                   parsedLinks: $parsedLinks,
+                                                   dmSearchSubmitted: $dmSearchSubmitted,
+                                                   linksParsed: $linksParsed,
+                                                   timedOut: $personTimedOut)
+                                    .opacity(0)
+                                    VStack {
+                                        Text("Searching")
+                                            .font(.largeTitle).bold()
+                                            .foregroundColor(.primary)
+                                            .slideFadeIn(show: appear[0], offset: 30)
+                                        ProgressView()
+                                    }
+                                }
+                                .frame(height: screenHeight * 0.5)
+                            } else {
+                                if linksParsed || personTimedOut {
+                                    VStack(alignment: .leading, spacing: 20) {
+                                        diveMeetsInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                                    }
+                                    .frame(height: screenHeight * 0.5)
+                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                } else {
+                                    VStack(alignment: .leading, spacing: 20) {
+                                        Text("Searching")
+                                            .font(.largeTitle).bold()
+                                            .foregroundColor(.primary)
+                                            .slideFadeIn(show: appear[0], offset: 30)
+                                    }
+                                    .matchedGeometryEffect(id: "form", in: namespace)
+                                }
+                            }
+                        }
+                        .onDisappear {
+                            searchSubmitted = false
+                            dmSearchSubmitted = false
+                            linksParsed = false
+                        }
+                    case .athleteInfo:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Recruiting Info")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            athleteInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
                         
-                        welcomeForm.slideFadeIn(show: appear[2], offset: 10)
-                    }
-                    .matchedGeometryEffect(id: "form", in: namespace)
+                    case .academicInfo:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Academic Info")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            academicInfoForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                        
+                    case .photoId:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Photo ID")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            photoIdUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    case .profilePic:
+                        VStack(alignment: .leading, spacing: 20) {
+                            Text("Profile Picture")
+                                .font(.largeTitle).bold()
+                                .foregroundColor(.primary)
+                                .slideFadeIn(show: appear[0], offset: 30)
+                            
+                            profilePicUploadForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
+                    case .welcome:
+                        VStack(alignment: .leading, spacing: 20) {
+                            if let savedUser = savedUser {
+                                Text("Welcome to Adrenaline \(savedUser.firstName)!")
+                                    .font(.largeTitle).bold()
+                                    .foregroundColor(.primary)
+                                    .slideFadeIn(show: appear[0], offset: 30)
+                            }
+                            
+                            welcomeForm.slideFadeIn(show: appear[2], offset: 10)
+                        }
+                        .matchedGeometryEffect(id: "form", in: namespace)
                 }
             }
             .padding(20)
@@ -774,43 +774,39 @@ struct NewSignupSequence: View {
                                 }
                             }
                         
-                        // Hide the skip button when failed to find DiveMeets ID since "Continue"
-                        // button will do the same thing
-                        if !showNoDiveMeetsIdError {
-                            Spacer()
-                            
-                            Text("**Skip**")
-                                .font(.footnote)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .foregroundColor(.primary.opacity(0.7))
-                                .accentColor(.primary.opacity(0.7))
-                                .onTapGesture {
-                                    Task {
-                                        // Change all account selections to false and reset
-                                        // diveMeetsID before advancing
-                                        selectedDict.keys.forEach {
-                                            selectedDict[$0] = false
-                                        }
-                                        diveMeetsID = nil
-                                        
-                                        // Save user and CoachUser if needed
-                                        userCreationSuccessful = await saveNewUser()
-                                        
-                                        // Advance to next stage
-                                        if userCreationSuccessful {
-                                            withAnimation(.openCard) {
-                                                if accountType == "Athlete" {
-                                                    pageIndex = .athleteInfo
-                                                } else if accountType != "Spectator" {
-                                                    pageIndex = .profilePic
-                                                } else {
-                                                    pageIndex = .welcome
-                                                }
+                        Spacer()
+                        
+                        Text("**Skip**")
+                            .font(.footnote)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .foregroundColor(.primary.opacity(0.7))
+                            .accentColor(.primary.opacity(0.7))
+                            .onTapGesture {
+                                Task {
+                                    // Change all account selections to false and reset
+                                    // diveMeetsID before advancing
+                                    selectedDict.keys.forEach {
+                                        selectedDict[$0] = false
+                                    }
+                                    diveMeetsID = nil
+                                    
+                                    // Save user and CoachUser if needed
+                                    userCreationSuccessful = await saveNewUser()
+                                    
+                                    // Advance to next stage
+                                    if userCreationSuccessful {
+                                        withAnimation(.openCard) {
+                                            if accountType == "Athlete" {
+                                                pageIndex = .athleteInfo
+                                            } else if accountType != "Spectator" {
+                                                pageIndex = .profilePic
+                                            } else {
+                                                pageIndex = .welcome
                                             }
                                         }
                                     }
                                 }
-                        }
+                            }
                     }
                 }
             }
@@ -819,10 +815,14 @@ struct NewSignupSequence: View {
             Task {
                 showNoDiveMeetsIdError = false
                 
-                // Wait for DataStore to be ready before trying to query diveMeetsIds
-                while !appLogic.dataStoreReady {
+                // Wait for DataStore to be ready before trying to query diveMeetsIds, up to 15s
+                let waitTime = 0.5
+                var totalWaitTime: Double = 0
+                let maxWaitTime: Double = 15
+                while !appLogic.dataStoreReady && totalWaitTime < maxWaitTime {
                     waitingForLoad = true
-                    try await Task.sleep(seconds: 0.5)
+                    try await Task.sleep(seconds: waitTime)
+                    totalWaitTime += waitTime
                 }
                 
                 // Get all currently used DiveMeets IDs and don't show them to the user as available
@@ -1133,8 +1133,16 @@ struct NewSignupSequence: View {
                     Task {
                         buttonPressed = true
                         
-                        if let data = photoIdData, let id = savedUser?.id {
-                            try await uploadPhotoId(data: data, userId: id)
+                        if let data = photoIdData,
+                           let id = savedUser?.id,
+                           let firstName = savedUser?.firstName,
+                           let lastName = savedUser?.lastName,
+                           let dateOfBirth = savedUser?.dateOfBirth {
+                            try await uploadPhotoId(data: data,
+                                                    userId: id,
+                                                    firstName: firstName,
+                                                    lastName: lastName,
+                                                    dateOfBirth: dateOfBirth)
                         }
                         
                         withAnimation(.openCard) {
@@ -1156,9 +1164,15 @@ struct NewSignupSequence: View {
                     .accentColor(.primary.opacity(0.7))
                     .onTapGesture {
                         Task {
-                            if let id = savedUser?.id {
+                            if let id = savedUser?.id,
+                               let firstName = savedUser?.firstName,
+                               let lastName = savedUser?.lastName,
+                               let dateOfBirth = savedUser?.dateOfBirth {
                                 do {
-                                    try await deletePhotoId(userId: id)
+                                    try await deletePhotoId(userId: id,
+                                                            firstName: firstName,
+                                                            lastName: lastName,
+                                                            dateOfBirth: dateOfBirth)
                                 } catch {
                                     print("Failed to delete photo ID")
                                 }
@@ -1266,17 +1280,48 @@ struct NewSignupSequence: View {
                         buttonPressed = true
                         identityVerificationFailed = false
                         
-                        if let data = profilePicData, let id = savedUser?.id {
-                            try await uploadProfilePictureForReview(data: data, userId: id)
-                            try await Task.sleep(seconds: 10)
-                        }
-                        
-                        if let id = savedUser?.id, await hasProfilePicture(userId: id) {
-                            withAnimation(.openCard) {
-                                pageIndex = .welcome
+                        if let id = savedUser?.id,
+                           let firstName = savedUser?.firstName,
+                           let lastName = savedUser?.lastName,
+                           let dateOfBirth = savedUser?.dateOfBirth {
+                            if let data = profilePicData {
+                                try await uploadProfilePictureForReview(data: data,
+                                                                        userId: id,
+                                                                        firstName: firstName,
+                                                                        lastName: lastName,
+                                                                        dateOfBirth: dateOfBirth)
+                                
+                                try await Task.sleep(seconds: 10)
                             }
-                        } else {
-                            identityVerificationFailed = true
+                            
+                            // Wait for 10s after uploading, then check verification. If not verified,
+                            // wait 5s before checking again, up to 20 additional seconds until
+                            // we give up and assume verification failed
+                            var secondsWaited: Double = 0
+                            let waitSeconds: Double = 5
+                            let maxWaitTime: Double = 20
+                            var profilePicVerified = false
+                            while secondsWaited < maxWaitTime {
+                                if await hasProfilePicture(userId: id,
+                                                           firstName: firstName,
+                                                           lastName: lastName,
+                                                           dateOfBirth: dateOfBirth) {
+                                    withAnimation(.openCard) {
+                                        pageIndex = .welcome
+                                    }
+                                    
+                                    profilePicVerified = true
+                                    break
+                                }
+                                
+                                try await Task.sleep(seconds: waitSeconds)
+                                secondsWaited += waitSeconds
+                            }
+                            
+                            // Verification failed after 30s
+                            if !profilePicVerified {
+                                identityVerificationFailed = true
+                            }
                         }
                         
                         buttonPressed = false
@@ -1366,16 +1411,16 @@ struct NewSignupSequence: View {
             DispatchQueue.main.async {
                 guard selectedPhotoIdImage == self.selectedPhotoIdImage else { return }
                 switch result {
-                case .success(let image?):
-                    // Handle the success case with the image.
-                    photoId = image
-                case .success(nil):
-                    // Handle the success case with an empty value.
-                    photoId = nil
-                case .failure(let error):
-                    // Handle the failure case with the provided error.
-                    print("Failed to get image from picker: \(error)")
-                    photoId = nil
+                    case .success(let image?):
+                        // Handle the success case with the image.
+                        photoId = image
+                    case .success(nil):
+                        // Handle the success case with an empty value.
+                        photoId = nil
+                    case .failure(let error):
+                        // Handle the failure case with the provided error.
+                        print("Failed to get image from picker: \(error)")
+                        photoId = nil
                 }
             }
         }
@@ -1386,16 +1431,16 @@ struct NewSignupSequence: View {
             DispatchQueue.main.async {
                 guard selectedProfilePicImage == self.selectedProfilePicImage else { return }
                 switch result {
-                case .success(let image?):
-                    // Handle the success case with the image.
-                    profilePic = image
-                case .success(nil):
-                    // Handle the success case with an empty value.
-                    profilePic = nil
-                case .failure(let error):
-                    // Handle the failure case with the provided error.
-                    print("Failed to get image from picker: \(error)")
-                    profilePic = nil
+                    case .success(let image?):
+                        // Handle the success case with the image.
+                        profilePic = image
+                    case .success(nil):
+                        // Handle the success case with an empty value.
+                        profilePic = nil
+                    case .failure(let error):
+                        // Handle the failure case with the provided error.
+                        print("Failed to get image from picker: \(error)")
+                        profilePic = nil
                 }
             }
         }

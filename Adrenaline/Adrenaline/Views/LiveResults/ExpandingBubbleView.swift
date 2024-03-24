@@ -316,7 +316,12 @@ struct OpenTileView: View {
     }
     
     var miniProfileImage: some View {
-        MiniProfileImage(profilePicURL: getProfilePictureURL(userId: diver == nil ? "" : diver!.id),
+        MiniProfileImage(profilePicURL: diver == nil
+                         ? ""
+                         : getProfilePictureURL(userId: diver!.id,
+                                                firstName: diver!.firstName,
+                                                lastName: diver!.lastName,
+                                                dateOfBirth: diver!.dateOfBirth),
                          width: 150, height: 200)
         .scaledToFit()
         .padding(.horizontal)

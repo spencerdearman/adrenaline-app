@@ -65,7 +65,11 @@ struct MessagingBar: View {
                 } label: {
                     Group {
                         if let user = newUser,
-                            let url = URL(string: getProfilePictureURL(userId: user.id)) {
+                           let url = URL(string: getProfilePictureURL(
+                            userId: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName, 
+                            dateOfBirth: user.dateOfBirth)) {
                             AsyncImage(url: url, transaction: .init(animation: .easeOut)) { phase in
                                 switch phase {
                                     case .empty:

@@ -17,12 +17,12 @@ extension String {
         guard let rangeTo = self[rangeFrom...].range(of: to)?.lowerBound else { return nil }
         return String(self[rangeFrom..<rangeTo])
     }
-
+    
     func slice(from: String) -> String? {
         guard let rangeFrom = range(of: from)?.upperBound else { return nil }
         return String(self[rangeFrom...])
     }
-
+    
     func slice(to: String) -> String? {
         guard let rangeTo = self.range(of: to)?.lowerBound else { return nil }
         return String(self[..<rangeTo])
@@ -691,7 +691,12 @@ struct LastDiverView: View
     
     var miniProfileImage: some View {
         MiniProfileImage(
-            profilePicURL: getProfilePictureURL(userId: newUser == nil ? "" : newUser!.id)
+            profilePicURL: newUser == nil
+            ? ""
+            : getProfilePictureURL(userId: newUser!.id,
+                                   firstName: newUser!.firstName,
+                                   lastName: newUser!.lastName,
+                                   dateOfBirth: newUser!.dateOfBirth)
         )
         .scaledToFit()
     }
@@ -752,7 +757,12 @@ struct NextDiverView: View
                     Spacer().frame(width: 35)
                     
                     let img = MiniProfileImage(
-                        profilePicURL: getProfilePictureURL(userId: newUser == nil ? "" : newUser!.id)
+                        profilePicURL: newUser == nil
+                        ? ""
+                        : getProfilePictureURL(userId: newUser!.id,
+                                               firstName: newUser!.firstName,
+                                               lastName: newUser!.lastName,
+                                               dateOfBirth: newUser!.dateOfBirth)
                     )
                         .scaledToFit()
                     

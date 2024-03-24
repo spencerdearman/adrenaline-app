@@ -27,7 +27,7 @@ struct AdrenalineProfileWrapperView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>, 
+    init(state: SignedInState, authUserId: String, showAccount: Binding<Bool>,
          recentSearches: Binding<[SearchItem]>, updateDataStoreData: Binding<Bool>) {
         self.state = state
         self.authUserId = authUserId
@@ -119,14 +119,17 @@ struct AdrenalineProfileView: View {
             
             if let user = user {
                 VStack {
-                    ProfileImage(profilePicURL: getProfilePictureURL(userId: user.id))
-                        .frame(width: 200, height: 130)
-                        .scaleEffect(0.9)
-                        .padding(.top, 50)
-                        .padding(.bottom, 30)
-                        .onAppear {
-                            offset = screenHeight * 0.45
-                        }
+                    ProfileImage(profilePicURL: getProfilePictureURL(userId: user.id,
+                                                                     firstName: user.firstName,
+                                                                     lastName: user.lastName,
+                                                                     dateOfBirth: user.dateOfBirth))
+                    .frame(width: 200, height: 130)
+                    .scaleEffect(0.9)
+                    .padding(.top, 50)
+                    .padding(.bottom, 30)
+                    .onAppear {
+                        offset = screenHeight * 0.45
+                    }
                     PersonalInfoView(user: user)
                 }
                 .offset(y: -screenHeight * 0.25)
@@ -366,7 +369,7 @@ struct DiveMeetsLink: View {
         guard var athlete = try await newUser.athlete else { print("athlete nil"); return nil }
         
         let (s, p, t) = await SkillRating().getSkillRating(diveMeetsID: diveMeetsID)
-
+        
         athlete.springboardRating = s
         athlete.platformRating = p
         athlete.totalRating = t
