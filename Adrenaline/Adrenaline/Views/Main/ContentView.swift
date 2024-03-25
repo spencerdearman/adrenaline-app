@@ -432,8 +432,6 @@ struct ContentView: View {
                             }
                         }
                         .onChange(of: appLogic.deepLink, initial: true) {
-                            print("AppLogic DeepLink: \(appLogic.deepLink)")
-                            
                             if appLogic.deepLink != nil {
                                 showAccount = false
                                 showDeepLink = true

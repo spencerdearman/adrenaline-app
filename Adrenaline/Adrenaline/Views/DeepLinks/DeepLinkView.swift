@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Amplify
 
 private enum DeepLink: Equatable {
     case profile(userId: String)
@@ -26,8 +27,11 @@ private enum DeepLink: Equatable {
 
 struct DeepLinkView: View {
     @State private var user: NewUser? = nil
+    @State private var postProfileItem: PostProfileItem? = nil
+    @State private var shouldRefreshPosts: Bool = false
     @Binding var showDeepLink: Bool
     @Binding var link: URL?
+    @Namespace var namespace
     
     private let screenHeight = UIScreen.main.bounds.height
     
@@ -62,9 +66,8 @@ struct DeepLinkView: View {
                             AdrenalineProfileView(newUser: user)
                         }
                     case .post(let postId):
-                        VStack {
-                            Text("Post")
-                            Text(postId)
+                        if let postProfileItem {
+                            AnyView(postProfileItem.expandedView)
                         }
                     default:
                         Text("Something went wrong. Please try again with a different link.")
@@ -93,6 +96,15 @@ struct DeepLinkView: View {
             Task {
                 if let deepLink = getDeepLink(link), case .profile(let userId) = deepLink {
                     user = try await queryAWSUserById(id: userId)
+                } else if let deepLink = getDeepLink(link),
+                          case .post(let postId) = deepLink,
+                          let post = try await Amplify.DataStore.query(Post.self, byId: postId),
+                          let user = try await queryAWSUserById(id: post.newuserID) {
+                    postProfileItem = try await PostProfileItem(user: user, post: post,
+                                                                namespace: namespace,
+                                                                postShowing: .constant(postId),
+                                                                shouldRefreshPosts: $shouldRefreshPosts,
+                                                                showCloseButton: false)
                 }
             }
         }
