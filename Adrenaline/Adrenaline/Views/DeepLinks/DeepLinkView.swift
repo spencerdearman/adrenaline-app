@@ -29,6 +29,8 @@ struct DeepLinkView: View {
     @Binding var showDeepLink: Bool
     @Binding var link: URL?
     
+    private let screenHeight = UIScreen.main.bounds.height
+    
     private var deepLink: DeepLink? {
         getDeepLink(link)
     }
@@ -52,43 +54,40 @@ struct DeepLinkView: View {
     
     var body: some View {
         ZStack {
-            switch deepLink {
-                    // Selecting the right profile happens in onChange below
-                case .profile:
-                    if let user {
-                        AdrenalineProfileView(newUser: user)
-                    }
-                case .post(let postId):
-                    VStack {
-                        Text("Post")
-                        Text(postId)
-                    }
-                default:
-                    Text("Something went wrong. Please try again with a different link.")
-                        .multilineTextAlignment(.center)
-            }
-            
-            VStack {
-                HStack {
-                    Button {
-                        withAnimation(.closeCard) {
-                            showDeepLink = false
+            Group {
+                switch deepLink {
+                        // Selecting the right profile happens in onChange below
+                    case .profile:
+                        if let user {
+                            AdrenalineProfileView(newUser: user)
                         }
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 17, weight: .bold))
-                            .frame(width: 36, height: 36)
-                            .foregroundColor(.secondary)
-                            .background(.ultraThinMaterial)
-                            .backgroundStyle(cornerRadius: 14, opacity: 0.4)
-                    }
-                    .padding()
-                    
-                    Spacer()
+                    case .post(let postId):
+                        VStack {
+                            Text("Post")
+                            Text(postId)
+                        }
+                    default:
+                        Text("Something went wrong. Please try again with a different link.")
+                            .multilineTextAlignment(.center)
                 }
-                Spacer()
             }
-            .zIndex(1000)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .overlay {
+            Button {
+                withAnimation(.closeCard) {
+                    showDeepLink = false
+                }
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 17, weight: .bold))
+                    .frame(width: 36, height: 36)
+                    .foregroundColor(.secondary)
+                    .background(.ultraThinMaterial)
+                    .backgroundStyle(cornerRadius: 14, opacity: 0.4)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: screenHeight, alignment: .topLeading)
         }
         .onChange(of: link, initial: true) {
             Task {
