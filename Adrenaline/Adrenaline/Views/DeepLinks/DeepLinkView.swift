@@ -29,6 +29,8 @@ struct DeepLinkView: View {
     @State private var user: NewUser? = nil
     @State private var postProfileItem: PostProfileItem? = nil
     @State private var shouldRefreshPosts: Bool = false
+    @State private var showPostPermissionError: Bool = false
+    @Binding var currentUser: NewUser?
     @Binding var showDeepLink: Bool
     @Binding var link: URL?
     @Namespace var namespace
@@ -59,19 +61,25 @@ struct DeepLinkView: View {
     var body: some View {
         ZStack {
             Group {
-                switch deepLink {
-                        // Selecting the right profile happens in onChange below
-                    case .profile:
-                        if let user {
-                            AdrenalineProfileView(newUser: user)
-                        }
-                    case .post(let postId):
-                        if let postProfileItem {
-                            AnyView(postProfileItem.expandedView)
-                        }
-                    default:
-                        Text("Something went wrong. Please try again with a different link.")
-                            .multilineTextAlignment(.center)
+                if showPostPermissionError {
+                    Text("You are not authorized to view this post.")
+                        .multilineTextAlignment(.center)
+                } else {
+                    switch deepLink {
+                            // Selecting the right profile happens in onChange below
+                        case .profile:
+                            if let user {
+                                AdrenalineProfileView(newUser: user)
+                            }
+                            // Selecting the right post happens in onChange below
+                        case .post:
+                            if let postProfileItem {
+                                AnyView(postProfileItem.expandedView)
+                            }
+                        default:
+                            Text("Something went wrong. Please try again with a different link.")
+                                .multilineTextAlignment(.center)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -94,12 +102,23 @@ struct DeepLinkView: View {
         }
         .onChange(of: link, initial: true) {
             Task {
+                showPostPermissionError = false
+                
                 if let deepLink = getDeepLink(link), case .profile(let userId) = deepLink {
                     user = try await queryAWSUserById(id: userId)
                 } else if let deepLink = getDeepLink(link),
                           case .post(let postId) = deepLink,
                           let post = try await Amplify.DataStore.query(Post.self, byId: postId),
                           let user = try await queryAWSUserById(id: post.newuserID) {
+                    // Don't allow user to view post from deep link if they are not authorized
+                    if let currentUser,
+                       currentUser.id != user.id,
+                       currentUser.accountType != "Coach",
+                       post.isCoachesOnly {
+                        showPostPermissionError = true
+                        return
+                    }
+                    
                     postProfileItem = try await PostProfileItem(user: user, post: post,
                                                                 namespace: namespace,
                                                                 postShowing: .constant(postId),

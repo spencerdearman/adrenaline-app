@@ -309,7 +309,9 @@ struct ContentView: View {
                             }
                         }
                         .fullScreenCover(isPresented: $showDeepLink) {
-                            DeepLinkView(showDeepLink: $showDeepLink, link: $appLogic.deepLink)
+                            DeepLinkView(currentUser: $newUserViewModel.newUser,
+                                         showDeepLink: $showDeepLink,
+                                         link: $appLogic.deepLink)
                         }
                         .onChange(of: uploadingPost) {
                             if let user = newUserViewModel.newUser, let post = uploadingPost {
@@ -426,30 +428,36 @@ struct ContentView: View {
                                 }
                             }
                         }
-                        .onChange(of: showDeepLink) {
-                            if !showDeepLink {
-                                appLogic.deepLink = nil
-                            }
-                        }
-                        .onChange(of: appLogic.deepLink, initial: true) {
-                            if appLogic.deepLink != nil {
-                                showAccount = false
-                                showDeepLink = true
-                            } else {
-                                showDeepLink = false
-                            }
-                        }
                         .onAppear {
                             Task {
                                 recentSearches = []
                                 await getDataStoreData()
                             }
                         }
+                        .onDisappear {
+                            signupCompleted = false
+                        }
                         .ignoresSafeArea(.keyboard)
                     }
                 }
             } else {
                 Text("Loading")
+            }
+        }
+        .onChange(of: showDeepLink) {
+            if !showDeepLink {
+                appLogic.deepLink = nil
+            }
+        }
+        .onChange(of: appLogic.deepLink, initial: true) {
+            // Ignores any deep links if not signed in
+            if !signupCompleted {
+                showDeepLink = false
+            } else if appLogic.deepLink != nil {
+                showAccount = false
+                showDeepLink = true
+            } else {
+                showDeepLink = false
             }
         }
     }
