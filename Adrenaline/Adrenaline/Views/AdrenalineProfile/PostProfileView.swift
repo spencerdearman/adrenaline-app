@@ -276,6 +276,16 @@ struct PostProfileExpandedView: View {
                             }
                         } else {
                             Menu {
+                                if let url = URL(string: "adrenaline://post?id=\(post.id)") {
+                                    ShareLink(item: url) {
+                                        HStack {
+                                            Image(systemName: "square.and.arrow.up")
+                                            Text("Share")
+                                        }
+                                        .foregroundColor(.primary)
+                                    }
+                                }
+                                
                                 // If post owner is current user
                                 if authUserId == user.id {
                                     Button {
