@@ -53,7 +53,8 @@ struct DeepLinkView: View {
     var body: some View {
         ZStack {
             switch deepLink {
-                case .profile(let userId):
+                    // Selecting the right profile happens in onChange below
+                case .profile:
                     if let user {
                         AdrenalineProfileView(newUser: user)
                     }
@@ -90,11 +91,9 @@ struct DeepLinkView: View {
             .zIndex(1000)
         }
         .onChange(of: link, initial: true) {
-            print("DeepLink: \(String(describing: link))")
             Task {
                 if let deepLink = getDeepLink(link), case .profile(let userId) = deepLink {
                     user = try await queryAWSUserById(id: userId)
-                    print("Updated user: \(user)")
                 }
             }
         }
