@@ -68,8 +68,7 @@ struct AdrenalineProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var offset: CGFloat = 0
     @State private var swiped: Bool = false
-    @State private var user: NewUser? = nil
-    @Binding private var userBinding: NewUser?
+    @Binding private var user: NewUser?
     
     var authUserId: String
     
@@ -78,20 +77,17 @@ struct AdrenalineProfileView: View {
     
     init(authUserId: String) {
         self.authUserId = authUserId
-        self.user = nil
-        self._userBinding = .constant(nil)
+        self._user = .constant(nil)
     }
     
     init(newUser: NewUser) {
         self.authUserId = newUser.id
-        self.user = newUser
-        self._userBinding = .constant(nil)
+        self._user = .constant(newUser)
     }
     
     init(newUser: Binding<NewUser?>) {
         self.authUserId = newUser.wrappedValue?.id ?? ""
-        self.user = newUser.wrappedValue
-        self._userBinding = newUser
+        self._user = newUser
     }
     
     private var bgColor: Color {
@@ -171,18 +167,10 @@ struct AdrenalineProfileView: View {
                 .offset(y: swiped ? screenHeight * 0.07 : screenHeight * 0.25)
             }
         }
-        .onChange(of: userBinding, initial: true) {
-            user = userBinding
-        }
         .onAppear {
             if user == nil {
                 Task {
-//                    let users = await queryAWSUsers(where: NewUser.keys.id.eq(authUserId))
-//                    if users.count == 1 {
-//                        user = users[0]
-//                    }
                     user = try await queryAWSUserById(id: authUserId)
-                    print("NewUser: ", user)
                 }
             }
         }
