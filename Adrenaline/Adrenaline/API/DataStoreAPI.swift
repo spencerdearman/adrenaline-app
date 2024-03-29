@@ -31,7 +31,7 @@ func queryAWSUsers(where predicate: QueryPredicate? = nil,
 }
 
 func queryAWSUserById(id: String) async throws -> NewUser? {
-    try await Amplify.DataStore.query(NewUser.self, byId: id)
+    return try await Amplify.DataStore.query(NewUser.self, byId: id)
 }
 
 func queryAWSAthletes(where predicate: QueryPredicate? = nil,

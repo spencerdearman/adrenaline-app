@@ -36,6 +36,7 @@ struct ContentView: View {
     // DataStore doesn't seem to update on deletion right away (Amplify bug), so keeping track of
     // deleted users so we can hide them until the app is restarted
     @State private var deletedChatIds = Set<String>()
+    @State private var showDeepLink: Bool = false
     private let splashDuration: CGFloat = 2
     private let moveSeparation: CGFloat = 0.15
     private let delayToTop: CGFloat = 0.5
@@ -276,7 +277,7 @@ struct ContentView: View {
                                 .offset(y: -uploadingPostOffset)
                             }
                         }
-                        .fullScreenCover(isPresented: $showAccount, content: {
+                        .fullScreenCover(isPresented: $showAccount) {
                             NavigationView {
                                 // Need to use WrapperView here since we have to pass in state
                                 // and showAccount for popover profile
@@ -306,7 +307,12 @@ struct ContentView: View {
                                     )
                                 }
                             }
-                        })
+                        }
+                        .fullScreenCover(isPresented: $showDeepLink) {
+                            DeepLinkView(currentUser: $newUserViewModel.newUser,
+                                         showDeepLink: $showDeepLink,
+                                         link: $appLogic.deepLink)
+                        }
                         .onChange(of: uploadingPost) {
                             if let user = newUserViewModel.newUser, let post = uploadingPost {
                                 Task {
@@ -428,11 +434,30 @@ struct ContentView: View {
                                 await getDataStoreData()
                             }
                         }
+                        .onDisappear {
+                            signupCompleted = false
+                        }
                         .ignoresSafeArea(.keyboard)
                     }
                 }
             } else {
                 Text("Loading")
+            }
+        }
+        .onChange(of: showDeepLink) {
+            if !showDeepLink {
+                appLogic.deepLink = nil
+            }
+        }
+        .onChange(of: appLogic.deepLink, initial: true) {
+            // Ignores any deep links if not signed in
+            if !signupCompleted {
+                showDeepLink = false
+            } else if appLogic.deepLink != nil {
+                showAccount = false
+                showDeepLink = true
+            } else {
+                showDeepLink = false
             }
         }
     }

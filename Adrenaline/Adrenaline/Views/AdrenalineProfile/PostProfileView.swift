@@ -22,7 +22,8 @@ struct PostProfileItem: Hashable, Identifiable {
     var expandedView: any View = EmptyView()
     
     init(user: NewUser, post: Post, namespace: Namespace.ID,
-         postShowing: Binding<String?>, shouldRefreshPosts: Binding<Bool>) async throws {
+         postShowing: Binding<String?>, shouldRefreshPosts: Binding<Bool>,
+         showCloseButton: Bool = true) async throws {
         self.user = user
         self.post = post
         self.mediaItems = try await getMediaItems()
@@ -32,7 +33,8 @@ struct PostProfileItem: Hashable, Identifiable {
                                                       post: self.post,
                                                       firstMediaItem: self.mediaItems.first)
         self.expandedView = PostProfileExpandedView(postShowing: postShowing,
-                                                    shouldRefreshPosts: shouldRefreshPosts, id: self.id,
+                                                    shouldRefreshPosts: shouldRefreshPosts, 
+                                                    showCloseButton: showCloseButton, id: self.id,
                                                     namespace: namespace, user: self.user,
                                                     post: self.post, mediaItems: self.mediaItems)
     }
@@ -153,6 +155,7 @@ struct PostProfileExpandedView: View {
     @FocusState private var captionFocused: Bool
     @Binding var postShowing: String?
     @Binding var shouldRefreshPosts: Bool
+    var showCloseButton: Bool
     let id: String
     let namespace: Namespace.ID
     // user is the user that owns the post
@@ -239,7 +242,7 @@ struct PostProfileExpandedView: View {
                                 .lineLimit(6, reservesSpace: true)
                         }
                     }
-                    .frame(width: screenWidth * 0.8)
+                    .frame(width: screenWidth * 0.8, height: 150)
                     
                     VStack {
                         if isEditingPost {
@@ -273,6 +276,16 @@ struct PostProfileExpandedView: View {
                             }
                         } else {
                             Menu {
+                                if let url = URL(string: "adrenaline://post?id=\(post.id)") {
+                                    ShareLink(item: url) {
+                                        HStack {
+                                            Image(systemName: "square.and.arrow.up")
+                                            Text("Share")
+                                        }
+                                        .foregroundColor(.primary)
+                                    }
+                                }
+                                
                                 // If post owner is current user
                                 if authUserId == user.id {
                                     Button {
@@ -382,7 +395,9 @@ struct PostProfileExpandedView: View {
             }
             .padding()
             
-            CloseButtonWithPostShowing(postShowing: $postShowing)
+            if showCloseButton {
+                CloseButtonWithPostShowing(postShowing: $postShowing)
+            }
         }
         .zIndex(10)
         .alert("Are you sure you want to delete this post?", isPresented: $showingDeleteAlert) {

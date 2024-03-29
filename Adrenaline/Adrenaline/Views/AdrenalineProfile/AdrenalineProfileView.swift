@@ -112,10 +112,6 @@ struct AdrenalineProfileView: View {
     var body: some View {
         ZStack {
             (currentMode == .light ? Color.white : Color.black).ignoresSafeArea()
-            Image(currentMode == .light ? "ProfileBackground-Light" : "ProfileBackground-Dark")
-                .frame(height: screenHeight * 0.7)
-                .offset(x: screenWidth * 0.2, y: -screenHeight * 0.4)
-                .scaleEffect(0.7)
             
             if let user = user {
                 VStack {
@@ -294,6 +290,12 @@ struct PersonalInfoView: View {
                                         }
                                     }
                                 
+                            }
+                            
+                            if let url = URL(string: "adrenaline://profile?id=\(user.id)") {
+                                ShareLink(item: url) {
+                                    Image(systemName: "square.and.arrow.up")
+                                }
                             }
                         }
                         

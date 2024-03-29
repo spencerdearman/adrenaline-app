@@ -29,6 +29,7 @@ class AppLogic: ObservableObject {
     @Published var dataStoreReady: Bool = false
     @Published var currentUser: NewUser? = nil
     @Published var currentUserUpdated: Bool = false
+    @Published var deepLink: URL? = nil
     
     func configureAmplify() {
         do {
