@@ -94,14 +94,19 @@ struct PostFeedItemCollapsedView: View {
                 VStack(alignment: .center, spacing: 16) {
                     
                     HStack {
-                        LogoView(imageUrl: getProfilePictureURL(userId: user.id, 
-                                                                firstName: user.firstName,
-                                                                lastName: user.lastName,
-                                                                dateOfBirth: user.dateOfBirth))
-                        .shadow(radius: 10)
-                        Text(user.firstName + " " + user.lastName)
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
+                        ProfileLinkWrapper(user: user) {
+                            LogoView(imageUrl: getProfilePictureURL(userId: user.id,
+                                                                    firstName: user.firstName,
+                                                                    lastName: user.lastName,
+                                                                    dateOfBirth: user.dateOfBirth))
+                            .shadow(radius: 10)
+                        }
+                        
+                        ProfileLinkWrapper(user: user) {
+                            Text(user.firstName + " " + user.lastName)
+                                .font(.footnote.weight(.medium))
+                                .foregroundColor(.secondary)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityElement(children: .combine)
@@ -145,6 +150,19 @@ struct PostFeedItemCollapsedView: View {
             if !mediaItems.isEmpty {
                 currentTab = mediaItems[0].id
             }
+        }
+    }
+}
+
+struct ProfileLinkWrapper<Content: View>: View {
+    var user: NewUser
+    var content: () -> Content
+    
+    var body: some View {
+        NavigationLink {
+            AdrenalineProfileView(newUser: user)
+        } label: {
+            content()
         }
     }
 }
