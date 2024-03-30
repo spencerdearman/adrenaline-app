@@ -129,6 +129,25 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // ...
         return true
     }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        let defaultsDict = UserDefaults.standard.dictionaryRepresentation()
+        // This should fail when a user signs out normally since authUserId is removed from defaults
+        guard let signupCompleted = defaultsDict["signupCompleted"] as? Bool,
+              let authUserId = defaultsDict["authUserId"] as? String else { print("failed"); return }
+        
+        if !signupCompleted {
+            let sem = DispatchSemaphore(value: 0)
+            
+            Task.detached {
+                print("Did not finish signup sequence, deleting account...")
+                await deleteAccount(authUserId: authUserId)
+                sem.signal()
+            }
+            
+            let _ = sem.wait(timeout: .now().advanced(by: .seconds(30)))
+        }
+    }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
