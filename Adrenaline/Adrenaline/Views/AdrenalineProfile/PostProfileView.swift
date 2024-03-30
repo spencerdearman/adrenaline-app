@@ -33,7 +33,7 @@ struct PostProfileItem: Hashable, Identifiable {
                                                       post: self.post,
                                                       firstMediaItem: self.mediaItems.first)
         self.expandedView = PostProfileExpandedView(postShowing: postShowing,
-                                                    shouldRefreshPosts: shouldRefreshPosts, 
+                                                    shouldRefreshPosts: shouldRefreshPosts,
                                                     showCloseButton: showCloseButton, id: self.id,
                                                     namespace: namespace, user: self.user,
                                                     post: self.post, mediaItems: self.mediaItems)
@@ -184,6 +184,25 @@ struct PostProfileExpandedView: View {
                 }
             
             VStack {
+                HStack {
+                    ProfileLinkWrapper(user: user) {
+                        LogoView(imageUrl: getProfilePictureURL(userId: user.id,
+                                                                firstName: user.firstName,
+                                                                lastName: user.lastName,
+                                                                dateOfBirth: user.dateOfBirth))
+                        .shadow(radius: 10)
+                    }
+                    
+                    ProfileLinkWrapper(user: user) {
+                        Text(user.firstName + " " + user.lastName)
+                            .font(.footnote.weight(.medium))
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
+                .padding(.top, 10)
+                
                 ScrollView(.horizontal) {
                     LazyHStack(spacing: 0) {
                         ForEach(mediaItems) { item in

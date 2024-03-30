@@ -59,30 +59,32 @@ struct DeepLinkView: View {
     }
     
     var body: some View {
-        ZStack {
-            Group {
-                if showPostPermissionError {
-                    Text("You are not authorized to view this post.")
-                        .multilineTextAlignment(.center)
-                } else {
-                    switch deepLink {
-                            // Selecting the right profile happens in onChange below
-                        case .profile:
-                            if let user {
-                                AdrenalineProfileView(newUser: user)
-                            }
-                            // Selecting the right post happens in onChange below
-                        case .post:
-                            if let postProfileItem {
-                                AnyView(postProfileItem.expandedView)
-                            }
-                        default:
-                            Text("Something went wrong. Please try again with a different link.")
-                                .multilineTextAlignment(.center)
+        NavigationView {
+            ZStack {
+                Group {
+                    if showPostPermissionError {
+                        Text("You are not authorized to view this post.")
+                            .multilineTextAlignment(.center)
+                    } else {
+                        switch deepLink {
+                                // Selecting the right profile happens in onChange below
+                            case .profile:
+                                if let user {
+                                    AdrenalineProfileView(newUser: user)
+                                }
+                                // Selecting the right post happens in onChange below
+                            case .post:
+                                if let postProfileItem {
+                                    AnyView(postProfileItem.expandedView)
+                                }
+                            default:
+                                Text("Something went wrong. Please try again with a different link.")
+                                    .multilineTextAlignment(.center)
+                        }
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .overlay {
             Button {
