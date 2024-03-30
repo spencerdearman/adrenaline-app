@@ -68,6 +68,8 @@
 		00BD0F992A7C5BBC0098E03A /* ConcurrentImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */; };
 		00BD0F9B2A7CAC830098E03A /* collegeLogos.json in Resources */ = {isa = PBXBuildFile; fileRef = 00BD0F9A2A7CAC830098E03A /* collegeLogos.json */; };
 		00BD0F9D2A7ED1110098E03A /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */; };
+		00C96CB32BB895840044E41E /* AWSLambda in Frameworks */ = {isa = PBXBuildFile; productRef = 00C96CB22BB895840044E41E /* AWSLambda */; };
+		00C96CB52BB896310044E41E /* LambdaAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C96CB42BB896310044E41E /* LambdaAPI.swift */; };
 		00CD87542B660D4E001D64C3 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD87532B660D4E001D64C3 /* EditProfileView.swift */; };
 		00CD87582B662846001D64C3 /* StorageAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD87572B662846001D64C3 /* StorageAPI.swift */; };
 		00CD875F2B7881A2001D64C3 /* CollegeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD875E2B7881A2001D64C3 /* CollegeView.swift */; };
@@ -266,6 +268,7 @@
 		00BD0F982A7C5BBC0098E03A /* ConcurrentImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcurrentImageLoader.swift; sourceTree = "<group>"; };
 		00BD0F9A2A7CAC830098E03A /* collegeLogos.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = collegeLogos.json; sourceTree = "<group>"; };
 		00BD0F9C2A7ED1110098E03A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		00C96CB42BB896310044E41E /* LambdaAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LambdaAPI.swift; sourceTree = "<group>"; };
 		00CD87532B660D4E001D64C3 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		00CD87572B662846001D64C3 /* StorageAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAPI.swift; sourceTree = "<group>"; };
 		00CD875E2B7881A2001D64C3 /* CollegeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollegeView.swift; sourceTree = "<group>"; };
@@ -394,6 +397,7 @@
 				0034B5D42AECFCEC00A2D7A1 /* CachedAsyncImage in Frameworks */,
 				4DB80A492AE2F96E000DD1FC /* AWSDataStorePlugin in Frameworks */,
 				4DB80A512AE2F96E000DD1FC /* AWSPluginsCore in Frameworks */,
+				00C96CB32BB895840044E41E /* AWSLambda in Frameworks */,
 				4DB80A532AE2F96E000DD1FC /* AWSPredictionsPlugin in Frameworks */,
 				4DEF7D3629BEE796003EAD70 /* SwiftSoup in Frameworks */,
 				4D76438C2A70F733000F35CB /* SwiftUIGIF in Frameworks */,
@@ -471,6 +475,7 @@
 				0019D9862B0C826A004F751C /* DeleteAccountAPI.swift */,
 				00B5BB0B2AA0E8A000E587B5 /* FollowingAPI.swift */,
 				00B5BB092AA0E80D00E587B5 /* FollowingTestView.swift */,
+				00C96CB42BB896310044E41E /* LambdaAPI.swift */,
 				00CEDFD32ABFC71500F079CE /* PostsAPI.swift */,
 				00CD87572B662846001D64C3 /* StorageAPI.swift */,
 			);
@@ -843,7 +848,6 @@
 				4DD880BA2A761089008F69F2 /* AthleteProfile.swift */,
 				4DD880B82A76103D008F69F2 /* CoachProfile.swift */,
 				00B22DCC2B368AAD007208D0 /* CommittedCollegeView.swift */,
-				00CD87532B660D4E001D64C3 /* EditProfileView.swift */,
 				00D6DDD72AE5F2BA0065F040 /* PostProfileView.swift */,
 				4D13F3BC2A999F930081823D /* SettingsPage.swift */,
 				4D9443902BA53E1300033540 /* UserSettingsPage.swift */,
@@ -907,6 +911,7 @@
 				4DB80A602AE2FA68000DD1FC /* AWSDataStorePlugin */,
 				4DB80A622AE2FA68000DD1FC /* AWSLocationGeoPlugin */,
 				4DA154F12B9D8EE0008108C2 /* SwiftyCrop */,
+				00C96CB22BB895840044E41E /* AWSLambda */,
 			);
 			productName = DiveMeets;
 			productReference = 4D74FE9329AE7B9800401178 /* Adrenaline.app */;
@@ -943,6 +948,7 @@
 				4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */,
 				0034B5D22AECFCEB00A2D7A1 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
 				4DA154F02B9D8EE0008108C2 /* XCRemoteSwiftPackageReference "SwiftyCrop" */,
+				00C96CB12BB895840044E41E /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
 			);
 			productRefGroup = 4D74FE9429AE7B9800401178 /* Products */;
 			projectDirPath = "";
@@ -1111,6 +1117,7 @@
 				006BDEA42AE5DAAE009D384E /* UserSavedPost+Schema.swift in Sources */,
 				4DA482E02AA98BE8003DFA3B /* NewUser+Schema.swift in Sources */,
 				0065C5AC2A4377920040600E /* SwipeModifier.swift in Sources */,
+				00C96CB52BB896310044E41E /* LambdaAPI.swift in Sources */,
 				00F1129B2A50EAA900557265 /* MeetScoreCalculator.swift in Sources */,
 				4D1A31C52A97087500128F81 /* CloseButton.swift in Sources */,
 				4DA482F42AA98BE8003DFA3B /* NewEvent.swift in Sources */,
@@ -1363,6 +1370,14 @@
 				minimumVersion = 2.1.1;
 			};
 		};
+		00C96CB12BB895840044E41E /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/awslabs/aws-sdk-swift";
+			requirement = {
+				kind = exactVersion;
+				version = 0.36.1;
+			};
+		};
 		4D13F3C22A9D563F0081823D /* XCRemoteSwiftPackageReference "amplify-ui-swift-authenticator" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/aws-amplify/amplify-ui-swift-authenticator";
@@ -1410,6 +1425,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0034B5D22AECFCEB00A2D7A1 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
 			productName = CachedAsyncImage;
+		};
+		00C96CB22BB895840044E41E /* AWSLambda */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 00C96CB12BB895840044E41E /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSLambda;
 		};
 		4D13F3C32A9D563F0081823D /* Authenticator */ = {
 			isa = XCSwiftPackageProductDependency;
