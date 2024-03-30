@@ -56,8 +56,6 @@ def lambda_handler(event, context):
     except Exception as exc:
         print(f"Failed to delete unconfirmed user(s) with input {event} - {repr(exc)}")
         return
-    # print(response)
-    # print(response["UserStatus"])
 
 
 if __name__ == "__main__":
