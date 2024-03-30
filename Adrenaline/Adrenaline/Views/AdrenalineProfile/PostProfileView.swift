@@ -167,19 +167,6 @@ struct PostProfileExpandedView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    // Checks UserSavedPost to see if viewing user has saved this post, and if yes, assign
-    // it to the State to be removed if the user unsaves
-    private func getSavedPost() async throws {
-        let pred = UserSavedPost.keys.newuserID == authUserId &&
-        UserSavedPost.keys.postID == post.id
-        let savedPosts: [UserSavedPost] = try await query(where: pred)
-        if savedPosts.count == 1 {
-            savedPost = savedPosts[0]
-        } else {
-            savedPost = nil
-        }
-    }
-    
     private func setReportedAlertText(result: Bool) {
         if result {
             reportedAlertText = "Post has been reported and will be reviewed by our Support Team as soon as possible"
@@ -444,7 +431,7 @@ struct PostProfileExpandedView: View {
         }
         .onAppear {
             Task {
-                try await getSavedPost()
+                savedPost = try await getSavedPost(userId: authUserId, postId: post.id)
                 
                 let pred = NewUser.keys.id == authUserId
                 let users = await queryAWSUsers(where: pred)

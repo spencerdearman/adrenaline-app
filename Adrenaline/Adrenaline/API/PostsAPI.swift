@@ -222,6 +222,19 @@ func userUnsavePost(user: NewUser, post: Post, savedPost: UserSavedPost) async t
     let _ = try await deleteFromDataStore(object: savedPost)
 }
 
+// Checks UserSavedPost to see if viewing user has saved this post, and if yes, assign
+// it to the State to be removed if the user unsaves
+func getSavedPost(userId: String, postId: String) async throws -> UserSavedPost? {
+    let pred = UserSavedPost.keys.newuserID == userId &&
+    UserSavedPost.keys.postID == postId
+    let savedPosts: [UserSavedPost] = try await query(where: pred)
+    if savedPosts.count == 1 {
+        return savedPosts[0]
+    }
+    
+    return nil
+}
+
 // Convenience function to abstract file path
 func removeVideoFromS3(email: String, videoId: String) async throws {
     try await Amplify.Storage.remove(key: "videos/\(email)/\(videoId).mp4")
