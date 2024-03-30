@@ -44,3 +44,17 @@ func deleteUnconfirmedUser(email: String) async throws {
         try await invokeLambda(functionName: "delete-unconfirmed-user", payload: jsonData)
     }
 }
+
+// Invokes delete-unconfirmed-user lambda with the given authUserId as the userId argument in the 
+// lambda
+func deleteUnconfirmedUser(authUserId: String) async throws {
+    let dict = ["userId": authUserId]
+    let encoder = JSONEncoder()
+    if let jsonData = try? encoder.encode(dict) {
+        if let jsonString = String(data: jsonData, encoding: .utf8) {
+            print(jsonString)
+        }
+        
+        try await invokeLambda(functionName: "delete-unconfirmed-user", payload: jsonData)
+    }
+}
