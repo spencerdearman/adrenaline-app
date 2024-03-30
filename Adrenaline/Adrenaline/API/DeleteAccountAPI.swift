@@ -243,6 +243,14 @@ func deleteAccount(authUserId: String) async {
         try await Amplify.Auth.deleteUser()
         print("Successfully deleted user")
     } catch let error as AuthError {
+        if error.errorDescription.contains("no user signed in") {
+            print("Attempting to delete unconfirmed user")
+            do {
+                try await deleteUnconfirmedUser(authUserId: authUserId)
+            } catch let err {
+                print("Failed to delete unconfirmed user: \(err)")
+            }
+        }
         print("Delete user failed with error \(error)")
     } catch {
         print("Unexpected error: \(error)")
