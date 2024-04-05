@@ -17,6 +17,7 @@ extension String {
 
 struct SignUp: View {
     @Environment(\.colorScheme) var currentMode
+    @AppStorage("authUserId") private var authUserId: String = ""
     @ObservedObject var state: SignUpState
     @State var signUpErrorMessage: String = ""
     @State var signUpError: Bool = false
@@ -72,6 +73,7 @@ struct SignUp: View {
                         signUpError = false
                         do {
                             try await state.signUp()
+                            authUserId = email
                         } catch {
                             if state.fields[0].value.isValidEmail {
                                 signUpErrorMessage = "Email already exists, please sign in"

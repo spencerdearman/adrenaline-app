@@ -8,6 +8,10 @@
 import Foundation
 import Amplify
 
+enum DeleteAccountAPIError: Error {
+    case userNotFoundError(String)
+}
+
 // Remove all data nested with CoachUser object associated with the user
 private func deleteDataStoreCoach(coach: CoachUser) async throws {
     if var team = try await coach.team {
@@ -191,7 +195,7 @@ private func deleteAccountDataStoreData(authUserId: String) async throws {
     // Get user object from authUserId
     let pred = NewUser.keys.id == authUserId
     let users = await queryAWSUsers(where: pred)
-    if users.count != 1 { throw NSError() }
+    if users.count != 1 { throw DeleteAccountAPIError.userNotFoundError("User count was not 1") }
     let user = users[0]
     
     // Delete associated DataStore and S3 data for the user
@@ -207,9 +211,22 @@ private func deleteAccountDataStoreData(authUserId: String) async throws {
 
 func deleteAccount(authUserId: String) async {
     do {
-        // Delete associated DataStore and S3 data for user
-        try await deleteAccountDataStoreData(authUserId: authUserId)
-        print("Successfully deleted user DataStore data")
+        do {
+            // Delete associated DataStore and S3 data for user
+            try await deleteAccountDataStoreData(authUserId: authUserId)
+            print("Successfully deleted user DataStore data")
+        } catch let error as DeleteAccountAPIError {
+            // If userNotFoundError, continue without rethrowing
+            if case let DeleteAccountAPIError.userNotFoundError(string) = error {
+                print("User was not present, continuing...")
+            } else {
+                print("Failed to delete user DataStore data - \(error.localizedDescription)")
+                throw error
+            }
+        } catch {
+            print("Failed to delete user DataStore data - \(error.localizedDescription)")
+            throw error
+        }
         
         // Sleep to give DataStore time to sync to the cloud
         try await Task.sleep(seconds: 5.0)
@@ -226,6 +243,14 @@ func deleteAccount(authUserId: String) async {
         try await Amplify.Auth.deleteUser()
         print("Successfully deleted user")
     } catch let error as AuthError {
+        if error.errorDescription.contains("no user signed in") {
+            print("Attempting to delete unconfirmed user")
+            do {
+                try await deleteUnconfirmedUser(authUserId: authUserId)
+            } catch let err {
+                print("Failed to delete unconfirmed user: \(err)")
+            }
+        }
         print("Delete user failed with error \(error)")
     } catch {
         print("Unexpected error: \(error)")

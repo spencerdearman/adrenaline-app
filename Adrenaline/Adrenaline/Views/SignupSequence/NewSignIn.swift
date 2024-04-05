@@ -44,7 +44,6 @@ struct NewSignIn: View {
             .modifier(OutlineModifier(cornerRadius: 30))
             .onAppear {
                 animate()
-                
             }
             .frame(width: screenWidth * 0.9)
         }

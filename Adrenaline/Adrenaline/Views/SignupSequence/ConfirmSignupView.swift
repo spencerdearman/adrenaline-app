@@ -84,6 +84,16 @@ struct ConfirmSignUp: View {
             
             Divider()
             
+            Text("Don't see a code? **Resend Code**")
+                .font(.footnote)
+                .foregroundColor(.primary.opacity(0.7))
+                .accentColor(.primary.opacity(0.7))
+                .onTapGesture {
+                    Task {
+                        try await state.sendCode()
+                    }
+                }
+            
             Text("Code sent to \(email)")
                 .font(.footnote)
                 .foregroundColor(.primary.opacity(0.7))
