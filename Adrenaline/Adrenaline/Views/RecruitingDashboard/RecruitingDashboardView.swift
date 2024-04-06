@@ -186,6 +186,26 @@ struct RecruitingDashboardView: View {
         return result
     }
     
+    private func updateDashboardData() async throws {
+        guard let favsIds = newUser?.favoritesIds else { return }
+        let favUsers = try await getAthleteUsersByFavoritesIds(ids: favsIds)
+        guard let order = try await newUser?.coach?.favoritesOrder else {
+            print("Failed to get order")
+            favorites = favUsers
+            return
+        }
+        
+        if favUsers.count != order.count {
+            print("order mismatch")
+            favorites = favUsers
+        } else {
+            favorites = order.map { favUsers[$0] }
+        }
+        
+        recentResults = try await getFavoritesRecentResults(ids: favsIds)
+        newPosts = try await getFavoritesPosts(ids: favsIds)
+    }
+    
     var body: some View {
         ZStack {
             ScrollView {
@@ -306,24 +326,13 @@ struct RecruitingDashboardView: View {
         .onChange(of: appLogic.currentUserUpdated, initial: true) {
             Task {
                 if !appLogic.currentUserUpdated {
-                    guard let favsIds = newUser?.favoritesIds else { return }
-                    let favUsers = try await getAthleteUsersByFavoritesIds(ids: favsIds)
-                    guard let order = try await newUser?.coach?.favoritesOrder else {
-                        print("Failed to get order")
-                        favorites = favUsers
-                        return
-                    }
-                    
-                    if favUsers.count != order.count {
-                        print("order mismatch")
-                        favorites = favUsers
-                    } else {
-                        favorites = order.map { favUsers[$0] }
-                    }
-                    
-                    recentResults = try await getFavoritesRecentResults(ids: favsIds)
-                    newPosts = try await getFavoritesPosts(ids: favsIds)
+                    try await updateDashboardData()
                 }
+            }
+        }
+        .onAppear {
+            Task {
+                try await updateDashboardData()
             }
         }
     }
