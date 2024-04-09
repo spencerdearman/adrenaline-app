@@ -35,7 +35,7 @@ struct RecruitingDashboardView: View {
     @State private var showSheet: Bool = false
     @State private var selectedSheet: RecruitingSheet? = nil
     @State private var selectedUser: NewUser? = nil
-    @State private var newPosts: [PostProfileItem] = []
+    @State private var newPosts: [PostFeedItem] = []
     @State private var selectedPost: String? = nil
     // Added to satisfy PostProfileItem constructor, but none of these posts will be editable by
     // the coach
@@ -142,9 +142,9 @@ struct RecruitingDashboardView: View {
         }
     }
     
-    private func getFavoritesPosts(ids: [String]) async throws -> [PostProfileItem] {
+    private func getFavoritesPosts(ids: [String]) async throws -> [PostFeedItem] {
         let userPosts: [String: [Post]] = try await getPostsByUserIds(ids: ids)
-        var profileItems: [(Temporal.DateTime, PostProfileItem)] = []
+        var profileItems: [(Temporal.DateTime, PostFeedItem)] = []
         
         for (userId, posts) in userPosts {
             // Get associated user for post
@@ -153,10 +153,7 @@ struct RecruitingDashboardView: View {
             // Create PostProfileItem for each post and associate its creation date for
             // future sorting
             for post in posts {
-                let profileItem = try await PostProfileItem(user: user, post: post,
-                                                            namespace: namespace,
-                                                            postShowing: $selectedPost,
-                                                            shouldRefreshPosts: $shouldRefreshPosts)
+                let profileItem = try await PostFeedItem(user: user, post: post, namespace: namespace)
                 profileItems.append((post.creationDate, profileItem))
             }
         }
@@ -184,6 +181,26 @@ struct RecruitingDashboardView: View {
         }
         
         return result
+    }
+    
+    private func updateDashboardData() async throws {
+        guard let favsIds = newUser?.favoritesIds else { return }
+        let favUsers = try await getAthleteUsersByFavoritesIds(ids: favsIds)
+        guard let order = try await newUser?.coach?.favoritesOrder else {
+            print("Failed to get order")
+            favorites = favUsers
+            return
+        }
+        
+        if favUsers.count != order.count {
+            print("order mismatch")
+            favorites = favUsers
+        } else {
+            favorites = order.map { favUsers[$0] }
+        }
+        
+        recentResults = try await getFavoritesRecentResults(ids: favsIds)
+        newPosts = try await getFavoritesPosts(ids: favsIds)
     }
     
     var body: some View {
@@ -306,24 +323,13 @@ struct RecruitingDashboardView: View {
         .onChange(of: appLogic.currentUserUpdated, initial: true) {
             Task {
                 if !appLogic.currentUserUpdated {
-                    guard let favsIds = newUser?.favoritesIds else { return }
-                    let favUsers = try await getAthleteUsersByFavoritesIds(ids: favsIds)
-                    guard let order = try await newUser?.coach?.favoritesOrder else {
-                        print("Failed to get order")
-                        favorites = favUsers
-                        return
-                    }
-                    
-                    if favUsers.count != order.count {
-                        print("order mismatch")
-                        favorites = favUsers
-                    } else {
-                        favorites = order.map { favUsers[$0] }
-                    }
-                    
-                    recentResults = try await getFavoritesRecentResults(ids: favsIds)
-                    newPosts = try await getFavoritesPosts(ids: favsIds)
+                    try await updateDashboardData()
                 }
+            }
+        }
+        .onAppear {
+            Task {
+                try await updateDashboardData()
             }
         }
     }
