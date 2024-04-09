@@ -33,7 +33,7 @@ struct PostProfileItem: Hashable, Identifiable {
                                                       post: self.post,
                                                       firstMediaItem: self.mediaItems.first)
         self.expandedView = PostProfileExpandedView(postShowing: postShowing,
-                                                    shouldRefreshPosts: shouldRefreshPosts, 
+                                                    shouldRefreshPosts: shouldRefreshPosts,
                                                     showCloseButton: showCloseButton, id: self.id,
                                                     namespace: namespace, user: self.user,
                                                     post: self.post, mediaItems: self.mediaItems)
@@ -167,19 +167,6 @@ struct PostProfileExpandedView: View {
     private let screenWidth = UIScreen.main.bounds.width
     private let screenHeight = UIScreen.main.bounds.height
     
-    // Checks UserSavedPost to see if viewing user has saved this post, and if yes, assign
-    // it to the State to be removed if the user unsaves
-    private func getSavedPost() async throws {
-        let pred = UserSavedPost.keys.newuserID == authUserId &&
-        UserSavedPost.keys.postID == post.id
-        let savedPosts: [UserSavedPost] = try await query(where: pred)
-        if savedPosts.count == 1 {
-            savedPost = savedPosts[0]
-        } else {
-            savedPost = nil
-        }
-    }
-    
     private func setReportedAlertText(result: Bool) {
         if result {
             reportedAlertText = "Post has been reported and will be reviewed by our Support Team as soon as possible"
@@ -197,6 +184,25 @@ struct PostProfileExpandedView: View {
                 }
             
             VStack {
+                HStack {
+                    ProfileLinkWrapper(user: user) {
+                        LogoView(imageUrl: getProfilePictureURL(userId: user.id,
+                                                                firstName: user.firstName,
+                                                                lastName: user.lastName,
+                                                                dateOfBirth: user.dateOfBirth))
+                        .shadow(radius: 10)
+                    }
+                    
+                    ProfileLinkWrapper(user: user) {
+                        Text(user.firstName + " " + user.lastName)
+                            .font(.footnote.weight(.medium))
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
+                .padding(.top, 10)
+                
                 ScrollView(.horizontal) {
                     LazyHStack(spacing: 0) {
                         ForEach(mediaItems) { item in
@@ -444,7 +450,7 @@ struct PostProfileExpandedView: View {
         }
         .onAppear {
             Task {
-                try await getSavedPost()
+                savedPost = try await getSavedPost(userId: authUserId, postId: post.id)
                 
                 let pred = NewUser.keys.id == authUserId
                 let users = await queryAWSUsers(where: pred)

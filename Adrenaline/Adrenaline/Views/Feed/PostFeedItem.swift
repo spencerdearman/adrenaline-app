@@ -66,8 +66,12 @@ class PostFeedItem: FeedItem {
 
 struct PostFeedItemCollapsedView: View {
     @Environment(\.colorScheme) var currentMode
+    @EnvironmentObject private var appLogic: AppLogic
+    @AppStorage("authUserId") private var authUserId: String = ""
     @State var appear = [false, false, false]
     @State private var currentTab: String = ""
+    @State private var savedPost: UserSavedPost? = nil
+    @State private var isSavedByUser: Bool = false
     var id: String
     var namespace: Namespace.ID
     var user: NewUser
@@ -94,14 +98,19 @@ struct PostFeedItemCollapsedView: View {
                 VStack(alignment: .center, spacing: 16) {
                     
                     HStack {
-                        LogoView(imageUrl: getProfilePictureURL(userId: user.id, 
-                                                                firstName: user.firstName,
-                                                                lastName: user.lastName,
-                                                                dateOfBirth: user.dateOfBirth))
-                        .shadow(radius: 10)
-                        Text(user.firstName + " " + user.lastName)
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(.secondary)
+                        ProfileLinkWrapper(user: user) {
+                            LogoView(imageUrl: getProfilePictureURL(userId: user.id,
+                                                                    firstName: user.firstName,
+                                                                    lastName: user.lastName,
+                                                                    dateOfBirth: user.dateOfBirth))
+                            .shadow(radius: 10)
+                        }
+                        
+                        ProfileLinkWrapper(user: user) {
+                            Text(user.firstName + " " + user.lastName)
+                                .font(.footnote.weight(.medium))
+                                .foregroundColor(.secondary)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityElement(children: .combine)
@@ -129,22 +138,79 @@ struct PostFeedItemCollapsedView: View {
                         }
                     }
                     
-                    Text(post.caption ?? "")
-                        .font(.footnote)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(.primary.opacity(0.7))
-                        .matchedGeometryEffect(id: "caption\(id)", in: namespace)
-                        .padding(.horizontal, 20)
+                    HStack {
+                        Text(post.caption ?? "")
+                            .font(.footnote)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .foregroundColor(.primary.opacity(0.7))
+                            .matchedGeometryEffect(id: "caption\(id)", in: namespace)
+                        
+                        Spacer()
+                        
+                        HStack(spacing: 10) {
+                            // Share button
+                            if let url = URL(string: "adrenaline://post?id=\(post.id)") {
+                                ShareLink(item: url) {
+                                    Image(systemName: "square.and.arrow.up")
+                                }
+                            }
+                            
+                            // Save button
+                            Button {
+                                // Optimistic UI to update the toggle and handle the DB update in
+                                // the background
+                                isSavedByUser.toggle()
+                                
+                                // Update DB to add/remove saved post
+                                Task {
+                                    if isSavedByUser, let user = appLogic.currentUser {
+                                        savedPost = try await userSavePost(user: user, post: post)
+                                    } else if !isSavedByUser,
+                                              let user = appLogic.currentUser,
+                                              let savedPost {
+                                        let _ = try await userUnsavePost(user: user, post: post, savedPost: savedPost)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: isSavedByUser ? "bookmark.fill" : "bookmark")
+                            }
+                        }
+                        .foregroundColor(.primary)
+                    }
+                    .padding(.horizontal, 20)
                 }
-                .padding(.vertical, 10)
+                .padding(.vertical, 20)
             }
         }
         .frame(width: screenWidth * 0.9)
         .frame(minHeight: screenHeight * 0.4, maxHeight: screenHeight * 0.9)
         .onAppear {
-            if !mediaItems.isEmpty {
-                currentTab = mediaItems[0].id
+            Task {
+                if !mediaItems.isEmpty {
+                    currentTab = mediaItems[0].id
+                }
+                
+                guard let usersSaving = post.usersSaving else { return }
+                try await usersSaving.fetch()
+                let userMatches = usersSaving.elements.filter({ $0.newuserID == authUserId })
+                if userMatches.count > 0 {
+                    isSavedByUser = true
+                    savedPost = userMatches[0]
+                }
             }
+        }
+    }
+}
+
+struct ProfileLinkWrapper<Content: View>: View {
+    var user: NewUser
+    var content: () -> Content
+    
+    var body: some View {
+        NavigationLink {
+            AdrenalineProfileView(newUser: user)
+        } label: {
+            content()
         }
     }
 }
