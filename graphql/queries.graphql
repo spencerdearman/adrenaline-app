@@ -1149,6 +1149,11 @@ query GetNewTeam($id: ID!) {
       startedAt
       __typename
     }
+    joinRequests {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -2090,6 +2095,106 @@ query SyncAcademicRecords(
       _deleted
       _lastChangedAt
       academicRecordAthleteId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query GetTeamJoinRequest($id: ID!) {
+  getTeamJoinRequest(id: $id) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      dateOfBirth
+      tokens
+      favoritesIds
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    status
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamJoinRequestsId
+    teamJoinRequestUserId
+    __typename
+  }
+}
+
+query ListTeamJoinRequests(
+  $filter: ModelTeamJoinRequestFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTeamJoinRequests(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      status
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamJoinRequestsId
+      teamJoinRequestUserId
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+
+query SyncTeamJoinRequests(
+  $filter: ModelTeamJoinRequestFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncTeamJoinRequests(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      status
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamJoinRequestsId
+      teamJoinRequestUserId
       __typename
     }
     nextToken

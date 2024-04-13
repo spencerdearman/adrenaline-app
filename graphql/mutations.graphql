@@ -1024,6 +1024,11 @@ mutation CreateNewTeam(
       startedAt
       __typename
     }
+    joinRequests {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -1059,6 +1064,11 @@ mutation UpdateNewTeam(
       startedAt
       __typename
     }
+    joinRequests {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -1090,6 +1100,11 @@ mutation DeleteNewTeam(
       __typename
     }
     athletes {
+      nextToken
+      startedAt
+      __typename
+    }
+    joinRequests {
       nextToken
       startedAt
       __typename
@@ -2000,6 +2015,153 @@ mutation DeleteAcademicRecord(
     _deleted
     _lastChangedAt
     academicRecordAthleteId
+    __typename
+  }
+}
+
+mutation CreateTeamJoinRequest(
+  $input: CreateTeamJoinRequestInput!
+  $condition: ModelTeamJoinRequestConditionInput
+) {
+  createTeamJoinRequest(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      dateOfBirth
+      tokens
+      favoritesIds
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    status
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamJoinRequestsId
+    teamJoinRequestUserId
+    __typename
+  }
+}
+
+mutation UpdateTeamJoinRequest(
+  $input: UpdateTeamJoinRequestInput!
+  $condition: ModelTeamJoinRequestConditionInput
+) {
+  updateTeamJoinRequest(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      dateOfBirth
+      tokens
+      favoritesIds
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    status
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamJoinRequestsId
+    teamJoinRequestUserId
+    __typename
+  }
+}
+
+mutation DeleteTeamJoinRequest(
+  $input: DeleteTeamJoinRequestInput!
+  $condition: ModelTeamJoinRequestConditionInput
+) {
+  deleteTeamJoinRequest(input: $input, condition: $condition) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      dateOfBirth
+      tokens
+      favoritesIds
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    status
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamJoinRequestsId
+    teamJoinRequestUserId
     __typename
   }
 }
