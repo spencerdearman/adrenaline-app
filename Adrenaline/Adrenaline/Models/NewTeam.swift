@@ -12,6 +12,7 @@ public struct NewTeam: Model {
       } 
     }
   public var athletes: List<NewAthlete>?
+  public var joinRequests: List<TeamJoinRequest>?
   public var createdAt: Temporal.DateTime?
   public var updatedAt: Temporal.DateTime?
   public var newTeamCoachId: String?
@@ -20,11 +21,13 @@ public struct NewTeam: Model {
       name: String,
       coach: CoachUser? = nil,
       athletes: List<NewAthlete> = [],
+      joinRequests: List<TeamJoinRequest> = [],
       newTeamCoachId: String? = nil) {
     self.init(id: id,
       name: name,
       coach: coach,
       athletes: athletes,
+      joinRequests: joinRequests,
       createdAt: nil,
       updatedAt: nil,
       newTeamCoachId: newTeamCoachId)
@@ -33,6 +36,7 @@ public struct NewTeam: Model {
       name: String,
       coach: CoachUser? = nil,
       athletes: List<NewAthlete> = [],
+      joinRequests: List<TeamJoinRequest> = [],
       createdAt: Temporal.DateTime? = nil,
       updatedAt: Temporal.DateTime? = nil,
       newTeamCoachId: String? = nil) {
@@ -40,6 +44,7 @@ public struct NewTeam: Model {
       self.name = name
       self._coach = LazyReference(coach)
       self.athletes = athletes
+      self.joinRequests = joinRequests
       self.createdAt = createdAt
       self.updatedAt = updatedAt
       self.newTeamCoachId = newTeamCoachId
@@ -53,6 +58,7 @@ public struct NewTeam: Model {
       name = try values.decode(String.self, forKey: .name)
       _coach = try values.decodeIfPresent(LazyReference<CoachUser>.self, forKey: .coach) ?? LazyReference(identifiers: nil)
       athletes = try values.decodeIfPresent(List<NewAthlete>?.self, forKey: .athletes) ?? .init()
+      joinRequests = try values.decodeIfPresent(List<TeamJoinRequest>?.self, forKey: .joinRequests) ?? .init()
       createdAt = try? values.decode(Temporal.DateTime?.self, forKey: .createdAt)
       updatedAt = try? values.decode(Temporal.DateTime?.self, forKey: .updatedAt)
       newTeamCoachId = try? values.decode(String?.self, forKey: .newTeamCoachId)
@@ -63,6 +69,7 @@ public struct NewTeam: Model {
       try container.encode(name, forKey: .name)
       try container.encode(_coach, forKey: .coach)
       try container.encode(athletes, forKey: .athletes)
+      try container.encode(joinRequests, forKey: .joinRequests)
       try container.encode(createdAt, forKey: .createdAt)
       try container.encode(updatedAt, forKey: .updatedAt)
       try container.encode(newTeamCoachId, forKey: .newTeamCoachId)

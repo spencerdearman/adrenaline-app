@@ -1195,6 +1195,22 @@ export const schema = {
                         ]
                     }
                 },
+                "joinRequests": {
+                    "name": "joinRequests",
+                    "isArray": true,
+                    "type": {
+                        "model": "TeamJoinRequest"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": false,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "newTeamJoinRequestsId"
+                        ]
+                    }
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -2294,10 +2310,141 @@ export const schema = {
                     }
                 }
             ]
+        },
+        "TeamJoinRequest": {
+            "name": "TeamJoinRequest",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "user": {
+                    "name": "user",
+                    "isArray": false,
+                    "type": {
+                        "model": "NewUser"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "HAS_ONE",
+                        "associatedWith": [
+                            "id"
+                        ],
+                        "targetNames": [
+                            "teamJoinRequestUserId"
+                        ]
+                    }
+                },
+                "team": {
+                    "name": "team",
+                    "isArray": false,
+                    "type": {
+                        "model": "NewTeam"
+                    },
+                    "isRequired": true,
+                    "attributes": [],
+                    "association": {
+                        "connectionType": "BELONGS_TO",
+                        "targetNames": [
+                            "newTeamJoinRequestsId"
+                        ]
+                    }
+                },
+                "status": {
+                    "name": "status",
+                    "isArray": false,
+                    "type": {
+                        "enum": "TeamJoinRequestStatus"
+                    },
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "newTeamJoinRequestsId": {
+                    "name": "newTeamJoinRequestsId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "teamJoinRequestUserId": {
+                    "name": "teamJoinRequestUserId",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                }
+            },
+            "syncable": true,
+            "pluralName": "TeamJoinRequests",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "private",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            },
+                            {
+                                "allow": "public",
+                                "provider": "apiKey",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     },
-    "enums": {},
+    "enums": {
+        "TeamJoinRequestStatus": {
+            "name": "TeamJoinRequestStatus",
+            "values": [
+                "REQUESTED_BY_ATHLETE",
+                "REQUESTED_BY_COACH",
+                "APPROVED",
+                "DENIED_BY_ATHLETE",
+                "DENIED_BY_COACH_FIRST",
+                "DENIED_BY_COACH_SECOND",
+                "DENIED_BY_COACH_THIRD"
+            ]
+        }
+    },
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "6d02df424bd50a338324dd11746dd7a4"
+    "version": "2f59d47eb787a3121a27e16eb99b47f0"
 };

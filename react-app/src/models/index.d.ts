@@ -2,7 +2,15 @@ import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-
 // @ts-ignore
 import { LazyLoading, LazyLoadingDisabled, AsyncCollection, AsyncItem } from "@aws-amplify/datastore";
 
-
+export enum TeamJoinRequestStatus {
+  REQUESTED_BY_ATHLETE = "REQUESTED_BY_ATHLETE",
+  REQUESTED_BY_COACH = "REQUESTED_BY_COACH",
+  APPROVED = "APPROVED",
+  DENIED_BY_ATHLETE = "DENIED_BY_ATHLETE",
+  DENIED_BY_COACH_FIRST = "DENIED_BY_COACH_FIRST",
+  DENIED_BY_COACH_SECOND = "DENIED_BY_COACH_SECOND",
+  DENIED_BY_COACH_THIRD = "DENIED_BY_COACH_THIRD"
+}
 
 
 
@@ -343,6 +351,7 @@ type EagerNewTeam = {
   readonly name: string;
   readonly coach?: CoachUser | null;
   readonly athletes: NewAthlete[];
+  readonly joinRequests: TeamJoinRequest[];
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly newTeamCoachId?: string | null;
@@ -357,6 +366,7 @@ type LazyNewTeam = {
   readonly name: string;
   readonly coach: AsyncItem<CoachUser | undefined>;
   readonly athletes: AsyncCollection<NewAthlete>;
+  readonly joinRequests: AsyncCollection<TeamJoinRequest>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
   readonly newTeamCoachId?: string | null;
@@ -692,4 +702,40 @@ export declare type AcademicRecord = LazyLoading extends LazyLoadingDisabled ? E
 
 export declare const AcademicRecord: (new (init: ModelInit<AcademicRecord>) => AcademicRecord) & {
   copyOf(source: AcademicRecord, mutator: (draft: MutableModel<AcademicRecord>) => MutableModel<AcademicRecord> | void): AcademicRecord;
+}
+
+type EagerTeamJoinRequest = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<TeamJoinRequest, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly user: NewUser;
+  readonly team: NewTeam;
+  readonly status: TeamJoinRequestStatus | keyof typeof TeamJoinRequestStatus;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly newTeamJoinRequestsId?: string | null;
+  readonly teamJoinRequestUserId: string;
+}
+
+type LazyTeamJoinRequest = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<TeamJoinRequest, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly user: AsyncItem<NewUser>;
+  readonly team: AsyncItem<NewTeam>;
+  readonly status: TeamJoinRequestStatus | keyof typeof TeamJoinRequestStatus;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+  readonly newTeamJoinRequestsId?: string | null;
+  readonly teamJoinRequestUserId: string;
+}
+
+export declare type TeamJoinRequest = LazyLoading extends LazyLoadingDisabled ? EagerTeamJoinRequest : LazyTeamJoinRequest
+
+export declare const TeamJoinRequest: (new (init: ModelInit<TeamJoinRequest>) => TeamJoinRequest) & {
+  copyOf(source: TeamJoinRequest, mutator: (draft: MutableModel<TeamJoinRequest>) => MutableModel<TeamJoinRequest> | void): TeamJoinRequest;
 }

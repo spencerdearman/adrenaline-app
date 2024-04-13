@@ -90,6 +90,7 @@ type NewTeam @model @auth(rules: [{allow: private}, {allow: public, provider: ap
   name: String!
   coach: CoachUser @hasOne
   athletes: [NewAthlete!]! @hasMany(indexName: "byNewTeam", fields: ["id"])
+  joinRequests: [TeamJoinRequest!]! @hasMany
 }
 
 type College @model @auth(rules: [{allow: private}, {allow: public, provider: apiKey}]) {
@@ -176,4 +177,21 @@ type AcademicRecord @model @auth(rules: [{allow: private}, {allow: public, provi
   weightedGPA: Float
   gpaScale: Float
   coursework: String
+}
+
+enum TeamJoinRequestStatus {
+  REQUESTED_BY_ATHLETE
+  REQUESTED_BY_COACH
+  APPROVED
+  DENIED_BY_ATHLETE
+  DENIED_BY_COACH_FIRST
+  DENIED_BY_COACH_SECOND
+  DENIED_BY_COACH_THIRD
+}
+
+type TeamJoinRequest @model @auth(rules: [{allow: private}, {allow: public, provider: apiKey}]) {
+  id: ID!
+  user: NewUser! @hasOne
+  team: NewTeam! @belongsTo
+  status: TeamJoinRequestStatus!
 }

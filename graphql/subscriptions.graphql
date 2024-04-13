@@ -967,6 +967,11 @@ subscription OnCreateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
       startedAt
       __typename
     }
+    joinRequests {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -999,6 +1004,11 @@ subscription OnUpdateNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
       startedAt
       __typename
     }
+    joinRequests {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -1027,6 +1037,11 @@ subscription OnDeleteNewTeam($filter: ModelSubscriptionNewTeamFilterInput) {
       __typename
     }
     athletes {
+      nextToken
+      startedAt
+      __typename
+    }
+    joinRequests {
       nextToken
       startedAt
       __typename
@@ -1883,6 +1898,150 @@ subscription OnDeleteAcademicRecord(
     _deleted
     _lastChangedAt
     academicRecordAthleteId
+    __typename
+  }
+}
+
+subscription OnCreateTeamJoinRequest(
+  $filter: ModelSubscriptionTeamJoinRequestFilterInput
+) {
+  onCreateTeamJoinRequest(filter: $filter) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      dateOfBirth
+      tokens
+      favoritesIds
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    status
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamJoinRequestsId
+    teamJoinRequestUserId
+    __typename
+  }
+}
+
+subscription OnUpdateTeamJoinRequest(
+  $filter: ModelSubscriptionTeamJoinRequestFilterInput
+) {
+  onUpdateTeamJoinRequest(filter: $filter) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      dateOfBirth
+      tokens
+      favoritesIds
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    status
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamJoinRequestsId
+    teamJoinRequestUserId
+    __typename
+  }
+}
+
+subscription OnDeleteTeamJoinRequest(
+  $filter: ModelSubscriptionTeamJoinRequestFilterInput
+) {
+  onDeleteTeamJoinRequest(filter: $filter) {
+    id
+    user {
+      id
+      firstName
+      lastName
+      email
+      phone
+      diveMeetsID
+      accountType
+      dateOfBirth
+      tokens
+      favoritesIds
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newUserAthleteId
+      newUserCoachId
+      __typename
+    }
+    team {
+      id
+      name
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      newTeamCoachId
+      __typename
+    }
+    status
+    createdAt
+    updatedAt
+    _version
+    _deleted
+    _lastChangedAt
+    newTeamJoinRequestsId
+    teamJoinRequestUserId
     __typename
   }
 }
