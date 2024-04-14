@@ -2025,6 +2025,8 @@ public struct ModelNewUserConditionInput: GraphQLMapConvertible {
 public enum TeamJoinRequestStatus: RawRepresentable, Equatable, JSONDecodable, JSONEncodable {
   public typealias RawValue = String
   case requestedByAthlete
+  case requestedByAthleteDeniedOnce
+  case requestedByAthleteDeniedTwice
   case requestedByCoach
   case approved
   case deniedByAthlete
@@ -2037,6 +2039,8 @@ public enum TeamJoinRequestStatus: RawRepresentable, Equatable, JSONDecodable, J
   public init?(rawValue: RawValue) {
     switch rawValue {
       case "REQUESTED_BY_ATHLETE": self = .requestedByAthlete
+      case "REQUESTED_BY_ATHLETE_DENIED_ONCE": self = .requestedByAthleteDeniedOnce
+      case "REQUESTED_BY_ATHLETE_DENIED_TWICE": self = .requestedByAthleteDeniedTwice
       case "REQUESTED_BY_COACH": self = .requestedByCoach
       case "APPROVED": self = .approved
       case "DENIED_BY_ATHLETE": self = .deniedByAthlete
@@ -2050,6 +2054,8 @@ public enum TeamJoinRequestStatus: RawRepresentable, Equatable, JSONDecodable, J
   public var rawValue: RawValue {
     switch self {
       case .requestedByAthlete: return "REQUESTED_BY_ATHLETE"
+      case .requestedByAthleteDeniedOnce: return "REQUESTED_BY_ATHLETE_DENIED_ONCE"
+      case .requestedByAthleteDeniedTwice: return "REQUESTED_BY_ATHLETE_DENIED_TWICE"
       case .requestedByCoach: return "REQUESTED_BY_COACH"
       case .approved: return "APPROVED"
       case .deniedByAthlete: return "DENIED_BY_ATHLETE"
@@ -2063,6 +2069,8 @@ public enum TeamJoinRequestStatus: RawRepresentable, Equatable, JSONDecodable, J
   public static func == (lhs: TeamJoinRequestStatus, rhs: TeamJoinRequestStatus) -> Bool {
     switch (lhs, rhs) {
       case (.requestedByAthlete, .requestedByAthlete): return true
+      case (.requestedByAthleteDeniedOnce, .requestedByAthleteDeniedOnce): return true
+      case (.requestedByAthleteDeniedTwice, .requestedByAthleteDeniedTwice): return true
       case (.requestedByCoach, .requestedByCoach): return true
       case (.approved, .approved): return true
       case (.deniedByAthlete, .deniedByAthlete): return true
