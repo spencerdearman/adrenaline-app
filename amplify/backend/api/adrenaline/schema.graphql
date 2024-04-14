@@ -181,6 +181,8 @@ type AcademicRecord @model @auth(rules: [{allow: private}, {allow: public, provi
 
 enum TeamJoinRequestStatus {
   REQUESTED_BY_ATHLETE
+  REQUESTED_BY_ATHLETE_DENIED_ONCE
+  REQUESTED_BY_ATHLETE_DENIED_TWICE
   REQUESTED_BY_COACH
   APPROVED
   DENIED_BY_ATHLETE
