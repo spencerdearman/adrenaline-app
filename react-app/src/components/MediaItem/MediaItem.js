@@ -26,5 +26,4 @@ export const MediaItem = ({ mediaURL, playing = false, loop = true }) => {
 const Image = styled.img`
   width: auto;
   max-height: 75vh;
-  aspect-ratio: 1;
 `;

@@ -18,10 +18,8 @@ const Home = () => {
         return data;
       })
       .then(user => {
-        // TODO: change this to favorites
-        // const favorites = user.favoritesIds;
-        // return getFeedPostsByUserIds(favorites);
-        return getFeedPostsByUserIds([user.id]);
+        const favorites = user.favoritesIds;
+        return getFeedPostsByUserIds(favorites);
       })
       .then(posts => {
         setFeedPosts(posts);
