@@ -10,7 +10,6 @@ export function getProfilePicUrl(id, firstName, lastName, dateOfBirth) {
     return '';
   }
   const date = dateOfBirth.substring(0, dateOfBirth.length - 1);
-  console.log(`${CLOUDFRONT_PROFILE_PICS_BASE_URL}/${id}_${firstName}_${lastName}_${date}.jpg`);
   return `${CLOUDFRONT_PROFILE_PICS_BASE_URL}/${id}_${firstName}_${lastName}_${date}.jpg`;
 }
 
