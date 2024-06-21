@@ -54,7 +54,7 @@ const NavigationBar = () => {
   }, []);
 
   const profileUrl = `/profile/${userContext === undefined ? '' : userContext.userId}`;
-  const profileIconSrc = user === undefined ? personIcon : getProfilePicUrl(user.id);
+  const profileIconSrc = user === undefined ? personIcon : getProfilePicUrl(user.id, user.firstName, user.lastName, user.dateOfBirth);
 
   return (
     <CustomNavigationBar>

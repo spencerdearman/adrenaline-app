@@ -75,7 +75,9 @@ const Profile = (props) => {
       <BasicInfo>
         <RowItems style={{ paddingBottom: 0 }}>
           <Column>
-            <ProfilePic id={profileId} />
+            { user &&
+            <ProfilePic id={profileId} firstName={user.firstName} lastName={user.lastName} dateOfBirth={user.dateOfBirth}/>
+            }
           </Column>
 
           <Column>
