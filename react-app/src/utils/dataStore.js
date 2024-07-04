@@ -38,3 +38,15 @@ export async function getPostById(postId) {
 export async function getPostsByUserId(userId) {
   return await DataStore.query(models.Post, (p) => p.newuserID.eq(userId));
 }
+
+export async function getFeedPostsByUserIds(ids) {
+  const predicates = (c) => ids.map((userId, id) => c.newuserID.eq(userId));
+  const allPosts = await DataStore.query(models.Post, (c) =>
+    c.or(c => predicates(c))
+  );
+
+  // Sorts in descending order on creationDate
+  return allPosts.sort((a, b) => {
+    return Date.parse(b.creationDate) - Date.parse(a.creationDate);
+  });
+}

@@ -6,8 +6,9 @@ import { Text } from '@aws-amplify/ui-react';
 
 import { getPostById, getPostsByUserId, getUserById } from '../../utils/dataStore';
 import { getImageURL, getVideoHLSURL } from '../../utils/storage';
-
-import { MediaItem } from './MediaItem';
+import { MediaItem } from '../MediaItem/MediaItem';
+import { LeftArrowButton, RightArrowButton } from '../styles/buttons';
+import { MediaWrapper, TextWrapper } from '../styles/divs';
 
 // Returns an array of CloudFront links that host the relevant media item
 async function getMediaItems(post) {
@@ -131,7 +132,7 @@ export const UserPost = ({ userId }) => {
 
             {mediaItems[mediaIndex] !== undefined &&
               <MediaWrapper onClick={(e) => e.stopPropagation()}>
-                <MediaItem mediaURL={mediaItems[mediaIndex]} />
+                <MediaItem mediaURL={mediaItems[mediaIndex]} playing={true} />
                 {posts[postIndex] &&
                 posts[postIndex].caption &&
                 posts[postIndex].caption.length > 0 &&
@@ -198,18 +199,6 @@ const InnerContent = styled.div`
     align-items: center;
 `;
 
-const LeftArrowButton = styled.button`
-    visibility: ${props => props.itemindex === 0 ? 'hidden' : 'visible'};
-    cursor: pointer;
-    margin-right: 10px;
-`;
-
-const RightArrowButton = styled.button`
-    visibility: ${props => props.itemindex === props.itemslength - 1 ? 'hidden' : 'visible'};
-    cursor: pointer;
-    margin-left: 10px;
-`;
-
 const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   width: 100vw;
@@ -218,26 +207,4 @@ const Overlay = styled.div`
   top: 0;
   left: 0;
   z-index: 10;
-`;
-
-const MediaWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: start;
-  width: fit-content;
-  min-width: 40vw;
-  max-width: 80vw;
-  max-height: 90vh;
-  background-color: rgba(200, 200, 200);
-`;
-
-const TextWrapper = styled.div`
-  display: flex;
-  justify-content: start;
-  padding: 15px;
-  overflow: scroll;
-  overflow-x: hidden;
-  width: 100%;
 `;

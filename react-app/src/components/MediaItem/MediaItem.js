@@ -2,7 +2,7 @@ import React from 'react';
 import ReactPlayer from 'react-player';
 import styled from 'styled-components';
 
-export const MediaItem = ({ mediaURL }) => {
+export const MediaItem = ({ mediaURL, playing = false, loop = true }) => {
   if (mediaURL === undefined) {
     return;
   }
@@ -12,8 +12,8 @@ export const MediaItem = ({ mediaURL }) => {
   } else {
     return (
       <ReactPlayer
-        playing={true}
-        loop={true}
+        playing={playing}
+        loop={loop}
         controls={true}
         url={mediaURL}
         width='100%'
@@ -26,5 +26,4 @@ export const MediaItem = ({ mediaURL }) => {
 const Image = styled.img`
   width: auto;
   max-height: 75vh;
-  aspect-ratio: 1;
 `;
